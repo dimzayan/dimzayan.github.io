@@ -17,13 +17,17 @@
                 text-transform: none;
                 font-family: 'Karma',serif;
                 color: #FFF;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
+
+
 
             a:hover {
                 color: #F90;
             }
             body { 
-                background: #02051D ;
+                background: #02051D;
                 /*background-image: url("moonstone.png");*/
                 background-repeat :  no-repeat;
                 background-position: 0 center;
@@ -43,13 +47,72 @@
 
             }
 
-            p {color  : #f80;}
+            p {
+                color  : #f80;
+                
+            }
+
+            h1,h2,h3,h4 {
+                filter : blur(0.8px);
+                color : #CF9A75;
+            }
+
+            h4 {
+                font-size : 1.4rem
+            }
+
+            @keyframes fadeIn {
+                from {opacity: 0;}
+                to {opacity: 1;}
+            }
+
+            #logo  {
+                max-width : 760px;
+                width : 100%;
+                margin : 1em 0;
+                animation-name: fadeIn;
+                animation-duration: 6s;
+            }
+
+            #logo + h4 {
+
+                animation-name: fadeIn;
+                animation-duration: 10s;
+                animation-delay : 0s;
+            }
+
+            #master-nav ul  {
+                padding : 0;
+                margin : 2em 0;
+                
+            }
+
+            #master-nav ul li {
+                display : inline;
+                margin : 0 1em;
+            }
         </style>
         
     </head>
     <body>
-        <div>
-            <img src="logo.gif" style="width:300px">
+        <div class="container-fluid h-100 v-100 ">
+            <div class="row h-100">
+                <nav class="col col-lg-6 offset-lg-3 align-self-center" id="master-nav">
+                    <img src="logo.gif" id="logo">
+                    <h4>A Bitcoin fable by Dim Zayan</h4>
+                       
+          <!--           <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#book">Order the book</a></li>
+                        <li><a href="#online-edition">Read Online</a></li>
+                        <li><a href="#online-edition">Treasure hunt</a></li>
+                        <li><a href="#woke">Red & Blue Pills</a></li>
+                        <li><a href="#support">Power Up</a></li>
+                    </ul> -->
+
+                </nav>
+            </div>
+
          
         </div>
     </body>
