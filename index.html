@@ -27,29 +27,31 @@
                 color: #F90;
             }
             body { 
-                background: #02051D;
+                background: #02051D url('assets/grain.png');
+
 
                 /*background-image: url("moonstone.png");*/
-                background-repeat :  no-repeat;
+                /*background-repeat :  no-repeat;
                 background-position: 0 center;
                 background-size: 50%;
-                background-attachment: fixed;
+                background-attachment: fixed;*/
                 font-size: 1.2rem;
-                display : flex;
-                height : 100vh;
+                
+                
             }
 
-            body > div {
+            /*body > div {
                 width : 300px;
                 height : 100px;
                 margin : auto;
                 text-align: center;
                 font-size: 0.8em
 
-            }
+            }*/
 
             p {
                 color  : #F8C;
+                color : #F990f9;
                 
             }
 
@@ -98,7 +100,7 @@
 
 
             #master-nav {
-                width : 100vw;
+                
                 background : rgba(0,0,0,.8);
 
             }
@@ -122,7 +124,7 @@
 
             #master-nav ul  {
                 padding : 0;
-                margin : 2em auto;
+                margin : 1.5em auto;
                 
             }
 
@@ -140,13 +142,22 @@
 
             #master-nav li + li a {
                 color: #F3A;
-                color: #F9F;
+                /*color: #F9F;*/
+            }
+
+
+            .wrapper {
+                background : linear-gradient(180deg, rgba(2,5,29,1) 21%, rgba(13,13,71,1) 66%, rgba(252,141,64,1) 150%);
+                max-width : 100%;
+                display: flex;
+                perspective : 10px;
+                perspective-origin:  : 0;
             }
 
             #content > .row {
                 min-height: 100vh;
                 text-align: left;
-                padding: 4em 2em;
+                padding: 0 2em;
                 margin : 0;
             }
 
@@ -161,7 +172,28 @@
                 max-width : 100%;
             }
 
-          
+ /*           .wrapper:before {
+                content: "";
+                background:transparent url(http://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height:100%;
+  z-index:50;
+            }*/
+
+            #about:before {
+                background:transparent url(http://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 70%;
+                background-repeat: repeat;
+                /*z-index: 30;*/
+                content: "";
+            }
 
             #hero .col {
                 text-align : center;
@@ -192,22 +224,140 @@
                 margin : 1em 0;
             }
 
+            .slider {
+                display : flex;
+                
+                width : 330px;
+                height : 500px;
+                transform : rotate(6deg) skew(-6deg) scale(0.8);
+                transition : 0.5s;
+                
+            }
+
+
+            .slider:hover {
+                transform : rotate(0) skew(0) scale(0.9);
+
+            }
+
+            .slide {
+                flex-shrink: 0;
+                width : 100%;
+                border : solid 4px #345;
+                border-radius : 2px;
+                overflow : hidden;
+                position: absolute;
+                height: 100%;
+                /*position : absolute;*/
+            }
+
+            .slide:nth-child(1) {
+                
+                z-index : 5;
+                opacity : 1;
+                border : solid 4px #34C;
+            }
+
+            .slide:nth-child(2) {
+                transform:translate(2px,2px);
+                z-index : 4;
+                border : solid 4px #347;
+            }
+            .slide:nth-child(3) {
+                transform:translate(4px,4px);
+                z-index : 3;
+                border : solid 4px #349;
+            }
+            .slide:nth-child(4) {
+                transform:translate(6px,6px);
+                border : solid 4px #34A;
+            }
+            .slide:nth-child(5) {
+                transform:translate(8px,8px);
+                border : solid 4px #34C;
+            }
+
+            .slide img {
+                position : absolute;
+                left : 0;
+                height : 100%;
+            }
+
+            input[type="checkbox"] {
+                display: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left : 0;
+                background: none;
+            }
+            input:checked + .slider {
+                position : fixed;
+                top : 140px;
+                left : 100px;
+            }
+         
+            .moon  {
+                width : 200px;
+                height : 200px;
+                position : relative;
+
+                margin : auto;
+                background : #cffcff;
+                border-radius: 50%;
+                filter : blur(1px);
+                z-index: 999;
+                transform: scale(1)
+
+            }
+
+            .moon::after {
+                background : transparent url(assets/moon.jpg);
+                background-blend-mode: overlay;
+                content : "";
+                position: absolute;
+                top : 0;
+                left : 0;
+                background-position-x : -30px;
+                width: 100%;
+                height : 100%;
+                background-size: cover;
+                border-radius: 50%;
+
+            }
+
+            #support h4 {
+                margin-bottom : 4em;
+            }
+
+            #hero h4 p {
+                color : #f8c;
+                filter: blur(0.8px);
+            }
+
+        
         </style>
+
         
     </head>
     <body>
-        <div class="container-xl h-100 " >
-            <nav class="row fixed-top" id="master-nav">
+        <nav class="row fixed-top" id="master-nav">
                  <ul >
+                    <li><a href="#hero">Bulltardia</a></li>
                     <li><a href="#about">About</a></li>
-                    <li><a href="#online-edition">The Story</a></li>
-                    <li><a href="#book">Order the book</a></li>
                     
+                    <li><a href="#book">Order the book</a></li>
+                    <li><a href="#online-edition">Read Online</a></li>
                     <li><a href="#treasure">Treasure hunt</a></li>
-                    <li><a href="#woke">Red & Blue Pills</a></li>
+                    <!-- <li><a href="#woke">Red & Blue Pills</a></li> -->
                     <li><a href="#support">Power Up</a></li>
                 </ul>
             </nav>
+        <div class="wrapper">
+            
+        <div class="container-xl  container" >
+            
      
            
 
@@ -215,16 +365,19 @@
                 <div class="row h-90" id="hero">
                     <div class="col col-lg-8 col-sm-12 m-auto align-self-center text-center" >
                         <img src="assets/logo.gif" id="logo">
-                        <h4>A Bitcoin fable by Dim Zayan</h4>
+                        
+                        <h4><p>A Bitcoin Fable by Dim Zayan</p></h4>
                     </div>
 
                 </div>
-                <div class="col-lg-12 col-md-6 col-sm-12 align-self-center text-center">
-                            <img src="assets/moonstone.png" >
+                                     <div class="col-lg-12 col-md-12 col-sm-12 align-self-center text-center" >
+                            <img src="assets/moonstone.png" style="width:100%;max-width: none;max-height:none;margin-top: -35vh">
                         </div>
-                <div class="row " id="about">
-                    <div class="col-lg-6 col-md-6 col-sm-12 align-self-center text-center">
-                            <img src="assets/moonstone.png" >
+               
+                <div class="row " id="about" >
+                    <div class="col-lg-6 col-md-6 col-sm-12 align-self-center text-center" >
+                            <!-- <img src="assets/moonstone.png" > -->
+                            <div class="moon" style="display:flex;overflow-x:hidden;"></div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 align-self-center m-auto">
                             <article>
@@ -233,8 +386,8 @@
                             </h2>
 
                             <h4>
-                                <p>Bulltardia is a fantasy fable following the journey of<br/><b>Bit the Honey Badger</b>.</p>
-                                <p>Even though the story is set in an imaginary world, most of the animals and places you’re about to discover are based on real people and events that relate to the world of <b>Bitcoin</b> and cryptocurrency.</p>
+                                <p>Bulltardia is a fantasy fable following the journey of Bit the Honey Badger on his way to the moon.</p>
+                                <p>Even though the story is set in an imaginary world, most of the animals and places you’re about to discover are based on real people and events that relate to the world of <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a> and cryptocurrency.</p>
                                 <p>But you don’t have to be know  anything about Bitcoin  to enjoy Bulltardia.</p>
                             </h4>
                             </article>
@@ -242,7 +395,42 @@
                         
                     </div>
 
-                    <div class="row p-0 d-flex justify-content-center" id="online-edition">
+                    
+
+                    <div class="row " id="book">
+                        <div class="col-lg-6 col-md-6 col-sm-12 align-self-center m-auto">
+                            <article>
+                            <h2>
+                                
+                                <p>BOOK ONE IS AVAILABLE<br/>FOR PRE-ORDER.</p>
+                            </h2>
+                            <h4>
+
+                                
+                                <p style="margin:2em 0">This first book covers the story from <a href="http://www.citadel21.com/bulltardia-ep1" target="citadel21">Episode 1</a> and <a href="http://www.citadel21.com/bulltardia-ep2" target="citadel21">Episode 2</a>. This first edition is a standard US comic book limited to 210 copies, released in 10 sets of 21 books.</p> 
+
+                                <p>The 21st copy of each set will be be put at auction will include an original hand drawn sketch of a Bulltardia character by Dimzayan.</p>
+
+                                
+                                                     
+                            </h4>
+                            <h4><p style="text-decoration: line-through;color:#999" >Set One:  Sold Out</p></h4>
+                            <h4><p style="color:#F90">Set Two: Coming Soon</p></h4>     
+                        </div>
+                        <div class="col-6 align-self-center text-center">
+                            <input type="checkbox"/>
+                            <div class="slider">
+                                <div class="slide"><img src="https://imgur.com/doWMEWY.png" style="max-height : 75vh"></div>
+                                <div class="slide"><img src="https://imgur.com/LxhFk9o.png"></div>
+                                <div class="slide"><img src="https://imgur.com/meV7K8G.png"></div>
+                                <div class="slide"><img src="https://imgur.com/meV7K8G.png"></div>
+                                <div class="slide"><img src="https://imgur.com/meV7K8G.png"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+<div class="row p-0 d-flex justify-content-center" id="online-edition">
                          <div class="col-sm-12 col-md-8 col-lg-6 align-self-center m-auto text-center">
                             <article>
                             <h2>
@@ -264,56 +452,7 @@
                         </div>
                        
                     </div>
-
-                    <div class="row " id="book">
-                        <div class="col-lg-6 col-md-6 col-sm-12 align-self-center m-auto">
-                            <article>
-                            <h2>
-                                
-                                <p>BOOK ONE IS AVAILABLE<br/>FOR PRE-ORDER.</p>
-                            </h2>
-                            <h4>
-
-                                
-                                <p style="margin:2em 0">This first book covers the story from <a href="http://www.citadel21.com/bulltardia-ep1" target="citadel21">Episode 1</a> and <a href="http://www.citadel21.com/bulltardia-ep2" target="citadel21">Episode 2</a>. This first edition is a standard US comic book limited to 210 copies, released in 10 sets of 21 books.</p> 
-
-                                <p>The 21st copy of each set will be be put at auction will include an original hand drawn sketch of a Bulltardia character by Dimzayan.</p>
-
-                                <p style="text-decoration: line-through;color:#F40">Set One:  Sold Out</p>
-                                <p style="color:#91E922">Set Two: 20 available</p>
-
-                                <form method="post" action="https://btcpay.bulltardia.com/apps/eBMpTkVV3GhT3Dzo2xXGkiDqm94/pos">
-                                <button type="submit" name="choiceKey" class="js-add-cart btn btn-primary" value="bulltardia season one book one - set 2 of 10">
-                                                Pre-Order for 210,000 Sats
-                                </button>
-                                </form>
-                            </h4>
-                            </article>
-                        </div>
-                        <div class="col-6 align-self-center text-center">
-
-                            <!-- <img src="https://imgur.com/doWMEWY.png" style="max-height : 75vh"> -->
-                            <img src="https://imgur.com/LxhFk9o.png">
-                            <img src="https://imgur.com/meV7K8G.png">
-                        </div>
-                    </div>
-
-
-
-                    <div class="row p-0 d-flex justify-content-center" id="woke">
-                        <div class="col-6 align-self-center text-center">
-                            <h2>
-                                
-                                <p>STAY UP TO DATE</b>.</p>
-                            </h2>
-                            <h3>
-                                
-                                <p><a href="http://www.twitter.com/cryptgm">Follow Dim Zayan</a> on twitter for the latest news about Bulltardia and cocktail mix of hard truths, nonsensical memes and eye-indulging pleasures.</p>
-                                
-                                
-                            </h3>
-                        </div>
-                    </div>
+                  
 
 
                     <div class="row p-0 d-flex justify-content-center" id="treasure"> 
@@ -334,7 +473,7 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <ul title="First Key" >
                                     <li>The first key is one of the reasons the Honey Badger don't care. Developed over time, It is a six letter adjective that starts with a "i".</li>
-                                    <li><a href="">Unlock hints on Patreon</a></li>
+                                    <!-- <li><a href="">Unlock hints on Patreon</a></li> -->
                                 </ul>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
@@ -399,26 +538,47 @@
                     </div>
 
 
-                    <div class="row p-0 d-flex justify-content-center" id="support"> 
-                        <div class="col-6 align-self-center text-center ">
+                    <div class="row d-flex justify-content-center" id="support"> 
+                        <div class="col-8 align-self-center text-center " style="margin: 25vh 0 25vh 0">
+                            
+      
                             <h2>
                                 
-                                <p>WANT TO SUPPORT BULLTARDIA?</b>.</p>
+                                <p>STAY UP TO DATE</p>
                             </h2>
                             <h4>
-                                <p>You'll make a creator happy and more productive.<br/>Show your love to the project by <a href="http://www.patreon.com/legeugre">becoming a patron</a><br/>or simply <a href="http://www.tippin.me/@cryptgm">fat finger a Zeus-like lightning tip</a></p>
                                 
-                                <img src="https://imgur.com/2TrKSqZ.gif"  >
+                                <p><a href="http://www.twitter.com/cryptgm">Follow Dim Zayan</a> on twitter for the latest news about Bulltardia and cocktail mix of hard truths, nonsensical memes and eye-indulging pleasures.</p>
+                                
                                 
                             </h4>
+                          
+                            <h2>
+                                
+                                <p>WANT TO SUPPORT BULLTARDIA?</p>
+                            </h2>
+                            <h4>
+                                <p>Show your love to the project by <a href="http://www.patreon.com/legeugre">becoming a patron</a> or simply use your Zeus powers and <a href="http://www.tippin.me/@cryptgm">fat finger a Lightning tip</a>. You'll make a creator happy and more productive. You'll make a creator happy and more productive. </p>
+                                
+                               
+                                
+                            </h4>
+                            <h4><p>Later plebs, Badger loves you</p></h3>
+                            <img src="https://i.gifer.com/8wp9.gif"  >
                         </div>
+
+                       
                     </div>
 
+            
             </section>
 
 
 
          
         </div>
+    </div>
+
+    
     </body>
 </html>
