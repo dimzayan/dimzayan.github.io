@@ -117,7 +117,7 @@
 
             ul li {
                 padding : .25em 0;
-                color : #f3a;
+                /*color : #f3a;*/
             }
 
 
@@ -151,7 +151,9 @@
                 max-width : 100%;
                 display: flex;
                 perspective : 10px;
-                perspective-origin:  : 0;
+                perspective-origin: 0;
+                overflow-x: hidden;
+
             }
 
             #content > .row {
@@ -334,6 +336,24 @@
             #hero h4 p {
                 color : #f8c;
                 filter: blur(0.8px);
+            }
+
+            @media (max-width:1024px) {
+
+                #master-nav {
+                    overflow-x: scroll;
+                    display: flex;
+                    flex-wrap: nowrap;
+                }
+                #master-nav ul {
+                    margin : 1em;
+                    display: flex;
+                }
+
+                #master-nav ul li {
+                    flex: 0 0 auto;
+                    display    : block;
+                }
             }
 
         
