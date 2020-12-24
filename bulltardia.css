@@ -86,7 +86,13 @@
 
             #master-nav {
                 
-                background : rgba(0,0,0,1);
+                /*background : rgba(0,0,0,1);*/
+                position: fixed;
+                top : 0;
+                left : 0;
+                min-width: 240px;
+                max-width : 240px;
+
 
             }
 
@@ -114,7 +120,7 @@
             }
 
             #master-nav ul li {
-                display : inline;
+                display : block;
                 margin : 0 1em;
                 /*filter: blur(0.6px);*/
                 font-size: 0.9em
@@ -123,6 +129,7 @@
 
             #master-nav a {
                 color: #F8C;
+                font-family: monospace;
                
             }
 
@@ -172,7 +179,7 @@
             }*/
 
             #about:before {
-                background:transparent url(https://imgur.com/VJxWVOO.png) repeat top center;
+                /*background:transparent url(https://imgur.com/VJxWVOO.png) repeat top center;*/
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -349,6 +356,9 @@
                     overflow-x: scroll;
                     display: flex;
                     flex-wrap: nowrap;
+                    min-width: 100%;
+                    max-width: 100%;
+                    background: #368;
                 }
                 #master-nav ul {
                     margin : 1em;
