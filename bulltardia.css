@@ -1,6 +1,7 @@
 * { 
                 text-transform: none;
-                font-family: 'Karma',serif;
+                font-family: Helvetica, sans-serif; 
+
                 color: #FFF;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
@@ -35,13 +36,15 @@
             }*/
 
             p {
-                color  : #F8C;
+             
                 color : #F990f9;
+                color: #89a
                 
             }
 
             a {
                 color: #F39;
+                color : #e75;
             }
 
             h1,h2,h3,h4 {
@@ -128,13 +131,13 @@
             }
 
             #master-nav a {
-                color: #F8C;
+               
                 font-family: monospace;
                
             }
 
             #master-nav li + li a {
-                color: #F3A;
+                
                 /*color: #F9F;*/
             }
 
@@ -327,8 +330,8 @@
             }
 
             #hero h4 p {
-                color : #f8c;
-                /*filter: blur(0.8px);*/
+                font-size: 0.8em;
+             
             }
 
             main {
@@ -359,6 +362,7 @@
                     min-width: 100%;
                     max-width: 100%;
                     background: #368;
+                    margin : 0;
                 }
                 #master-nav ul {
                     margin : 1em;
