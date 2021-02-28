@@ -385,7 +385,7 @@ template {
 *::before,
 *::after {
 	box-sizing: inherit;
-	color : #7a759f;
+
 }
 
 html {
@@ -817,7 +817,8 @@ article.page {
 
 h2 {
 	text-align : center;
-	margin : 1em 0;
+	margin : 4em 0 2em 0;
+	color : #000;
 }
 /* Captions
 --------------------------------------------- */
@@ -915,39 +916,6 @@ h2 {
 /* Accessibility
 --------------------------------------------- */
 
-/* Text meant only for screen readers. */
-.screen-reader-text {
-	border: 0;
-	clip: rect(1px, 1px, 1px, 1px);
-	clip-path: inset(50%);
-	height: 1px;
-	margin: -1px;
-	overflow: hidden;
-	padding: 0;
-	position: absolute !important;
-	width: 1px;
-	word-wrap: normal !important;
-}
-
-.screen-reader-text:focus {
-	background-color: #f1f1f1;
-	border-radius: 3px;
-	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
-	clip: auto !important;
-	clip-path: none;
-	color: #21759b;
-	display: block;
-	font-size: 0.875rem;
-	font-weight: 700;
-	height: auto;
-	left: 5px;
-	line-height: normal;
-	padding: 15px 23px 14px;
-	text-decoration: none;
-	top: 5px;
-	width: auto;
-	z-index: 100000;
-}
 
 /* Do not show the outline on the skip link target. */
 #primary[tabindex="-1"]:focus {
@@ -1007,7 +975,7 @@ h2 {
 .entry-content {
 	display: block;
 	margin : 0 auto;
-	color : #7a759f;
+
 /* 	flex-wrap : wrap; */
 }
 
@@ -1035,7 +1003,7 @@ h2 {
 
 
 .entry-footer, .entry-meta {
-	display : none;
+
 }
 
 .entry-title,  .page-title {
@@ -1048,8 +1016,8 @@ h2 {
 }
 
 .entry-title a, a {
-	font-size : 1em;
-	color : #f70;
+	font-size : 1.2em;
+	color : #f60;
 	
 }
 
@@ -1212,57 +1180,8 @@ main {
 	margin-top : 4em;
 }
 
-.woocommerce-info {
-	padding : 1em;
-	color : #FFF;
-	border-radius : 0.2em;
-}
-
-.woocommerce-info a, .woocommerce-info a:visited {
-	color : #fff;
-}
-
-body.woocommerce-checkout article.page, body.woocommerce-checkout .entry-content {
-	width : 100%;
-} 
 
 
-
-form.woocommerce-checkout {
-	width : 100%;
-	display : flex;
-	flex-direction: column;
-	
-}
-
-form.woocommerce-checkout .col-1, form.woocommerce-checkout .col-2 {
-	width : 100%;
-	min-width : 100%;
-	max-width : 100%;
-}
-.form-row {
-	display : block;
-}
-.form-row label {
-	display : block;
-}
-
-.form-row span input, .form-row textarea {
-	width: 100%;
-	min-width : 100%;
-}
-
-
-
-.cart-item .actions {
-	text-align : right;
-}
-
-.cart-item .actions button {
-	background : none !important;
-	color : #f90 !important;
-	padding : 0 !important;
-}
 
 .shop_table td {
 	text-align : right;
@@ -1337,25 +1256,6 @@ width : 100%;
 	max-width: 640px;
 }
 
-.tag-webformat li {
-	margin : 0;
-	max-width: 800px;
-}
-
-.post-thumbnail {
-	
-	text-align: center;
-	position: fixed;
-	width: 100%;
-	right : 0;
-	z-index : 0;
-	mix-blend-mode: color-dodge;
-	opacity: .6;
-
-}
-
-.post-thumbnail img {
-}
 
 .home article,
 .category-home {
@@ -1504,35 +1404,6 @@ width : 100%;
 	.main-navigation ul {
 		display: flex;
 	}
-}
-
-
-
-.home article,
-article.category-home {
-
-    background: url(https://imgur.com/pX6yH8T.jpg);
-    background-size: contain;
-    background-blend-mode: exclusion;
-    background-color: #f90;
-    background-repeat: no-repeat;
-    /* opacity: 0.4; */
-
-/* 	background-color : rgba(200,0,100,0.4); */
-    background-repeat: repeat;
-    padding: 0;
-    text-align : center;
-
-}
-
-@keyframes example {
-  from {transform:scale(4.3);}
-  to {transform:scale(1);}
-}
-
-@keyframes bgcol {
-  from {background-color: #fda;}
-  to {background-color: #123;}
 }
 
 
