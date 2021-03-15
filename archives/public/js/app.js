@@ -8,8 +8,8 @@ var addthis_share = {
 }
 
 var updateAddThis = function(obj) {
-  // if(addthis === undefined) { return false; }
-  // addthis.update('share', 'description', obj.description);
+  if(addthis === undefined) { return false; }
+  addthis.update('share', 'description', obj.description);
 };
 
 var offset = '40%';
