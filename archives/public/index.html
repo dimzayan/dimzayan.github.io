@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <script src="js/jquery.1.7.js"></script>
+    <script src="js/jquery.ui.min.js"></script>
+    <script src="js/modernizr.min.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/smooth.scroll.min.1.4.7.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/rafael.min.js"></script>
+    <script src="js/donut.js"></script>
+    <script src="js/usmap.svg.js"></script>
+    <script src="js/mapdata.js"></script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+    <link href='stylesheets/app.css?d' rel='stylesheet' type='text/css'>
+    <link type="text/css" media="screen" rel="stylesheet" href="stylesheets/awwwards.css" />
+    
+    <title>CEE: The State of Financial and Economic Education in United States</title>
+    
+    <meta name="keywords" content="Economy, Education, Finance, Council for Economic Education, Statistics, Infographic, Report, Survey">
+    <meta name="description" content="">
+    
+    <meta property="og:title" content="CEE: The State of Financial and Economic Education in United States" /> 
+    <meta property="og:title" content="http://www.surveyofthestates.com">
+    <meta property="og:description" content="The Survey of the States is a biennial report that brings attention to the critical importance of economics and personal finance education by documenting its status in the fifty states and the District of Columbia." />  
+    <meta property="og:image" content="http://www.surveyofthestates.com/images/logo-2014.png" />
+
+  </head>
+  
+  <body>
+    <div id="loader"></div>
+    <header>
+      <a id="logo" href="http://www.councilforeconed.org/" target="_blank">Council For Economic Education</a>
+      <dl id="header-counter" class="counter" title="Current estimated US student loan debt">
+        <dt>-$</dt>
+        <dd class="share">
+          <div class="wrap">
+            <a href="#share" class="toggle-share"></a>
+   
+            <div class="addthis_toolbox addthis_default_style share-menu" addthis:description="The State of Financial Economic Education in the US" addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com">
+              <label>Share</label>
+              <a class="addthis_button_facebook"></a>
+              <a class="addthis_button_twitter"></a>
+              <a class="addthis_button_email"></a>
+            </div>
+          </div>
+            
+
+        </dd>
+      </dl>
+      <nav>
+        <span id="marker"></span>
+        <a id="nav-cost" href="#cost">The Cost</a>
+        <a id="nav-situation" href="#situation">The Situation</a>
+        <a id="nav-challenge" href="#challenge">The Challenge</a>
+        <a id="nav-benefits" href="#benefits">The benefits</a>
+        <a id="nav-map" href="#2016">The Map</a>
+        <a id="nav-act" href="#act">Take Action</a>
+      </nav>
+    </header>
+    
+    <div id="cover">
+      
+      <section id="intro">
+        <h1>
+          
+          <span class="logo"></span>
+          <span style="font-size:14px;text-transform:none;padding:0px 0 0 0;color:#76bbe8">presents</span>
+          <span class="title">the 2016 national state of the financial &amp; economic education</span>
+          
+        </h1>
+        <a href="#debt" title="Start" class="next-section" id="start"><span class="pulse"></span></a>
+        <div class="bg" id="bg-layer-1"></div>
+
+      </section>
+      
+      <section id="debt">
+        <div class="wrap">
+          <h2><small>Current United States</small><span>Student Loan Debt</span></h2>
+          <dl id="debt-counter" class="counter">
+            <dt>-$</dt>
+          </dl>
+          <div class="fact debt-fact" >
+            <a href="https://www.nerdwallet.com/blog/credit-card-data/average-credit-card-debt-household/" target="_blank">
+              <span>That's the 2nd largest class of consumer debt after mortgages</span>
+              <span class="fa fa-external-link"></span></a>
+          </div>
+        </div>
+        <a href="#cost" title="What's the cost?" class="next-section"><span class="pulse"></span></a>
+      </section>
+      <footer></footer>
+    </div>
+
+    <div id="student" class="asset"></div>
+    <div id="pileofbooks"></div>
+    <div id="blackboard"></div>
+    
+    <div id="red-pig"></div>
+    <div id="coin"></div>
+    <div id="globe" class="asset"></div>
+    <div id="apple" class="asset"></div>
+    <div id="book" class="asset"></div>
+    <div id="clock" >
+      <div class="wrap">
+        <div class="hand" id="clock-minutes"></div>
+        <div class="hand" id="clock-hours"></div>
+      </div>
+    </div>
+    
+    <a id="piggybank" class="asset" href="#list-benefits"></a>
+        
+   <div id="stat-share" class="share">
+      <div class="wrap">
+        <a href="" class="toggle-share"></a>
+        <div class="addthis_toolbox addthis_default_style share-menu">
+          <label>Share</label>
+          <a class="addthis_button_facebook"  addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+          <a class="addthis_button_twitter"   addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+          <a class="addthis_button_email"     addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+        </div>
+      </div>
+    </div>
+      
+      
+    <div id="storyline">
+      <section id="cost"  data-menu="false"></section>
+      <section id="situation" data-menu="true"></section>
+      <section id="challenge" data-menu="true"></section>
+      <section id="benefits" data-menu="true"></section>
+      <section id="map" class="noshare" data-menu="false">
+        
+        
+        <div class="wrap" id="map-wrap">
+
+          <div id="us-map">
+            
+          </div>
+          
+          <div id="map-nav">
+            
+            <h4>
+              <span>The State of programs across the nation</span>
+  
+            </h4>
+            
+            
+            <div id="categories">
+              <a href="#" data-category="economy" id="category-economy" class="active">Economic Education</a>
+              <a href="#" data-category="finance" id="category-finance" >Personal Finance Education</a>
+            </div>
+
+
+            <ul id="timeline">
+              <li id="timeline-2016"><a href="#2016">2016</a></li>
+              <li id="timeline-2014"><a href="#2014">2014</a></li>
+              <li id="timeline-2011"><a href="#2011">2011</a></li>
+              <li id="timeline-2009"><a href="#2009">2009</a></li>
+              <li id="timeline-2007"><a href="#2007">2007</a></li>
+              <li id="timeline-2004"><a href="#2004">2004</a></li>
+              <li id="timeline-2002"><a href="#2002">2002</a></li>
+            </ul>
+            <a href="#next-stat" class="next-stat">&nbsp;</a>
+          </div>
+        </div>
+        
+        
+        
+      </section>
+                  
+      <section id="act" class="noshare"  data-menu="false">
+        
+       
+      </section>
+      <section id="footer" class="noshare">
+        
+        <div class="stat" id="for-more-info" style="padding-bottom:50px !important"><span style="border-bottom : solid #666 1px;">For more information, visit</span><span class="logo">&nbsp;</span><a href="http://www.councilforeconed.org/" target="_blank">www.CouncilForEconEd.org</a></div>
+        
+          
+        <div class="sponsor">
+          <span>Funding provided by</span>
+          <a href="https://www.wellsfargo.com/" target="_blank"><img src="./images/wellsfargo.png" alt="Wells Fargo - Personal &amp; Business Banking" /></a>
+        </div>
+        
+        <div class="share permanent">
+          <div class="wrap">
+           
+            <div class="addthis_toolbox addthis_default_style share-menu">
+              <label>Liked it? Share it via </label>
+              <a class="addthis_button_facebook"  addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+              <a class="addthis_button_twitter"   addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+              <a class="addthis_button_email"     addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+            </div>
+          </div>
+        </div>
+    </section>
+    </div>
+    
+    <div id="quotes" class="collapsed sticky-footer">
+      <div class="wrap">
+        <div class="share">
+          <div class="wrap">
+            <a href="" class="toggle-share"></a>
+            <div class="addthis_toolbox addthis_default_style share-menu">
+              <label>Share</label>
+              <a class="addthis_button_facebook"  addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+              <a class="addthis_button_twitter"   addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+              <a class="addthis_button_email"     addthis:title="The State of Financial Economic Education in the US" addthis:url="http://surveyofthestates.com"></a>
+            </div>
+          </div>
+        </div>
+        <div class="quotes-nav">
+          <a href="#previous-quote" class="arrow" id="previous-quote"><span class="fa fa-angle-left"></span></a>
+          <blockquote>
+          </blockquote>
+          <a href="#next-quote" class="arrow" id="next-quote"><span class="fa fa-angle-right"></span></a>
+        </div>
+
+      </div>
+    </div>
+    
+    <div id="map-footer" class="collapsed sticky-footer">
+      <div class="wrap">
+        
+      </div>
+
+    </div>
+    
+    
+    <div id="elements">
+      <h4>How can you help making a difference?</h4>
+      <div id="list-teachers" class="stat list">
+        <div id="teachers" class="character"><span></span></div>
+        <dl>
+          <dt>Teachers: Take Action!</dt>
+          <dd><a href="http://www.econedlink.org/" target="_blank">Access lesson plans, interactive tools, and other classroom resources</a></dd>
+
+          <dd><a href="http://www.councilforeconed.org/resources/local-affiliates/" target="_blank">Find resources and in-person professional development opportunities in your state</a></dd>
+
+          <dd><a href="http://www.genirevolution.org/" target="_blank">Use our free online game, Gen i Revolution, to engage your students in solving financial challenges</a></dd>
+
+          <dd><a href="http://www.councilforeconed.org/programs-2/national-economics-challenge/" target="_blank">Participate in the National Economics Challenge</a></dd>
+          
+          <dd><a href="http://www.councilforeconed.org/resources/online-assessment-center/" target="_blank">Assess your students&#8217; economic and financial literacy using CEE&#8217;s Online Assessment Center</a></dd>
+          <dd class="nobullet"><a href="#next-stat" class="next-stat">Next</a></dd>
+        </dl>
+      </div>
+      
+      <div id="list-students" class="stat list">
+        <div id="students" class="character"><span></span></div>
+        <dl>
+          
+          <dt>Parents &amp; Students: Take Action!</dt>
+          <dd><a href="http://www.genirevolution.org/" target="_blank">Help solve financial challenges through 16 missions in the free online game, Gen i Revolution</a></dd>
+
+          <dd><a href="http://www.councilforeconed.org/programs-2/national-economics-challenge/" target="_blank">Form a team at your school to participate in the National Economic Challenge </a></dd>
+          
+          <dd><a href="http://www.econedlink.org/" target="_blank">Encourage your classroom teachers to access lesson plans, interactive tools, and other classroom resources</a></dd>
+
+          <dd><a href="http://www.councilforeconed.org/policy-and-advocacy/toolkit/" target="_blank">Advocate for strong standards and course requirements in your district or state</a></dd>
+
+          <dd class="nobullet"><a href="#next-stat" class="next-stat">Next</a></dd>
+        </dl>
+      </div>
+      
+      <div id="list-policy-makers" class="stat list">
+        <div id="policy-makers" class="character"><span></span></div>
+        <dl>
+
+          <dt>Policy Makers: Take Action!</dt>
+          <dd><a href="http://www.councilforeconed.org/policy-and-advocacy/toolkit/" target="_blank">Get help from CEE via our advocacy toolkit</a></dd>
+
+          <dd><a href="http://www.councilforeconed.org/resources/type/standards/" target="_blank">Encourage your district or state to adopt comprehensive standards in economics and personal finance</a></dd>
+
+          <dd><a href="http://www.ccsso.org/Who_We_Are/Meet_the_Chiefs.html" target="_blank">Engage your Chief State School Officer by exposing the problem and the solution</a></dd>
+
+          <dd><a href="http://www.nasbe.org/contact-us/directory/connect-with-state-boards/" target="_blank">Connect with your state board of education officials</a></dd>
+
+          <dd><a href="http://www.councilforeconed.org/resources/local-affiliates/" target="_blank">Learn about programs in place in your state and find schools ready to implement a new program</a></dd>
+        
+          <dd class="nobullet"><a href="#next-stat" class="next-stat">Next</a></dd>
+        </dl>
+      </div>
+    </div>
+    
+    <div id="map-overlay">
+      <a class="close"><span class="fa fa-close"></span></a>
+      <div class="wrap">
+        
+        <h4 class="title"></div>
+        <ul id="statuses">
+          <li class="status" id="status-x">Personal Finance is not included in state standards</li>
+          <li class="status" id="status-0">No statewide standards</li>
+          <li class="status" id="status-1">Included in the K-12 standards</li>
+          <li class="status" id="status-2">Standards are implemented by districts</li>
+          <li class="status" id="status-3">High school course is required to be offered</li>
+          <li class="status" id="status-4">High school course is required to be taken</li>
+          <li class="status" id="status-5">
+            Standardized testing
+          </li>
+        </ul>
+        <a href="#" class="link" id="standards-link" target="_blank">Standards</a>
+        <a href="#" class="link" id="course-link" target="_blank">Course Requirements</a>
+        <a href="#" class="link" id="testing-link" target="_blank">Testing</a>
+       
+        <div class="message"></div>
+      </div>
+        
+    </div>
+    
+    <div id="templates">
+      <div class="donut">
+        <div class="amount">
+          <span>&nbsp;</span>
+        </div>
+        <label></label>
+      </div>
+    </div>
+    
+    <div id="awwwards" class="right black">
+      <a href="http://www.awwwards.com/web-design-awards/survey-of-the-states" target="_blank">best websites of the world</a>
+    </div>
+    
+  </body>
+  <script src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=nguma"></script>
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34909890-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  </script>
+</html>
