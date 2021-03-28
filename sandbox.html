@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<style>
+		* {
+			padding: 0;
+			margin : 0;
+			line-height : 0;
+		}
+		img, video {
+			width :12.5vw;
+			/*height : 12.5vh;*/
+			margin : 0;
+			padding : 0;
+			display: inline;
+
+		}
+		@media only screen and (max-width: 1400px) {
+		  img {
+		    	width : 20vw;
+		    }
+		}
+
+		@media only screen and (max-width: 700px) {
+		  img {
+		    	width : 25vw;
+		    }
+		}
+	</style>
+<body id="grid" >
+	<!-- <video autoplay muted loop><source src="013.mp4"></video> -->
+</body>
+<script>
+	const urlParams = new URLSearchParams(window.location.search);
+	var patternId = Number(urlParams.get('id')) || 0;
+	var max = 40
+	var i = 0;
+
+	var addGif = function() {
+
+		j = Math.ceil(Math.random() * 1)+ patternId //(j+1)%12;
+		let tile = document.createElement("img");
+		tile.setAttribute('src',('./assets/patterns/'+('000' + j).substr(-3)) + ".gif?"+i)
+		if (i>0) {document.getElementById("grid").appendChild(tile);}
+		
+		i += 1;
+
+		if(i> max) {return true;}
+		setTimeout(function() {
+			loop();
+		}, Math.random() * 1000)
+
+	}
+
+	var addVideo = function() {
+		j = Math.ceil(Math.random() * 1)+ patternId //(j+1)%12;
+		// let tile = document.createElement("video");
+		// tile.setAttribute('muted','');
+		
+		// tile.setAttribute('autoplay','')
+		// tile.setAttribute('loop','');
+		let tile = document.getElementsByTagName('video')[0].cloneNode()
+		
+		let source = document.createElement("source");
+		source.setAttribute('type',"video/mp4")
+		source.setAttribute('src',(('000' + j).substr(-3)) + ".mp4?"+i);
+		tile.appendChild(source);
+		tile.currentTime = Math.random(1000)
+		// if (i>0) {}
+		document.getElementById("grid").appendChild(tile);
+
+
+		i += 1;
+
+		if(i> max) {
+
+			document.querySelector('video').addEventListener('ended', function(e) {
+    e.target.currentTime = 0;
+    e.target.play();
+}, false);
+			return true;}
+		setTimeout(function() {
+			// document.getElementsByTagName('video')[i-1].play();
+			loop();
+		}, 100)		
+	}
+
+	let loop = addGif;
+	loop();
+	
+
+</script>
+</html>
