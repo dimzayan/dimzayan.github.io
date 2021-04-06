@@ -38,7 +38,7 @@
 
 	var addGif = function() {
 
-		j = Math.ceil(Math.random() * 1)+ patternId //(j+1)%12;
+		j = Math.ceil(Math.random() * 12)//+ patternId //(j+1)%12;
 		let tile = document.createElement("img");
 		tile.setAttribute('src',('./assets/patterns/'+('000' + j).substr(-3)) + ".gif?"+i)
 		if (i>0) {document.getElementById("grid").appendChild(tile);}
