@@ -88,6 +88,20 @@
 			padding: 6em;
 		}
 
+		section#splash {
+			position: fixed;
+			top : 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			z-index: 9999;
+			/*padding: 3em;*/
+    		backdrop-filter: blur(3px);
+    		/*display: none;*/
+    		mix-blend-mode: difference;
+
+		}
+
 	
 		@media (max-width: 767.98px) {
 			#selection .meta {
@@ -103,6 +117,10 @@
 			.photo-container {
 				height: auto;
 				max-height: auto;
+			}
+
+			#splash h1 {
+				font-size: 4.5em !important;
 			}
 
 		}
@@ -192,19 +210,7 @@
 			margin: 0 2rem;
 			font-weight: 800;
 		}
-		section#splash {
-			position: fixed;
-			top : 0;
-			left: 0;
-			width: 100vw;
-			height: 100vh;
-			z-index: 9999;
-			/*padding: 3em;*/
-    		backdrop-filter: blur(3px);
-    		display: none;
-    		mix-blend-mode: difference;
 
-		}
 
 
 
@@ -369,7 +375,7 @@
 
 		}
 
-		
+
 	</style>
 </head>
 <body id="sensational-geographic-series" >
@@ -707,7 +713,7 @@
 		displaySelectedItem(artworks[id]);
 	} else {
 
-		setState('splash', true);
+		// displaySection('#splash');
 	}
 
 	$('.hero').on('click', function(e) {
