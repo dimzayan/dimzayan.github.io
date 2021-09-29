@@ -66,6 +66,13 @@
 
 
 
+		.photo-container {
+			height: 100vh;
+			max-height: 100vh;
+			display: flex;
+			margin:0;
+		}
+
 		p#artwork-state {
 			margin: 1em 0 0 0;
 		}
@@ -85,12 +92,17 @@
 		@media (max-width: 767.98px) {
 			#selection .meta {
 				padding: 2em 4em;
-				margin: -10em 0 8em;
+				margin: -4em 0 8em;
 				background: #FFF;
 			}
 
 			#about .meta {
 				padding: 0 4em 4em 4em;
+			}
+
+			.photo-container {
+				height: auto;
+				max-height: auto;
 			}
 
 		}
@@ -165,7 +177,7 @@
 
 
 		.selected #paginator {
-			display: block;
+			display: flex;
 		}
 
 		.hero {
@@ -287,6 +299,10 @@
 			/*font-weight: 100;*/
 		}
 
+		#breadcrumbs {
+			margin-right : 6em;
+		}
+
 		#breadcrumbs a + a:before{
 			content: ".";
 			margin-right: 0.2rem;
@@ -343,7 +359,7 @@
 
 		#project-nav {
 			position: fixed;
-			right: 2em;
+			right: 0.5em;
 			top : 0;
 		}
 
@@ -362,7 +378,8 @@
 
 	<nav id="project-nav">
 		<a href="#about"  class="cta-about">About</a>
-		<a href="#explore" class="cta-explore">Explore</a>
+
+		<!-- <a href="#explore" class="cta-explore"><i class="far fa-times-circle"></i></a> -->
 	</nav>
 
 	<section id="splash">
@@ -385,7 +402,7 @@
 	<section id="selection">
 
 		<div class="row middle center-xs top-xs top-sm middle-lg middle-md" >
-			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" style="height: 100vh;max-height: 100vh;display: flex;margin:0">
+			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" class="photo-container">
 				<img id="selected-artwork-img"src="https://imgur.com/MbqEahY.jpeg" style="width:100%;max-width: 100%"/>
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-12">
@@ -414,7 +431,7 @@
 	<section id="about">
 
 		<div class="row middle center-xs top-xs top-sm middle-lg middle-md" >
-			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" style="height: 100vh;max-height: 100vh;display: flex;margin:0">
+			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" class="photo-container">
 				<img id="selected-artwork-img" src="https://imgur.com/YoP6z31.jpeg" style="width:100%;max-width: 100%"/>
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-12">
@@ -430,10 +447,10 @@
 	
 	</section>
 
-	<nav id="paginator">
-		
+	<nav id="paginator" >
 		<a href="#prev" class="prev"><</a>
 		<a href="#next" class="next">></a>
+		
 	</nav>
 
 </body>
