@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<title>Dimzayan - Dim Zayan</title>
+
+<meta name="robots" content="all">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Bitcoin Voicepaper – dimzayan">
+<meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
+<meta property="og:url" content="https://www.dimzayan.com/the-bitcoin-voicepaper/">
+<meta property="og:site_name" content="dimzayan">
+<meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@dimzayan">
+<meta name="twitter:label1" content="Est. reading time">
+<meta name="twitter:data1" content="2 minutes">
+
+<link rel="stylesheet" id="dimzayan-style-css" href="../index_files/style.css" media="all">
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+  integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+  crossorigin="anonymous"></script>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" />
+
+<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css" type="text/css" >
+
+
+	<style>
+		* {
+			padding: 0;
+			margin : 0;
+			
+		}
+
+		h1 {
+			line-height: 0em;
+		}
+
+		body {
+			touch-action: none;
+		}
+		img, video {
+			width :540px;
+			max-width: 90vw;
+			/*height : 12.5vh;*/
+			margin : 0;
+			padding : 0;
+			display: inline;
+
+		}
+		
+		.description {
+			text-align : center;
+		}
+
+
+
+		p#artwork-state {
+			margin: 1em 0 0 0;
+		}
+
+
+		#selection {
+			display : none;
+
+		}
+
+
+		#selection .meta {
+			padding: 6em;
+		}
+
+	
+		@media (max-width: 767.98px) {
+			#selection .meta {
+				padding: 2em 4em;
+				margin: -10em 0 8em;
+				background: #FFF;
+			}
+
+			#about .meta {
+				padding: 0 4em 4em 4em;
+			}
+
+		}
+
+		.selected #selection {
+			display : block;
+		}
+
+
+		.selected #collection {
+			display: none;
+		}
+
+		#collection {
+			overflow : scroll;
+		}
+
+		.collection-item {
+			cursor: pointer;
+		}
+
+		.collection-item:hover {
+			z-index : 999;
+
+		}
+
+		.collection-item-title {
+			display: none;
+		}
+
+		.collection-display-grid .collection-item {
+			padding: 0;	
+			overflow: hidden;
+			cursor: pointer;
+			position: relative;
+		}
+
+		.collection-item-image {
+			width: 100%;
+			line-height: 0;
+			max-width: none;
+		}
+
+		.collection-item-image + .collection-item-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 999;
+
+
+			transition: width .3s ease-in-out .1s, height .3s ease-in-out, top .3s ease-in-out, left .3s ease-in-out .1s
+
+		}
+
+
+		.collection-item-image img {
+			
+			width : 100%;
+			max-width: 100%;
+			line-height: 0;
+
+		}
+
+		.collection-item:hover .collection-item-image + .collection-item-image { 
+			width : 110%;
+			
+			left : -5%;
+			top : -5%;
+		 }
+
+
+
+
+		.selected #paginator {
+			display: block;
+		}
+
+		.hero {
+			max-width: 540px;
+		}
+
+		.hero .ctas {
+			margin: 2em 0 0 0;
+		}
+
+		.hero .ctas a {
+			margin: 0 2rem;
+			font-weight: 800;
+		}
+		section#splash {
+			position: fixed;
+			top : 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			z-index: 9999;
+			/*padding: 3em;*/
+    		backdrop-filter: blur(3px);
+    		display: none;
+    		mix-blend-mode: difference;
+
+		}
+
+
+
+		#splash h1 {
+			font-size:  7em;
+			font-weight: 160;
+			text-transform: uppercase;
+			letter-spacing: -11px;
+			color: honeydew; 
+			line-height : 0em;
+			animation: 1s logo 0.5s;
+			animation-timing-function: ease-in-out;
+			animation-fill-mode: forwards;
+			opacity : 0;
+
+		}
+
+		@keyframes logo {
+			from {
+				line-height: 0em;
+				opacity: 0;
+			}
+
+			to {
+				line-height: 0.94em;
+				opacity : 1;
+			}
+		}
+
+	
+		
+
+		.artwork-title {
+			text-transform: uppercase;
+		}
+
+		.artwork-date {
+			margin : 2em 0 0 0;
+		}
+
+		.artwork-medium {
+			max-width: 340px;
+			margin: auto;
+		}
+
+		.artwork-state {
+			margin : 2em 0;
+		}
+
+		.artwork-story {
+			margin : 2em;
+		}
+
+		.artwork-intro {
+			display : none;
+		}
+
+
+		#selection[data-state='SOLD'] .cta {
+			display: none;
+		}
+
+		#selection[data-state='SOLD'] .artwork-state {
+			color: red;
+		}
+
+		#selection[data-state='ABOUT'] .artwork-story, 
+		#selection[data-state='ABOUT'] .artwork-date,
+		#selection[data-state='ABOUT'] .artwork-medium,
+		#selection[data-state='ABOUT'] .artwork-state {
+			display: none;
+		}
+
+		#selection[data-state='ABOUT'] .artwork-intro {
+			display : block;
+		}
+
+		nav {
+			position: fixed;
+			z-index : 99999;
+			font-size: 1em;
+			padding: 2rem;
+		}
+
+		nav a {
+			font-weight: 200;
+			text-decoration: none;
+			display: inline-block;
+		}
+
+		nav a.active {
+			/*font-weight: 100;*/
+		}
+
+		#breadcrumbs a + a:before{
+			content: ".";
+			margin-right: 0.2rem;
+		}
+
+		/*#breadcrumbs a + a:before {
+			content: ">";
+		}*/
+
+
+				nav#paginator {
+			position: fixed;
+			bottom: 0;
+			left : 50%;
+			transform: translate(-50%);
+			top : auto;
+			display: none;
+			padding: 2rem;
+		}
+
+		#paginator a {
+			font-size : 2em;
+			line-height: 1em;
+			display: inline-block;
+			margin : 0 0.2em;
+
+			    font-size: 2em;
+    line-height: 1em;
+    display: inline-block;
+    margin: 0 0.2em;
+    background: #333;
+    border-radius: 1em;
+    width: 40px;
+    max-width: 80px;
+    padding: 0.3rem;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+		}
+
+		#paginator a:hover {
+			background: #890;
+		}
+
+		#paginator a:active {
+			background: #390;
+		}
+
+
+		#cta-home {
+			font-weight: 800;
+		}
+
+
+		#project-nav {
+			position: fixed;
+			right: 2em;
+			top : 0;
+		}
+
+		#about {
+			display: none;
+		}
+	</style>
+</head>
+<body id="sensational-geographic-series" >
+
+	<nav id="breadcrumbs">
+		<a href="../index.html" id="cta-home" class="cta-home">Dim</a>
+		<a href="#explore" class='cta-explore'>Sensational Geographic</a>
+
+	</nav>
+
+	<nav id="project-nav">
+		<a href="#about"  class="cta-about">About</a>
+		<a href="#explore" class="cta-explore">Explore</a>
+	</nav>
+
+	<section id="splash">
+		<div class="row center-xs middle-xs" style="height: 100vh">
+			<div class="hero col-lg-8">
+				<h1>SENSATIONAL GEOGRAPHIC</h1>
+				<h3>Bitcoin Art Series by Dim Zayan</h3>
+				<div class="ctas">
+					
+					<a href="#" class="cta-explore" >Explore</a>
+				</div>
+				
+			</div>
+	</section>
+	
+	<section id="collection">
+		<div class="row collection-display-grid" id="collection-grid"></div>
+	</section>
+
+	<section id="selection">
+
+		<div class="row middle center-xs top-xs top-sm middle-lg middle-md" >
+			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" style="height: 100vh;max-height: 100vh;display: flex;margin:0">
+				<img id="selected-artwork-img"src="https://imgur.com/MbqEahY.jpeg" style="width:100%;max-width: 100%"/>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-12">
+				<div class="box meta" >
+					<h2 class="artwork-title" id="selected-artwork-title"></h2>
+					<!-- <p class="artwork-author" id="selected-artwork-author">By Dim Zayan</p> -->
+
+					
+					<p class="artwork-date" id="selected-artwork-date">2021</p>
+					<p class="artwork-medium" id="selected-artwork-medium">Posca Pens on Vintage<br/>National Geographic Magazine</p>
+
+					<p id="selected-artwork-intro" class="artwork-intro"></p>
+					<p class="artwork-state" id="selected-artwork-state">ON AUCTION</p>
+					<a class="cta" href="#" id="selected-artwork-cta">Bid on Scarce.City</a>
+
+					<!-- <div class="artwork-story" id="selected-artwork-story">
+						The Antiquity Bull aka the ancient Bull is representing wisdom and knowledge of history. He knows his roots and the original embodiment of money as a means of exchange. He knows the value of his flesh.
+					</div> -->
+				</div>
+			</div>
+		</div>
+	
+	</section>
+
+
+	<section id="about">
+
+		<div class="row middle center-xs top-xs top-sm middle-lg middle-md" >
+			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" style="height: 100vh;max-height: 100vh;display: flex;margin:0">
+				<img id="selected-artwork-img" src="https://imgur.com/YoP6z31.jpeg" style="width:100%;max-width: 100%"/>
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-12">
+				<div class="box meta" >
+					<h2 class="artwork-title" id="selected-artwork-title">About Sensational Geographic</h2>
+
+					<div class="artwork-story" id="selected-artwork-story">
+						Each work is created over a page from  vintage National Geographic magazines from the 40s and 50s. I hijack forgotten stories of either ancient civilizations or post-war industrialization and repurpose them into our contemporary Bitcoin history by showcasing the spectrum of emotions and characters seen in the community, mostly depicted as bulls (as is the one you picked)
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	</section>
+
+	<nav id="paginator">
+		
+		<a href="#prev" class="prev"><</a>
+		<a href="#next" class="next">></a>
+	</nav>
+
+</body>
+
+<div id="templates">
+	<div class="collection-item col-sm-6 col-md-4 col-lg-3"  href="#" >
+		<div class="artwork-image collection-item-image"></div>
+		<div class="artwork-title collection-item-title"></div>
+	</div>
+</div>
+
+<script>
+	
+	var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+
+
+	const artworks = [
+	{
+		id: 0,
+		title: "Historic Bull",
+		img_url:"https://imgur.com/MbqEahY.jpeg",
+		state: "SOLD"
+	},
+	{
+		id: 1,
+		title: "Milu, Rebel Deer",
+		img_url:"https://i.imgur.com/BZQWfJl.jpeg",
+		state: "ON AUCTION",
+		cta: "Bid on Scarce.City"
+		
+	},
+	{
+		id: 2,
+		title: "The Worshipper",
+		img_url:"https://imgur.com/IsuIUDD.jpeg",
+		state: "ON AUCTION",
+		cta: "Bid on Scarce.City"
+
+	},
+	{
+		id: 3,
+		title: "The Celebration",
+		img_url:"https://imgur.com/nCTswkV.jpeg",
+		state: "NFS"
+
+	},
+	{
+		id: 4,
+		title: "21st Century Pleb",
+		img_url:"https://imgur.com/2kCQika.jpeg",
+		state: "ON AUCTION",
+		cta: "Bid on Scarce.City"
+	},
+	{
+		id: 5,
+		title: "The Bagholder",
+		img_url:"https://imgur.com/cDJ5aYh.jpeg",
+		description: "test",
+		state: "ON AUCTION",
+		cta: "Bid on Scarce.City"
+	},
+		{
+		id: 6,
+		title: "The Newbie",
+		img_url:"https://imgur.com/HGSFn3T.jpeg",
+		state: "ON AUCTION",
+		cta: "Bid on Scarce.City"
+
+	},
+	{
+		id: 7,
+		title: "Rabbit Hole Pleb #1",
+		img_url:"https://imgur.com/jW9WrWD.jpeg",
+		state: "ON AUCTION",
+		cta: "Bid on Scarce.City"		
+	},
+	{
+		id: 8,
+		title: "Rabbit Hole Pleb #2",
+		img_url:"https://imgur.com/MbQOWsr.jpeg",
+		description: "test",
+		state: "NOT FOR SALE"
+	},
+	{
+		id: 9,
+		title: "Rebel Rabbit",
+		img_url:"https://imgur.com/07wXSp4.jpeg",
+		description: "test",
+		state: "NOT FOR SALE"
+	},
+	{
+		id: 10,
+		title: "Infinity Bull",
+		img_url:"https://imgur.com/ENudgY6.jpeg",
+		description: "test",
+		state: "NOT FOR SALE"
+	}];
+
+
+
+	var getPrevId = function(artwork) {
+		let new_id = artwork.id-1;
+		return new_id < 0 ? artworks.length+new_id : new_id
+	};
+
+	var getNextId = function(artwork) {
+		let new_id = artwork.id+1;
+		return new_id % (artworks.length );
+	};
+
+	var setBreadcrumbs = function(artwork) {
+		// Set breadcrumbs
+
+		if($('#breadcrumbs a').length >2) {
+			$('#breadcrumbs a')[2].remove();
+		}
+
+		if(artwork !== undefined) {
+			let crumb = $('<a href="#" class="active">'+artwork.title+'</a>');
+			$('#breadcrumbs').append(crumb);
+		}
+		
+	};
+
+
+
+	var displaySection= function(section_id) {
+		
+		let selection = $(section_id);
+		$.each($('section'), function(i,section) {
+			if(selection !== $(section)) {$(section).hide();}
+			console.log('hiding '+$(section).attr('id'))
+		});
+
+		selection.show();
+
+		$('body').removeClass('selected');
+		setBreadcrumbs();
+	}
+
+	var displaySelectedItem = function(artwork) {
+
+		displaySection('#selection')
+		console.log('displaying '+artwork.title)
+		$('#selected-artwork-title').html(artwork.title);
+		$('#selected-artwork-medium').html(artwork.medium);
+		$('#selected-artwork-intro').html(artwork.intro);
+		$('#selected-artwork-story').html(artwork.story);
+		$('#selected-artwork-img').attr('src',artwork.img_url);
+
+		$('#selected-artwork-state').html(artwork.state);
+		$('#selected-artwork-cta').html(artwork.link);
+
+		
+		$('#selection').data('state',artwork.state);
+		$('#selection').attr('data-state',artwork.state);
+
+
+		// Handles click events
+	
+
+		$('a.prev').attr('href', '#page-'+artworks[getPrevId(artwork)].id);
+		$('a.prev').off('click').on('click', function(e){
+			displaySelectedItem(artworks[getPrevId(artwork)]);
+			e.preventDefault();
+		});
+
+		$('a.next').attr('href', '#page-'+artworks[getNextId(artwork)].id);
+		$('a.next').off('click').on('click', function(e){
+			displaySelectedItem(artworks[getNextId(artwork)]);
+			e.preventDefault();
+		});
+	
+		setBreadcrumbs(artwork);
+
+		$('body').addClass('selected')
+		$('body').scrollTo('#selection');
+
+
+
+
+	}
+
+
+
+
+	var generateCollection = function(x) {
+
+		$.each(artworks, function(i, artwork) {
+
+			if(x === i) {return }
+			artwork.id = i;
+			let artwork_dom_item = $('#templates .collection-item').clone();
+			let artwork_dom_item_image = artwork_dom_item.find('.artwork-image')
+			let img = new Image();
+			img.src = artwork.img_url;
+	
+			artwork_dom_item_image.html(img);
+			artwork_dom_item_image.clone().insertAfter(artwork_dom_item_image);
+			artwork_dom_item.find('.artwork-title').html(artwork.title);
+
+			artwork_dom_item.appendTo($('#collection-grid'));
+
+			artwork_dom_item.on('click', function(e) {
+				displaySelectedItem(artwork)
+			});
+		});
+	}
+
+	var states = {
+		splash : true
+	}
+	var setState = function(state, toggle) {
+		toggle = Boolean(toggle);
+		states[state] = toggle;
+		
+		$('body').attr('data-state', states.splash ? 'splash' : '');
+		return states;
+	}
+
+	generateCollection();
+	generateCollection(0);
+	generateCollection(0);
+	generateCollection(0);
+	generateCollection(0);
+
+	$('a.cta-explore').on('click', function(e) {
+		displaySection('#collection');
+		e.preventDefault();
+	});
+
+	var id = Number(getUrlParameter('artwork_id')) || null;
+
+	if(id !== null) {
+
+		displaySelectedItem(artworks[id]);
+	} else {
+
+		setState('splash', true);
+	}
+
+	$('.hero').on('click', function(e) {
+		setState('splash', false);
+	});
+
+	$(window).scroll(function(e) {
+		if(e.currentTarget.scrollY > 0) {
+			setState('splash', false);
+		}
+		
+	});
+
+	$('.cta-about').on('click', function(e) {
+		displaySection('#about');
+		e.preventDefault();
+	});
+
+
+	
+
+
+
+</script>
+</html>
