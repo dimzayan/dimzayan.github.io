@@ -7,9 +7,9 @@
 <meta name="robots" content="all">
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="The Sensational Geographic by Dim">
+<meta property="og:title" content="The Plebs Geographic by Dim">
 <meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
-<meta property="og:url" content="https://www.dimzayan.com/sensational-geographic/">
+<meta property="og:url" content="https://www.dimzayan.com/plebs/">
 <meta property="og:site_name" content="dimzayan">
 <meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
 <meta name="twitter:card" content="summary_large_image">
@@ -289,6 +289,14 @@
 			display : block;
 		}
 
+		#about-story {
+			padding: 4em;
+			line-height: 1.3em;
+		}
+
+		p + p {
+			margin : 1em 0 0 0;
+		}
 		nav {
 			position: fixed;
 			z-index : 99999;
@@ -383,7 +391,7 @@
 
 	<nav id="breadcrumbs">
 		<a href="../index.html" id="cta-home" class="cta-home">Dim</a>
-		<a href="#explore" class='cta-explore'>Sensational Geographic</a>
+		<a href="#explore" class='cta-explore'>Plebs</a>
 
 	</nav>
 
@@ -396,7 +404,7 @@
 	<section id="splash">
 		<div class="row center-xs middle-xs" style="height: 100vh">
 			<div class="hero col-lg-8">
-				<h1>SENSATIONAL GEOGRAPHIC</h1>
+				<h1>PLEBS GEOGRAPHIC</h1>
 				<h3>Bitcoin Art Series by Dim Zayan</h3>
 				<div class="ctas">
 					
@@ -424,13 +432,14 @@
 					
 					<p class="artwork-date" id="selected-artwork-date">2021</p>
 					<p class="artwork-medium" id="selected-artwork-medium">Posca Pens on Vintage<br/>National Geographic Magazine</p>
+					<p class="artwork-medium" id="selected-artwork-medium">~ 7" x 10"</p>
 
 					<p id="selected-artwork-intro" class="artwork-intro"></p>
 					<p class="artwork-state" id="selected-artwork-state">ON AUCTION</p>
 					<a class="cta" href="#" id="selected-artwork-cta">Bid on Scarce.City</a>
 
 					<!-- <div class="artwork-story" id="selected-artwork-story">
-						The Antiquity Bull aka the ancient Bull is representing wisdom and knowledge of history. He knows his roots and the original embodiment of money as a means of exchange. He knows the value of his flesh.
+					
 					</div> -->
 				</div>
 			</div>
@@ -447,10 +456,19 @@
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-12">
 				<div class="box meta" >
-					<h2 class="artwork-title" id="selected-artwork-title">About Sensational Geographic</h2>
+					<!-- <h2 class="artwork-title" id="selected-artwork-title">About Sensational Geographic</h2>
+ -->
+					<div class="artwork-story" id="about-story" style="text-align: left">
+						<p>The PLEB GEOGRAPHIC a.k.a PLEBS is a collection of personality types and an observation over the Bitcoin journey, how it changed us as human beings and what we felt along the way. </p>
 
-					<div class="artwork-story" id="selected-artwork-story">
-						Each work is created over a page from  vintage National Geographic magazines from the 40s and 50s. I hijack forgotten stories of either ancient civilizations or post-war industrialization and repurpose them into our contemporary Bitcoin history by showcasing the spectrum of emotions and characters seen in the community, mostly depicted as bulls (as is the one you picked)
+						<p>Through a series of portraits, the collection paints stories of joy, pain, endurance, passion, high hopes, successes and disappointment but first and foremost stories of freedom. I hope you'll see in those fun snippets a window to the heart and soul of the Bitcoin community. </p>
+
+						<p>Each portrait is painted over pages from vintage National Geographic magazines from the 40s and 50s. Forgotten stories of ancient civilizations and post-war industrialization are hijacked and repurposed to showcase our contemporary Bitcoin history.</p>
+						<p> — Dim</p>
+
+						<a class="cta-explore" href="#" style="display:block;margin: 2em 0 0 0">Explore</a>
+
+
 					</div>
 				</div>
 			</div>
@@ -495,84 +513,122 @@
 	const artworks = [
 	{
 		id: 0,
-		title: "Historic Bull",
+		title: "Antique Pleb",
 		img_url:"https://imgur.com/MbqEahY.jpeg",
 		state: "SOLD"
 	},
 	{
 		id: 1,
-		title: "Milu, Rebel Deer",
+		title: "Rebel Pleb",
 		img_url:"https://i.imgur.com/BZQWfJl.jpeg",
-		state: "ON AUCTION",
-		cta: "Bid on Scarce.City"
+		state: "AUCTIONED",
+		cta: "NOT FOR SALE"
 		
 	},
 	{
 		id: 2,
-		title: "The Worshipper",
+		title: "Worshipper Pleb",
 		img_url:"https://imgur.com/IsuIUDD.jpeg",
-		state: "ON AUCTION",
-		cta: "Bid on Scarce.City"
+		state: "NOT FOR SALE"
 
 	},
+
 	{
-		id: 3,
-		title: "The Celebration",
-		img_url:"https://imgur.com/nCTswkV.jpeg",
+		id: 4,
+		title: "Anon Pleb",
+		img_url:"https://imgur.com/2kCQika.jpeg",
+		state: "AUCTIONED",
+		cta: "Bid at Scarce.City",
+		link: "http://www.scarce.city"
+	},
+
+	{
+		id: 6,
+		title: "New Pleb",
+		img_url:"https://imgur.com/HGSFn3T.jpeg",
 		state: "NFS"
 
 	},
+
 	{
-		id: 4,
-		title: "21st Century Pleb",
-		img_url:"https://imgur.com/2kCQika.jpeg",
-		state: "ON AUCTION",
-		cta: "Bid on Scarce.City"
+		id: 11,
+		title: "Orange Pilled Pleb",
+		img_url:"https://imgur.com/Wrxzamk.jpeg",
+		description: "test",
+		state: "AUCTIONED",
+		cta: "Bid at Scarce.City",
+		link: "http://www.scarce.city"
+	},
+	
+
+	{
+		id: 7,
+		title: "Rabbit Hole Pleb",
+		img_url:"https://imgur.com/jW9WrWD.jpeg",
+		state: "NOT FOR SALE"		
 	},
 	{
 		id: 5,
-		title: "The Bagholder",
+		title: "Bagholding Pleb",
 		img_url:"https://imgur.com/cDJ5aYh.jpeg",
 		description: "test",
-		state: "ON AUCTION",
-		cta: "Bid on Scarce.City"
+		state: "NOT FOR SALE"
 	},
-		{
-		id: 6,
-		title: "The Newbie",
-		img_url:"https://imgur.com/HGSFn3T.jpeg",
-		state: "ON AUCTION",
-		cta: "Bid on Scarce.City"
+		
 
-	},
-	{
-		id: 7,
-		title: "Rabbit Hole Pleb #1",
-		img_url:"https://imgur.com/jW9WrWD.jpeg",
-		state: "ON AUCTION",
-		cta: "Bid on Scarce.City"		
+		{
+		id: 3,
+		title: "Party Pleb",
+		img_url:"https://imgur.com/nCTswkV.jpeg",
+		state: "SOLD"
+
 	},
 	{
 		id: 8,
 		title: "Rabbit Hole Pleb #2",
-		img_url:"https://imgur.com/MbQOWsr.jpeg",
+		img_url:"https://imgur.com/6JL3rGi.jpeg",
+		state: "SOLD"
+	},
+
+	{
+		id: 10,
+		title: "Infinite Pleb",
+		img_url:"https://imgur.com/rY1tkNP.jpeg",
 		description: "test",
 		state: "NOT FOR SALE"
 	},
-	{
+
+		{
 		id: 9,
-		title: "Rebel Rabbit",
+		title: "Argument Pleb",
 		img_url:"https://imgur.com/07wXSp4.jpeg",
 		description: "test",
 		state: "NOT FOR SALE"
 	},
 	{
-		id: 10,
-		title: "Infinity Bull",
-		img_url:"https://imgur.com/ENudgY6.jpeg",
+		id: 12,
+		title: "Evangelist Pleb",
+		img_url:"https://imgur.com/o94MsQp.jpeg",
 		description: "test",
-		state: "NOT FOR SALE"
-	}];
+		state: "AUCTIONED",
+		cta: "Bid at Scarce.City",
+		link: "http://www.scarce.city"
+	},
+		{
+		id: 13,
+		title: "Believer Pleb",
+		img_url:"https://imgur.com/xPU1lKS.jpeg",
+		state: "SOLD"
+	},
+		{
+		id: 13,
+		title: "Big Pleb",
+		img_url:"https://imgur.com/h8P0nuf.jpeg",
+		state: "AUCTIONED",
+		cta: "Bid at Scarce.City",
+		link: "http://www.scarce.city"
+	}
+	];
 
 
 
@@ -627,7 +683,15 @@
 		$('#selected-artwork-img').attr('src',artwork.img_url);
 
 		$('#selected-artwork-state').html(artwork.state);
-		$('#selected-artwork-cta').html(artwork.link);
+
+		if(artwork.cta !== undefined) {
+			$('#selected-artwork-cta').html(artwork.cta);
+			$('#selected-artwork-cta').attr('href',artwork.link);
+			$('#selected-artwork-cta').show();
+		} else {
+			$('#selected-artwork-cta').hide();
+		}
+		
 
 		
 		$('#selection').data('state',artwork.state);
