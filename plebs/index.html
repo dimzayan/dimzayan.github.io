@@ -27,9 +27,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
 
 <script
-  src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
-  integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
-  crossorigin="anonymous"></script>
+  src="../jquery.3.6.0.prod.js"
+  ></script>
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" />
 
@@ -59,6 +58,15 @@
 			padding : 0;
 			display: inline;
 
+		}
+
+		input {
+			padding : 0.5em;
+			width : 250px;
+		}
+
+		input[type="submit"] {
+			width: 150px;
 		}
 		
 		.description {
@@ -153,6 +161,16 @@
 			display: none;
 		}
 
+		.collection-item-quantity {
+			display: none;
+			font-size: 2em;
+			font-weight: 800;
+			position: absolute;
+			top : 0.25em;
+			right : 0.5em;
+			z-index: 99999
+		}
+
 		.collection-display-grid .collection-item {
 			padding: 0;	
 			overflow: hidden;
@@ -229,6 +247,7 @@
 			opacity : 0;
 
 		}
+
 
 		@keyframes logo {
 			from {
@@ -386,6 +405,35 @@
 		}
 
 
+		#wallet {
+			margin : 5em;
+			display: none;
+		}
+
+		#wallet .collection-item {
+			padding : 1em;
+		}
+
+		#wallet .collection-item-container {
+			position : relative;
+		}
+
+		#wallet .collection-item-quantity { 
+			display: block;
+		}
+
+		#wallet .collection-item-container {
+			border : solid 0.75em #333;
+			border-radius : 0.75em;
+			overflow: hidden;
+		}
+
+		#other-grid .collection-item-container {
+			border:none;
+		}
+
+
+
 	</style>
 </head>
 <body id="sensational-geographic-series" >
@@ -397,7 +445,9 @@
 	</nav>
 
 	<nav id="project-nav">
+		<a href="#wallet"  class="cta-wallet">Wallet</a>
 		<a href="#about"  class="cta-about">About</a>
+
 
 		<!-- <a href="#explore" class="cta-explore"><i class="far fa-times-circle"></i></a> -->
 	</nav>
@@ -432,12 +482,12 @@
 
 					
 					<p class="artwork-date" id="selected-artwork-date">2021</p>
-					<p class="artwork-medium" id="selected-artwork-medium">Posca Pens on Vintage<br/>National Geographic Magazine</p>
+					<p class="artwork-medium" id="selected-artwork-medium">Acrylic on Vintage<br/>National Geographic Magazine</p>
 					<p class="artwork-medium" id="selected-artwork-medium">~ 7" x 10"</p>
 
 					<p id="selected-artwork-intro" class="artwork-intro"></p>
-					<p class="artwork-state" id="selected-artwork-state">ON AUCTION</p>
-					<a class="cta" href="#" id="selected-artwork-cta">Bid on Scarce.City</a>
+					<p class="artwork-state" id="selected-artwork-state">SOLD</p>
+					<a class="cta" href="#" id="selected-artwork-cta">Explore Asset on Xchain.io</a>
 
 					<!-- <div class="artwork-story" id="selected-artwork-story">
 					
@@ -478,6 +528,21 @@
 	
 	</section>
 
+	<section id="wallet">
+		<h2>MUH PLEBS</h2>
+		<form id="wallet-address-form">
+			<input type="text" placeholder="Enter Your Wallet Address" id="address-input"/>
+			<input type="submit" />
+		</form>
+		<div class="row collection-display-grid" id="wallet-grid">
+
+		</div>
+		<!-- <h2>MUH PEPES</h2>
+		<div class="row collection-display-grid" id="other-grid">
+
+		</div> -->
+	</section>
+
 	<nav id="paginator" >
 		<a href="#prev" class="prev"><</a>
 		<a href="#next" class="next">></a>
@@ -488,8 +553,11 @@
 
 <div id="templates">
 	<div class="collection-item col-sm-6 col-md-4 col-lg-3"  href="#" >
-		<div class="artwork-image collection-item-image"></div>
-		<div class="artwork-title collection-item-title"></div>
+		<div class="collection-item-container">
+			<div class="artwork-image collection-item-image"></div>
+			<div class="artwork-title collection-item-title"></div>
+			<div class="artwork-quantity collection-item-quantity"></div>
+		</div>
 	</div>
 </div>
 
@@ -512,25 +580,31 @@
 };
 
 
+	var hash = window.location.hash.substr(1);
+
+
 	const artworks = [
 	{
 		id: 0,
-		title: "Antique Pleb",
+		title: "Historic Pleb",
 		img_url:"https://imgur.com/MbqEahY.jpeg",
-		state: "SOLD"
+		state: "SOLD",
+		asset:"PLEBZ.HISTORIC"
 	},
 	{
 		id: 1,
 		title: "Rebel Pleb",
 		img_url:"https://i.imgur.com/BZQWfJl.jpeg",
-		state: "NOT FOR SALE YET"
+		state: "NOT FOR SALE YET",
+		asset:"PLEBZ.REBEL"
 		
 	},
 	{
 		id: 2,
 		title: "Worshipping Pleb",
 		img_url:"https://imgur.com/IsuIUDD.jpeg",
-		state: "NOT FOR SALE YET"
+		state: "SOLD",
+		asset:"PLEBZ.WORSHIPPER"
 
 	},
 
@@ -538,16 +612,16 @@
 		id: 4,
 		title: "Anon Pleb",
 		img_url:"https://imgur.com/2kCQika.jpeg",
-		state: "UP AT AUCTION",
-		cta: "Bid at Scarce.City",
-		link: "https://scarce.city/auctions/plebs-geographic"
+		state: "SOLD",
+		asset:"PLEBZ.ANON"
 	},
 
 	{
 		id: 6,
-		title: "New Pleb",
+		title: "Newbie Pleb",
 		img_url:"https://imgur.com/HGSFn3T.jpeg",
-		state: "Not for sale yet"
+		state: "Not for sale yet",
+		asset:"PLEBZ.NEWBIE"
 
 	},
 
@@ -556,9 +630,8 @@
 		title: "Orange Pilled Pleb",
 		img_url:"https://imgur.com/Wrxzamk.jpeg",
 		description: "test",
-		state: "UP AT AUCTION",
-		cta: "Bid at Scarce.City",
-		link: "https://scarce.city/auctions/plebs-geographic"
+		state: "SOLD",
+		asset: "PLEBZ.ORANGEPILLED"
 	},
 	
 
@@ -566,14 +639,17 @@
 		id: 7,
 		title: "Rabbit Hole Pleb",
 		img_url:"https://imgur.com/jW9WrWD.jpeg",
-		state: "NOT FOR SALE YET"		
+		state: "NOT FOR SALE",
+		asset: "PLEBZ.RABBITHOLE"
+
 	},
 	{
 		id: 5,
 		title: "Bagholding Pleb",
 		img_url:"https://imgur.com/cDJ5aYh.jpeg",
 		description: "test",
-		state: "NOT FOR SALE YET"
+		state: "NOT FOR SALE YET",
+		asset: "PLEBZ.BAGHOLDER"
 	},
 		
 
@@ -581,14 +657,16 @@
 		id: 3,
 		title: "Party Pleb",
 		img_url:"https://imgur.com/nCTswkV.jpeg",
-		state: "SOLD"
+		state: "SOLD",
+		asset: "PLEBZ.PARTY"
 
 	},
 	{
 		id: 8,
 		title: "Rabbit Hole Pleb #2",
 		img_url:"https://imgur.com/6JL3rGi.jpeg",
-		state: "SOLD"
+		state: "SOLD",
+		asset: "PLEBZ.RABBITHOLE2"
 	},
 
 	{
@@ -596,7 +674,8 @@
 		title: "Infinite Pleb",
 		img_url:"https://imgur.com/rY1tkNP.jpeg",
 		description: "test",
-		state: "NOT FOR SALE YET"
+		state: "NOT FOR SALE YET",
+		asset: "PLEBZ.INFINITE"
 	},
 
 		{
@@ -604,30 +683,30 @@
 		title: "Argument Pleb",
 		img_url:"https://imgur.com/07wXSp4.jpeg",
 		description: "test",
-		state: "NOT FOR SALE YET"
+		state: "NOT FOR SALE YET",
+		asset: "PLEBZ.ARGUMENT"
 	},
 	{
 		id: 12,
 		title: "Evangelist Pleb",
 		img_url:"https://imgur.com/o94MsQp.jpeg",
 		description: "test",
-		state: "UP AT AUCTION",
-		cta: "Bid at Scarce.City",
-		link: "https://scarce.city/auctions/plebs-geographic"
+		state: "SOLD",
+		asset: "PLEBZ.EVANGELIST"
 	},
 		{
 		id: 13,
 		title: "Eager Pleb",
 		img_url:"https://imgur.com/xPU1lKS.jpeg",
-		state: "NOT FOR SALE YET"
+		state: "NOT FOR SALE YET",
+		asset: "PLEBZ.EAGER"
 	},
 		{
 		id: 13,
 		title: "Big Pleb",
 		img_url:"https://imgur.com/h8P0nuf.jpeg",
-		state: "UP AT AUCTION",
-		cta: "Bid at Scarce.City",
-		link: "https://scarce.city/auctions/plebs-geographic"
+		state: "SOLD",
+		asset: "PLEBZ.BIG"
 	}
 	];
 
@@ -676,12 +755,14 @@
 	var displaySelectedItem = function(artwork) {
 
 		displaySection('#selection')
-		console.log('displaying '+artwork.title)
+		// console.log('displaying '+artwork.title)
 		$('#selected-artwork-title').html(artwork.title);
 		$('#selected-artwork-medium').html(artwork.medium);
 		$('#selected-artwork-intro').html(artwork.intro);
 		$('#selected-artwork-story').html(artwork.story);
 		$('#selected-artwork-img').attr('src',artwork.img_url);
+
+
 
 		$('#selected-artwork-state').html(artwork.state);
 
@@ -717,32 +798,81 @@
 		setBreadcrumbs(artwork);
 
 		$('body').addClass('selected')
+		
+
+
+		getDispensers(artwork.asset);
+
+
 		$('body').scrollTo('#selection');
 
+	}
+
+	var displayWallet = function(obj) {
+
+		let pleb_collection = [];
+		let other_collection = [];
+		let assets = obj.data;
+		for(var i=0;i<assets.length;i++) {
+			let asset = assets[i];
+			let pleb = artworks.find(x => x.asset === asset.asset_longname );
+			
+			
+			if(pleb === undefined || asset.quantity === 0) {  
+			
+				other_collection.push({
+					
+					title: asset.asset,
+					img_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
+					alt_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.gif',
+					quantity: asset.quantity
+
+				});
+			} else {
+
+				
+			pleb.quantity = asset.quantity;
+			pleb.img_url = 'https://i.imgur.com/'+asset.description.split(';')[0].split('/')[1]+'.gif'
+			pleb_collection.push(pleb)
+
+			}
+		}
 
 
+		
 
+		$('#wallet-grid').empty();
+		generateCollection(pleb_collection,$('#wallet-grid'));
+		// generateCollection(other_collection,$('#other-grid'), )
+		
 	}
 
 
 
+	var generateCollection = function(items, dom_el) {
 
-	var generateCollection = function(x) {
+		$.each(items, function(i, artwork) {
 
-		$.each(artworks, function(i, artwork) {
-
-			if(x === i) {return }
+			
 			artwork.id = i;
 			let artwork_dom_item = $('#templates .collection-item').clone();
 			let artwork_dom_item_image = artwork_dom_item.find('.artwork-image')
 			let img = new Image();
 			img.src = artwork.img_url;
+			img.onerror = function() {
+				if(artwork.alt_url !== this.src) {
+					this.src = artwork.alt_url;
+				}
+				
+			}
 	
 			artwork_dom_item_image.html(img);
+
 			artwork_dom_item_image.clone().insertAfter(artwork_dom_item_image);
 			artwork_dom_item.find('.artwork-title').html(artwork.title);
+			artwork_dom_item.find('.artwork-quantity').html('x'+artwork.quantity);
 
-			artwork_dom_item.appendTo($('#collection-grid'));
+			artwork_dom_item.appendTo(dom_el);
 
 			artwork_dom_item.on('click', function(e) {
 				displaySelectedItem(artwork)
@@ -761,11 +891,11 @@
 		return states;
 	}
 
-	generateCollection();
-	generateCollection(0);
-	generateCollection(0);
-	generateCollection(0);
-	generateCollection(0);
+	generateCollection(artworks, $('#collection-grid'));
+	generateCollection(artworks, $('#collection-grid'));
+	generateCollection(artworks, $('#collection-grid'));
+	generateCollection(artworks, $('#collection-grid'));
+	generateCollection(artworks, $('#collection-grid'));
 
 	$('a.cta-explore').on('click', function(e) {
 		displaySection('#collection');
@@ -794,14 +924,79 @@
 	});
 
 	$('.cta-about').on('click', function(e) {
-		displaySection('#about');
+		access('about');
 		e.preventDefault();
 	});
 
+	$('.cta-wallet').on('click', function(e) {
+		access('wallet');
+		
+	});
+
+	var getXchainData = function(asset, dom_cta) {
+		$.ajax({
+			url: "https://xchain.io/api/asset/"+asset,
+			method: "GET"
+		}).done(function(data){
+			console.log(data)
+
+		})
+	}
 
 	
+	var user = {}
+	user.address = localStorage.getItem('pleb_addresss');
+
+	var generateWallet = function(address) {
+		$.ajax({
+			url: "https://xchain.io/api/balances/"+address,
+			method: "GET"
+		}).done(displayWallet)
+	}
+
+	var getDispensers = function(asset) {
+		$.ajax({
+			url: "https://xchain.io/api/dispensers/"+asset,
+			method: "GET"
+		}).done(function(obj){
+			console.log(obj);
+			let available_dispensers = [];
+			for(var i=0;i<obj.length;i++) {
+				if(obj.give.remaining > 0) {
+					available_dispensers.push(obj);
+				}
+				
+			}
+			console.log(available_dispensers)
+		})
+	}
 
 
+	var access = function(section) {
+		switch(section) {
+			case 'wallet':
+				if(user.address != undefined) {
+					generateWallet(user.address);
+				} 
+				displaySection('#wallet');
+				return;
+			case 'about':
+				displaySection('#about');
+				return;
+			default:
+				return;
+		} 
+	}
+
+	access(hash);
+
+	$('#wallet-address-form').submit(function(e) {
+		var data = $("#address-input").val();
+		user.address = data;
+		localStorage.setItem('pleb_addresss', user.address);
+		generateWallet(user.address);
+		e.preventDefault();
+	});
 
 </script>
 </html>
