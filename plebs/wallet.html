@@ -49,6 +49,7 @@
 
 		body {
 			touch-action: none;
+			overflow: auto;
 		}
 		img, video {
 			width :540px;
@@ -68,6 +69,7 @@
 		input[type="submit"] {
 			width: 150px;
 		}
+
 		
 		.description {
 			text-align : center;
@@ -368,8 +370,13 @@
 
 
 		@media (max-width: 767.98px) {
+
+			body {
+				touch-action: auto;
+			}
 			#wallet {
 				margin : 5em 1em 5em 1em;
+				overflow: scroll;
 			}
 
 		}
