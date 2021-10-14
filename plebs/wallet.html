@@ -1,0 +1,2866 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<title>Dimzayan - Wallet</title>
+
+<meta name="robots" content="all">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Plebs Geographic by Dim">
+<meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
+<meta property="og:url" content="https://www.dimzayan.com/plebs/">
+<meta property="og:site_name" content="dimzayan">
+<meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@dimzayan">
+<meta name="twitter:label1" content="Est. reading time">
+<meta name="twitter:data1" content="2 minutes">
+<meta name="twitter:image" content="https://imgur.com/pNzdeD6.jpeg?12344">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel=icon href=../favicon.png>
+<link rel="stylesheet" id="dimzayan-style-css" href="../index_files/style.css" media="all">
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
+
+<script
+  src="../jquery.3.6.0.prod.js"
+  ></script>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" />
+
+<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css" type="text/css" >
+
+
+	<style>
+		* {
+			padding: 0;
+			margin : 0;
+			
+		}
+
+		h1 {
+			line-height: 0em;
+		}
+
+		body {
+			touch-action: none;
+		}
+		img, video {
+			width :540px;
+			max-width: 90vw;
+			/*height : 12.5vh;*/
+			margin : 0;
+			padding : 0;
+			display: inline;
+
+		}
+
+		input {
+			padding : 0.5em;
+			width : 250px;
+		}
+
+		input[type="submit"] {
+			width: 150px;
+		}
+		
+		.description {
+			text-align : center;
+		}
+
+
+
+		.photo-container {
+			height: 100vh;
+			max-height: 100vh;
+			display: flex;
+			margin:0;
+		}
+
+		p#artwork-state {
+			margin: 1em 0 0 0;
+		}
+
+
+		#selection {
+			display : none;
+			overflow: scroll;
+		}
+
+
+		#selection .meta {
+			padding: 6em;
+		}
+
+		section#splash {
+			position: fixed;
+			top : 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			z-index: 9999;
+			/*padding: 3em;*/
+    		backdrop-filter: blur(3px);
+    		-webkit-backdrop-filter: blur(3px);
+    		/*display: none;*/
+    		mix-blend-mode: difference;
+
+		}
+
+	
+		@media (max-width: 767.98px) {
+			#selection .meta {
+				padding: 2em 4em;
+				margin: -4em 0 8em;
+				background: #FFF;
+			}
+
+			#about .meta {
+				padding: 0 4em 4em 4em;
+			}
+
+			.photo-container {
+				height: auto;
+				max-height: auto;
+			}
+
+			#splash h1 {
+				font-size: 4.5em !important;
+			}
+
+		}
+
+		.selected #selection {
+			display : block;
+		}
+
+
+		.selected #collection {
+			display: none;
+		}
+
+		#collection {
+			overflow : scroll;
+		}
+
+		.collection-item {
+			cursor: pointer;
+		}
+
+		.collection-item:hover {
+			z-index : 999;
+
+		}
+
+		.collection-item-title {
+			display: none;
+		}
+
+		.collection-item-quantity {
+			display: none;
+			font-size: 2em;
+			font-weight: 800;
+			position: absolute;
+			top : 0.25em;
+			right : 0.5em;
+			z-index: 99999
+		}
+
+		.collection-display-grid .collection-item {
+			padding: 0;	
+			overflow: hidden;
+			cursor: pointer;
+			position: relative;
+		}
+
+		.collection-item-image {
+			width: 100%;
+			line-height: 0;
+			max-width: none;
+		}
+
+		.collection-item-image + .collection-item-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 999;
+
+
+			transition: width .3s ease-in-out .1s, height .3s ease-in-out, top .3s ease-in-out, left .3s ease-in-out .1s
+
+		}
+
+
+		.collection-item-image img {
+			
+			width : 100%;
+			max-width: 100%;
+			line-height: 0;
+
+		}
+
+		.collection-item:hover .collection-item-image + .collection-item-image { 
+			width : 110%;
+			
+			left : -5%;
+			top : -5%;
+		 }
+
+
+
+
+
+
+
+		#selection[data-state='SOLD'] .cta {
+			display: none;
+		}
+
+		#selection[data-state='SOLD'] .artwork-state {
+			color: red;
+		}
+
+		#selection[data-state='ABOUT'] .artwork-story, 
+		#selection[data-state='ABOUT'] .artwork-date,
+		#selection[data-state='ABOUT'] .artwork-medium,
+		#selection[data-state='ABOUT'] .artwork-state {
+			display: none;
+		}
+
+		#selection[data-state='ABOUT'] .artwork-intro {
+			display : block;
+		}
+
+
+		p + p {
+			margin : 1em 0 0 0;
+		}
+		nav {
+			position: fixed;
+			z-index : 99999;
+			font-size: 1em;
+			padding: 2rem;
+		}
+
+		nav a {
+			font-weight: 200;
+			text-decoration: none;
+			display: inline-block;
+		}
+
+		nav a.active {
+			/*font-weight: 100;*/
+		}
+
+		#breadcrumbs {
+			margin-right : 6em;
+		}
+
+		#breadcrumbs a + a:before{
+			content: ".";
+			margin-right: 0.2rem;
+		}
+
+		/*#breadcrumbs a + a:before {
+			content: ">";
+		}*/
+
+
+				nav#paginator {
+			position: fixed;
+			bottom: 0;
+			left : 50%;
+			transform: translate(-50%);
+			top : auto;
+			display: none;
+			padding: 2rem;
+		}
+
+		#paginator a {
+			font-size : 2em;
+			line-height: 1em;
+			display: inline-block;
+			margin : 0 0.2em;
+
+			    font-size: 2em;
+    line-height: 1em;
+    display: inline-block;
+    margin: 0 0.2em;
+    background: #333;
+    border-radius: 1em;
+    width: 40px;
+    max-width: 80px;
+    padding: 0.3rem;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+		}
+
+		#paginator a:hover {
+			background: #890;
+		}
+
+		#paginator a:active {
+			background: #390;
+		}
+
+
+		#cta-home {
+			font-weight: 800;
+		}
+
+
+		#project-nav {
+			position: fixed;
+			right: 0.5em;
+			top : 0;
+		}
+
+		#about {
+			display: none;
+			overflow: scroll;
+
+		}
+
+
+		#wallet {
+			margin : 5em;
+		
+		}
+
+		#wallet .collection-item {
+			padding : 1em;
+		}
+
+		#wallet .collection-item-container {
+			position : relative;
+		}
+
+		#wallet .collection-item-quantity { 
+			display: block;
+		}
+
+		.collection-item-container {
+			
+			border-radius : 0.75em;
+			overflow: hidden;
+		}
+
+
+
+		#other-grid .collection-item-container {
+			border:none;
+		}
+
+
+		.PEPE .collection-item-container  {
+			border: none;
+		}
+
+		.PLEB .collection-item-container, .PLEB .collection-item-container > *, .PLEB .collection-item-container img {
+			height : 100%;
+		}
+		
+
+	</style>
+</head>
+<body id="sensational-geographic-series" >
+
+	<nav id="breadcrumbs">
+		<a href="../index.html" id="cta-home" class="cta-home">Dim</a>
+		<a href="index.html" class='cta-explore'>Plebs</a>
+
+	</nav>
+
+	<nav id="project-nav">
+		
+		<a href="index.html#about"  class="cta-about">About</a>
+
+
+		<!-- <a href="#explore" class="cta-explore"><i class="far fa-times-circle"></i></a> -->
+	</nav>
+
+	<section id="collection">
+		<div class="row collection-display-grid" id="collection-grid"></div>
+	</section>
+
+
+
+	
+
+	<section id="wallet" style="text-align: center">
+		
+		<form id="wallet-address-form">
+			<input type="text" placeholder="Enter Your Wallet Address" id="address-input"/>
+			<input type="submit" />
+		</form>
+		<div id="plebs-collection">
+			
+			<div class="row collection-display-grid" id="wallet-grid">
+
+			</div>
+		</div>
+
+
+	</section>
+
+	<nav id="paginator" >
+		<a href="#prev" class="prev"><</a>
+		<a href="#next" class="next">></a>
+		
+	</nav>
+
+</body>
+
+<div id="templates">
+	<div class="collection-item col-sm-6 col-md-4 col-lg-3"  href="#" >
+		<div class="collection-item-container">
+			<div class="artwork-image collection-item-image"></div>
+			<div class="artwork-title collection-item-title"></div>
+			<div class="artwork-quantity collection-item-quantity"></div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+		const RAREPEPES = [
+    "BACHELORPEPE",
+    "BACKPAGEPEPE",
+    "BACKTOPEPE",
+    "BADASSPEPE",
+    "BADHAIRDAY",
+    "BADLTPEPE",
+    "BAGHOLDRPEPE",
+    "BANANAPEPE",
+    "BANDAGEDPEPE",
+    "BANEPEPE",
+    "BANKRUPTPEPE",
+    "BAPEPE",
+    "BARBARICPEPE",
+    "BARRYPEPE",
+    "BATBUTBOO",
+    "BATMANPEPE",
+    "BATTLEPEPE",
+    "BAYLOP",
+    "BBAEPEPE",
+    "BBOYPEPE",
+    "BEACHPEPE",
+    "BEATLESPEPE",
+    "BEATPEPE",
+    "BEETLEPEPE",
+    "BEHAPPYPEPE",
+    "BENDERPEPE",
+    "BERLINPEPE",
+    "BERNIEPEPE",
+    "BETTYPEPE",
+    "BEWPEPE",
+    "BIGGIEPEPE",
+    "BIGVERNPEPE",
+    "BILLNTEDPEPE",
+    "BINARYPEPE",
+    "BITCOINPEPE",
+    "BITGIRLPEPE",
+    "BLAINEPEPE",
+    "BLINGBLING",
+    "BLKCHNJESUS",
+    "BLKSWANPEPE",
+    "BLOCKPEPE",
+    "BLOWPEPE",
+    "BOBDOBBS",
+    "BOFPEPE",
+    "BOGDAPEPE",
+    "BOMINABLPEPE",
+    "BONDPEPE",
+    "BOSSHOGPEPE",
+    "BOWIEPEP",
+    "BOWLPEPE",
+    "BOYSCLUBPEPE",
+    "BOYZIIPEPE",
+    "BREATHEDPEPE",
+    "BRIGHTONPEPE",
+    "BTCPEPE",
+    "BTFDPEPE",
+    "BTTLFTHESUBS",
+    "BUBREAKUP",
+    "BUDDHAPEPES",
+    "BUGSPEPE",
+    "BULBAPEPECRD",
+    "BULLYPEPE",
+    "BUPEPE",
+    "BURNINGPEPE",
+    "BURNPEPE",
+    "CALLHOTPEPE",
+    "CANNEDPEPE",
+    "CANNONPEPE",
+    "CANTDRAWPEPE",
+    "CARCRASHPEPE",
+    "CARTOONPEPE",
+    "CEETHREEPEPE",
+    "CHAMPAGNETNT",
+    "CHEECHPEPE",
+    "CHERPEPEFOIL",
+    "CHIKUNPEPE",
+    "CHINAPEPE",
+    "CHOCOPEPE",
+    "CHONGPEPE",
+    "CHUNRIPEPE",
+    "CHYNAPEPE",
+    "CICACOINPEPE",
+    "CINDERPEPE",
+    "CINEKEK",
+    "CIRCLEOFPEPE",
+    "CLASSICPEPE",
+    "CLAYPEPE",
+    "CLCKWRKGREEN",
+    "CLIFFORDPEPE",
+    "CLOWNPEPE",
+    "CLUBPEPE",
+    "CMNWRKRPEPE",
+    "CNPEPE",
+    "CNTRFLDPEPE",
+    "COLDPEPE",
+    "COLORPEPE",
+    "COMEDYPEPE",
+    "CONFUSEDPEPE",
+    "COVPEPERARE",
+    "CPTMRICAPEPE",
+    "CREMAPEPE",
+    "CREWLOVEPEPE",
+    "CROPPEPE",
+    "CRUSADERPEPE",
+    "CRYPTOPEPE",
+    "CRYSTALPEPE",
+    "CSAT",
+    "CUBANPEPE",
+    "CUBEPEPE",
+    "CUBISTPEPE",
+    "CULTOFKEK",
+    "CULTOFPEPE",
+    "CUPIDPEPE",
+    "CYBERPEPE",
+    "DABPEPE",
+    "DALIPEPE",
+    "DANKPEPE",
+    "DANKVADER",
+    "DANNIBOIPEPE",
+    "DANPEPERIAN",
+    "DAOPEPEHACK",
+    "DAPHNIAPEPE",
+    "DAPPERPEPE",
+    "DARKPILLPEPE",
+    "DARKSIDEPEPE",
+    "DASHPEPE",
+    "DATPEPE",
+    "DDDPEPE",
+    "DEBATEPEPE",
+    "DECENTRAPEPE",
+    "DEEPWEBPEPE",
+    "DEEZPEPENUTS",
+    "DEGENERPEPE",
+    "DELOREANPEPE",
+    "DEUSEXPEPE",
+    "DEXTERPEPE",
+    "DIAVOLO",
+    "DIERCHANCHU",
+    "DJPEPE",
+    "DOCTORPEPE",
+    "DOGEVSPEPE",
+    "DOGGYPUTIN",
+    "DOGSALL",
+    "DOHCASH",
+    "DOKUGANPEPE",
+    "DOLLARPEPE",
+    "DOMPEPENON",
+    "DONTBEMENACE",
+    "DORAETROLL",
+    "DOSPEPES",
+    "DOTPEPE",
+    "DOUBLEPEPE",
+    "DRAGONKEK",
+    "DRATHPEPE",
+    "DRDIRTYPEPE",
+    "DRILLPEPE",
+    "DRONEPEPE",
+    "DROPPEPE",
+    "DRSTRNGEPEPE",
+    "DRUNKENPEPE",
+    "DUMBLEPEPE",
+    "DUMMIES",
+    "EARTHPEPE",
+    "EAZYP",
+    "ECCEPEPE",
+    "EGGPLANTPEPE",
+    "EINSTEINPEPE",
+    "ELEVATORPEPE",
+    "EMBRYOPEPE",
+    "EMPERORPEPE",
+    "ENDRACISMPE",
+    "ENGELPEPE",
+    "ENGLISHPEPE",
+    "ENTERTHEPEPE",
+    "EPEENPEPE",
+    "EPEPESODEONE",
+    "ERDOPEPEGAN",
+    "ERISPEPE",
+    "ETHERPEPE",
+    "EXCLUPEPE",
+    "EXKEKUTIONER",
+    "EYEOFTHEPEPE",
+    "EYETESTPEPE",
+    "FAIRPEPE",
+    "FAIRYODDPEPE",
+    "FAKERPEPE",
+    "FASTPEPE",
+    "FATHERPEPE",
+    "FATPEPE",
+    "FATPEPSLIM",
+    "FEATHERSPEPE",
+    "FEELSGOODMAN",
+    "FEELSPEPE",
+    "FIGHTPEPE",
+    "FIGHTSYSTEM",
+    "FILEONPEPE",
+    "FINNPEPE",
+    "FINNTHEPEPE",
+    "FIREASSPEPE",
+    "FISHERPEPE",
+    "FLAPPYPEPE",
+    "FLATEARTH",
+    "FLINTPEPE",
+    "FLOWERPEPE",
+    "FLUFFYPEPES",
+    "FLYINGACEPEP",
+    "FOLDERPEPE",
+    "FORBIDENPEPE",
+    "FORTYTWOPEPE",
+    "FRACTALPEPE",
+    "FRATPEPE",
+    "FREEMYPEPE",
+    "FREETIBETPP",
+    "FRENCHPEPE",
+    "FRESHPEPE",
+    "FRIENDSPEPE",
+    "FROGBUS",
+    "FRYPEPE",
+    "FSBPUTINPEPE",
+    "FSMPEPE",
+    "FTERTHERAIN",
+    "FUJINPEPE",
+    "FULLMETALPEP",
+    "FULMETALPEPE",
+    "FUNPEPE",
+    "FUTURESPEPE",
+    "GADGETPEPE",
+    "GADSDENPEPE",
+    "GAINSPEPE",
+    "GAIUSPEPEUS",
+    "GAMEBOIPEPE",
+    "GAMEOFPEPE",
+    "GAMESOFTRUMP",
+    "GANGPEPE",
+    "GAUDISPEPE",
+    "GEISHAPEPE",
+    "GENIEPEPE",
+    "GETPEPEFREE",
+    "GIPEPE",
+    "GIVEKUDOS",
+    "GLDPEPE",
+    "GLUTTONYPEPE",
+    "GNITEPEPE",
+    "GNUPEPE",
+    "GODALIEN",
+    "GODAMUNRA",
+    "GODANUBIS",
+    "GODDESSHEQET",
+    "GODDESSISIS",
+    "GODEMPEPE",
+    "GOKUPEPE",
+    "GOLDGODPEPE",
+    "GOODBYEPEPE",
+    "GOODNITEPEPE",
+    "GOSPELPEPE",
+    "GOTHICPEPE",
+    "GOTPEPESHIRT",
+    "GOXPEPE",
+    "GRAFFITIPEPE",
+    "GRANDPEPE",
+    "GRANDPEPES",
+    "GREEDYPEPES",
+    "GRIMPEPE",
+    "GRNDMSTRPEPE",
+    "GTAPEP",
+    "GTPEPE",
+    "GUARDSASKIAN",
+    "GUARDSPEPE",
+    "GUESSWHATPEP",
+    "GUMMYPEPE",
+    "GURUPEPE",
+    "GUYBRUSH",
+    "HAIKUPEPE",
+    "HAIRPEPE",
+    "HANGINPEPE",
+    "HANNIBALPEPE",
+    "HANPEPE",
+    "HANSEIPEPE",
+    "HAPPYRAINY",
+    "HARAMPEPE",
+    "HARDPEPEFORK",
+    "HARRYPEPES",
+    "HEISENPEPE",
+    "HEKET",
+    "HELOPEPE",
+    "HERNIAPEPE",
+    "HICKSPEPE",
+    "HILLARYPEPE",
+    "HIPPIEPEPE",
+    "HISTORICPEPE",
+    "HLYPEPANCAKE",
+    "HODLWOOD",
+    "HOLYPEPE",
+    "HOMERPEPE",
+    "HORRORPEPE",
+    "HOTLINEPEPE",
+    "HULAPEPE",
+    "HULKPEPE",
+    "HUMBLEPEPE",
+    "HWNDUPEPE",
+    "HYIPPEPE",
+    "HYPNOPEPE",
+    "HYPNOTIST",
+    "ICARUSPEPE",
+    "ICPEPE",
+    "ICQPEPE",
+    "ILLIDANPEPE",
+    "ILLUMINATIPE",
+    "ILOVEPEPE",
+    "IMWITHPEPE",
+    "INCREDIEPEPE",
+    "INNOCOINBOT",
+    "INVISIBLPEPE",
+    "IRONMANPEPE",
+    "IRONPEPE",
+    "ISEEYOUPEPE",
+    "ISOPEPE",
+    "IWANTTOPEPE",
+    "JACKOPEPE",
+    "JACKPOTPEPE",
+    "JAKETHEPEPE",
+    "JALAPEPE",
+    "JAPANESEPEPE",
+    "JASMINEPEPE",
+    "JESUSPEPE",
+    "JIHANWU",
+    "JINQIANSHU",
+    "JJPEPE",
+    "JMPEPEKEYNES",
+    "JOELOONEYBIN",
+    "JOINTPEPE",
+    "JOJOXPEPE",
+    "JOKERPE",
+    "JOKERPEPEKEK",
+    "JONGPEPE",
+    "JONSNOWPEPE",
+    "JPEPE",
+    "JSSICAPEPE",
+    "JUNSETHPEPE",
+    "JUSTINTPEPE",
+    "JWPEPE",
+    "KABUKIPEPE",
+    "KAMIKAZEPEPE",
+    "KANDINSKYPEP",
+    "KAPPAPEPE",
+    "KARTANDPEPE",
+    "KATYPEPE",
+    "KAWAPEPE",
+    "KEISERPEPE",
+    "KEKALITY",
+    "KEKANC",
+    "KEKENESIS",
+    "KEKET",
+    "KEKISTAN",
+    "KEKLORDGABEN",
+    "KEKOFWAR",
+    "KEKPEPE",
+    "KEKRELOADED",
+    "KEKRESURRECT",
+    "KEKSBASILISK",
+    "KEKTOPUS",
+    "KEKUI",
+    "KEKUIT",
+    "KEKVSMOLOCH",
+    "KEKWAVE",
+    "KEROPEPE",
+    "KEYBOARDPEPE",
+    "KICKPEPE",
+    "KIDPEPE",
+    "KIGURUMIPEPE",
+    "KILLARYPEPE",
+    "KINGYOPEPE",
+    "KITANO",
+    "KKPEPE",
+    "KNITTEDPEPE",
+    "KOIPEPE",
+    "KOJIPEPE",
+    "KPEPE",
+    "KUMADORIPEPE",
+    "KUNGFUPEPE",
+    "KUNISADAPEPE",
+    "LAUTRECPEPE",
+    "LEANPEPE",
+    "LEDZEPEPELIN",
+    "LEGENDOFPEPE",
+    "LEGOPEPE",
+    "LEIAPEPE",
+    "LEOPEPESCAM",
+    "LEPEWPEPE",
+    "LETSTALKKEK",
+    "LEVELUPPEPE",
+    "LIAMPEPE",
+    "LIBERPEPE",
+    "LIBERTYPEPE",
+    "LIKEPEPEBRO",
+    "LILMERMAID",
+    "LILUPEPE",
+    "LISKPPAPPEPE",
+    "LITTLEBOPEPE",
+    "LIZZFACEPEPE",
+    "LONELYPEPE",
+    "LONGNOSEPEPE",
+    "LORDGLEN",
+    "LORDKEK",
+    "LORDOFMEMES",
+    "LORDSHIVA",
+    "LOVEISPEPE",
+    "LOVEPEPETATO",
+    "LOWRIDERPEPE",
+    "LUCHAPEPE",
+    "LUCKYPEPE",
+    "LUKEJRPEPE",
+    "LUPEPEN",
+    "MADARAPEPE",
+    "MADMAXPEPE",
+    "MAGICPEPEYE",
+    "MAKEPEPERARE",
+    "MANDARAPEPE",
+    "MANDELPEPE",
+    "MAOISMPEPE",
+    "MAOPEPE",
+    "MAOZEPEPE",
+    "MAPEPENEMR",
+    "MARIACHIPEPE",
+    "MARINEPEINE",
+    "MARSPEPE",
+    "MARTYPEPFLY",
+    "MARVINPEPE",
+    "MASTEROFPEPE",
+    "MASTERSPEPE",
+    "MASTROPEPE",
+    "MATADORPEPE",
+    "MATISSEPEPE",
+    "MATSUNIPEPE",
+    "MATSURIPEPE",
+    "MAUIPEPE",
+    "MAXPEPE",
+    "MAYWEATHPEPE",
+    "MCGREGOR",
+    "MCPEPE",
+    "MCPEPEDEBUFF",
+    "MCPEPESCHER",
+    "MEDICINEPEPE",
+    "MELANCHOLIA",
+    "MELANCOLIE",
+    "MEMEFIGHTERS",
+    "MEMESTEALER",
+    "MEMETICMAGIC",
+    "MEMPOOLPEPE",
+    "MERKLETREEPE",
+    "MFPEPE",
+    "MIDIPEPE",
+    "MIKOPEPE",
+    "MINDPEPEHOFF",
+    "MINIONPEPE",
+    "MIRACLEPEPE",
+    "MIROPEPE",
+    "MISSPEPE",
+    "MISSTURNPEPE",
+    "MIYAKO",
+    "MNTNDWRVSMNG",
+    "MOAIPEPE",
+    "MOBBPEPE",
+    "MOBIUSPEPE",
+    "MODERNPEPE",
+    "MODIPEPE",
+    "MONALISAPEPE",
+    "MONBOURARNO",
+    "MONEYPEPE",
+    "MONOPEPEOLY",
+    "MONSTERPEPE",
+    "MONTYPEPE",
+    "MOONPEPE",
+    "MOONWAVEPEPE",
+    "MORNINGPEPE",
+    "MORPHEUSPEPE",
+    "MRHANSEL",
+    "MRPOTATOPEPE",
+    "MRPPBUTTHOLE",
+    "MRSTAYPEPT",
+    "MTPEPEMORE",
+    "MUNETOPEPE",
+    "MURICAPEPE",
+    "MYFIRSTPEPE",
+    "MYLADYPEPE",
+    "MYLITTLEPEPE",
+    "MYPEPELITTLE",
+    "MYRIADMPEPE",
+    "MYSPEPE",
+    "MYSTERYPEPE",
+    "NAHUAL",
+    "NAMIDAPEPE",
+    "NAPALMPEPE",
+    "NAPKINPEPE",
+    "NASPEPE",
+    "NATIVEPEPETH",
+    "NECROPEPE",
+    "NEEDPEPE",
+    "NEONFROGS",
+    "NEONPEPE",
+    "NEOPEPE",
+    "NEUROPEPE",
+    "NEWYEARPEPE",
+    "NICOLAPEPE",
+    "NICOSARKOS",
+    "NIGHTSATPEPE",
+    "NINEFIVEPEPA",
+    "NINJAPEPE",
+    "NINJAPEPES",
+    "NMPPEPE",
+    "NOBORDERPEPE",
+    "NOBRAKESPEPE",
+    "NOFAPPEPE",
+    "NOFUCKSPUTIN",
+    "NOHPEPE",
+    "NULLCPEPE",
+    "NURSEPEPE",
+    "NYANPEPE",
+    "OBEYPEPE",
+    "OLYMPICPEPE",
+    "ONEPUNCHPEPE",
+    "ONLYONEPEPE",
+    "OPPPEPE",
+    "OPTIMUSPEPE",
+    "ORTRAILPEPE",
+    "OSKARPEPE",
+    "OWLPEPE",
+    "PACPEP",
+    "PACPEPE",
+    "PAKALOLO",
+    "PAPILLON",
+    "PARTYPEPE",
+    "PAWNTHELAMBO",
+    "PBOCPEPE",
+    "PEAKYPEPE",
+    "PEEKABOOPEPE",
+    "PEEPHOLEPEPE",
+    "PEKMAN",
+    "PENIC",
+    "PENPEN",
+    "PEPA",
+    "PEPAPINUP",
+    "PEPEA",
+    "PEPEAA",
+    "PEPEACE",
+    "PEPEACIDTRIP",
+    "PEPEADDAMS",
+    "PEPEADDICT",
+    "PEPEAFRIKA",
+    "PEPEAGYO",
+    "PEPEAIR",
+    "PEPEAIRLINES",
+    "PEPEAKI",
+    "PEPEALASSAD",
+    "PEPEALIEN",
+    "PEPEAMANDA",
+    "PEPEAMAZING",
+    "PEPEAMCANI",
+    "PEPEAMD",
+    "PEPEAN",
+    "PEPEANDFEELS",
+    "PEPEANDROID",
+    "PEPEANDSON",
+    "PEPEANDY",
+    "PEPEANGRY",
+    "PEPEANON",
+    "PEPEARCHER",
+    "PEPEARROW",
+    "PEPEART",
+    "PEPEARTHUR",
+    "PEPEARTISTE",
+    "PEPEASSANGE",
+    "PEPEASTRO",
+    "PEPEASTROBOY",
+    "PEPEASTRONAT",
+    "PEPEASYSQUEZ",
+    "PEPEATARI",
+    "PEPEAUCTIOND",
+    "PEPEAUDIOPHL",
+    "PEPEAXEGANG",
+    "PEPEBACKPACK",
+    "PEPEBALL",
+    "PEPEBALT",
+    "PEPEBANDICUT",
+    "PEPEBANG",
+    "PEPEBASQUIAT",
+    "PEPEBASS",
+    "PEPEBEARD",
+    "PEPEBEARWHLE",
+    "PEPEBEEFTAXI",
+    "PEPEBERLUSCA",
+    "PEPEBGDWORK",
+    "PEPEBILL",
+    "PEPEBIRTH",
+    "PEPEBOBBY",
+    "PEPEBONGSPHP",
+    "PEPEBOUNTY",
+    "PEPEBOW",
+    "PEPEBOY",
+    "PEPEBRAIN",
+    "PEPEBRANDO",
+    "PEPEBRARIAN",
+    "PEPEBREAKUP",
+    "PEPEBREEDER",
+    "PEPEBRELLA",
+    "PEPEBRICCO",
+    "PEPEBRICK",
+    "PEPEBRICKJR",
+    "PEPEBRIEFS",
+    "PEPEBROKEBU",
+    "PEPEBROOM",
+    "PEPEBROS",
+    "PEPEBUCKET",
+    "PEPEBUCKS",
+    "PEPEBUGGED",
+    "PEPEBURGUNDY",
+    "PEPEBURN",
+    "PEPEBURNED",
+    "PEPEBUSTER",
+    "PEPEBUSYFLOR",
+    "PEPECAKEFACE",
+    "PEPECAMERA",
+    "PEPECAMO",
+    "PEPECANCAN",
+    "PEPECAPCHA",
+    "PEPECARNIVAL",
+    "PEPECASH",
+    "PEPECASTRO",
+    "PEPECCOLO",
+    "PEPECENT",
+    "PEPECGYVER",
+    "PEPECHAININ",
+    "PEPECHAIRMAN",
+    "PEPECHARLES",
+    "PEPECHE",
+    "PEPECHPLGHTR",
+    "PEPECIGARS",
+    "PEPECINDERS",
+    "PEPECITY",
+    "PEPECLOKWORK",
+    "PEPECLUB",
+    "PEPECOASTER",
+    "PEPECOLLECT",
+    "PEPECONCERT",
+    "PEPECONDOM",
+    "PEPECONF",
+    "PEPECONTRACT",
+    "PEPECOUNTER",
+    "PEPECOURAGE",
+    "PEPECOWBELL",
+    "PEPECREAM",
+    "PEPECRYSTAL",
+    "PEPEDABOMB",
+    "PEPEDANCE",
+    "PEPEDARK",
+    "PEPEDARKSIDE",
+    "PEPEDATA",
+    "PEPEDAVID",
+    "PEPEDDIT",
+    "PEPEDEALWTHT",
+    "PEPEDETCTVE",
+    "PEPEDEX",
+    "PEPEDHARMA",
+    "PEPEDIEPIE",
+    "PEPEDIRECTOR",
+    "PEPEDJ",
+    "PEPEDOL",
+    "PEPEDON",
+    "PEPEDOTCOM",
+    "PEPEDOTS",
+    "PEPEDRACULA",
+    "PEPEDRAGO",
+    "PEPEDRAKE",
+    "PEPEDROID",
+    "PEPEDRYAD",
+    "PEPEDUCK",
+    "PEPEDUCREUX",
+    "PEPEDUROV",
+    "PEPEDWARD",
+    "PEPEDZILLA",
+    "PEPEENEUMAN",
+    "PEPEEVO",
+    "PEPEFALLOUT",
+    "PEPEFAMOUS",
+    "PEPEFATHER",
+    "PEPEFAUCET",
+    "PEPEFETT",
+    "PEPEFICRIM",
+    "PEPEFIFTYONE",
+    "PEPEFLATION",
+    "PEPEFLECTION",
+    "PEPEFLESH",
+    "PEPEFLORIST",
+    "PEPEFMYLIFE",
+    "PEPEFOBIA",
+    "PEPEFOCUSED",
+    "PEPEFONDLERS",
+    "PEPEFOREVER",
+    "PEPEFORM",
+    "PEPEFRACTAL",
+    "PEPEFRED",
+    "PEPEFREEDOM",
+    "PEPEFREEZE",
+    "PEPEFRENCH",
+    "PEPEFREQ",
+    "PEPEFROMHELL",
+    "PEPEFUDUP",
+    "PEPEFUYU",
+    "PEPEGAIA",
+    "PEPEGAMBIT",
+    "PEPEGANDHI",
+    "PEPEGAPHONE",
+    "PEPEGATES",
+    "PEPEGETABLE",
+    "PEPEGHIDORAH",
+    "PEPEGIGA",
+    "PEPEGIGGITY",
+    "PEPEGIRL",
+    "PEPEGLOBE",
+    "PEPEGLOVER",
+    "PEPEGOAT",
+    "PEPEGODDESS",
+    "PEPEGOKU",
+    "PEPEGOLDBAR",
+    "PEPEGOLDRUSH",
+    "PEPEGOLUM",
+    "PEPEGOODY",
+    "PEPEGOP",
+    "PEPEGOTCHI",
+    "PEPEGOTSICK",
+    "PEPEGOTSWAG",
+    "PEPEGOTTIME",
+    "PEPEGRAM",
+    "PEPEGRAVE",
+    "PEPEGREEN",
+    "PEPEGROOT",
+    "PEPEGROUNDS",
+    "PEPEGUEVARA",
+    "PEPEGUITAR",
+    "PEPEGUN",
+    "PEPEHAMMER",
+    "PEPEHAND",
+    "PEPEHARDTALK",
+    "PEPEHARING",
+    "PEPEHARU",
+    "PEPEHEFNER",
+    "PEPEHELP",
+    "PEPEHELTEACH",
+    "PEPEHEMAN",
+    "PEPEHEPBURN",
+    "PEPEHERO",
+    "PEPEHEXCHANT",
+    "PEPEHIGHTOWR",
+    "PEPEHITMAN",
+    "PEPEHODLER",
+    "PEPEHOFFMAN",
+    "PEPEHOLOGRAM",
+    "PEPEHOMER",
+    "PEPEHONDO",
+    "PEPEHOPE",
+    "PEPEHORROR",
+    "PEPEHOTEP",
+    "PEPEHOUSE",
+    "PEPEHUANA",
+    "PEPEHUNGRY",
+    "PEPEHUNTER",
+    "PEPEICHIGO",
+    "PEPEILLUSION",
+    "PEPEIMPOSER",
+    "PEPEIMPOSTOR",
+    "PEPEINSHADES",
+    "PEPEINSIDE",
+    "PEPEINTRO",
+    "PEPEIRI",
+    "PEPEIRON",
+    "PEPEISLOVE",
+    "PEPEISNUBLK",
+    "PEPEISOTTO",
+    "PEPEISPEACE",
+    "PEPEISUNITY",
+    "PEPEJAPAN",
+    "PEPEJEANS",
+    "PEPEJERICHO",
+    "PEPEJIRAIYA",
+    "PEPEJIRO",
+    "PEPEJOANARC",
+    "PEPEJOBS",
+    "PEPEJOHNS",
+    "PEPEJOINTSPH",
+    "PEPEJOKER",
+    "PEPEJONES",
+    "PEPEJORN",
+    "PEPEJOSE",
+    "PEPEJPN",
+    "PEPEJUDGE",
+    "PEPEJUGGLER",
+    "PEPEJUICE",
+    "PEPEKACHU",
+    "PEPEKAPARKER",
+    "PEPEKARLMARX",
+    "PEPEKARMA",
+    "PEPEKART",
+    "PEPEKEEPER",
+    "PEPEKEK",
+    "PEPEKEKCOIN",
+    "PEPEKEN",
+    "PEPEKICKS",
+    "PEPEKIDROBOT",
+    "PEPEKIDSART",
+    "PEPEKIM",
+    "PEPEKMONGO",
+    "PEPEKNIEVEL",
+    "PEPEKONGBIGM",
+    "PEPEKYRIE",
+    "PEPELAMA",
+    "PEPELAMBO",
+    "PEPELAND",
+    "PEPELANDER",
+    "PEPELARGE",
+    "PEPELAVEY",
+    "PEPELCHTNSTN",
+    "PEPELEFTLEG",
+    "PEPELEGOMAN",
+    "PEPELEMMING",
+    "PEPELENNON",
+    "PEPELEO",
+    "PEPELEPEW",
+    "PEPELETTERA",
+    "PEPELEVI",
+    "PEPELEVICH",
+    "PEPELEWINSKY",
+    "PEPELIBRARY",
+    "PEPELIKE",
+    "PEPELINK",
+    "PEPELITTLE",
+    "PEPELLUM",
+    "PEPELMINING",
+    "PEPELOOP",
+    "PEPELOU",
+    "PEPELOUX",
+    "PEPELSD",
+    "PEPELUFFY",
+    "PEPELVSD",
+    "PEPELYN",
+    "PEPELYNMASON",
+    "PEPEMACARONI",
+    "PEPEMANE",
+    "PEPEMANTIS",
+    "PEPEMAONE",
+    "PEPEMAORI",
+    "PEPEMARAUDER",
+    "PEPEMARIOLR",
+    "PEPEMARKET",
+    "PEPEMARLEY",
+    "PEPEMAXAF",
+    "PEPEMCLOVIN",
+    "PEPEME",
+    "PEPEMEETUPBK",
+    "PEPEMEGAMAN",
+    "PEPEMEMECARD",
+    "PEPEMILEY",
+    "PEPEMILLION",
+    "PEPEMINING",
+    "PEPEMINO",
+    "PEPEMINT",
+    "PEPEMIRROR",
+    "PEPEMOM",
+    "PEPEMOMWRATH",
+    "PEPEMONROE",
+    "PEPEMONTOYA",
+    "PEPEMOON",
+    "PEPEMORPHS",
+    "PEPEMOTHRA",
+    "PEPEMOVIE",
+    "PEPEMPTYWLLT",
+    "PEPENACCI",
+    "PEPENAL",
+    "PEPENAPOLEON",
+    "PEPENARUTO",
+    "PEPENATION",
+    "PEPENATTI",
+    "PEPENCEPTION",
+    "PEPENEWTON",
+    "PEPENGAROO",
+    "PEPENGHTMUM",
+    "PEPENIETZSCH",
+    "PEPENIKOLAI",
+    "PEPENIN",
+    "PEPENITOR",
+    "PEPENOFF",
+    "PEPENOMIST",
+    "PEPENOPOULOS",
+    "PEPENORMIES",
+    "PEPENORRIS",
+    "PEPENOSAURUS",
+    "PEPENSTEIN",
+    "PEPENUKES",
+    "PEPENUMA",
+    "PEPENUT",
+    "PEPEOFTHEUSA",
+    "PEPEOLDCASH",
+    "PEPEOLDCHAP",
+    "PEPEOLDTRADE",
+    "PEPEOMUERTE",
+    "PEPEON",
+    "PEPEONE",
+    "PEPEONECOIN",
+    "PEPEONMUSK",
+    "PEPEORACLE",
+    "PEPEOROCHI",
+    "PEPEOTHERARM",
+    "PEPEOTHERLEG",
+    "PEPEOUTSIDE",
+    "PEPEPALACE",
+    "PEPEPAMPERS",
+    "PEPEPARADISE",
+    "PEPEPARADO",
+    "PEPEPARTY",
+    "PEPEPASSPORT",
+    "PEPEPAWNSHOP",
+    "PEPEPEACE",
+    "PEPEPEANUTS",
+    "PEPEPEARL",
+    "PEPEPENPEN",
+    "PEPEPET",
+    "PEPEPHARAON",
+    "PEPEPHONEHOM",
+    "PEPEPILLOW",
+    "PEPEPIRATE",
+    "PEPEPIZZA",
+    "PEPEPLISSKEN",
+    "PEPEPOET",
+    "PEPEPOLLOCK",
+    "PEPEPONY",
+    "PEPEPOOL",
+    "PEPEPOOR",
+    "PEPEPOPE",
+    "PEPEPORTRAIT",
+    "PEPEPOWERONE",
+    "PEPEPOWERTWO",
+    "PEPEPRINGLES",
+    "PEPEPSI",
+    "PEPEPUFF",
+    "PEPEPUMPETTE",
+    "PEPEPUNCHOUT",
+    "PEPEPUNKDOLL",
+    "PEPEPYRAMID",
+    "PEPERACCOON",
+    "PEPERAGEQUIT",
+    "PEPERAILWAYS",
+    "PEPERAKUL",
+    "PEPERAMBO",
+    "PEPERANGER",
+    "PEPERARE",
+    "PEPERATATATT",
+    "PEPERAZZIS",
+    "PEPERBOY",
+    "PEPEREALM",
+    "PEPERECALL",
+    "PEPERECHAUN",
+    "PEPEREPUBLIC",
+    "PEPEREQUEST",
+    "PEPERETRO",
+    "PEPERFUME",
+    "PEPERGRIFFIN",
+    "PEPERICH",
+    "PEPERIDER",
+    "PEPERIGHTARM",
+    "PEPERIKISHI",
+    "PEPERIVETER",
+    "PEPERMAID",
+    "PEPERMIND",
+    "PEPEROGAN",
+    "PEPERONCINO",
+    "PEPEROSS",
+    "PEPEROYAL",
+    "PEPERREVENGE",
+    "PEPERRIDA",
+    "PEPERRR",
+    "PEPERSEXUAL",
+    "PEPERSSNRLTT",
+    "PEPERUS",
+    "PEPERUSSIAN",
+    "PEPESACE",
+    "PEPESAILOR",
+    "PEPESAILORV",
+    "PEPESAIYAN",
+    "PEPESAKURA",
+    "PEPESAMSON",
+    "PEPESAX",
+    "PEPESCAVHUNT",
+    "PEPESCHEME",
+    "PEPESCIENCE",
+    "PEPESCOOBY",
+    "PEPESCREAM",
+    "PEPESCUBA",
+    "PEPESEARCH",
+    "PEPESHADES",
+    "PEPESHELDON",
+    "PEPESHIELD",
+    "PEPESHIRT",
+    "PEPESHKRELI",
+    "PEPESHROOMS",
+    "PEPESIGNGUY",
+    "PEPESINCITY",
+    "PEPESITO",
+    "PEPESKATES",
+    "PEPESKELETON",
+    "PEPESMALLS",
+    "PEPESMURF",
+    "PEPESOUP",
+    "PEPESOURCE",
+    "PEPESPACE",
+    "PEPESPIDER",
+    "PEPESPINNER",
+    "PEPESPLANET",
+    "PEPESPRAY",
+    "PEPESQRPANTS",
+    "PEPESSANGE",
+    "PEPESSOU",
+    "PEPESTAFF",
+    "PEPESTARBOY",
+    "PEPESTONED",
+    "PEPESTORM",
+    "PEPESTRANGE",
+    "PEPESTYLE",
+    "PEPESUMMER",
+    "PEPESUMO",
+    "PEPESUPREME",
+    "PEPESURF",
+    "PEPESURFING",
+    "PEPESURRECT",
+    "PEPESUS",
+    "PEPESWITCH",
+    "PEPESWORD",
+    "PEPESYRINGE",
+    "PEPETACO",
+    "PEPETANGCLAN",
+    "PEPETARD",
+    "PEPETARO",
+    "PEPETE",
+    "PEPETERROR",
+    "PEPETERSON",
+    "PEPETEX",
+    "PEPETHAGORAS",
+    "PEPETHEFIRST",
+    "PEPETHEFROG",
+    "PEPETHESOG",
+    "PEPETHETROLL",
+    "PEPETHREESIX",
+    "PEPETHUGLIFE",
+    "PEPETHUR",
+    "PEPETIA",
+    "PEPETIE",
+    "PEPETIME",
+    "PEPETIN",
+    "PEPETINDER",
+    "PEPETIP",
+    "PEPETITAN",
+    "PEPETODAMOON",
+    "PEPETONE",
+    "PEPETOPKEK",
+    "PEPETOWN",
+    "PEPETRADER",
+    "PEPETRADERS",
+    "PEPETRAIN",
+    "PEPETRASH",
+    "PEPETRATION",
+    "PEPETRAZ",
+    "PEPETREK",
+    "PEPETREZOR",
+    "PEPETRODOL",
+    "PEPETRON",
+    "PEPETSAMURAI",
+    "PEPETSHIRT",
+    "PEPETTER",
+    "PEPETUITY",
+    "PEPETUNADE",
+    "PEPETUUR",
+    "PEPEUN",
+    "PEPEUNGYO",
+    "PEPEUNIVERSE",
+    "PEPEVANEYCK",
+    "PEPEVANHALEN",
+    "PEPEVIAGRA",
+    "PEPEVICH",
+    "PEPEVIDEODRO",
+    "PEPEVINCI",
+    "PEPEVINNY",
+    "PEPEVIRAL",
+    "PEPEVOLUTION",
+    "PEPEVOORHEES",
+    "PEPEWANTSYOU",
+    "PEPEWAT",
+    "PEPEWATCH",
+    "PEPEWATTS",
+    "PEPEWAVE",
+    "PEPEWEST",
+    "PEPEWHITE",
+    "PEPEWICKED",
+    "PEPEWOKE",
+    "PEPEWOMAN",
+    "PEPEWONKA",
+    "PEPEWORLDCUP",
+    "PEPEWYATT",
+    "PEPEXECUTIVE",
+    "PEPEXGALLERY",
+    "PEPEXILE",
+    "PEPEXIT",
+    "PEPEXMASBOY",
+    "PEPEYAKUZA",
+    "PEPEYE",
+    "PEPEYIP",
+    "PEPEYOTES",
+    "PEPEZ",
+    "PEPEZAALBINO",
+    "PEPEZCASH",
+    "PEPEZENMSTR",
+    "PEPEZEUS",
+    "PEPEZILLA",
+    "PEPEZIO",
+    "PEPEZOMBIE",
+    "PEPEZONCARD",
+    "PEPFICTION",
+    "PEPI",
+    "PEPITCHY",
+    "PEPLACE",
+    "PEPLACERESLT",
+    "PEPMANIA",
+    "PEPMONDRIAN",
+    "PEPOCALYPSE",
+    "PEPOCKY",
+    "PEPOLLO",
+    "PEPONG",
+    "PEPTARO",
+    "PEPUNCONFIRM",
+    "PERAPPA",
+    "PEROCHI",
+    "PHEONIXPEPE",
+    "PHILANTHROPE",
+    "PHNTOMOFPEPE",
+    "PICASSOPEPE",
+    "PIGPEPE",
+    "PIMENTOLOAF",
+    "PINHEADPEPE",
+    "PIRATESPEPES",
+    "PISFORPEPE",
+    "PLATINUMPEPE",
+    "PLAYBOYPEPE",
+    "PLEGO",
+    "PLINKOPEPE",
+    "PMOPEPE",
+    "POKERPEPE",
+    "PONZIPEPE",
+    "PORPEPELAMBO",
+    "POSTMDRNPEPE",
+    "POWERTOPEPE",
+    "PPKING",
+    "PPLNMDNTNY",
+    "PPPGLOBAL",
+    "PREPEDATOR",
+    "PRINCESSPEPE",
+    "PRIVATEPEPE",
+    "PROBLEMSOLVE",
+    "PROCESSPEPE",
+    "PROOFOFPEPE",
+    "PROPHECYPEPE",
+    "PROUDPEPEWIN",
+    "PSEUDOPEPE",
+    "PSYCHEPEPE",
+    "PSYKEKDELIC",
+    "PTSDPEPE",
+    "PUMPINGPEPE",
+    "PUNCHPEPE",
+    "PUREGOLDPEPE",
+    "PUREPEPE",
+    "PUTINPEPE",
+    "PUZZLEPEPE",
+    "PWAPWAPWAPWA",
+    "PYTHONPEPE",
+    "QBITSPEPE",
+    "QPEPE",
+    "QQPEPE",
+    "QUEGUAYPEPE",
+    "QUEPASAPEPE",
+    "RABBIPEPE",
+    "RADIOPEPE",
+    "RAGZTOPEPE",
+    "RAIJINPEPE",
+    "RAINYPEPE",
+    "RAIRPEPE",
+    "RAMBOPEPE",
+    "RANDOMPEPE",
+    "RAREAPPLE",
+    "RARECHAVEZ",
+    "RARECHERRY",
+    "RARECOINMEME",
+    "RAREDIETIES",
+    "RAREIVANKA",
+    "RAREKEKUIT",
+    "RARELORDKEK",
+    "RAREMRROBOT",
+    "RAREPEPE",
+    "RAREPEPEDAO",
+    "RAREPEPEFONZ",
+    "RAREPEPEMAG",
+    "RAREPEPENEWS",
+    "RAREPEPEPRTY",
+    "RAREPEPEPUMP",
+    "RAREPEPESHOW",
+    "RAREPEPESS",
+    "RAREPPODCAST",
+    "RARESHADILAY",
+    "RARESLIMPEPE",
+    "RARESPURDO",
+    "RARETEMPLATE",
+    "RAREWOLFPEPE",
+    "REAPERPEPE",
+    "REDPUTINPEPE",
+    "RELATEPEPE",
+    "RELAXPEPE",
+    "REPOPEPE",
+    "RERERPERP",
+    "RESERVPEPES",
+    "RESURKEKTION",
+    "RETROPEPE",
+    "REVOLUCIONAR",
+    "REYPEPE",
+    "RGBPEPE",
+    "RICFLAIRPEPE",
+    "RICHPEPE",
+    "RICHPEPEPOOR",
+    "RICKANDPEPE",
+    "RICKYPEPE",
+    "RINGITPEPE",
+    "RINGOFPEPE",
+    "ROBOTPEPE",
+    "ROCKINGPEPE",
+    "ROLLINGPEPE",
+    "RONINKEK",
+    "ROOMRAREPEPE",
+    "ROTATINGPEPE",
+    "RPBANHAMMER",
+    "RPCAGENT",
+    "RPDF",
+    "RPDUMPSTER",
+    "RPEPEARMANDO",
+    "RPEPEGOJAIL",
+    "RPEPEGOLDENR",
+    "RPEPELIGHTER",
+    "RPEPERAMI",
+    "RPJAILEXIT",
+    "RPSILLYWALK",
+    "RUBBERPEPE",
+    "RUBEUSPEPE",
+    "RUBIXPEPE",
+    "RUNDMP",
+    "RUNTHEPEPE",
+    "SADMILKPEPE",
+    "SAILMOONPEPE",
+    "SAKURANIPEPE",
+    "SALTANDPEPE",
+    "SALTYTADPEPE",
+    "SALVADORPEPE",
+    "SAMURAIPEPE",
+    "SANDORPEPE",
+    "SANDWICHPEPE",
+    "SANPOPEPE",
+    "SANTAPEPE",
+    "SARUTOBIPEPE",
+    "SATOSHIRARE",
+    "SATURDAYPEPE",
+    "SAVEPEPE",
+    "SCARFACEPEPE",
+    "SCHROEPEPE",
+    "SCORPEPE",
+    "SCREAMPEPE",
+    "SEAMANPEPE",
+    "SEAPEPE",
+    "SEASIDEPEPE",
+    "SECRETPEPE",
+    "SECURITYPEPE",
+    "SEGWITPEPE",
+    "SEGWTPEPE",
+    "SELFPORTRAIT",
+    "SELLOUTPEPE",
+    "SENJUPEPE",
+    "SENPAIPEPE",
+    "SERVALPEPE",
+    "SEVENBITPEPE",
+    "SEXAYEPEPE",
+    "SEXYLADYPEPE",
+    "SGTPEPE",
+    "SHADEPEPE",
+    "SHADILOUNGE",
+    "SHEMANPEPE",
+    "SHIALEBPEPE",
+    "SHININGPEPE",
+    "SHITCOINCARD",
+    "SHREKPEPE",
+    "SHREMPEPE",
+    "SICKDEVPEPE",
+    "SITHLORDPEPE",
+    "SIXTYSIXPEPE",
+    "SKIINGPEPE",
+    "SLEEPINGPEPE",
+    "SLENDERPEPE",
+    "SLIMERPEPE",
+    "SLVPEPE",
+    "SMELLPEPE",
+    "SMITHPEPE",
+    "SMUGCHIPS",
+    "SMUGGLASSES",
+    "SMUGPEPE",
+    "SNAPCHATPEPE",
+    "SNOTPEPE",
+    "SNOWDENPEPE",
+    "SOCRATESPEPE",
+    "SODAPEPENSKI",
+    "SOGGYPEPE",
+    "SOJOURNPEPE",
+    "SOLDATPEPE",
+    "SOLODADPEPE",
+    "SONICPEPE",
+    "SOUNDOFPEPE",
+    "SPACEDADDY",
+    "SPCPEPEWOJAK",
+    "SPEEDPEPE",
+    "SPEPECTRE",
+    "SPESSMUHPEPE",
+    "SPHINXPEPE",
+    "SPIDERMNPEPE",
+    "SPIRITPEPE",
+    "SQUATCHPEPE",
+    "STACYPEPE",
+    "STAMPOFKEK",
+    "STANDINGPEPE",
+    "STANPEPEE",
+    "STARLORDKEK",
+    "STATUEOFPEPE",
+    "STEALPEPE",
+    "STILLPEPE",
+    "STITCHESPEPE",
+    "STORYPEPE",
+    "STRIPERPEPE",
+    "SUCHSHARE",
+    "SUPAPEPE",
+    "SUPERMANPEPE",
+    "SURFINGPEPE",
+    "SUSUKINIPEPE",
+    "SWAROPEPE",
+    "SZECHUANPEPE",
+    "TADPOLEPEPE",
+    "TAJPEPE",
+    "TAKAKO",
+    "TAKARAPEPE",
+    "TAKOPEPE",
+    "TALESPEPE",
+    "TEAPEPE",
+    "TECHNOPEPE",
+    "TEMPURAPEPE",
+    "TENPINPUTIN",
+    "TERRIBLEPEPE",
+    "TESTNETPEPE",
+    "TETSUWANPEPE",
+    "THEANCAPEPE",
+    "THEARCHIPEPE",
+    "THEGODPEPE",
+    "THEJOYOFPEPE",
+    "THEKINGPEPE",
+    "THELASTPEPE",
+    "THEMONAPEPE",
+    "THEPEPE",
+    "THEPEPEKISS",
+    "THEPEPELIST",
+    "THEPEPENATOR",
+    "THEPEPEWHALE",
+    "THEPEPEZONE",
+    "THESKYPEPE",
+    "THEVERYPEPE",
+    "THINKINGPEPE",
+    "THINPEPE",
+    "THISISFINE",
+    "THISPEPE",
+    "THOTHPEPE",
+    "THREEDPEPE",
+    "THREEPEPES",
+    "THREERARE",
+    "THUNDERPEPS",
+    "TIKIPEPE",
+    "TIMEPEPE",
+    "TIMETRAVELPP",
+    "TITANICPEPE",
+    "TLCPEPE",
+    "TOBIASPEPE",
+    "TODAMOONPEPE",
+    "TOMANDPEPE",
+    "TOMATOPEPE",
+    "TOPCUCK",
+    "TOREROPEPE",
+    "TOWEROFPEPE",
+    "TRAITORPEPE",
+    "TRANSMEME",
+    "TRANSPOSE",
+    "TREEOFPEPE",
+    "TRINITYPEPE",
+    "TRIPPYPEPE",
+    "TROUTPEPE",
+    "TRUMPEPE",
+    "TRUMPRARE",
+    "TRUMPWALL",
+    "TSUPEPE",
+    "TUBBIES",
+    "TUPACPEP",
+    "TUXPEPE",
+    "TWEEKPEPE",
+    "TWNOFEVNGLST",
+    "TWOPLYPEPE",
+    "UFOPEPE",
+    "UKIPEPE",
+    "UKIYOEPEPE",
+    "ULTIMATEPEPE",
+    "ULTRAPEPE",
+    "UMENIPEPE",
+    "UNCLEPEPE",
+    "UNCLEPEPESAM",
+    "UNGAISOUTEN",
+    "UNITEDPEPE",
+    "UNLUCKYPEPE",
+    "UPINSMKPEPE",
+    "USMCPEPE",
+    "UZUMAKIPEPE",
+    "VANGOUGHPEPE",
+    "VANILLAPEPE",
+    "VAPORMAGIC",
+    "VAULTBOYPEPE",
+    "VEGANPEPE",
+    "VEGGIEPEPE",
+    "VENUSPEPE",
+    "VERIFIEDPEPE",
+    "VERYDOGEPEPE",
+    "VICEPEPE",
+    "VIKINGSPEPE",
+    "VINCEMCPEPE",
+    "VINTAGEPEP",
+    "VIRUSPEPE",
+    "VOLDEPEPE",
+    "VONPEPEHAYEK",
+    "VRPEPE",
+    "VSTRSSLBRTCH",
+    "WALLPEPE",
+    "WAMPUMPEPE",
+    "WANKSYPEPE",
+    "WANTEDPEPE",
+    "WARRIORPEPE",
+    "WEAREALLPEPE",
+    "WEEDTIME",
+    "WESTERNPEPE",
+    "WHEELOFPEPE",
+    "WHERESPEPE",
+    "WHISKEYPEPE",
+    "WHOAPEPE",
+    "WHOTHATPEPE",
+    "WILDPEPE",
+    "WILEPEPE",
+    "WINKELPEPE",
+    "WINSTONPEPE",
+    "WIREDPEPE",
+    "WISEPEPE",
+    "WITCHBLADE",
+    "WNPEPEPEPEPE",
+    "WOKEPEPE",
+    "WOLONGPEPE",
+    "WORLDOFPEPE",
+    "WPPEPE",
+    "WWFPEPE",
+    "XCHAINPEPE",
+    "XMASANTAPEPE",
+    "XMASPEPE",
+    "XOBLORTPEPE",
+    "XONOTICPEPE",
+    "XPEPE",
+    "YAMAPEPE",
+    "YAMATOPEPE",
+    "YANAGINIPEPE",
+    "YELLPEPE",
+    "YETIPEPE",
+    "YOGAPEPE",
+    "YOUCANPEPE",
+    "YUGUREPEPE",
+    "YUMMYPEPE",
+    "ZENAFPEPE",
+    "ZEROWINGPEPE",
+    "ZETAPEPE",
+    "ZIKAPEPE",
+    "ZOETROPEPE",
+    "ZOMBIEPEPES",
+    "ZOOKOPEPE",
+    "ZZTOPEPE",
+    "ZZZZPEPE",
+    "BABERUTHPEPE",
+    "BADWISHES",
+    "BARBARIANPEP",
+    "BATMANNPEPE",
+    "BCCPEPE",
+    "BEAUTYPEPE",
+    "BODYBACKPEPE",
+    "BOOGERPEPE",
+    "BREITBARTPEP",
+    "BULBEGAR",
+    "BULLSEYEPEPE",
+    "CACTUSPEPE",
+    "CALMHODLPEPE",
+    "CAMPINGPEPE",
+    "CAPEPELE",
+    "CARLOSPEPE",
+    "CERSEIPEPE",
+    "CHECKPEPE",
+    "CHERRYONTOP",
+    "CHUWAPEPE",
+    "CLUBSPEPE",
+    "COBAINPEPE",
+    "COINEATER",
+    "CONSPIRATARD",
+    "CRIMINALPEPE",
+    "CRYPTOPEPES",
+    "CYBERPEP",
+    "DAWNOTHEPEPE",
+    "DELUXEPEPEHD",
+    "DIAMONDSPEPE",
+    "EATEPEPE",
+    "ECLIPTICPEPE",
+    "EGGPLANTMKNY",
+    "FAIRYCASH",
+    "FASHIONPEP",
+    "FFFFFFFFFFFF",
+    "FLAMINPEPE",
+    "FORKPEPE",
+    "GAMABUNTA",
+    "GAMBITPEPE",
+    "GENPEPE",
+    "GERPER",
+    "GIANCARLO",
+    "GROYAPEPE",
+    "GROYLEX",
+    "GROYONOMICON",
+    "GROYPAUCTION",
+    "GROYPERDB",
+    "GROYPERMONKY",
+    "GROYPERTL",
+    "GROYPMAN",
+    "GUNSNPEPES",
+    "HARAKIRIPEPE",
+    "HEARTSPEPE",
+    "HINAMATSURI",
+    "HODLERPEPE",
+    "HODLPEPECASH",
+    "HOODEDPEPE",
+    "HORRORCOIN",
+    "HUCKAPEPE",
+    "ILUMINATRARE",
+    "INDIANAPEPE",
+    "ITPEPE",
+    "JANDPEPE",
+    "JOLIELEGPEPE",
+    "JORDANPEPE",
+    "JUDYPEPE",
+    "JURASSICKEK",
+    "KATPEPA",
+    "KEKEVOLUTION",
+    "KEKFURY",
+    "KEKKETY",
+    "KEKMONTECRLO",
+    "KEKOGGS",
+    "KFPEPE",
+    "KINGRINGPEPE",
+    "KRUEGERPEPE",
+    "KUNAIKEK",
+    "KYUDOPEPE",
+    "LAUGHINGMAN",
+    "LEIAORGAPEPE",
+    "LIGHTITON",
+    "LILROCKETMAN",
+    "LITTLEGREEN",
+    "LTCPEPE",
+    "MAJESTYPEPE",
+    "MARGINED",
+    "MATRYOSHKAPP",
+    "MCGROYPER",
+    "MEGAPEPEMAN",
+    "MERMAIDPEPE",
+    "MILLIONAIRPP",
+    "MMXVIII",
+    "MOONPEPESUN",
+    "MRTALPHA",
+    "MUPEPETS",
+    "MURASAKIPEPE",
+    "NATTYALPHA",
+    "NBAPEPE",
+    "NIGHTKINGPEP",
+    "NOBUSHIPEPE",
+    "OMEGAPEPE",
+    "ONEEYEMONKEY",
+    "ONSENPEPE",
+    "OROCHIPEPE",
+    "OUIJAPEPE",
+    "PAJAMASPEPE",
+    "PAXOLOTL",
+    "PEBAY",
+    "PEBBLEE",
+    "PECATRINA",
+    "PECTERIA",
+    "PEDURO",
+    "PEFUNGUS",
+    "PENNYPEPE",
+    "PEPAGEISHA",
+    "PEPALISA",
+    "PEPBOT",
+    "PEPCASSO",
+    "PEPEACTION",
+    "PEPEADDICTS",
+    "PEPEAFRIKEK",
+    "PEPEAKIBA",
+    "PEPEAMANIA",
+    "PEPEANGEL",
+    "PEPEAVENGER",
+    "PEPEBALLOON",
+    "PEPEBOSCH",
+    "PEPEBUSHIDO",
+    "PEPEBUZZ",
+    "PEPECAFFE",
+    "PEPECAGE",
+    "PEPECAKEK",
+    "PEPECART",
+    "PEPECEZANNE",
+    "PEPECLOCK",
+    "PEPEDARWIN",
+    "PEPEDAUGHTER",
+    "PEPEDESIGN",
+    "PEPEDICK",
+    "PEPEDINHO",
+    "PEPEDPOOL",
+    "PEPEDRINO",
+    "PEPEELITE",
+    "PEPEFANTASY",
+    "PEPEFARMER",
+    "PEPEFLIES",
+    "PEPEFURIOUS",
+    "PEPEGIANT",
+    "PEPEGRAFFITI",
+    "PEPEGROYA",
+    "PEPEHAWKING",
+    "PEPEHONGKONG",
+    "PEPEHUNDRED",
+    "PEPEIT",
+    "PEPEJ",
+    "PEPEJACKSON",
+    "PEPEJOCKER",
+    "PEPEKFC",
+    "PEPEKITTIES",
+    "PEPEKK",
+    "PEPEKUN",
+    "PEPELIBRIUM",
+    "PEPELOCATION",
+    "PEPEMASK",
+    "PEPEMERMAN",
+    "PEPEMICO",
+    "PEPEMIND",
+    "PEPEMIRO",
+    "PEPEMNEMONIC",
+    "PEPEMOJI",
+    "PEPEMUACK",
+    "PEPENAUT",
+    "PEPENDRIX",
+    "PEPENEON",
+    "PEPENICTESLA",
+    "PEPENNATOR",
+    "PEPENOK",
+    "PEPEOLDONE",
+    "PEPEOPOLIS",
+    "PEPEPAIDCARD",
+    "PEPEPARIETAL",
+    "PEPEPEACOCK",
+    "PEPEPEEPS",
+    "PEPEPOST",
+    "PEPEPRAKEK",
+    "PEPEPRINT",
+    "PEPEQQ",
+    "PEPERAREPEPE",
+    "PEPERCULESS",
+    "PEPERELOADED",
+    "PEPEREME",
+    "PEPEROCKWELL",
+    "PEPEROOTS",
+    "PEPESGYM",
+    "PEPESINLOVE",
+    "PEPESKEK",
+    "PEPESTRY",
+    "PEPETAR",
+    "PEPETAXMAN",
+    "PEPETHOR",
+    "PEPETOBI",
+    "PEPETOULLE",
+    "PEPETRO",
+    "PEPEUBU",
+    "PEPEVYPER",
+    "PEPEWAY",
+    "PEPEWISHPERS",
+    "PEPEXMAS",
+    "PICKLEPEPE",
+    "PINCHAN",
+    "PIRATPEPE",
+    "POWH",
+    "PRISONERPEPE",
+    "PSYCHICPEPE",
+    "PUFFPEPE",
+    "PYJAMASPEPE",
+    "RANGOPEPE",
+    "RAOULDUKEPEP",
+    "RARECARDDECK",
+    "RAREGROYPER",
+    "RAREINKONE",
+    "RARELEAGUE",
+    "RARELEE",
+    "RAREPEGO",
+    "RAREPEPENOTE",
+    "RAREPITUFINA",
+    "RAREPOTTER",
+    "RAREQUEEM",
+    "RAREZOMBIE",
+    "REALPEPEOFBH",
+    "ROADMAPEPE",
+    "ROCKETPEPE",
+    "RPEPE",
+    "SAKURAPENPEN",
+    "SALVATORPEPE",
+    "SEDUSAPEP",
+    "SHAKAPEPE",
+    "SHININGXPEPE",
+    "SICKPEPE",
+    "SISTNCHAPEPE",
+    "SKULLPEPE",
+    "SMALLRATPEPE",
+    "SNOWMANPEPE",
+    "SPACECOOKIE",
+    "SPACEMOUTH",
+    "SPACEXPEPE",
+    "SPADESPEPE",
+    "SPOCKPEPE",
+    "STONEPEPE",
+    "STORMYTRUMP",
+    "SUCKMYPEPE",
+    "THEKING",
+    "THELAWNMOWER",
+    "THEMASKRARE",
+    "THENEWYORKEK",
+    "THEPEPEHOFF",
+    "TRAININGT",
+    "TSUNADE",
+    "TWOWEEKSPEPE",
+    "UBUNTUPEPE",
+    "UGANDANPEPE",
+    "UNDEADPEPE",
+    "WAYPEPE",
+    "WEREWOLFKEK",
+    "WITCHPEPE",
+    "WITCHRARE",
+    "WORLDPEPEHD",
+    "XENOPEPE",
+    "XIPEPE",
+    "YODAPEP",
+    "YODAPEPE",
+    "YUNOPEPE",
+    "ZAZENPEPE"
+]
+
+
+const FAKERARES = {
+	"FREEDOMKEK": {
+		series: 0,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/img_8604.jpg'
+	},
+	"YOURBASEPEPE": {
+		series: 0,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/yourbasepepe-1.gif'
+	},
+	"BRRRRRRRRRRR": {
+		series : 0,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/pokbppp-1.gif'
+	},
+	"KARPEPELES": {
+		series: 0,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/sfb98qp.jpg'
+	},
+	"FAKEASF": {
+		series: 0,
+		img_url: 'https://digirare.com/storage/fake-rare/FAKEASF.gif'
+	},
+
+	"FAKETORCH": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKAMOTO": {
+		series: 1,
+		img_url: ''
+	},
+	"WAGMIPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKEGRAM": {
+		series: 1,
+		img_url: ''
+	},
+	"SEETHRUPEPHD": {
+		series: 1,
+		img_url: ''
+	},
+	"LABRADEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPEKAWS": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPELENOIR": {
+		series: 1,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/z2jxcji.jpg'
+	},
+	"NOFAPPEPE.crema": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPEORBIT": {
+		series: 1,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/cup5ks3.gif'
+	},
+	"FAKESCAPE": {
+		series: 1,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/s5zzvxa.jpg'
+	},
+	"PEPETHER": {
+		series: 1,
+		img_url: ''
+	},
+	"SEAOFFROG": {
+		series: 1,
+		img_url: ''
+	},
+	"PHONEYSIMPSO": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKEBEEPLE": {
+		series: 1,
+		img_url: ''
+	},
+	"DARKCASHGRAB": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKEBALLS": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPETOTER": {
+		series: 1,
+		img_url: ''
+	},
+
+	"FAKEHAIRPEP": {
+		series: 1,
+		img_url: ''
+	},
+	"HODLPIGPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"OMARPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKEDEMISE": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPETHEFAKE": {
+		series: 1,
+		img_url: ''
+	},
+	"TABLOIDPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPEHODLPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"ROCKPEPESCSR": {
+		series: 1,
+		img_url: ''
+	},
+	"VASECTOEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPEANDLILY": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKESCREAM": {
+		series: 1,
+		img_url: ''
+	},
+	"NATTYPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"PONZIBEAR": {
+		series: 1,
+		img_url: ''
+	},
+	"LORDKEKPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"LORDFAKA": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPSIPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"PARREPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"DUCHAMPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKECALLS": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPTANGCLAN": {
+		series: 1,
+		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/fbvzfys.jpeg'
+	},
+	"FAKEPEPELISA": {
+		series: 1,
+		img_url: ''
+	},
+	"REPEPERATION": {
+		series: 1,
+		img_url: ''
+	},
+	"BLOOMER": {
+		series: 1,
+		img_url: ''
+	},
+	"PEPEDWARDFK": {
+		series: 1,
+		img_url: ''
+	},
+	"POPOPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKEINVSPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"RAREPEPEPD": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKEHOURY": {
+		series: 1,
+		img_url: ''
+	},
+	"MAKEARTPEPE": {
+		series: 1,
+		img_url: ''
+	},
+	"ROEFAKE": {
+		series: 1,
+		img_url: ''
+	},
+	"REPEPERATION": {
+		series: 1,
+		img_url: ''
+	},
+	"FAKEBANKSY": {
+		series: 2,
+		img_url: ''
+	},
+	"FAKETEARS": {
+		series: 2,
+		img_url: ''
+	},
+	"RIVETERPEPE": {
+		series: 2,
+		img_url: ''
+	},
+	"JSONPEPE": {
+		series: 2,
+		img_url: ''
+	},
+	"PEPEBILLIONS": {
+		series: 2,
+		img_url: ''
+	},
+	"FAKEQUEEN": {
+		series: 2,
+		img_url: ''
+	},
+	"COLLEGEMONEY": {
+		series: 2,
+		img_url: ''
+	},
+	"SAINTPEPE": {
+		series: 2,
+		img_url: ''
+	},
+	"LANDWOLFPEPE": {
+		series: 2,
+		img_url: ''
+	}
+}
+	
+	var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
+
+
+	var hash = window.location.hash.substr(1);
+
+
+	const artworks = [
+	{
+		id: 0,
+		title: "Historic Pleb",
+		img_url:"https://imgur.com/MbqEahY.jpeg",
+		state: "SOLD",
+		asset:"PLEBZ.HISTORIC"
+	},
+	{
+		id: 1,
+		title: "Rebel Pleb",
+		img_url:"https://i.imgur.com/BZQWfJl.jpeg",
+		state: "0.015 BTC",
+		asset:"PLEBZ.REBEL"
+		
+	},
+	{
+		id: 2,
+		title: "Worshipper Pleb",
+		img_url:"https://imgur.com/IsuIUDD.jpeg",
+		state: "SOLD",
+		asset:"PLEBZ.WORSHIPPER"
+
+	},
+
+	{
+		id: 4,
+		title: "Anon Pleb",
+		img_url:"https://imgur.com/2kCQika.jpeg",
+		state: "SOLD",
+		asset:"PLEBZ.ANON"
+	},
+
+	{
+		id: 6,
+		title: "Newbie Pleb",
+		img_url:"https://imgur.com/HGSFn3T.jpeg",
+		state: "0.015 BTC",
+		asset:"PLEBZ.NEWBIE"
+
+	},
+
+	{
+		id: 11,
+		title: "Orange Pilled Pleb",
+		img_url:"https://imgur.com/Wrxzamk.jpeg",
+		description: "test",
+		state: "SOLD",
+		asset: "PLEBZ.ORANGEPILLED"
+	},
+	
+
+	{
+		id: 7,
+		title: "Rabbit Hole Pleb",
+		img_url:"https://imgur.com/jW9WrWD.jpeg",
+		state: "0.015 BTC",
+		asset: "PLEBZ.RABBITHOLE"
+
+	},
+	{
+		id: 5,
+		title: "Bagholding Pleb",
+		img_url:"https://imgur.com/cDJ5aYh.jpeg",
+		description: "test",
+		state: "0.015 BTC",
+		asset: "PLEBZ.BAGHOLDER"
+	},
+		
+
+		{
+		id: 3,
+		title: "Party Pleb",
+		img_url:"https://imgur.com/nCTswkV.jpeg",
+		state: "SOLD",
+		asset: "PLEBZ.PARTY"
+
+	},
+	{
+		id: 8,
+		title: "Rabbit Hole Pleb #2",
+		img_url:"https://imgur.com/6JL3rGi.jpeg",
+		state: "SOLD",
+		asset: "PLEBZ.RABBITHOLE2"
+	},
+
+	{
+		id: 10,
+		title: "Infinite Pleb",
+		img_url:"https://imgur.com/rY1tkNP.jpeg",
+		description: "test",
+		state: "0.015 BTC",
+		asset: "PLEBZ.INFINITE"
+	},
+
+		{
+		id: 9,
+		title: "Argument Pleb",
+		img_url:"https://imgur.com/07wXSp4.jpeg",
+		description: "test",
+		state: "0.015 BTC",
+		asset: "PLEBZ.ARGUMENT"
+	},
+	{
+		id: 12,
+		title: "Evangelist Pleb",
+		img_url:"https://imgur.com/o94MsQp.jpeg",
+		description: "test",
+		state: "SOLD",
+		asset: "PLEBZ.EVANGELIST"
+	},
+		{
+		id: 13,
+		title: "Eager Pleb",
+		img_url:"https://imgur.com/xPU1lKS.jpeg",
+		state: "0.015 BTC",
+		asset: "PLEBZ.EAGER"
+	},
+		{
+		id: 14,
+		title: "Big Pleb",
+		img_url:"https://imgur.com/h8P0nuf.jpeg",
+		state: "SOLD",
+		asset: "PLEBZ.BIG"
+	}
+	];
+
+
+
+	var getPrevId = function(artwork) {
+		let new_id = artwork.id-1;
+		return new_id < 0 ? artworks.length+new_id : new_id
+	};
+
+	var getNextId = function(artwork) {
+		let new_id = artwork.id+1;
+		return new_id % (artworks.length );
+	};
+
+	var setBreadcrumbs = function(artwork) {
+		// Set breadcrumbs
+
+		if($('#breadcrumbs a').length >2) {
+			$('#breadcrumbs a')[2].remove();
+		}
+
+		if(artwork !== undefined) {
+			let crumb = $('<a href="#" class="active">'+artwork.title+'</a>');
+			$('#breadcrumbs').append(crumb);
+		}
+		
+	};
+
+
+
+
+
+
+	var displayWallet = function(obj) {
+
+		let pleb_collection = [];
+		let pepe_collection = [];
+		let fake_collection = [];
+		let other_collection = [];
+		let assets = obj.data;
+		for(var i=0;i<assets.length;i++) {
+			let asset = assets[i];
+			let pleb = artworks.find(x => x.asset === asset.asset_longname );
+			
+			
+			if(pleb === undefined || asset.quantity === 0) {  
+				
+				let ref = asset.description.split(';')[0].split('/')[1];
+				
+				if(RAREPEPES.includes(asset.asset) ) {
+					
+					let pepe  = {
+					klass: "PEPE",
+					title: asset.asset,
+					img_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
+					asset : asset.asset,
+					quantity: asset.quantity
+
+					}
+					pepe_collection.push(pepe);
+				} else if (FAKERARES[asset.asset] !== undefined) {
+					
+					let img_url = FAKERARES[asset.asset].img_url.length > 0 ? FAKERARES[asset.asset].img_url : 'https://i.imgur.com/'+ref+'.jpg';
+
+					let fake = {
+						klass: "FAKE",
+						title: asset.asset,
+						img_url: img_url,
+						asset : asset.asset,
+						quantity: asset.quantity
+
+		
+					}
+						
+					fake_collection.push(fake);
+				} else if (asset.asset !== 'XCP'){
+					let other = {
+					klass: "OTHER",
+					title: asset.asset,
+					asset : asset.asset,
+					img_url: 'https://i.imgur.com/'+ref+'.gif',
+					alt_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
+					quantity: asset.quantity
+
+					}
+
+					other_collection.push(other);
+				}
+				
+			
+				
+			} else {
+
+				
+			pleb.quantity = asset.quantity;
+			pleb.klass= "PLEB";
+		
+			pleb.asset = asset.asset_longname;
+			pleb.img_url = 'https://i.imgur.com/'+asset.description.split(';')[0].split('/')[1]+'.gif'
+			pleb_collection.push(pleb)
+
+			}
+		}
+
+
+
+		generateCollection(pleb_collection.concat(fake_collection, pepe_collection, other_collection),$('#plebs-collection'));
+		// generateCollection(fake_collection,$('#fakerares-collection'));
+		// generateCollection(pepe_collection,$('#rarepepes-collection'));
+		// generateCollection(other_collection,$('#other-collection'));
+
+
+		
+	}
+
+
+
+	var generateCollection = function(items, dom_el) {
+
+
+
+		let grid = dom_el.find('.collection-display-grid');
+
+		grid.empty();
+		
+		if(!items.length) {
+			dom_el.hide();
+			return;
+		} 
+		
+		dom_el.show();
+
+		$.each(items, function(i, artwork) {
+
+			
+			artwork.id = i;
+			let artwork_dom_item = $('#templates .collection-item').clone();
+			let artwork_dom_item_image = artwork_dom_item.find('.artwork-image')
+			let img = new Image();
+			img.src = artwork.img_url;
+			img.onerror = function() {
+
+				img.onerror = function() {
+					if(artwork.alt_url !== this.src) {
+						this.src = artwork.img_url.replace('.jpg','.gif');
+					}
+					img.onerror = function(){}
+				}
+				if(artwork.alt_url !== this.src) {
+					this.src = artwork.img_url.replace('.jpg','.png');
+				}
+				
+			}
+			artwork_dom_item.addClass(artwork.klass)
+			artwork_dom_item_image.html(img);
+
+			artwork_dom_item_image.clone().insertAfter(artwork_dom_item_image);
+			artwork_dom_item.find('.artwork-title').html(artwork.title);
+			artwork_dom_item.find('.artwork-quantity').html('x'+artwork.quantity);
+
+
+
+			artwork_dom_item.appendTo(grid);
+
+
+			artwork_dom_item.on('click', function(e) {
+
+				window.location.href="https://xchain.io/asset/"+artwork.asset
+			});
+		});
+	}
+
+	var states = {
+		splash : true
+	}
+	var setState = function(state, toggle) {
+		toggle = Boolean(toggle);
+		states[state] = toggle;
+		
+		$('body').attr('data-state', states.splash ? 'splash' : '');
+		return states;
+	}
+
+
+
+	$('a.cta-explore').on('click', function(e) {
+		
+		access('collection');
+		e.preventDefault();
+	});
+
+	var id = Number(getUrlParameter('artwork_id')) || null;
+
+	if(id !== null) {
+
+		displaySelectedItem(artworks[id]);
+	} else {
+
+		// displaySection('#splash');
+	}
+
+	$('.hero').on('click', function(e) {
+		setState('splash', false);
+	});
+
+	$(window).scroll(function(e) {
+		if(e.currentTarget.scrollY > 0) {
+			setState('splash', false);
+		}
+		
+	});
+
+
+
+
+	var getXchainData = function(asset, dom_cta) {
+		$.ajax({
+			url: "https://xchain.io/api/asset/"+asset,
+			method: "GET"
+		}).done(function(data){
+			console.log(data)
+
+		})
+	}
+
+	
+	var user = {}
+	user.address = localStorage.getItem('pleb_addresss');
+
+	var generateWallet = function(address) {
+		$.ajax({
+			url: "https://xchain.io/api/balances/"+address,
+			method: "GET"
+		}).done(displayWallet)
+	}
+
+
+
+
+
+	$('#wallet-address-form').submit(function(e) {
+		var data = $("#address-input").val();
+		user.address = data;
+		localStorage.setItem('pleb_addresss', user.address);
+		generateWallet(user.address);
+		e.preventDefault();
+	});
+
+	if(user.address != undefined) {
+		generateWallet(user.address);
+	} 
+	setBreadcrumbs();
+
+</script>
+</html>

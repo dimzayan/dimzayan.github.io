@@ -2,7 +2,7 @@
 <html lang="en-US">
 
 <head>
-	<title>Dimzayan - Dim Zayan</title>
+	<title>Dimzayan - PLEBS</title>
 
 <meta name="robots" content="all">
 <meta property="og:locale" content="en_US">
@@ -269,7 +269,7 @@
 		}
 
 		.artwork-date {
-			margin : 2em 0 0 0;
+			margin : 0 0 2em 0;
 		}
 
 		.artwork-medium {
@@ -290,10 +290,9 @@
 		}
 
 
-		#selection[data-state='SOLD'] .cta {
-			display: none;
+		.digital {
+			margin-top: 4em;
 		}
-
 		#selection[data-state='SOLD'] .artwork-state {
 			color: red;
 		}
@@ -405,33 +404,19 @@
 		}
 
 
-		#wallet {
-			margin : 5em;
-			display: none;
-		}
 
-		#wallet .collection-item {
-			padding : 1em;
-		}
-
-		#wallet .collection-item-container {
-			position : relative;
-		}
-
-		#wallet .collection-item-quantity { 
-			display: block;
-		}
-
-		#wallet .collection-item-container {
-			border : solid 0.75em #333;
-			border-radius : 0.75em;
-			overflow: hidden;
-		}
 
 		#other-grid .collection-item-container {
 			border:none;
 		}
 
+		#digital-edition {
+			display : none;
+		}
+
+		.cta-wallet {
+			margin-right: 0.5em;
+		}
 
 
 	</style>
@@ -445,7 +430,7 @@
 	</nav>
 
 	<nav id="project-nav">
-		<a href="#wallet"  class="cta-wallet">Wallet</a>
+		<a href="wallet.html"  class="cta-wallet">Wallet</a>
 		<a href="#about"  class="cta-about">About</a>
 
 
@@ -482,13 +467,18 @@
 
 					
 					<p class="artwork-date" id="selected-artwork-date">2021</p>
+					<div class="physical">ORIGINAL
 					<p class="artwork-medium" id="selected-artwork-medium">Acrylic on Vintage<br/>National Geographic Magazine</p>
 					<p class="artwork-medium" id="selected-artwork-medium">~ 7" x 10"</p>
-
-					<p id="selected-artwork-intro" class="artwork-intro"></p>
 					<p class="artwork-state" id="selected-artwork-state">SOLD</p>
-					<a class="cta" href="#" id="selected-artwork-cta">Explore Asset on Xchain.io</a>
-
+					</div>
+					<div class="digital" id="digital-edition">
+						DIGITAL EDITION
+					<p class="pleb-digital-edition-desc">Edition of 21</p>
+					<p id="pleb-dispenser"></p>
+					
+					<a class="cta" href="/" id="explore-asset-cta">Explore digital asset</a>
+				</div>
 				</div>
 			</div>
 		</div>
@@ -525,20 +515,7 @@
 	
 	</section>
 
-	<section id="wallet">
-		<h2>MUH PLEBS</h2>
-		<form id="wallet-address-form">
-			<input type="text" placeholder="Enter Your Wallet Address" id="address-input"/>
-			<input type="submit" />
-		</form>
-		<div class="row collection-display-grid" id="wallet-grid">
 
-		</div>
-		<!-- <h2>MUH PEPES</h2>
-		<div class="row collection-display-grid" id="other-grid">
-
-		</div> -->
-	</section>
 
 	<nav id="paginator" >
 		<a href="#prev" class="prev"><</a>
@@ -592,13 +569,13 @@
 		id: 1,
 		title: "Rebel Pleb",
 		img_url:"https://i.imgur.com/BZQWfJl.jpeg",
-		state: "NOT FOR SALE YET",
-		asset:"PLEBZ.REBEL"
+		state: "0.015 BTC",
+		asset:"PLEBZ.REBE"
 		
 	},
 	{
 		id: 2,
-		title: "Worshipping Pleb",
+		title: "Worshipper Pleb",
 		img_url:"https://imgur.com/IsuIUDD.jpeg",
 		state: "SOLD",
 		asset:"PLEBZ.WORSHIPPER"
@@ -617,7 +594,7 @@
 		id: 6,
 		title: "Newbie Pleb",
 		img_url:"https://imgur.com/HGSFn3T.jpeg",
-		state: "Not for sale yet",
+		state: "0.015 BTC",
 		asset:"PLEBZ.NEWBIE"
 
 	},
@@ -636,7 +613,7 @@
 		id: 7,
 		title: "Rabbit Hole Pleb",
 		img_url:"https://imgur.com/jW9WrWD.jpeg",
-		state: "NOT FOR SALE",
+		state: "0.015 BTC",
 		asset: "PLEBZ.RABBITHOLE"
 
 	},
@@ -645,7 +622,7 @@
 		title: "Bagholding Pleb",
 		img_url:"https://imgur.com/cDJ5aYh.jpeg",
 		description: "test",
-		state: "NOT FOR SALE YET",
+		state: "0.015 BTC",
 		asset: "PLEBZ.BAGHOLDER"
 	},
 		
@@ -671,7 +648,7 @@
 		title: "Infinite Pleb",
 		img_url:"https://imgur.com/rY1tkNP.jpeg",
 		description: "test",
-		state: "NOT FOR SALE YET",
+		state: "0.015 BTC",
 		asset: "PLEBZ.INFINITE"
 	},
 
@@ -680,7 +657,7 @@
 		title: "Argument Pleb",
 		img_url:"https://imgur.com/07wXSp4.jpeg",
 		description: "test",
-		state: "NOT FOR SALE YET",
+		state: "0.015 BTC",
 		asset: "PLEBZ.ARGUMENT"
 	},
 	{
@@ -695,11 +672,11 @@
 		id: 13,
 		title: "Eager Pleb",
 		img_url:"https://imgur.com/xPU1lKS.jpeg",
-		state: "NOT FOR SALE YET",
+		state: "0.015 BTC",
 		asset: "PLEBZ.EAGER"
 	},
 		{
-		id: 13,
+		id: 14,
 		title: "Big Pleb",
 		img_url:"https://imgur.com/h8P0nuf.jpeg",
 		state: "SOLD",
@@ -738,6 +715,7 @@
 	var displaySection= function(section_id) {
 		
 		let selection = $(section_id);
+
 		$.each($('section'), function(i,section) {
 			if(selection !== $(section)) {$(section).hide();}
 			console.log('hiding '+$(section).attr('id'))
@@ -751,7 +729,8 @@
 
 	var displaySelectedItem = function(artwork) {
 
-		displaySection('#selection')
+		window.location.hash = artwork.asset;
+		displaySection('#selection');
 		// console.log('displaying '+artwork.title)
 		$('#selected-artwork-title').html(artwork.title);
 		$('#selected-artwork-medium').html(artwork.medium);
@@ -780,13 +759,13 @@
 		// Handles click events
 	
 
-		$('a.prev').attr('href', '#page-'+artworks[getPrevId(artwork)].id);
+		$('a.prev').attr('href', '#'+artworks[getPrevId(artwork)].asset);
 		$('a.prev').off('click').on('click', function(e){
 			displaySelectedItem(artworks[getPrevId(artwork)]);
 			e.preventDefault();
 		});
 
-		$('a.next').attr('href', '#page-'+artworks[getNextId(artwork)].id);
+		$('a.next').attr('href', '#'+artworks[getNextId(artwork)].asset);
 		$('a.next').off('click').on('click', function(e){
 			displaySelectedItem(artworks[getNextId(artwork)]);
 			e.preventDefault();
@@ -797,53 +776,24 @@
 		$('body').addClass('selected')
 		
 
+		getXchainData(artwork.asset).done(function(resp){
+			console.log(resp);
+			if(resp.error) {
+				$('#digital-edition').hide();
+			} else {
+				$('#digital-asset-cta').attr('href', 'https://xchain.io/asset/'+artwork.asset)
+				$('#digital-edition').show();
+			}
 
-		getDispensers(artwork.asset);
+		})
+		// getDispensers(artwork.asset);
 
 
 		$('body').scrollTo('#selection');
 
 	}
 
-	var displayWallet = function(obj) {
-
-		let pleb_collection = [];
-		let other_collection = [];
-		let assets = obj.data;
-		for(var i=0;i<assets.length;i++) {
-			let asset = assets[i];
-			let pleb = artworks.find(x => x.asset === asset.asset_longname );
-			
-			
-			if(pleb === undefined || asset.quantity === 0) {  
-			
-				other_collection.push({
-					
-					title: asset.asset,
-					img_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
-					alt_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.gif',
-					quantity: asset.quantity
-
-				});
-			} else {
-
-				
-			pleb.quantity = asset.quantity;
-			pleb.img_url = 'https://i.imgur.com/'+asset.description.split(';')[0].split('/')[1]+'.gif'
-			pleb_collection.push(pleb)
-
-			}
-		}
-
-
-		
-
-		$('#wallet-grid').empty();
-		generateCollection(pleb_collection,$('#wallet-grid'));
-		// generateCollection(other_collection,$('#other-grid'), )
-		
-	}
-
+	
 
 
 	var generateCollection = function(items, dom_el) {
@@ -871,8 +821,10 @@
 
 			artwork_dom_item.appendTo(dom_el);
 
+
 			artwork_dom_item.on('click', function(e) {
-				displaySelectedItem(artwork)
+
+				displaySelectedItem(artwork);
 			});
 		});
 	}
@@ -895,7 +847,8 @@
 	generateCollection(artworks, $('#collection-grid'));
 
 	$('a.cta-explore').on('click', function(e) {
-		displaySection('#collection');
+		
+		access('collection');
 		e.preventDefault();
 	});
 
@@ -925,18 +878,11 @@
 		e.preventDefault();
 	});
 
-	$('.cta-wallet').on('click', function(e) {
-		access('wallet');
-		
-	});
 
 	var getXchainData = function(asset, dom_cta) {
-		$.ajax({
+		return $.ajax({
 			url: "https://xchain.io/api/asset/"+asset,
 			method: "GET"
-		}).done(function(data){
-			console.log(data)
-
 		})
 	}
 
@@ -944,56 +890,72 @@
 	var user = {}
 	user.address = localStorage.getItem('pleb_addresss');
 
-	var generateWallet = function(address) {
-		$.ajax({
-			url: "https://xchain.io/api/balances/"+address,
-			method: "GET"
-		}).done(displayWallet)
-	}
 
 	var getDispensers = function(asset) {
-		$.ajax({
-			url: "https://xchain.io/api/dispensers/"+asset,
-			method: "GET"
-		}).done(function(obj){
-			console.log(obj);
-			let available_dispensers = [];
-			for(var i=0;i<obj.length;i++) {
-				if(obj.give.remaining > 0) {
-					available_dispensers.push(obj);
+
+		getMarketInfo(function(marketObj) {
+			$.ajax({
+				url: "https://xchain.io/api/dispensers/"+asset.asset,
+				method: "GET"
+			}).done(function(obj){
+				console.log(obj);
+				let available_dispensers = [];
+				for(var i=0;i<obj.data.length;i++) {
+					if(obj.data[i].give_remaining > 0) {
+						available_dispensers.push(obj.data[i]);
+					}
+					
 				}
 				
-			}
-			console.log(available_dispensers)
+				if(available_dispensers.length > 0) {
+					$('#pleb-dispenser').html(parseFloat(available_dispensers[0].satoshirate)+' BTC / $'+(available_dispensers[0].satoshirate * marketObj.currency_info[0].price_usd).toFixed(0))
+					$('#pleb-dispenser').show();
+				} else {
+					$('#pleb-dispenser').hide();
+				}
+			})
 		})
+		
+		
 	}
+
+	var getMarketInfo = function(callback) {
+		// Retrieve BTC price before getting dispensers
+		$.ajax({
+			url: "https://xchain.io/api/network",
+			method:"GET"
+		}).done(callback);
+	};
+
 
 
 	var access = function(section) {
 		switch(section) {
-			case 'wallet':
-				if(user.address != undefined) {
-					generateWallet(user.address);
-				} 
-				displaySection('#wallet');
-				return;
+			
 			case 'about':
+				window.location.hash = '#about';
 				displaySection('#about');
 				return;
+			case 'collection':
+				window.location.hash = '';
+				displaySection('#collection');
 			default:
+				if(section.startsWith('PLEBZ.') === true) {
+
+					let pleb = artworks.find(pl => pl.asset === section)
+					console.log(pleb)
+					if(pleb !== undefined) {
+						displaySelectedItem(pleb);
+						return;
+					}
+				}
 				return;
 		} 
 	}
 
 	access(hash);
 
-	$('#wallet-address-form').submit(function(e) {
-		var data = $("#address-input").val();
-		user.address = data;
-		localStorage.setItem('pleb_addresss', user.address);
-		generateWallet(user.address);
-		e.preventDefault();
-	});
+
 
 </script>
 </html>
