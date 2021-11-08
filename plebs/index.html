@@ -531,6 +531,11 @@
 			<div class="artwork-image collection-item-image"></div>
 			<div class="artwork-title collection-item-title"></div>
 			<div class="artwork-quantity collection-item-quantity"></div>
+			<video class="artwork-video collection-item-video" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:-1">
+  <source src="" type="video/mp4">
+ 
+Your browser does not support the video tag.
+</video>
 		</div>
 	</div>
 </div>
@@ -681,9 +686,23 @@
 		img_url:"https://imgur.com/h8P0nuf.jpeg",
 		state: "SOLD",
 		asset: "PLEBZ.BIG"
+	},
+		{
+		id: 15,
+		title: "Pepe Pleb",
+		img_url:"https://imgur.com/aBgxbSU.jpeg",
+		state: "Auctioned at Scarce.city",
+		asset: "PLEBZ.PEPE"
 	}
 	];
 
+
+var playVideo = function($player, src) {
+    $player.css({'zIndex':9999})
+    $player[0].src = src;
+    $player[0].load();
+    $player[0].play();
+};
 
 
 	var getPrevId = function(artwork) {
@@ -821,6 +840,17 @@
 
 			artwork_dom_item.appendTo(dom_el);
 
+
+			// artwork_dom_item.on('mouseover', function(e) {
+
+			// 	if(artwork.video_url === undefined) { return}
+
+			// 	playVideo(artwork_dom_item.find('.artwork-video'), artwork.video_url)
+			// })
+
+			// artwork_dom_item.on('mouseleave', function(e) {
+			// 	artwork_dom_item.find('.artwork-video').css({'zIndex':-1})
+			// })
 
 			artwork_dom_item.on('click', function(e) {
 
