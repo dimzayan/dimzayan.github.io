@@ -513,7 +513,7 @@
 	<section id="wallet" style="text-align: center">
 		
 		<form id="wallet-address-form">
-			<input type="text" placeholder="Enter Your Wallet Address" id="address-input"/>
+			<input type="text" placeholder="Enter Your Bitcoin Wallet Address" id="address-input"/>
 			<input type="submit" />
 		</form>
 		<div id="plebs-collection">
@@ -2509,7 +2509,7 @@ const FAKERARES = {
 	},
 	"PEPTANGCLAN": {
 		series: 1,
-		img_url: 'https://fakeraredirectory.files.wordpress.com/2021/10/fbvzfys.jpeg'
+		img_url: ''
 	},
 	"FAKEPEPELISA": {
 		series: 1,
@@ -2608,6 +2608,7 @@ const FAKERARES = {
     }
     return false;
 };
+
 
 
 	var hash = window.location.hash.substr(1);
@@ -2775,10 +2776,18 @@ const FAKERARES = {
 
 var generateCard = function(asset) {
 	
+
 	let $item = $('#templates .collection-item').clone();
 	let $item_image = $item.find('.artwork-image')
 	let img = new Image();
 	img.src = asset.image_large ? asset.image_large : asset.img_url;
+      
+
+    if(asset.image_url === undefined && asset.image_large === undefined) {
+        return $('<div/>')
+    } else {
+        console.log(img.src)
+    }
 
 	$item_image.html(img);
 
@@ -2835,10 +2844,13 @@ var generateCollection = function(assets, dom_el) {
 			if(asset.description.endsWith('.json')) {
 
 				$.get(normalizeUrl(asset.description)).done(function(resp) {
+
 					asset = {
 						...asset,
 						...resp
 					}
+
+
 					
 					generateCard(asset).appendTo(grid)
 				})
@@ -2873,130 +2885,7 @@ var generateCollection = function(assets, dom_el) {
 		generateCollection(obj.data,$('#plebs-collection'));
 	}
 
-	// 	let collection = [];
-	// 	let assets = obj.data;
 
-	// 	for(var i=0;i<assets.length;i++) {
-	// 		let asset = assets[i];
-	// 		// let pleb = artworks.find(x => x.asset === asset.asset_longname );
-
-	// 		// pleb.asset = asset.asset_longname;
-	// 		// pleb.img_url = 'https://i.imgur.com/'+asset.description.split(';')[0].split('/')[1]+'.gif'
-			
-	// 		if(asset.quantity === 0 || asset.asset === 'XCP') {continue;}
-
-	// 		asset.title = asset.asset
-	// 		asset.project = RAREPEPES.includes(asset.asset) ? "PEPE" : (FAKERARES[asset.asset] !== undefined) : "FAKE" : "OTHER"
-				
-	// 			let ref = asset.description.split(';')[0].split('/')[1];
-
-				
-
-				
-
-	// 			if(asset.description.endsWith('.json')) {
-
-	// 				$.get(normalizeUrl(asset.description)).done(function(resp) {
-	// 					console.log(resp)
-	// 				})
-	// 			} else {
-
-	// 			}
-				
-				
-	// 				img_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg'
-					
-					
-	// 			} else if  {
-					
-	// 				let img_url = FAKERARES[asset.asset].img_url.length > 0 ? FAKERARES[asset.asset].img_url : 'https://i.imgur.com/'+ref+'.jpg';
-
-					
-	// 			} else if (asset.asset !== 'XCP'){
-					
-	// 				img_url: 'https://i.imgur.com/'+ref+'.gif',
-	// 				alt_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
-					
-					
-					
-	// 			}
-				
-			
-				
-			
-			
-			
-
-			
-		
-
-
-
-	// 	generateCollection(collection,$('#plebs-collection'));
-	// 	// generateCollection(fake_collection,$('#fakerares-collection'));
-	// 	// generateCollection(pepe_collection,$('#rarepepes-collection'));
-	// 	// generateCollection(other_collection,$('#other-collection'));
-
-
-		
-	// }
-
-
-
-	// var generateCollection = function(items, dom_el) {
-
-
-
-	// 	let grid = dom_el.find('.collection-display-grid');
-
-	// 	grid.empty();
-		
-	// 	if(!items.length) {
-	// 		dom_el.hide();
-	// 		return;
-	// 	} 
-		
-	// 	dom_el.show();
-
-	// 	$.each(items, function(i, artwork) {
-
-			
-	// 		artwork.id = i;
-	// 		let artwork_dom_item = $('#templates .collection-item').clone();
-	// 		let artwork_dom_item_image = artwork_dom_item.find('.artwork-image')
-	// 		let img = new Image();
-	// 		img.src = artwork.img_url;
-	// 		img.onerror = function() {
-
-	// 			img.onerror = function() {
-	// 				if(artwork.alt_url !== this.src) {
-	// 					this.src = artwork.img_url.replace('.jpg','.gif');
-	// 				}
-	// 				img.onerror = function(){}
-	// 			}
-	// 			if(artwork.alt_url !== this.src) {
-	// 				this.src = artwork.img_url.replace('.jpg','.png');
-	// 			}
-				
-	// 		}
-	// 		artwork_dom_item.addClass(artwork.klass)
-	// 		artwork_dom_item_image.html(img);
-
-	// 		artwork_dom_item_image.clone().insertAfter(artwork_dom_item_image);
-	// 		artwork_dom_item.find('.artwork-title').html(artwork.title);
-	// 		artwork_dom_item.find('.artwork-quantity').html('x'+artwork.quantity);
-
-
-
-	// 		artwork_dom_item.appendTo(grid);
-
-
-	// 		artwork_dom_item.on('click', function(e) {
-
-	// 			window.location.href="https://xchain.io/asset/"+artwork.asset
-	// 		});
-	// 	});
-	// }
 
 	var states = {
 		splash : true
