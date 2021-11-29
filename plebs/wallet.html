@@ -18,7 +18,7 @@
 <meta name="twitter:data1" content="2 minutes">
 <meta name="twitter:image" content="https://imgur.com/pNzdeD6.jpeg?12344">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0;minimum-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 
 <link rel=icon href=../favicon.png>
 <link rel="stylesheet" id="dimzayan-style-css" href="../index_files/style.css" media="all">
@@ -369,6 +369,78 @@
 		}
 
 
+		#details {
+			position: fixed;
+			top:0;
+    		left:0;
+    		transform:translate(0, 0%);
+    		color: black; 
+    		background: #FFF; 
+    		z-index: 100000;
+    		padding: 0;
+    		height: 100vh;
+    		width: 100vw;
+    		display: none;
+		}
+
+		#details .collection-item {
+			margin: 4em; 
+			max-width: 100%;
+			width: auto;
+		
+			position: relative;
+		}
+
+		#details .collection-item-container {
+			display: flex;
+			flex-direction: row;	
+			border-radius: 0;
+		}
+
+		#details .collection-item-image {
+			height: 70vh;
+			width: auto;
+			border-radius: 0;
+		}
+
+		#details .artwork-meta {
+			padding: 4em;
+		}
+
+		#details .artwork-meta,
+		#details .collection-item-title, 
+		#details .collection-item-quantity {
+			display: block;
+			font-size: 1.3em;
+			position: relative;
+			top: 0;
+			right: 0;
+
+
+		}
+		#details .collection-item-image + .collection-item-image {
+			display: none;
+		}
+
+		#details:after {
+			content: "CLOSE";
+			position: absolute;
+			top: 2em;
+			right: 2em;
+			color: #333;
+		}
+
+		#wallet {
+			max-width: 1280px;
+			margin: 4em auto;
+		}
+
+		#wallet form {
+			padding : 4em auto 4em auto;
+		}
+
+#details .collection-item {}
+
 		@media (max-width: 767.98px) {
 
 			body {
@@ -381,6 +453,18 @@
 
 		}
 		
+
+        .dispenser {
+            margin : 1em 0;
+        }
+
+        .dispenser a {
+            display: block;
+        } 
+
+        .dispenser .xchain {
+            font-size: 0.8em
+        }
 
 	</style>
 </head>
@@ -405,7 +489,10 @@
 	</section>
 
 
+	<section id="details">
 
+
+	</section>
 	
 
 	<section id="wallet" style="text-align: center">
@@ -422,6 +509,8 @@
 		</div>
 
 
+
+
 	</section>
 
 	<nav id="paginator" >
@@ -436,9 +525,19 @@
 	<div class="collection-item col-sm-6 col-md-4 col-lg-3"  href="#" >
 		<div class="collection-item-container">
 			<div class="artwork-image collection-item-image"></div>
-			<div class="artwork-title collection-item-title"></div>
-			<div class="artwork-quantity collection-item-quantity"></div>
+			<div class="artwork-meta">
+				<div class="artwork-title collection-item-title"></div>
+				<div class="artwork-quantity collection-item-quantity"></div>
+				<div class="disp"></div>
+			</div>
+
 		</div>
+	</div>
+
+	<div id="dispenser-template" class="dispenser">
+		Best Dispenser
+		<a class="price" href="" target="_blank"></a>
+		<a href="https://xchain.io/asset/" target="_blank" class="xchain">Explore on Xchain</a>
 	</div>
 </div>
 
@@ -2654,147 +2753,235 @@ const FAKERARES = {
 
 
 
-
-
-
-	var displayWallet = function(obj) {
-
-		let pleb_collection = [];
-		let pepe_collection = [];
-		let fake_collection = [];
-		let other_collection = [];
-		let assets = obj.data;
-		for(var i=0;i<assets.length;i++) {
-			let asset = assets[i];
-			let pleb = artworks.find(x => x.asset === asset.asset_longname );
-			
-			
-			if(pleb === undefined || asset.quantity === 0) {  
-				
-				let ref = asset.description.split(';')[0].split('/')[1];
-				
-				if(RAREPEPES.includes(asset.asset) ) {
-					
-					let pepe  = {
-					klass: "PEPE",
-					title: asset.asset,
-					img_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
-					asset : asset.asset,
-					quantity: asset.quantity
-
-					}
-					pepe_collection.push(pepe);
-				} else if (FAKERARES[asset.asset] !== undefined) {
-					
-					let img_url = FAKERARES[asset.asset].img_url.length > 0 ? FAKERARES[asset.asset].img_url : 'https://i.imgur.com/'+ref+'.jpg';
-
-					let fake = {
-						klass: "FAKE",
-						title: asset.asset,
-						img_url: img_url,
-						asset : asset.asset,
-						quantity: asset.quantity
-
-		
-					}
-						
-					fake_collection.push(fake);
-				} else if (asset.asset !== 'XCP'){
-					let other = {
-					klass: "OTHER",
-					title: asset.asset,
-					asset : asset.asset,
-					img_url: 'https://i.imgur.com/'+ref+'.gif',
-					alt_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
-					quantity: asset.quantity
-
-					}
-
-					other_collection.push(other);
-				}
-				
-			
-				
-			} else {
-
-				
-			pleb.quantity = asset.quantity;
-			pleb.klass= "PLEB";
-		
-			pleb.asset = asset.asset_longname;
-			pleb.img_url = 'https://i.imgur.com/'+asset.description.split(';')[0].split('/')[1]+'.gif'
-			pleb_collection.push(pleb)
-
-			}
-		}
-
-
-
-		generateCollection(pleb_collection.concat(fake_collection, pepe_collection, other_collection),$('#plebs-collection'));
-		// generateCollection(fake_collection,$('#fakerares-collection'));
-		// generateCollection(pepe_collection,$('#rarepepes-collection'));
-		// generateCollection(other_collection,$('#other-collection'));
-
-
-		
+	var normalizeUrl = function(str) {
+		return 'https://'+ str.replace(/(http(s?)):\/\//i,'').split(';')[0]
 	}
 
 
+var generateCard = function(asset) {
+	
+	let $item = $('#templates .collection-item').clone();
+	let $item_image = $item.find('.artwork-image')
+	let img = new Image();
+	img.src = asset.image_large ? asset.image_large : asset.img_url;
 
-	var generateCollection = function(items, dom_el) {
+	$item_image.html(img);
+
+	$item_image.clone().insertAfter($item_image);
+	$item.attr('data-name',asset.asset)
+	$item.find('.artwork-title').html(asset.title);
+	$item.find('.artwork-quantity').html('x'+asset.quantity);
+
+	$item.on('click', async  function(e) {
+		e.preventDefault();
+		$('#details').html($item.clone());
+		let $disp = await getDispensers(asset.asset)
+
+		
+		$('#details .disp').html($disp)
+		$('#details').show();
+		$('body').css('overflow','hidden')
+		// window.location.href="https://xchain.io/asset/"+asset.asset
+	});
 
 
+
+	return $item
+}
+
+	$('#details').on('click', () => {
+		$('body').css('overflow','auto')
+		$('#details').hide();
+	})
+
+
+var generateCollection = function(assets, dom_el) {
 
 		let grid = dom_el.find('.collection-display-grid');
 
 		grid.empty();
 		
-		if(!items.length) {
+		if(!assets.length) {
 			dom_el.hide();
 			return;
 		} 
 		
 		dom_el.show();
 
-		$.each(items, function(i, artwork) {
+
+		$.each(assets, function(i, asset) {
+
+			if(asset.quantity === 0 || asset.asset === 'XCP') {return }
 
 			
-			artwork.id = i;
-			let artwork_dom_item = $('#templates .collection-item').clone();
-			let artwork_dom_item_image = artwork_dom_item.find('.artwork-image')
-			let img = new Image();
-			img.src = artwork.img_url;
-			img.onerror = function() {
+			asset.id = i;
+			asset.title = asset.asset
 
-				img.onerror = function() {
-					if(artwork.alt_url !== this.src) {
-						this.src = artwork.img_url.replace('.jpg','.gif');
+			if(asset.description.endsWith('.json')) {
+
+				$.get(normalizeUrl(asset.description)).done(function(resp) {
+					asset = {
+						...asset,
+						...resp
 					}
-					img.onerror = function(){}
-				}
-				if(artwork.alt_url !== this.src) {
-					this.src = artwork.img_url.replace('.jpg','.png');
-				}
-				
+					
+					generateCard(asset).appendTo(grid)
+				})
+			} else if(asset.description.startsWith('imgur/')) {
+				asset.image_large = 'https://i.imgur.com/'+ asset.description.split(';')[0].split('/')[1];
+				generateCard(asset).appendTo(grid)
 			}
-			artwork_dom_item.addClass(artwork.klass)
-			artwork_dom_item_image.html(img);
-
-			artwork_dom_item_image.clone().insertAfter(artwork_dom_item_image);
-			artwork_dom_item.find('.artwork-title').html(artwork.title);
-			artwork_dom_item.find('.artwork-quantity').html('x'+artwork.quantity);
 
 
+			
+			// img.onerror = function() {
 
-			artwork_dom_item.appendTo(grid);
-
-
-			artwork_dom_item.on('click', function(e) {
-
-				window.location.href="https://xchain.io/asset/"+artwork.asset
-			});
+			// 	img.onerror = function() {
+			// 		if(artwork.alt_url !== this.src) {
+			// 			this.src = artwork.img_url.replace('.jpg','.gif');
+			// 		}
+			// 		img.onerror = function(){}
+			// 	}
+			// 	if(artwork.alt_url !== this.src) {
+			// 		this.src = artwork.img_url.replace('.jpg','.png');
+			// 	}
+				
+			// }
+			// artwork_dom_item.addClass(artwork.klass)
+			
 		});
 	}
+
+
+	var displayWallet = function(obj) {
+
+		generateCollection(obj.data,$('#plebs-collection'));
+	}
+
+	// 	let collection = [];
+	// 	let assets = obj.data;
+
+	// 	for(var i=0;i<assets.length;i++) {
+	// 		let asset = assets[i];
+	// 		// let pleb = artworks.find(x => x.asset === asset.asset_longname );
+
+	// 		// pleb.asset = asset.asset_longname;
+	// 		// pleb.img_url = 'https://i.imgur.com/'+asset.description.split(';')[0].split('/')[1]+'.gif'
+			
+	// 		if(asset.quantity === 0 || asset.asset === 'XCP') {continue;}
+
+	// 		asset.title = asset.asset
+	// 		asset.project = RAREPEPES.includes(asset.asset) ? "PEPE" : (FAKERARES[asset.asset] !== undefined) : "FAKE" : "OTHER"
+				
+	// 			let ref = asset.description.split(';')[0].split('/')[1];
+
+				
+
+				
+
+	// 			if(asset.description.endsWith('.json')) {
+
+	// 				$.get(normalizeUrl(asset.description)).done(function(resp) {
+	// 					console.log(resp)
+	// 				})
+	// 			} else {
+
+	// 			}
+				
+				
+	// 				img_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg'
+					
+					
+	// 			} else if  {
+					
+	// 				let img_url = FAKERARES[asset.asset].img_url.length > 0 ? FAKERARES[asset.asset].img_url : 'https://i.imgur.com/'+ref+'.jpg';
+
+					
+	// 			} else if (asset.asset !== 'XCP'){
+					
+	// 				img_url: 'https://i.imgur.com/'+ref+'.gif',
+	// 				alt_url: 'https://www.rarepepewallet.com/images/cards/'+asset.asset+'.jpg',
+					
+					
+					
+	// 			}
+				
+			
+				
+			
+			
+			
+
+			
+		
+
+
+
+	// 	generateCollection(collection,$('#plebs-collection'));
+	// 	// generateCollection(fake_collection,$('#fakerares-collection'));
+	// 	// generateCollection(pepe_collection,$('#rarepepes-collection'));
+	// 	// generateCollection(other_collection,$('#other-collection'));
+
+
+		
+	// }
+
+
+
+	// var generateCollection = function(items, dom_el) {
+
+
+
+	// 	let grid = dom_el.find('.collection-display-grid');
+
+	// 	grid.empty();
+		
+	// 	if(!items.length) {
+	// 		dom_el.hide();
+	// 		return;
+	// 	} 
+		
+	// 	dom_el.show();
+
+	// 	$.each(items, function(i, artwork) {
+
+			
+	// 		artwork.id = i;
+	// 		let artwork_dom_item = $('#templates .collection-item').clone();
+	// 		let artwork_dom_item_image = artwork_dom_item.find('.artwork-image')
+	// 		let img = new Image();
+	// 		img.src = artwork.img_url;
+	// 		img.onerror = function() {
+
+	// 			img.onerror = function() {
+	// 				if(artwork.alt_url !== this.src) {
+	// 					this.src = artwork.img_url.replace('.jpg','.gif');
+	// 				}
+	// 				img.onerror = function(){}
+	// 			}
+	// 			if(artwork.alt_url !== this.src) {
+	// 				this.src = artwork.img_url.replace('.jpg','.png');
+	// 			}
+				
+	// 		}
+	// 		artwork_dom_item.addClass(artwork.klass)
+	// 		artwork_dom_item_image.html(img);
+
+	// 		artwork_dom_item_image.clone().insertAfter(artwork_dom_item_image);
+	// 		artwork_dom_item.find('.artwork-title').html(artwork.title);
+	// 		artwork_dom_item.find('.artwork-quantity').html('x'+artwork.quantity);
+
+
+
+	// 		artwork_dom_item.appendTo(grid);
+
+
+	// 		artwork_dom_item.on('click', function(e) {
+
+	// 			window.location.href="https://xchain.io/asset/"+artwork.asset
+	// 		});
+	// 	});
+	// }
 
 	var states = {
 		splash : true
@@ -2860,7 +3047,65 @@ const FAKERARES = {
 		}).done(displayWallet)
 	}
 
+	var getMarketInfo = async function(callback) {
+		// Retrieve BTC price before getting dispensers
+		let mkt = await $.ajax({
+			url: "https://xchain.io/api/network",
+			method:"GET"
+		})
 
+		return mkt
+	};
+
+	var dispReq;
+
+
+	var getDispensers = async function(asset) {
+		
+
+		let marketObj = await getMarketInfo()
+		// async function(marketObj) {
+			if(dispReq !== undefined && dispReq.abort !== undefined) { dispReq.abort();}
+			dispReq = await $.ajax({
+				url: "https://xchain.io/api/dispensers/"+asset,
+				method: "GET"
+			})
+		
+			$disp = $('#dispenser-template').clone();
+			// .done(function(obj){
+			// 	$disp = $('#dispenser-template').clone();
+			let available_dispensers = [];
+			for(var i=0;i<dispReq.data.length;i++) {
+				if(dispReq.data[i].give_remaining > 0) {
+					available_dispensers.push(dispReq.data[i]);
+				}
+				
+			}
+
+			
+				
+			if(available_dispensers.length > 0) {
+				$disp.find('.price').attr('href', "https://xchain.io/tx/"+available_dispensers[0].tx_hash)
+				$disp.find('.price').html(parseFloat(available_dispensers[0].satoshirate)+' BTC / $'+(available_dispensers[0].satoshirate * marketObj.currency_info[0].price_usd).toFixed(0))
+				
+				$disp.find('.xchain').attr('href',`https://xchain.io/asset/${asset}` );
+
+				$disp.find('a').on('click', (e) => {
+					e.stopPropagation();
+				}
+				)
+				
+				
+			}  
+
+			console.log($disp)
+
+			return $disp;
+			
+	
+
+		
+	}
 
 
 

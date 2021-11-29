@@ -80,6 +80,7 @@
 			max-height: 100vh;
 			display: flex;
 			margin:0;
+
 		}
 
 		p#artwork-state {
@@ -293,6 +294,22 @@
 		.digital {
 			margin-top: 4em;
 		}
+
+		.digital,
+		.physical {
+			margin-left: 4em;
+			margin-right: 4em;
+			margin-bottom : 1em;
+			border: solid 1px #555;
+			padding-top : 2em;
+		}
+
+		.digital h3,
+		.physical h3 {
+			display: block;
+			margin: 0 0 .5em 0;
+		}
+
 		#selection[data-state='SOLD'] .artwork-state {
 			color: red;
 		}
@@ -410,13 +427,45 @@
 			border:none;
 		}
 
-		#digital-edition {
-			display : none;
+
+
+		#pleb-digital-asset {
+			
+			padding-bottom : 2em;
 		}
+
+		#pleb-digital-asset .pleb-dispenser-price,
+		#pleb-digital-asset .pleb-dispenser-cta {
+			display: none;
+		}
+
+		#pleb-digital-asset.available {
+			display: block;
+		}
+
+		#pleb-digital-asset .pleb-dispenser-na {
+			display: block;
+			margin-top : 0.5em;
+			text-transform: uppercase;
+			color: red;
+		}
+
+		#pleb-digital-asset.available .pleb-dispenser-price, 
+		#pleb-digital-asset.available .pleb-dispenser-cta {
+			display: block;
+		
+		}
+
+		#pleb-digital-asset.available .pleb-dispenser-na {
+			display: none;
+		}
+
 
 		.cta-wallet {
 			margin-right: 0.5em;
 		}
+
+		
 
 
 	</style>
@@ -457,8 +506,19 @@
 	<section id="selection">
 
 		<div class="row middle center-xs top-xs top-sm middle-lg middle-md" >
-			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" class="photo-container">
-				<img id="selected-artwork-img"src="https://imgur.com/MbqEahY.jpeg" style="width:100%;max-width: 100%"/>
+			<div class="col-lg-6 col-md-6 col-sm-12 top-xs top-sm middle-lg middle-md" class="photo-container" style="position: relative;">
+				<video  id="selected-artwork-video" autoplay muted loop style="width: auto;
+				    max-width: 100%;
+
+				    height: 100vh;
+				    position: absolute;
+				    left: 0;
+				    top: 0;
+				" >
+				  <source src="" type="video/mp4">
+				  
+				</video>
+			<img id="selected-artwork-img"src="https://imgur.com/MbqEahY.jpeg" style="width:100%;max-width: 100%"/>
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-12">
 				<div class="box meta" >
@@ -467,18 +527,25 @@
 
 					
 					<p class="artwork-date" id="selected-artwork-date">2021</p>
-					<div class="physical">ORIGINAL
-					<p class="artwork-medium" id="selected-artwork-medium">Acrylic on Vintage<br/>National Geographic Magazine</p>
-					<p class="artwork-medium" id="selected-artwork-medium">~ 7" x 10"</p>
-					<p class="artwork-state" id="selected-artwork-state">SOLD</p>
-					</div>
-					<div class="digital" id="digital-edition">
-						DIGITAL EDITION
-					<p class="pleb-digital-edition-desc">Edition of 21</p>
-					<p id="pleb-dispenser"></p>
 					
-					<a class="cta" href="/" id="explore-asset-cta">Explore digital asset</a>
-				</div>
+					<div class="digital" id="pleb-digital-asset"><h3>
+						DIGITAL ASSET</h3>
+						<p class="pleb-digital-edition-desc">Edition of 21</p>
+						<div id="pleb-dispenser" class="pleb-dispenser">
+							<p class="pleb-dispenser-price" id="pleb-dispenser-price"></p> 
+							<a class="pleb-dispenser-cta" href="/" id="pleb-dispenser-cta" target="_blank">Buy on Xchain</a>
+							<a class="xchain-cta" href="/" id="digital-asset-cta" target="_blank">Explore digital asset</a>
+							<p id="digital-asset-not-available" class="pleb-dispenser-na">None available</a>
+						</div>
+						
+						
+					</div>
+
+					<div class="physical"><h3>PHYSICAL ORIGINAL</h3>
+						<p class="artwork-medium" id="selected-artwork-medium">Acrylic on Vintage<br/>National Geographic Magazine</p>
+						<p class="artwork-medium" id="selected-artwork-medium">~ 7" x 10"</p>
+						<p class="artwork-state" id="selected-artwork-state">SOLD</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -564,39 +631,41 @@ Your browser does not support the video tag.
 
 	const artworks = [
 	{
-		id: 0,
-		title: "Historic Pleb",
+	
+		title: "Antique Pleb",
 		img_url:"https://imgur.com/MbqEahY.jpeg",
+		video_url: "https://imgur.com/03yk0a1.mp4",
 		state: "SOLD",
-		asset:"PLEBZ.HISTORIC"
+		asset:"PLEBZ.ANTIQUE"
 	},
 	{
-		id: 1,
+
 		title: "Rebel Pleb",
 		img_url:"https://i.imgur.com/BZQWfJl.jpeg",
 		state: "SOLD",
-		asset:"PLEBZ.REBE"
+		asset:"PLEBZ.REBEL"
 		
 	},
 	{
-		id: 2,
+
 		title: "Worshipper Pleb",
 		img_url:"https://imgur.com/IsuIUDD.jpeg",
 		state: "SOLD",
-		asset:"PLEBZ.WORSHIPPER21"
+		asset:"PLEBZ.WORSHIPPER"
 
 	},
 
 	{
-		id: 4,
+	
 		title: "Anon Pleb",
 		img_url:"https://imgur.com/2kCQika.jpeg",
+		video_url:"https://imgur.com/PzAEofN.mp4",
 		state: "SOLD",
 		asset:"PLEBZ.ANON"
 	},
 
 	{
-		id: 6,
+	
 		title: "Newbie Pleb",
 		img_url:"https://imgur.com/HGSFn3T.jpeg",
 		state: "SOLD",
@@ -605,9 +674,10 @@ Your browser does not support the video tag.
 	},
 
 	{
-		id: 11,
+	
 		title: "Orange Pilled Pleb",
 		img_url:"https://imgur.com/Wrxzamk.jpeg",
+		video_url:"https://imgur.com/cbnHXF1.mp4",
 		description: "test",
 		state: "SOLD",
 		asset: "PLEBZ.ORANGEPILLED"
@@ -615,7 +685,7 @@ Your browser does not support the video tag.
 	
 
 	{
-		id: 7,
+
 		title: "Rabbit Hole Pleb",
 		img_url:"https://imgur.com/jW9WrWD.jpeg",
 		state: "SOLD",
@@ -623,7 +693,7 @@ Your browser does not support the video tag.
 
 	},
 	{
-		id: 5,
+	
 		title: "Bagholding Pleb",
 		img_url:"https://imgur.com/cDJ5aYh.jpeg",
 		description: "test",
@@ -632,8 +702,8 @@ Your browser does not support the video tag.
 	},
 		
 
-		{
-		id: 3,
+	{
+	
 		title: "Party Pleb",
 		img_url:"https://imgur.com/nCTswkV.jpeg",
 		state: "SOLD",
@@ -641,15 +711,16 @@ Your browser does not support the video tag.
 
 	},
 	{
-		id: 8,
+		
 		title: "Rabbit Hole Pleb #2",
 		img_url:"https://imgur.com/6JL3rGi.jpeg",
+		video_url: "https://imgur.com/FQix2GV.mp4",
 		state: "SOLD",
-		asset: "PLEBZ.RABBITHOLE21"
+		asset: "PLEBZ.RABBITHOLE2"
 	},
 
 	{
-		id: 10,
+		
 		title: "Infinite Pleb",
 		img_url:"https://imgur.com/rY1tkNP.jpeg",
 		description: "test",
@@ -657,8 +728,8 @@ Your browser does not support the video tag.
 		asset: "PLEBZ.INFINITE"
 	},
 
-		{
-		id: 9,
+	{
+		
 		title: "Argument Pleb",
 		img_url:"https://imgur.com/07wXSp4.jpeg",
 		description: "test",
@@ -666,32 +737,34 @@ Your browser does not support the video tag.
 		asset: "PLEBZ.ARGUMENT"
 	},
 	{
-		id: 12,
+		
 		title: "Evangelist Pleb",
 		img_url:"https://imgur.com/o94MsQp.jpeg",
+		video_url:"https://imgur.com/pOBeV5L.mp4",
 		description: "test",
 		state: "SOLD",
 		asset: "PLEBZ.EVANGELIST"
 	},
-		{
-		id: 13,
+	{
+		
 		title: "Eager Pleb",
 		img_url:"https://imgur.com/xPU1lKS.jpeg",
 		state: "SOLD",
 		asset: "PLEBZ.EAGER"
 	},
-		{
-		id: 14,
+	{
+		
 		title: "Big Pleb",
 		img_url:"https://imgur.com/h8P0nuf.jpeg",
+		video_url: "https://imgur.com/cOzOP2y.mp4",
 		state: "SOLD",
 		asset: "PLEBZ.BIG"
 	},
-		{
-		id: 15,
+	{
+		
 		title: "Pepe Pleb",
 		img_url:"https://imgur.com/aBgxbSU.jpeg",
-		state: "Auctioned at Scarce.city",
+		state: "SOLD",
 		asset: "PLEBZ.PEPE"
 	}
 	];
@@ -748,6 +821,8 @@ var playVideo = function($player, src) {
 
 	var displaySelectedItem = function(artwork) {
 
+		console.log("DISPLAYING :")
+		console.log(artwork.asset)
 		window.location.hash = artwork.asset;
 		displaySection('#selection');
 		// console.log('displaying '+artwork.title)
@@ -774,29 +849,50 @@ var playVideo = function($player, src) {
 		$('#selection').data('state',artwork.state);
 		$('#selection').attr('data-state',artwork.state);
 
+	
+		if(artwork.video_url !== undefined) {
+			
+			$('#selected-artwork-video source').attr('src', artwork.video_url);
+			$('#selected-artwork-video').get()[0].load();
+			$('#selected-artwork-video').show();
+			$('#selected-artwork-img').css('visibility', 'hidden')
+		} else {
+			$('#selected-artwork-video').hide();
+			$('#selected-artwork-img').css('visibility', 'visible')
+		}
+
 
 		// Handles click events
-	
+		var prev_pleb = artworks[getPrevId(artwork)]
+		var next_pleb = artworks[getNextId(artwork)]
 
-		$('a.prev').attr('href', '#'+artworks[getPrevId(artwork)].asset);
+		
+		$('a.prev').attr('href', `#${prev_pleb.asset}`);
 		$('a.prev').off('click').on('click', function(e){
-			displaySelectedItem(artworks[getPrevId(artwork)]);
+			
 			e.preventDefault();
+			displaySelectedItem(prev_pleb);
 		});
 
-		$('a.next').attr('href', '#'+artworks[getNextId(artwork)].asset);
+		
+		$('a.next').attr('href', `#${next_pleb.asset}`);
 		$('a.next').off('click').on('click', function(e){
-			displaySelectedItem(artworks[getNextId(artwork)]);
+			
+			
 			e.preventDefault();
+			displaySelectedItem(next_pleb);
 		});
 	
 		setBreadcrumbs(artwork);
 
 		$('body').addClass('selected')
 		
-
-		getXchainData(artwork.asset).done(function(resp){
-			console.log(resp);
+		if(artwork.video_url === undefined ) {
+			$('#pleb-digital-asset').hide();
+		} else {
+			$('#pleb-digital-asset').show();
+			getXchainData(artwork.asset).done(function(resp){
+			// console.log(resp);
 			if(resp.error) {
 				$('#digital-edition').hide();
 			} else {
@@ -804,8 +900,11 @@ var playVideo = function($player, src) {
 				$('#digital-edition').show();
 			}
 
-		})
-		// getDispensers(artwork.asset);
+			})
+		}
+
+		
+		getDispensers(artwork.asset);
 
 
 		$('body').scrollTo('#selection');
@@ -918,14 +1017,21 @@ var playVideo = function($player, src) {
 
 	
 	var user = {}
+	var dispReq = {
+		abort: function() {
+			console.log("abort initial"); return true}
+		};
+
 	user.address = localStorage.getItem('pleb_addresss');
 
 
 	var getDispensers = function(asset) {
+		$('#pleb-digital-asset').removeClass('available');
 
 		getMarketInfo(function(marketObj) {
-			$.ajax({
-				url: "https://xchain.io/api/dispensers/"+asset.asset,
+			dispReq.abort();
+			dispReq = $.ajax({
+				url: "https://xchain.io/api/dispensers/"+asset,
 				method: "GET"
 			}).done(function(obj){
 				console.log(obj);
@@ -938,11 +1044,12 @@ var playVideo = function($player, src) {
 				}
 				
 				if(available_dispensers.length > 0) {
-					$('#pleb-dispenser').html(parseFloat(available_dispensers[0].satoshirate)+' BTC / $'+(available_dispensers[0].satoshirate * marketObj.currency_info[0].price_usd).toFixed(0))
+					$('#pleb-dispenser-price').html(parseFloat(available_dispensers[0].satoshirate)+' BTC / $'+(available_dispensers[0].satoshirate * marketObj.currency_info[0].price_usd).toFixed(0));
+					$('#pleb-dispenser-cta').attr('href', "https://xchain.io/tx/"+available_dispensers[0].tx_hash);
+					
+					$('#pleb-digital-asset').addClass('available');
 					$('#pleb-dispenser').show();
-				} else {
-					$('#pleb-dispenser').hide();
-				}
+				} 
 			})
 		})
 		
