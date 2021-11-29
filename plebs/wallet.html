@@ -439,7 +439,7 @@
 			padding : 4em auto 4em auto;
 		}
 
-#details .collection-item {}
+        #details .collection-item {}
 
 		@media (max-width: 767.98px) {
 
@@ -450,6 +450,19 @@
 				margin : 5em 1em 5em 1em;
 				overflow: scroll;
 			}
+
+            #details .collection-item-image  {
+                height: auto;
+            }
+
+            #details .collection-item-container {
+                
+                flex-direction: column;    
+            }
+
+            #details .artwork-meta {
+            padding: 0;
+            }
 
 		}
 		
@@ -465,6 +478,8 @@
         .dispenser .xchain {
             font-size: 0.8em
         }
+
+
 
 	</style>
 </head>
