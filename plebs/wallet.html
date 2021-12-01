@@ -730,7 +730,7 @@ var displayMode = () => {
     displayCard(assets[display_id])
 
     display_id = (display_id+1)%assets.length;
-    timer = setTimeout(displayMode, 4000);
+    timer = setTimeout(displayMode, 10000);
 }
 
 $('a.displayMode').on('click', (e) => {
