@@ -604,9 +604,9 @@
 <div id="templates">
 	<div class="collection-item col-sm-6 col-md-4 col-lg-3"  href="#" >
 		<div class="collection-item-container">
-			<div class="artwork-image collection-item-image"></div>
-			<div class="artwork-title collection-item-title"></div>
-			<div class="artwork-quantity collection-item-quantity"></div>
+			<div class="artwork-image collection-item-image" data="image"></div>
+			<div class="artwork-title collection-item-title" data="title"></div>
+			<div class="artwork-quantity collection-item-quantity" data="quantity"></div>
 			<video class="artwork-video collection-item-video" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:-1">
   <source src="" type="video/mp4">
  
@@ -928,6 +928,7 @@ var playVideo = function($player, src) {
 
 	}
 
+
 	
 
 
@@ -1054,7 +1055,8 @@ var playVideo = function($player, src) {
 				console.log(obj);
 				let available_dispensers = [];
 				for(var i=0;i<obj.data.length;i++) {
-					if(obj.data[i].give_remaining > 0) {
+				
+					if(obj.data[i].give_remaining > 0 && obj.data[i].status == 0) {
 						available_dispensers.push(obj.data[i]);
 					}
 					
