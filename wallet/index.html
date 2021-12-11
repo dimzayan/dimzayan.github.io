@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<title>Dimzayan - Wallet</title>
+
+<meta name="robots" content="all">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Plebs Geographic by Dim">
+<meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
+<meta property="og:url" content="https://www.dimzayan.com/plebs/">
+<meta property="og:site_name" content="dimzayan">
+<meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@dimzayan">
+<meta name="twitter:label1" content="Est. reading time">
+<meta name="twitter:data1" content="2 minutes">
+<meta name="twitter:image" content="https://imgur.com/pNzdeD6.jpeg?12344">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel=icon href=../favicon.png>
+<link rel="stylesheet" id="dimzayan-style-css" href="../index_files/style.css" media="all">
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
+
+<script
+  src="../jquery.3.6.0.prod.js" 
+  ></script>
+<script src="lodash.4.17.21.min.js"></script>
+<script src="pepedata.js"></script>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" />
+
+<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css" type="text/css" >
+
+
+	<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+
+	<!-- MASTHEAD NAV -->
+	<nav id="breadcrumbs">
+		<a href="../index.html" id="cta-home" class="cta-home">Dim</a>
+		<a href="index.html" class='cta-explore'>Wallet</a>
+
+
+	</nav>
+
+	<nav id="project-nav">
+		
+		<a href="index.html#settings"  class="cta-about">Settings</a>
+	</nav>
+
+	<nav id="paginator" >
+		<a href="#prev" class="prev"><</a>
+		<a href="#next" class="next">></a>
+		
+	</nav>
+
+	<!-- MAIN -->
+	<main>
+	<section id="splash">
+		<h1>This is a Bitcoin asset wallet viewer.</h1>
+		<h2>It is designed to display content assets created on&nbsp;Bitcoin&nbsp;via&nbsp;Counterparty.</h2>
+		<h3>This is not a wallet manager (yet) so you won't be able to perform&nbsp;any&nbsp;fancy&nbsp;operations,</h3>
+		<h4>But it also means you don't have to sign in or enter any private information.</h4>
+		<h5>All you have to do to start is to enter your assets Bitcoin address:</h5>
+	
+		<form id="wallet-address-form">
+			<input type="text" placeholder="Enter Your Bitcoin Wallet Address" id="address-input"/>
+			<input type="submit" />
+		</form>
+	</section>
+
+	<section id="collection">
+        
+		<div class="row collection-display-grid" id="collection-grid"></div>
+	</section>
+
+
+	<section id="details">
+
+
+	</section>
+	
+
+	<section id="wallet" style="text-align: center">
+		
+
+   
+		<div id="plebs-collection">
+            <nav>
+            <a href="" class="return">< Back to top</a>
+            <a href="" class="displayMode">Enter Display Mode</a>
+            </nav>
+			
+			<div class="row collection-display-grid" id="wallet-grid">
+
+			</div>
+		</div>
+
+
+
+
+	</section>
+</main>
+
+
+
+</body>
+
+<div id="templates">
+    <div class="block col-sm-6 col-md-4 "><h4 class="group-name"></h4></div>
+	<a class="collection-item"  href="#" >
+		<div class="collection-item-meta">
+			<div class="asset-quantity collection-item-quantity"></div>
+			<div class="asset-name collection-item-title"></div>
+			<div class="collection-item-date"></div>
+            <div class="asset-description collection-item-description"></div>
+			<div class="disp"></div>
+		</div>
+		<div class="collection-item-container">
+			
+			
+			<div class="asset-image collection-item-image"></div>
+		</div>
+	</a>
+
+	<div id="dispenser-template" class="dispenser">
+		Best Dispenser
+		<a class="price" href="" target="_blank"></a>
+		<a href="https://xchain.io/asset/" target="_blank" class="xchain">Explore on Xchain</a>
+	</div>
+</div>
+
+<script src="asset.js" ></script>
+
+<script src="wallet.js" >
+
+
+	
+
+
+</script>
+</html>

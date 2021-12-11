@@ -1,0 +1,605 @@
+* {
+			padding: 0;
+			margin : 0;
+			
+		}
+
+		h1 {
+			line-height: 0em;
+		}
+
+		body {
+			touch-action: none;
+			overflow: auto;
+		}
+		img, video {
+			width :540px;
+			max-width: 90vw;
+			/*height : 12.5vh;*/
+			margin : 0;
+			padding : 0;
+			display: inline;
+
+		}
+
+		input {
+			padding : 0.5em;
+			width : 250px;
+		}
+
+		input[type="submit"] {
+			width: 150px;
+		}
+
+		
+		.description {
+			text-align : center;
+		}
+
+
+
+		.photo-container {
+			height: 100vh;
+			max-height: 100vh;
+			display: flex;
+			margin:0;
+		}
+
+		p#artwork-state {
+			margin: 1em 0 0 0;
+		}
+
+
+		#selection {
+			display : none;
+			overflow: scroll;
+		}
+
+
+		#selection .meta {
+			padding: 6em;
+		}
+
+		main {
+			display: flex;
+			min-height: 100vh;
+			min-width: 100vw;
+			justify-content: center;
+			align-items: center;
+		}
+
+		main > section {
+			display: none;
+		}
+
+		section#splash {
+			line-height: auto;
+			max-width: 1200px;
+
+		}
+
+		h1,h2,h3,h4,h5 {
+			line-height: auto;
+		}
+
+		h1 {
+			font-size: 3em;
+			line-height: 1.3em;
+			font-weight: bold;
+		}
+
+		h2 {font-size: 2em;line-height: 1.5em}
+		h3 {font-size: 1.8em; line-height: 1.3em}
+		h4 {font-size: 1.5em; line-height: 2em}
+		h5 {font-size: 1em; line-height: 2.5em}
+
+
+
+		body[section='splash'] #splash {
+			display: block;
+		}
+
+		body[section='wallet'] #wallet {
+			display: block
+		}
+	
+		@media (max-width: 767.98px) {
+			#selection .meta {
+				padding: 2em 4em;
+				margin: -4em 0 8em;
+				background: #FFF;
+			}
+
+			#about .meta {
+				padding: 0 4em 4em 4em;
+			}
+
+			.photo-container {
+				height: auto;
+				max-height: auto;
+			}
+
+			#splash h1 {
+				font-size: 4.5em !important;
+			}
+
+		}
+
+		.selected #selection {
+			display : block;
+		}
+
+
+		.selected #collection {
+			display: none;
+		}
+
+		#collection {
+			overflow : scroll;
+		}
+
+		.collection-item {
+			cursor: pointer;
+			padding: 0;	
+			position: relative;
+		}
+
+		.collection-item:hover {
+			z-index : 999;
+
+		}
+
+		.collection-item-meta {
+			position: relative;
+			text-align: left;
+			margin : 0 0 1.2em 0;
+			/*top : 0em;
+			right: 0;*/
+
+		}
+
+		.collection-item-title {
+			font-weight: 500;
+			display: inline-block;
+		}
+
+		.collection-item-quantity {
+			display: inline-block;
+		}
+
+		.collection-item-quantity:after {
+			content: " x ";
+
+		}
+
+        .collection-item-description {
+			display: none;
+		}
+
+		.collection-item-quantity {
+			
+			font-size: 1em;
+			/*font-weight: 800;*/
+			/*position: absolute;*/
+			
+			z-index: 99999
+		}
+
+		
+
+        .collection-item + .collection-item {
+            position: absolute;
+        }
+
+		.collection-item-image {
+			width: 100%;
+			line-height: 0;
+			max-width: none;
+            border-radius : 0.75em;
+            overflow: hidden;
+
+		}
+
+/*		.collection-item-image + .collection-item-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 999;
+
+
+			transition: width .3s ease-in-out .1s, height .3s ease-in-out, top .3s ease-in-out, left .3s ease-in-out .1s
+
+		}*/
+
+        .block {
+            position: relative;
+            min-height: 400px;
+            padding: 2em;
+        }
+
+
+        body[level="0"] .collection-item-image {
+            /*max-height: 300px;*/
+        }
+
+        body[level="0"] .collection-item-quantity {
+           
+        }
+
+        body .group-name {
+            
+            position: absolute;
+            top: 0.5em;
+            width: 100%;
+            text-align: left; 
+            font-size: 1em;
+            display: none
+
+        }
+
+
+        body[level="0"] #wallet nav a.return {
+            display: none;
+
+        }
+
+        body[level="1"] .block {
+           
+            min-height: 480px;
+        }
+
+        body[level="1"] .block .group-name {
+            /*display: none;*/
+
+        }
+
+
+
+        body[level="1"] a.return {
+            display: block;
+        }
+
+
+        body[mode="4xgrid"] {
+
+        }
+
+        body[mode="1xgrid"] {
+
+        }
+
+        body[mode="1xgrid"] .collection-item {
+        	display: flex;
+        	flex-direction: row-reverse;
+        	justify-content: left;
+
+        }
+
+        body[mode="1xgrid"] .block {
+        	min-height : 90vh;
+        }
+
+        body[mode="1xgrid"] .collection-item-meta {
+        	margin: 0 0 0 2em;
+        	font-size : 2em;
+        }
+
+        body[mode="1xgrid"] .collection-item-description {
+        	display : block;
+        	font-size-adjust: 0.5;
+
+        }
+
+        body[mode="4xgrid"] .collection-item-description {
+        	display : none;
+        }
+
+        body[mode="4xgrid"] .collection-item-description video {
+        	display : none;
+        }
+
+
+        .group .collection-item-image {
+            
+        }
+
+
+
+		.collection-item-image img {
+			
+			width : 100%;
+			max-width: 100%;
+			line-height: 0;
+
+		}
+
+        .collection-item + .collection-item {
+            position: absolute;
+            top: 0;
+        }
+
+
+
+		#selection[data-state='SOLD'] .cta {
+			display: none;
+		}
+
+		#selection[data-state='SOLD'] .artwork-state {
+			color: red;
+		}
+
+		#selection[data-state='ABOUT'] .artwork-story, 
+		#selection[data-state='ABOUT'] .artwork-date,
+		#selection[data-state='ABOUT'] .artwork-medium,
+		#selection[data-state='ABOUT'] .artwork-state {
+			display: none;
+		}
+
+		#selection[data-state='ABOUT'] .artwork-intro {
+			display : block;
+		}
+
+
+		p + p {
+			margin : 1em 0 0 0;
+		}
+		nav {
+			position: fixed;
+			z-index : 99999;
+			font-size: 1em;
+			padding: 2rem;
+		}
+
+		nav a {
+			font-weight: 200;
+			text-decoration: none;
+			display: inline-block;
+		}
+
+		nav a.active {
+			/*font-weight: 100;*/
+		}
+
+		#breadcrumbs {
+			margin-right : 6em;
+		}
+
+		#breadcrumbs a + a:before{
+			content: ".";
+			margin-right: 0.2rem;
+		}
+
+		/*#breadcrumbs a + a:before {
+			content: ">";
+		}*/
+
+
+				nav#paginator {
+			position: fixed;
+			bottom: 0;
+			left : 50%;
+			transform: translate(-50%);
+			top : auto;
+			display: none;
+			padding: 2rem;
+		}
+
+		#paginator a {
+			font-size : 2em;
+			line-height: 1em;
+			display: inline-block;
+			margin : 0 0.2em;
+
+			    font-size: 2em;
+    line-height: 1em;
+    display: inline-block;
+    margin: 0 0.2em;
+    background: #333;
+    border-radius: 1em;
+    width: 40px;
+    max-width: 80px;
+    padding: 0.3rem;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+		}
+
+		#paginator a:hover {
+			background: #890;
+		}
+
+		#paginator a:active {
+			background: #390;
+		}
+
+
+		#cta-home {
+			font-weight: 800;
+		}
+
+
+		#project-nav {
+			position: fixed;
+			right: 0.5em;
+			top : 0;
+		}
+
+		#about {
+			display: none;
+			overflow: scroll;
+
+		}
+
+
+		#wallet {
+			margin : 5em;
+		
+		}
+
+		#wallet .collection-item {
+			padding : 0em;
+            margin :  0;
+            text-decoration: none;
+
+		}
+
+		#wallet .collection-item:hover .asset-name {
+			text-decoration: underline;
+		}
+
+		#wallet .collection-item-container {
+			position : relative;
+			max-width: 400px;
+		}
+
+
+		.collection-item-container {
+			
+			
+		}
+
+
+
+
+        .display .collection-item {
+            margin: 0 !important;
+            background: #000;
+        }
+
+        .display .collection-item-container {
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+
+
+		#details {
+			position: fixed;
+			top:0;
+    		left:0;
+    		transform:translate(0, 0%);
+    		color: black; 
+    		background: #FFF; 
+    		z-index: 100000;
+    		padding: 0;
+    		height: 100vh;
+    		width: 100vw;
+    		display: none;
+		}
+
+		#details .collection-item {
+			margin: 4em; 
+			max-width: 100%;
+			width: auto;
+		
+			position: relative;
+		}
+
+		#details .collection-item-container {
+			display: flex;
+			flex-direction: row;	
+			border-radius: 0;
+		}
+
+		#details .collection-item-image {
+			/*height: 70vh;*/
+			width: auto;
+			border-radius: 0;
+
+		}
+        #details .collection-item-image img {
+            width : auto;
+            max-height: 80vh;
+        }
+		#details .artwork-meta {
+			padding: 4em;
+		}
+
+		#details .collection-item-meta,
+		#details .collection-item-title, 
+		#details .collection-item-quantity,
+        #details .collection-item-description {
+			display: block;
+			font-size: 1.3em;
+			position: relative;
+			top: 0;
+			right: 0;
+
+
+		}
+		#details .collection-item-image + .collection-item-image {
+			display: none;
+		}
+
+		#details:after {
+			content: "CLOSE";
+			position: absolute;
+			top: 2em;
+			right: 2em;
+			color: #333;
+		}
+
+		#wallet {
+			max-width: 1280px;
+			margin: 4em auto;
+		}
+
+        #wallet nav {
+            position: relative;
+            text-align: left
+        }
+
+        #wallet nav a {
+            display: inline-block;;
+        }
+
+        #wallet nav a + a {
+            margin-left: 2em
+        }
+
+		form {
+			margin : 2em auto;
+		}
+
+        #details .collection-item {}
+
+		@media (max-width: 767.98px) {
+
+			body {
+				touch-action: auto;
+			}
+			#wallet {
+				margin : 5em 1em 5em 1em;
+				overflow: scroll;
+			}
+
+            #details .collection-item-image  {
+                height: auto;
+            }
+
+            #details .collection-item-container {
+                
+                flex-direction: column;    
+            }
+
+            #details .artwork-meta {
+            padding: 0;
+            }
+
+		}
+		
+
+        .dispenser {
+            margin : 1em 0;
+        }
+
+        .dispenser a {
+            display: block;
+        } 
+
+        .dispenser .xchain {
+            font-size: 0.8em
+        }
+
+
