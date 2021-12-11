@@ -19,19 +19,11 @@ class Asset  {
 	    	
 	        try {
 	        	// normalize additional data and combine it with existing one.
-	        	console.log(normalizeUrl(this.data.description))
-	        	try {
-		            let resp = await $.get(normalizeUrl(this.data.description)).done((e) => {
+	        	// console.log(normalizeUrl(this.data.description))
+	        	let resp = await $.get('http://'+ normalizeUrl(this.data.description)).done((e) => {
 		            	console.log(e);
 		            })
-		            console.log(resp)
-		        } catch {
-
-		        	let resp = await $.get('http://'+ normalizeUrl(this.data.description)).done((e) => {
-		            	console.log(e);
-		            })
-		            console.log(resp)
-		        }
+		      
 
 	         	console.log("Passed")
 	            console.log(resp)
