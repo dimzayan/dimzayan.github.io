@@ -158,7 +158,9 @@
 				max-width: 80vw;
 			}
 
-			body[mode="1xgrid"] .asset-image img  {
+			body[mode="1xgrid"] .asset-image img,
+			body[mode="1xgrid"] .asset-image video,
+			body[mode="1xgrid"] .asset-image iframe {
 				min-width: 80vw;
 				max-width: 80vw;
 			}
@@ -177,7 +179,9 @@
 			body[mode="1xgrid"] .collection-item  {
 				flex-direction: row-reverse ;
 			}
-			body[mode="1xgrid"] .asset-image img  {
+			body[mode="1xgrid"] .asset-image img,
+			body[mode="1xgrid"] .asset-image video,
+			 body[mode="1xgrid"] .asset-image iframe{
 				min-width: 400px;
 			}
 
@@ -389,7 +393,7 @@
         body[mode="1xgrid"] .asset-description {
         	display : block;
         	white-space: pre-line;
-        	
+        	max-width: 540px;
 
         }
 
@@ -408,13 +412,23 @@
 
 
 
-		.collection-item-image img {
+		.asset-image img,
+		.asset-image video,
+		.asset-image iframe {
 			
-			width : 100%;
+			width : 100% !important;
 			max-width: 100%;
-
+			
 			line-height: 0;
 
+		}
+
+		.asset-image video,
+		.asset-image iframe {
+			position: absolute;
+			top : 0;
+			left: 0;
+			height: 100%;
 		}
 
 		body[mode="1xgrid"] .asset-image {
@@ -571,71 +585,8 @@
 
 
 
-		#details {
-			position: fixed;
-			top:0;
-    		left:0;
-    		transform:translate(0, 0%);
-    		color: black; 
-    		background: #FFF; 
-    		z-index: 100000;
-    		padding: 0;
-    		height: 100vh;
-    		width: 100vw;
-    		display: none;
-		}
 
-		#details .collection-item {
-			margin: 4em; 
-			max-width: 100%;
-			width: auto;
-		
-			position: relative;
-		}
-
-		#details .collection-item-container {
-			display: flex;
-			flex-direction: row;	
-			border-radius: 0;
-		}
-
-		#details .collection-item-image {
-			/*height: 70vh;*/
-			width: auto;
-			border-radius: 0;
-
-		}
-        #details .collection-item-image img {
-            width : auto;
-            max-height: 80vh;
-        }
-		#details .artwork-meta {
-			padding: 4em;
-		}
-
-		#details .collection-item-meta,
-		#details .collection-item-title, 
-		#details .collection-item-quantity,
-        #details .collection-item-description {
-			display: block;
-			font-size: 1.3em;
-			position: relative;
-			top: 0;
-			right: 0;
-
-
-		}
-		#details .collection-item-image + .collection-item-image {
-			display: none;
-		}
-
-		#details:after {
-			content: "CLOSE";
-			position: absolute;
-			top: 2em;
-			right: 2em;
-			color: #333;
-		}
+	
 
 		#wallet {
 			max-width: 1280px;

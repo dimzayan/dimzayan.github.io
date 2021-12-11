@@ -76,16 +76,24 @@ var generateCard = function(asset) {
 	
 	asset.addEventListener('loaded', (e)  => {
 
+		_.each(['name','quantity','description'], (key) => {
+			$item.find(`.asset-${key}`).html(asset[key])
+		});
+
+		
+
 		let $item_image = $item.find('.asset-image');
-		$item_image.html(asset.media);
+		
+		$video = $item.find('.asset-description video, .asset-description iframe')
+		if($video.length) {
+			
+			$video.prop('muted') ;
+			$item_image.append($video)
 
-			_.each(['name','quantity','description'], (key) => {
-		$item.find(`.asset-${key}`).html(asset[key])
-	
-		})
-
+		} 
+$item_image.html(asset.media);
 		$item.on('click', function(e) {
-		e.preventDefault();
+			e.preventDefault();
     
         	setDisplayMode('1xgrid')
 		// let $disp = await getDispensers(asset.asset)
@@ -128,7 +136,7 @@ var toggleSettings = () => {
 
 
 var toggleBlankAssets = () => {
-	console.log(settings.blank_assets)
+
 	settings.blank_assets = !settings.blank_assets;
 	$('body').attr('blank_assets',  settings.blank_assets)
 }

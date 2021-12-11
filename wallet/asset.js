@@ -159,7 +159,6 @@ class Asset extends EventTarget {
 
 		let img  = new Image();
 
-		
 
 		if( Array.isArray(this.image_url)) {
 
@@ -169,8 +168,11 @@ class Asset extends EventTarget {
 
 				e.target.src  = this.image_url[this.media_id]
 				if(this.media_id  >=  this.image_url.length) {
-					e.target.onerror = null
-					this.$dom.parent().addClass('blank')
+					e.target.onerror = null;
+					if(!this.$dom.parent().find('video,  iframe').length) {
+						this.$dom.parent().addClass('blank')
+					}
+					
 				}
 				// console.error()
 			}
@@ -181,6 +183,8 @@ class Asset extends EventTarget {
 			// img  = `<img src="${this.image_url}">`
 			img.src = this.image_url
 		}
+
+
 		
 		return img;
 	}
@@ -189,7 +193,7 @@ class Asset extends EventTarget {
 	get description() {
 		// console.log(this)
 		let mint = this.history.data.pop();
-		let date = new Date(this.history.data.pop().timestamp * 1000);
+		let date = new Date(mint.timestamp * 1000);
 		let copy = `Minted ${date.toLocaleString('default', { month: 'long' }) } ${date.getFullYear()} (block #${mint.block_index})\n
 		Total Supply:  ${this.data.supply}\n
 
