@@ -102,6 +102,12 @@
 		body[section='wallet'] #wallet {
 			display: block
 		}
+
+		body[blank_assets='false'] .blank {
+			display: none;
+		}
+
+	
 	
 		@media (max-width: 767.98px) {
 			#selection .meta {
@@ -119,10 +125,71 @@
 				max-height: auto;
 			}
 
-			#splash h1 {
-				font-size: 4.5em !important;
+			#splash {
+				width: 90vw;
+				margin :  0  5vw;
 			}
 
+			#splash h1 {
+				
+			}
+
+			#splash h2 {
+				font-size: 1.2em;
+				line-height: 1.5em
+			}
+			#splash h3, h4, h5  {
+				font-size: 1.2em;
+				line-height: 1.3em
+			}
+
+			#splash h5 {
+				font-size: 1em;
+				margin : 1em 0 0 0;
+			
+			}
+  
+			form input[type="submit"] {
+				margin : 1em 0 0 0;
+			}
+
+			body[mode="1xgrid"] .asset-image  {
+				text-align: left;
+				max-width: 80vw;
+			}
+
+			body[mode="1xgrid"] .asset-image img  {
+				min-width: 80vw;
+				max-width: 80vw;
+			}
+
+			body[mode="1xgrid"] .collection-item  {
+				flex-direction: column-reverse !important;
+			}
+			
+			body[mode="1xgrid"] .collection-item-meta  {
+				margin :  0;
+			}
+
+		}
+
+		@media (min-width: 768px) {
+			body[mode="1xgrid"] .collection-item  {
+				flex-direction: row-reverse ;
+			}
+			body[mode="1xgrid"] .asset-image img  {
+				min-width: 400px;
+			}
+
+			body[mode="1xgrid"] .block {
+        	min-height : 100vh;
+        	/*height : 100vh;*/
+	        }
+
+	        body[mode="1xgrid"] .collection-item-meta {
+	        	margin: 0 0 0 2em;
+	        	font-size : 1em;
+	        }
 		}
 
 		.selected #selection {
@@ -149,6 +216,7 @@
 
 		}
 
+		
 		.collection-item-meta {
 			position: relative;
 			text-align: left;
@@ -200,21 +268,53 @@
 
 		}
 
-/*		.collection-item-image + .collection-item-image {
-			position: absolute;
-			top: 0;
-			left: 0;
-			z-index: 999;
-
-
-			transition: width .3s ease-in-out .1s, height .3s ease-in-out, top .3s ease-in-out, left .3s ease-in-out .1s
-
-		}*/
-
+		#templates {
+			display: none;
+		}
         .block {
             position: relative;
             min-height: 400px;
             padding: 2em;
+        }
+
+        #settings-nav {
+        	
+        	position: fixed;
+        	right : 0;
+        	top: 0;
+        	text-align: right;
+        	
+        }
+
+        #settings-nav.active {
+        	background: #028;
+        	color : #eddeed;
+        }
+
+        #settings-nav.active a {
+        	color : #eddeed;
+        }
+
+        #settings-nav.active > a {
+        	font-weight: bold;
+        }
+
+        #settings-nav.active a:hover {
+        	color: #FFF;
+        }
+
+        #settings-nav .menu {
+        	display: none;
+        	padding: 0;
+        	position: relative;
+        }
+
+        #settings-nav.active .menu {
+        	display: block;
+        }
+
+        #settings-nav  .menu a {
+        	/*border-top : solid 1px;*/
         }
 
 
@@ -268,25 +368,28 @@
 
         }
 
+       
+
         body[mode="1xgrid"] .collection-item {
         	display: flex;
-        	flex-direction: row-reverse;
+        	
         	justify-content: left;
 
         }
 
-        body[mode="1xgrid"] .block {
-        	min-height : 90vh;
+        
+
+        body[mode="1xgrid"] .asset-name {
+        	display: block;
+        	font-size: 2rem;
+        	text-decoration: none !important;
+
         }
 
-        body[mode="1xgrid"] .collection-item-meta {
-        	margin: 0 0 0 2em;
-        	font-size : 2em;
-        }
-
-        body[mode="1xgrid"] .collection-item-description {
+        body[mode="1xgrid"] .asset-description {
         	display : block;
-        	font-size-adjust: 0.5;
+        	white-space: pre-line;
+        	
 
         }
 
@@ -309,9 +412,19 @@
 			
 			width : 100%;
 			max-width: 100%;
+
 			line-height: 0;
 
 		}
+
+		body[mode="1xgrid"] .asset-image {
+			border-radius: 0;
+		}
+		body[mode="1xgrid"] .parent {
+			display: block
+		}
+
+		
 
         .collection-item + .collection-item {
             position: absolute;
@@ -319,25 +432,6 @@
         }
 
 
-
-		#selection[data-state='SOLD'] .cta {
-			display: none;
-		}
-
-		#selection[data-state='SOLD'] .artwork-state {
-			color: red;
-		}
-
-		#selection[data-state='ABOUT'] .artwork-story, 
-		#selection[data-state='ABOUT'] .artwork-date,
-		#selection[data-state='ABOUT'] .artwork-medium,
-		#selection[data-state='ABOUT'] .artwork-state {
-			display: none;
-		}
-
-		#selection[data-state='ABOUT'] .artwork-intro {
-			display : block;
-		}
 
 
 		p + p {
@@ -430,6 +524,9 @@
 
 		}
 
+		nav a:hover {
+			background-color : #028;
+		}
 
 		#wallet {
 			margin : 5em;

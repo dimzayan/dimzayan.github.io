@@ -41,20 +41,25 @@
 	<link rel="stylesheet" href="styles.css">
 
 </head>
-<body>
+<body  blank_assets="false">
 
 	<!-- MASTHEAD NAV -->
 	<nav id="breadcrumbs">
-		<a href="../index.html" id="cta-home" class="cta-home">Dim</a>
-		<a href="index.html" class='cta-explore'>Wallet</a>
+		<a href="https://www.dimzayan.com" id="cta-home" class="cta-dim">Dim</a>
+		<a href="index.html" class='cta-wallet'>Wallet</a>
 
 
 	</nav>
 
-	<nav id="project-nav">
+	<nav id="settings-nav">
 		
-		<a href="index.html#settings"  class="cta-about">Settings</a>
+		<a href="index.html#settings"  class="cta-settings" >Settings</a>
+		<nav class="menu">
+		<a href="#" class="cta-toggle-blank-assets">Show/hide assets with no visuals</a>
+		</nav>
+		
 	</nav>
+	
 
 	<nav id="paginator" >
 		<a href="#prev" class="prev"><</a>
@@ -67,8 +72,7 @@
 	<section id="splash">
 		<h1>This is a Bitcoin asset wallet viewer.</h1>
 		<h2>It is designed to display content assets created on&nbsp;Bitcoin&nbsp;via&nbsp;Counterparty.</h2>
-		<h3>This is not a wallet manager (yet) so you won't be able to perform&nbsp;any&nbsp;fancy&nbsp;operations,</h3>
-		<h4>But it also means you don't have to sign in or enter any private information.</h4>
+		<h3>This is not a wallet manager (yet) so you won't be able to perform any fancy operations, But it also means you don't have to sign in or enter any private information.</h4>
 		<h5>All you have to do to start is to enter your assets Bitcoin address:</h5>
 	
 		<form id="wallet-address-form">
@@ -77,27 +81,13 @@
 		</form>
 	</section>
 
-	<section id="collection">
-        
-		<div class="row collection-display-grid" id="collection-grid"></div>
-	</section>
-
-
-	<section id="details">
-
-
-	</section>
-	
 
 	<section id="wallet" style="text-align: center">
 		
-
+		<div id="wallet-loader">Loading Assets ... </div>
    
-		<div id="plebs-collection">
-            <nav>
-            <a href="" class="return">< Back to top</a>
-            <a href="" class="displayMode">Enter Display Mode</a>
-            </nav>
+		<div id="collection">
+            
 			
 			<div class="row collection-display-grid" id="wallet-grid">
 

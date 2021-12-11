@@ -21,7 +21,13 @@ var sPageURL = window.location.search.substring(1),
 
 var hash = window.location.hash.substr(1);
 
-
+var settings = {
+    display : false,
+    display_id : 0,
+    groups : false,
+    level : 0,
+    blank_assets: false
+}
 
 
 
@@ -63,18 +69,40 @@ var generateCard = function(asset) {
 		
 	let $item = $('#templates .collection-item').clone();
 	$item.attr('data-name',asset.data.asset)
-	let $item_image = $item.find('.asset-image');
-	$item_image.html(asset.media);
+	
 
       
 	asset.$dom = $item;
 	
+	asset.addEventListener('loaded', (e)  => {
 
+		let $item_image = $item.find('.asset-image');
+		$item_image.html(asset.media);
 
-	_.each(['name','quantity','description'], (key) => {
+			_.each(['name','quantity','description'], (key) => {
 		$item.find(`.asset-${key}`).html(asset[key])
 	
+		})
+
+		$item.on('click', function(e) {
+		e.preventDefault();
+    
+        	setDisplayMode('1xgrid')
+		// let $disp = await getDispensers(asset.asset)
+
+		
+		// $('#details .disp').html($disp)
+			window.location.hash = $item.attr('id');
+
+			$(window).scrollTop($item.offset().top - 100)
+		// window.location.href="https://xchain.io/asset/"+asset.asset
+		});
+
 	})
+	
+
+
+
 
 
 	$item.attr('id', `${asset.name}`)
@@ -86,48 +114,27 @@ var generateCard = function(asset) {
     // if(settings.level === 0 && settings.groups ) {
     //     return $item
     // }
-	$item.on('click', async  function(e) {
-		// e.preventDefault();
-    
-        displayAsset(asset)
-		// let $disp = await getDispensers(asset.asset)
-
-		
-		// $('#details .disp').html($disp)
-		window.location.hash = $item.attr('id');
-
-		$(window).scrollTop($item.offset().top -150)
-		// window.location.href="https://xchain.io/asset/"+asset.asset
-	});
 
 
 
 	return $item
 }
 
-
-
-var displayAsset = async (asset) => {
-    // $('body').css('overflow','hidden')
-    
-    // $('#details').html($($(`.collection-item[data-name="${asset.asset}"]`)[0]).clone());
-
-    // $('#details').show();
-
-    asset = {
-    	... asset,
-    	... await getAssetData(asset.asset)
-    }
-    console.log(asset)
-    asset.date = new Date(asset.issuances.data.pop().timestamp * 1000);
-    
-    asset.$dom.find('.collection-item-date').html(`
-    	Minted ${asset.date.toLocaleString('default', { month: 'long' }) } ${asset.date.getFullYear()}
-    	(block #${asset.date.block})`);
-
-    $('.block').removeClass('col-lg-3').addClass('col-lg-12');
-    $('body').attr('mode','1xgrid');
+var toggleSettings = () => {
+	
+	$('#settings-nav').toggleClass('active')
 }
+
+
+
+var toggleBlankAssets = () => {
+	console.log(settings.blank_assets)
+	settings.blank_assets = !settings.blank_assets;
+	$('body').attr('blank_assets',  settings.blank_assets)
+}
+
+
+
 var isSubasset = (asset) => {
     return asset.asset_longname.indexOf('.') !== -1
 }
@@ -135,12 +142,7 @@ var isSubasset = (asset) => {
 
 
 var timer = null;
-var settings = {
-    display : false,
-    display_id : 0,
-    groups : false,
-    level : 0
-}
+
 var assets = [];
 
     $('#details').on('click', () => {
@@ -172,10 +174,11 @@ var presetGroupName = (cardName) => {
 
 
 
-var generateBlock = async (asset) => {
+var generateBlock =  (asset) => {
 
 	let $block = $('#templates .block').clone();
     let count = $block.find('.collection-item').length;
+    $block.attr('id',asset.name)
     let $card = generateCard(asset);
 
     if($card !== undefined && !$card.is(':empty')) {
@@ -193,59 +196,66 @@ var generateBlock = async (asset) => {
     return $block
 }
 
-var generateCollection = async function(data, dom_el) {
+var generateCollection = async function(data) {
 
-        if(!data.length) {
-            dom_el.hide();
-            return;
-        } 
+     
 
-        let $grid = dom_el.find('.collection-display-grid');
-        $grid.empty();
-        dom_el.show();
+       return await Promise.all(_.map(data, async (d)  => {
+        	let asset = new Asset(d)
+       		await asset.init();
 
-        let assets = data.slice(10,20).
-        	map( (d) => {
-        		console.log(d)
-       			return new Asset(d)
-       		}).sort((a,b) => {
-       			// console.log(a.name +'/'+b.name)
-       			return a.name > b.name
-       		})
-       		
-       	// console.log(assets)
-        // Parsing DATA
+       		if(asset.valid) {
 
-        _.each(assets, async (asset)  => {
-        	
-       			
-       		if(await asset.valid) {
-
-       			let $block = await generateBlock(asset);
-
-       			if($block) {
-       				$block.appendTo($grid);
-       			}
+       			return asset
        		} else {
        			console.warn(`Invalid asset: ${asset.name}`)
        			console.warn(asset)
-
+       			return null
        		}
-        })
-       
-		
-		
-        $("html, body").animate({scrollTop: 0}, 1);
+        }))
 
                 
 }
 
 
+var generateAsset  = (asset_data) => {
+	let asset = new Asset(asset_data);
+	asset.init();
+	return asset;
+}
 
 
-var displayWallet = function(data) {
 
-	generateCollection(data,$('#plebs-collection'));
+
+var displayWallet = async function(data) {
+
+	let $collection = $('#collection');
+	let $grid = $collection.find('.collection-display-grid');
+	$grid.empty();
+	$('#wallet-loader').show();
+    $collection.show();
+
+	// let assets = await generateCollection(data);
+
+	
+	_.each(
+		data.sort(
+			(a,b) => {
+				return a.asset > b.asset
+			}
+		), 
+		(a)  => {
+			let asset =  generateAsset(a)
+			let $block = generateBlock(asset);
+			
+			$block.appendTo($grid);
+		}
+	)
+	 
+	$('#wallet-loader').hide();
+
+        
+    $("html, body").animate({scrollTop: 0}, 1);
 }
 
 
@@ -264,37 +274,7 @@ var setState = function(state, toggle) {
 
 
 
-var getAssetData = async function(asset_name, dom_cta) {
-	
-	let asset = await $.ajax({
-		url: "https://xchain.io/api/asset/"+asset_name,
-		method: "GET"
-	})
 
-	// let issuances  = ;
-
-
-	asset = {
-		...asset,
-		... {
-			issuances : await getAssetIssuanceData(asset_name)
-		} 
-	}
-
-	return asset
-	// }).done(function(data){
-	// 	console.log('===========')
-	// 	console.log(data)
-
-	// })
-}
-
-var getAssetIssuanceData = async (asset_name) => {
-	return await $.ajax({
-		url: "https://xchain.io/api/issuances/"+asset_name,
-		method: "GET"
-	})
-}
 
 	
 	var user = {}
@@ -376,44 +356,46 @@ var states = {
 	section: 'splash'
 }
 
+var setDisplayMode =  (mode) => {
+	states.mode = mode;
+	$('.block').removeClass('col-lg-12 col-lg-3');
+	if(states.mode === '1xgrid') {
+		$('.block').addClass('col-lg-12');
+	} else {
+		$('.block').addClass('col-lg-3');
+	}
+
+
+    $('body').attr('mode',states.mode  );
+}
+
 var displaySection = (section) => {
 	states.section = section;
 	$('body').attr('section',section)
 }
 
+
 window.addEventListener('load', (event) => {
 
-	$('a.displayMode').on('click', (e) => {
-    e.preventDefault();
-    displayMode();
+	$('a.cta-wallet').on('click',  (e) => {
+		localStorage.removeItem('address');
+		displaySection('splash');
+
+	});
+
+
+	$('a.cta-settings').on('click', (e) =>  {
+		e.preventDefault();
+		toggleSettings()
 	})
 
-    $('#collection .return').on('click', (e) => {
-        e.preventDefault();
-        displayWallet();
-    })
+	$('a.cta-toggle-blank-assets').on('click', (e)=> {
 
-	$('a.cta-explore').on('click', function(e) {
-		
-		access('collection');
 		e.preventDefault();
-	});
+		toggleBlankAssets();
+	})
 
-	var id = Number(getUrlParameter('artwork_id')) || null;
-
-	if(id !== null) {
-
-		displaySelectedItem(artworks[id]);
-	} else {
-
-		// displaySection('#splash');
-	}
-
-	$('.hero').on('click', function(e) {
-		setState('splash', false);
-	});
-
-setLevel(0);
+	setLevel(0);
 
   $('#search-input').on('keyup', _.throttle((e) => {
         
@@ -435,28 +417,30 @@ setLevel(0);
 	
 		var data = $("#address-input").val();
 		user.address = data;
-		localStorage.setItem('pleb_addresss', user.address);
+		localStorage.setItem('address', user.address);
 		displaySection('wallet');
 		setBreadcrumbs(user.address, (e) => {
-			removeCrumb();
-			displaySection('splash')
+			// removeCrumb();
+			// generateWallet(user.address);
+			setDisplayMode('4xgrid');
+			$("html, body").animate({scrollTop: 0}, 1);
 			e.preventDefault();
 		});
 		generateWallet(user.address);
 		e.preventDefault();
 	});
 
-	user.address = localStorage.getItem('pleb_addresss');
+	user.address = localStorage.getItem('address');
 	
-	if(user.address === undefined) {
+	
+	if(user.address === null) {
 		displaySection('splash');
 		setBreadcrumbs();
 	} else {
 		displaySection('wallet');
 		setBreadcrumbs(user.address, (e) => {
-			removeCrumb();
-			displaySection('splash')
-
+			setDisplayMode('4xgrid')
+			$("html, body").animate({scrollTop: 0}, 1);
 			e.preventDefault();
 		});
 		generateWallet(user.address);
@@ -464,11 +448,8 @@ setLevel(0);
 	}
 
 
-	if(states.mode === '1xgrid') {
-		$('.block').addClass('col-lg-12');
-	} else {
-		$('.block').addClass('col-lg-3');
-	}
+	setDisplayMode('4xgrid')
+	
 	
 });
 
