@@ -25,13 +25,15 @@
 
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 <script
   src="../jquery.3.6.0.prod.js" 
   ></script>
 <script src="lodash.4.17.21.min.js"></script>
-<script src="pepedata.js"></script>
+<script src="jquery.waypoints.min.js"></script>
 
+<script src="pepedata.js"></script>
+<!--  -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" />
 
 <script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
@@ -82,16 +84,12 @@
 	</section>
 
 
-	<section id="wallet" style="text-align: center">
+	<section id="wallets" style="text-align: center">
 		
 		<div id="wallet-loader">Loading Assets ... </div>
    
-		<div id="collection">
+		<div id="wallets-container">
             
-			
-			<div class="row collection-display-grid" id="wallet-grid">
-
-			</div>
 		</div>
 
 
@@ -105,27 +103,81 @@
 </body>
 
 <div id="templates">
-    <div class="block col-sm-6 col-md-4 "><h4 class="group-name"></h4></div>
-	<a class="collection-item"  href="#" >
-		<div class="collection-item-meta">
-			<div class="asset-quantity collection-item-quantity"></div>
-			<div class="asset-name collection-item-title"></div>
-			<div class="collection-item-date"></div>
-            <div class="asset-description collection-item-description"></div>
-			<div class="disp"></div>
-		</div>
+    <div class="block col-sm-6 col-md-4 " >
+    	<h4 class="asset-group-name"></h4>
+    	<div class="asset-group-icon"></div>
+    </div>
+	<div class="collection-item  asset"  href="#" >
 		<div class="collection-item-container">
 			
 			
-			<div class="asset-image collection-item-image"></div>
+			<div class="asset-image asset-media collection-item-image"></div>
 		</div>
-	</a>
+		<div class="collection-item-meta">
+			
+			<div class="asset-name collection-item-title"></div>
+			<div class="asset-artist"></div>
+			<div class="asset-quantity collection-item-quantity"></div>
+			
+			<div class="asset-date"></div>
+            <div class="asset-description collection-item-description"></div>
+            <div class="asset-supply-info property-set">
+				<div class="asset-total-supply property-block">
+					<h5>Supply</h5>
+					<p class="asset-supply-total "></p>
+				</div>
+				<div class="asset-hodlers data-block">
+					<h5>Hodlers</h5>
+					<p class="asset-supply-hodlers "></p>
+				</div>
+				<div class="asset-shares display-on-focus-only data-block">
+					<h5>Owned</h5>
+					<p><span class="asset-supply-owned"></span>(<span class="asset-supply-owned_percent"></span>%)</p>
+				</div>
+			</div>
 
-	<div id="dispenser-template" class="dispenser">
-		Best Dispenser
+			<div class="asset-price-info">
+				<div class="asset-best-offer">
+					<h5>Ask</h5>
+					<p data_asset_best_offer></p>
+				</div>
+				<div class="asset-last-sale display-on-focus-only">
+					<h5>Last Sale</h5>
+					<p data_asset_last_sale></p>
+				</div>
+				<div class="asset-total-sales display-on-focus-only">
+					<h5>Total Sales</h5>
+					<p class="asset-market-total_sales"></p>
+				</div>
+				<div class="asset-average-sale ">
+					<h5>Average Price per sale (APS)</h5>
+					<p class="asset-market-aps"></p>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+<!-- 	<div id="dispenser-template" class="dispenser">
+		<div class="asset-best-offer">
+			<h5>Best Offer</h5>
+			<p data_best_offer></p>
+		</div>
+		<div class="asset-last-sale">
+			<h5>Last Sale</h5>
+			<p data_last_sale></p>
+		</div>
+		<div class="asset-total-sales">
+			<h5>Total Dispenser Sales</h5>
+			<p data_asset_total_sales></p>
+		</div>
+		<div class="asset-average-sale">
+			<h5>Average Price per sale (APS)</h5>
+			<p data_asset_average_sale></p>
+		</div>
 		<a class="price" href="" target="_blank"></a>
 		<a href="https://xchain.io/asset/" target="_blank" class="xchain">Explore on Xchain</a>
-	</div>
+	</div> -->
 </div>
 
 <script src="asset.js" ></script>

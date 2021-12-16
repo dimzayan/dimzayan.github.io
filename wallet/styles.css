@@ -93,7 +93,9 @@
 		h4 {font-size: 1.5em; line-height: 2em}
 		h5 {font-size: 1em; line-height: 2.5em}
 
-
+		.asset-artist:before  {
+			content: "By ";
+		}
 
 		body[section='splash'] #splash {
 			display: block;
@@ -107,8 +109,32 @@
 			display: none;
 		}
 
+		.display-on-focus-only {
+				display: none
+		}
+
+		body[mode="1xgrid"] .display-on-focus-only {
+			display: block;
+		}
+
+
+		.property-set {
+			display: flex;
+			flex-direction: row;
+		}
 	
-	
+		.property-block{
+			position: relative;
+			margin : 0  2em 0  0 ;
+		}
+
+		.asset-media  {
+			height: 340px;
+			margin-bottom: 1em;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 		@media (max-width: 767.98px) {
 			#selection .meta {
 				padding: 2em 4em;
@@ -153,10 +179,13 @@
 				margin : 1em 0 0 0;
 			}
 
+			
+
 			body[mode="1xgrid"] .asset-image  {
 				text-align: left;
 				max-width: 80vw;
 			}
+
 
 			body[mode="1xgrid"] .asset-image img,
 			body[mode="1xgrid"] .asset-image video,
@@ -201,11 +230,7 @@
 		}
 
 
-		.selected #collection {
-			display: none;
-		}
-
-		#collection {
+		.wallet {
 			overflow : scroll;
 		}
 
@@ -270,6 +295,7 @@
             border-radius : 0.75em;
             overflow: hidden;
 
+
 		}
 
 		#templates {
@@ -278,7 +304,9 @@
         .block {
             position: relative;
             min-height: 400px;
+            /*min-width: 400px;*/
             padding: 2em;
+            background  :  #FFF;
         }
 
         #settings-nav {
@@ -411,7 +439,9 @@
         }
 
 
-
+        .scrollmagic-pin-spacer .collection-item {
+        	inset: 6.5em !important;
+        }
 		.asset-image img,
 		.asset-image video,
 		.asset-image iframe {
@@ -431,6 +461,9 @@
 			height: 100%;
 		}
 
+		.asset-image video {
+			height: auto
+		}
 		body[mode="1xgrid"] .asset-image {
 			border-radius: 0;
 		}
@@ -542,26 +575,29 @@
 			background-color : #028;
 		}
 
-		#wallet {
-			margin : 5em;
+		.wallet {
+			margin : 5em auto;
+			max-width: 1200px;
 		
 		}
 
-		#wallet .collection-item {
+		.wallet .collection-item {
 			padding : 0em;
             margin :  0;
             text-decoration: none;
 
 		}
 
-		#wallet .collection-item:hover .asset-name {
+		.wallet .collection-item:hover .asset-name {
 			text-decoration: underline;
 		}
 
-		#wallet .collection-item-container {
+		.wallet .collection-item-container {
 			position : relative;
 			max-width: 400px;
 		}
+
+
 
 
 		.collection-item-container {

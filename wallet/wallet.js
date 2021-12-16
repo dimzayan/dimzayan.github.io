@@ -1,8 +1,25 @@
-// import {} from './asset.js'
+var hash = window.location.hash.substr(1);
+var user = {}
+var states = {
+	splash : true,
+	section: 'splash'
+}
 
-var getUrlParameter = function getUrlParameter(sParam) {
+var settings = {
+    display : false,
+    display_id : 0,
+    groups : false,
+    level : 0,
+    blank_assets: false
+}
 
-var sPageURL = window.location.search.substring(1),
+var focus = null;
+var timer = null;
+var assets = [];
+
+const getUrlParameter = function getUrlParameter(sParam) {
+
+	var sPageURL = window.location.search.substring(1),
         sURLVariables = sPageURL.split('&'),
         sParameterName,
         i;
@@ -19,45 +36,39 @@ var sPageURL = window.location.search.substring(1),
 
 
 
-var hash = window.location.hash.substr(1);
-
-var settings = {
-    display : false,
-    display_id : 0,
-    groups : false,
-    level : 0,
-    blank_assets: false
-}
 
 
 
-var getPrevId = function(artwork) {
-	let new_id = artwork.id-1;
-	return new_id < 0 ? artworks.length+new_id : new_id
-};
 
-var getNextId = function(artwork) {
-	let new_id = artwork.id+1;
-	return new_id % (artworks.length );
-};
 
-var setBreadcrumbs = function(label, onClickEvent) {
-	// Set breadcrumbs
 
-	if($('#breadcrumbs a').length >2) {
+// var getPrevId = function(artwork) {
+// 	let new_id = artwork.id-1;
+// 	return new_id < 0 ? artworks.length+new_id : new_id
+// };
+
+// var getNextId = function(artwork) {
+// 	let new_id = artwork.id+1;
+// 	return new_id % (artworks.length );
+// };
+
+
+var Breadcrumbs = {
+	remove : ()  => {
 		$('#breadcrumbs a')[2].remove();
-	}
+	},
 
-	if(label !== undefined) {
-		let $crumb = $('<a href="#" class="active">'+label+'</a>');
-		$crumb.on('click', onClickEvent)
-		$('#breadcrumbs').append($crumb);
-	}
-	
-};
+	drop : (label, onClickEvent) =>  {
+		if($('#breadcrumbs a').length >2) {
+		this.remove();
+		}
 
-var removeCrumb = () => {
-	$('#breadcrumbs a')[2].remove();
+		if(label !== undefined) {
+			let $crumb = $('<a href="#" class="active">'+label+'</a>');
+			$crumb.on('click', onClickEvent)
+			$('#breadcrumbs').append($crumb);
+		}
+	}
 }
 
 
@@ -65,68 +76,10 @@ var removeCrumb = () => {
 
 
 
-var generateCard = function(asset) {
-		
-	let $item = $('#templates .collection-item').clone();
-	$item.attr('data-name',asset.data.asset)
-	
-
-      
-	asset.$dom = $item;
-	
-	asset.addEventListener('loaded', (e)  => {
-
-		_.each(['name','quantity','description'], (key) => {
-			$item.find(`.asset-${key}`).html(asset[key])
-		});
-
-		
-
-		let $item_image = $item.find('.asset-image');
-		
-		$video = $item.find('.asset-description video, .asset-description iframe')
-		if($video.length) {
-			
-			$video.prop('muted') ;
-			$item_image.append($video)
-
-		} 
-$item_image.html(asset.media);
-		$item.on('click', function(e) {
-			e.preventDefault();
-    
-        	setDisplayMode('1xgrid')
-		// let $disp = await getDispensers(asset.asset)
-
-		
-		// $('#details .disp').html($disp)
-			window.location.hash = $item.attr('id');
-
-			$(window).scrollTop($item.offset().top - 100)
-		// window.location.href="https://xchain.io/asset/"+asset.asset
-		});
-
-	})
-	
 
 
 
 
-
-	$item.attr('id', `${asset.name}`)
-	$item.attr('href', `#${asset.name}`)
-
-    // $item.find('.asset-description').html(asset.description)
-
-   $item.find('video').prop('muted', true)
-    // if(settings.level === 0 && settings.groups ) {
-    //     return $item
-    // }
-
-
-
-	return $item
-}
 
 var toggleSettings = () => {
 	
@@ -143,22 +96,10 @@ var toggleBlankAssets = () => {
 
 
 
-var isSubasset = (asset) => {
-    return asset.asset_longname.indexOf('.') !== -1
-}
 
 
 
-var timer = null;
 
-var assets = [];
-
-    $('#details').on('click', () => {
-        $('body').css('overflow','auto');
-        $('body').removeClass('display');
-        clearTimeout(timer);
-        $('#details').hide();
-    })
 
 var setLevel = (l) => {
     settings.level = l;
@@ -176,18 +117,15 @@ var displayMode = () => {
     timer = setTimeout(displayMode, 10000);
 }
 
-var presetGroupName = (cardName) => {
-    return PRESETS[cardName] !== undefined && PRESETS[cardName].group !== undefined ? PRESETS[cardName].group : null;
-}
 
 
 
-var generateBlock =  (asset) => {
+const generateBlock =  (asset) => {
 
 	let $block = $('#templates .block').clone();
     let count = $block.find('.collection-item').length;
-    $block.attr('id',asset.name)
-    let $card = generateCard(asset);
+    $block.attr('id',`${asset.name}-block`);
+    let $card = asset.display();
 
     if($card !== undefined && !$card.is(':empty')) {
     	
@@ -196,69 +134,107 @@ var generateBlock =  (asset) => {
             'transform':`translate(${count*6}px,${count*8}px)`,
             'z-index':1
         });
+
+
     } else {
     	console.warn(`ERROR WITH GENERATING BLOCK FOR ${asset.name}`)
     	return null
     }
 
+  
+
+
     return $block
 }
 
-var generateCollection = async function(data) {
-
-     
-
-       return await Promise.all(_.map(data, async (d)  => {
-        	let asset = new Asset(d)
-       		await asset.init();
-
-       		if(asset.valid) {
-
-       			return asset
-       		} else {
-       			console.warn(`Invalid asset: ${asset.name}`)
-       			console.warn(asset)
-       			return null
-       		}
-        }))
-
-                
-}
 
 
-var generateAsset  = (asset_data) => {
-	let asset = new Asset(asset_data);
+const generateAsset  = (asset_data) => {
+	let asset = new Asset(asset_data,  {
+		template: $('#templates .collection-item')
+	});
 	asset.init();
 	return asset;
 }
 
+const generateWallet = async (address) => {
+    
+	user.wallet = new Wallet(address)
+    await user.wallet.fetch()
+    displayWallet(user.wallet)
+}
 
 
+class  Wallet {
+	constructor(address) {
+		this.address = address
+	}
 
-var displayWallet = async function(data) {
+	async fetch() {
+		let obj= await $.ajax({
+			url: "https://xchain.io/api/balances/"+this.address,
+			method: "GET"
+		});
 
-	let $collection = $('#collection');
-	let $grid = $collection.find('.collection-display-grid');
-	$grid.empty();
-	$('#wallet-loader').show();
-    $collection.show();
+		this.data = obj.data
 
-	// let assets = await generateCollection(data);
+		return this.data
+	}
 
-	
-	_.each(
-		data.sort(
-			(a,b) => {
-				return a.asset > b.asset
+	render() {
+		this.$dom  =  $('<div>',  { id: `wallet-${this.address}`, class: 'wallet'});
+		let $container = $('<div>', {id: `wallet-${this.address}-collection`, class:  'row collection'})
+
+
+		_.each(
+			this.data.sort(
+				(a,b) => {
+					return a.asset > b.asset
+				}
+			)
+			.slice(0,20), 
+			(a)  => {
+				let asset =  generateAsset(a)
+				let $block = generateBlock(asset);
+				
+				$block.appendTo($container);
+				var waypoint = new Waypoint({
+	  				element: $block,
+		  			handler: async function(direction) {
+		  				if(states.mode === '1xgrid') {
+		  					if(focus !== null)  {
+		  					focus.$dom.find('video').prop('muted', true);
+		  
+		  				}
+		  				focus = asset;
+		  				history.pushState(null,null,`#${asset.name}`);
+		  				}
+		  				
+		    			
+		  			},
+		  			offset:300
+				})
 			}
-		), 
-		(a)  => {
-			let asset =  generateAsset(a)
-			let $block = generateBlock(asset);
-			
-			$block.appendTo($grid);
-		}
-	)
+		)
+
+		$container.appendTo(this.$dom);
+		console.log(this.$dom)
+		return this.$dom
+	}
+
+
+}
+
+var displayWallet = async function(wallet) {
+	// let data = wallet.data
+	// let $collection = $('#collection');
+	// let $grid = $collection.find('.collection-display-grid');
+	// $grid.empty();
+	$('#wallets').show()
+	$('#wallet-loader').show();
+    
+    $('#wallets-container').html(wallet.render())
+
 	 
 	$('#wallet-loader').hide();
 
@@ -268,10 +244,7 @@ var displayWallet = async function(data) {
 
 
 
-var states = {
-	splash : true
-}
-var setState = function(state, toggle) {
+const setState = (state, toggle) =>  {
 	toggle = Boolean(toggle);
 	states[state] = toggle;
 	
@@ -284,86 +257,6 @@ var setState = function(state, toggle) {
 
 
 
-	
-	var user = {}
-
-
-	var generateWallet = async function(address) {
-
-        let obj = await $.ajax({
-			url: "https://xchain.io/api/balances/"+address,
-			method: "GET"
-		});
-        user.collection_data = obj.data;
-        displayWallet(obj.data)
-	}
-
-	var getMarketInfo = async function(callback) {
-		// Retrieve BTC price before getting dispensers
-		let mkt = await $.ajax({
-			url: "https://xchain.io/api/network",
-			method:"GET"
-		})
-
-		return mkt
-	};
-
-	var dispReq;
-
-
-	var getDispensers = async function(asset) {
-		
-
-		let marketObj = await getMarketInfo()
-		// async function(marketObj) {
-			if(dispReq !== undefined && dispReq.abort !== undefined) { dispReq.abort();}
-			dispReq = await $.ajax({
-				url: "https://xchain.io/api/dispensers/"+asset,
-				method: "GET"
-			})
-
-
-		
-			$disp = $('#dispenser-template').clone();
-		
-			let available_dispensers = [];
-			for(var i=0;i<dispReq.data.length;i++) {
-
-				if(dispReq.data[i].give_remaining > 0 && obj.data[i].status == 0) {
-					available_dispensers.push(dispReq.data[i]);
-				}
-				
-			}
-
-			
-				
-			if(available_dispensers.length > 0) {
-				$disp.find('.price').attr('href', "https://xchain.io/tx/"+available_dispensers[0].tx_hash)
-				$disp.find('.price').html(parseFloat(available_dispensers[0].satoshirate)+' BTC / $'+(available_dispensers[0].satoshirate * marketObj.currency_info[0].price_usd).toFixed(0))
-				
-				$disp.find('.xchain').attr('href',`https://xchain.io/asset/${asset}` );
-
-				$disp.find('a').on('click', (e) => {
-					e.stopPropagation();
-				}
-				)
-				
-				
-			}  
-
-		
-
-			return $disp;
-			
-	
-
-		
-}
-
-var states = {
-	section: 'splash'
-}
-
 var setDisplayMode =  (mode) => {
 	states.mode = mode;
 	$('.block').removeClass('col-lg-12 col-lg-3');
@@ -375,6 +268,7 @@ var setDisplayMode =  (mode) => {
 
 
     $('body').attr('mode',states.mode  );
+    Waypoint.Context.refreshAll()
 }
 
 var displaySection = (section) => {
@@ -410,7 +304,7 @@ window.addEventListener('load', (event) => {
             
             let search = new RegExp($('#search-input').val(), 'gi')
             
-        let data = user.collection_data.filter(e => {
+        let data = user.wallet.data.filter(e => {
             
             return [e.asset, e.asset_longname].join(' ').match(search)
         });
@@ -427,7 +321,7 @@ window.addEventListener('load', (event) => {
 		user.address = data;
 		localStorage.setItem('address', user.address);
 		displaySection('wallet');
-		setBreadcrumbs(user.address, (e) => {
+		Breadcrumbs.drop(user.address, (e) => {
 			// removeCrumb();
 			// generateWallet(user.address);
 			setDisplayMode('4xgrid');
@@ -443,10 +337,10 @@ window.addEventListener('load', (event) => {
 	
 	if(user.address === null) {
 		displaySection('splash');
-		setBreadcrumbs();
+		Breadcrumbs.add();
 	} else {
 		displaySection('wallet');
-		setBreadcrumbs(user.address, (e) => {
+		Breadcrumbs.drop(user.address, (e) => {
 			setDisplayMode('4xgrid')
 			$("html, body").animate({scrollTop: 0}, 1);
 			e.preventDefault();

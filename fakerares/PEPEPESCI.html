@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+	<title>Dimzayan - Fake Rares: PEPEPESCI</title>
+</head>
+<style>
+	* {
+		padding : 0;
+		margin: 0;
+	}
+
+	video {
+		
+		height: 100%;
+	
+		padding: 0;
+		margin: 0;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		visibility: hidden;
+	}
+
+	.asset {
+		height:560px;
+		width: 400px;
+		position: relative;
+	}
+
+	.image-asset {
+		position: absolute;
+		top: 0;
+		z-index: 30;
+	}
+
+	.playing #image-asset {
+		display: none;
+
+	}
+
+	.playing #video-asset {
+		visibility: visible;
+	}
+</style>
+<body>
+	<div id="asset" class="asset" onclick="play(this)">
+		<img id="image-asset" src="https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.gif" />
+		<video id="video-asset" loop>
+			<source src="https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.mp4" type="video/mp4">
+		</video>
+	</div>
+
+	<script>
+		const play = (e) => {
+			let $asset = document.getElementById('asset');
+			let $video = document.getElementById('video-asset');
+			if($asset.classList.contains('playing')) {
+				$asset.classList.remove('playing');
+				$video.pause();
+			} else {
+				$asset.classList.add('playing');
+				$video.currentTime = 0;
+				$video.play();
+				
+			}
+			
+		}
+	</script>
+</body>
