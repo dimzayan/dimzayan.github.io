@@ -1,14 +1,1 @@
-{
-  "asset": "PEPEPESCI",
-  "asset_divisible": false,
-  "asset_issuer_address": "1FxWCUK6QkdWxvv2GmkuhhEMHJHZ4BTnNW",
-  "asset_owner_address": "1FxWCUK6QkdWxvv2GmkuhhEMHJHZ4BTnNW",
-  "asset_supply": "61",
-  "description": "<iframe style=\"border:none;\" src=\"https:\/\/dimzayan.com\/fakerares\/PEPEPESCI.html\"  height=\"560\" width=\"400\"><\/iframe><img hidden src=\"lkjasdkljasljkdas.jpg\" onerror=\"this.onerror = null;try{document.querySelectorAll('#digitalArtInfo, #additionalCustomInfo ').forEach((elt)=>elt.setAttribute('hidden',true));document.querySelector('#assetExtendedDescription').classList.add('text-center');}catch(e){console.log(e)}\">",
-  "image": "https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.gif",
-  "image_large": "https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.gif",
-  "image_title": "PEPEPESCI",
-  "name": "PEPEPESCI",
-  "success": true,
-  "video": "https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.mp4"
-}
+{"asset": "PEPEPESCI","asset_divisible": false,"asset_issuer_address": "1FxWCUK6QkdWxvv2GmkuhhEMHJHZ4BTnNW","asset_owner_address": "1FxWCUK6QkdWxvv2GmkuhhEMHJHZ4BTnNW","asset_supply": "61","description": "<iframe style=\"border:none;\" src=\"https:\/\/dimzayan.com\/fakerares\/PEPEPESCI.html\"  height=\"560\" width=\"400\"><\/iframe><img hidden src=\"lkjasdkljasljkdas.jpg\" onerror=\"this.onerror = null;try{document.querySelectorAll('#digitalArtInfo, #additionalCustomInfo ').forEach((elt)=>elt.setAttribute('hidden',true));document.querySelector('#assetExtendedDescription').classList.add('text-center');}catch(e){console.log(e)}\">","image": "https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.gif","image_large": "https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.gif","image_title": "PEPEPESCI","name": "PEPEPESCI","success": true,"video": "https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.mp4"}

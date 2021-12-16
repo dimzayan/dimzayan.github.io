@@ -58,7 +58,7 @@ var Breadcrumbs = {
 		$('#breadcrumbs a')[2].remove();
 	},
 
-	drop : (label, onClickEvent) =>  {
+	add: (label, onClickEvent) =>  {
 		if($('#breadcrumbs a').length >2) {
 		this.remove();
 		}
@@ -115,6 +115,25 @@ var displayMode = () => {
 
     settings.display_id = (settings.display_id+1)%assets.length;
     timer = setTimeout(displayMode, 10000);
+}
+
+var setDisplayMode =  (mode) => {
+	states.mode = mode;
+	$('.block').removeClass('col-lg-12 col-lg-3');
+	if(states.mode === '1xgrid') {
+		$('.block').addClass('col-lg-12');
+	} else {
+		$('.block').addClass('col-lg-3');
+	}
+
+
+    $('body').attr('mode',states.mode  );
+    Waypoint.Context.refreshAll()
+}
+
+var displaySection = (section) => {
+	states.section = section;
+	$('body').attr('section',section)
 }
 
 
@@ -257,24 +276,7 @@ const setState = (state, toggle) =>  {
 
 
 
-var setDisplayMode =  (mode) => {
-	states.mode = mode;
-	$('.block').removeClass('col-lg-12 col-lg-3');
-	if(states.mode === '1xgrid') {
-		$('.block').addClass('col-lg-12');
-	} else {
-		$('.block').addClass('col-lg-3');
-	}
 
-
-    $('body').attr('mode',states.mode  );
-    Waypoint.Context.refreshAll()
-}
-
-var displaySection = (section) => {
-	states.section = section;
-	$('body').attr('section',section)
-}
 
 
 window.addEventListener('load', (event) => {
@@ -340,7 +342,7 @@ window.addEventListener('load', (event) => {
 		Breadcrumbs.add();
 	} else {
 		displaySection('wallet');
-		Breadcrumbs.drop(user.address, (e) => {
+		Breadcrumbs.add(user.address, (e) => {
 			setDisplayMode('4xgrid')
 			$("html, body").animate({scrollTop: 0}, 1);
 			e.preventDefault();

@@ -231,7 +231,7 @@
 
 
 		.wallet {
-			overflow : scroll;
+			/*overflow : scroll;*/
 		}
 
 		.collection-item {
