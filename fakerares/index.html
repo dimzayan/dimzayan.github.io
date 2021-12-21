@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="https://gmpg.org/xfn/11">
+
+<link rel=icon href=../favicon.png>
+
+<title>Dimzayan - FAKE RARES</title>
+
+<meta name="robots" content="all">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Bitcoin Voicepaper – dimzayan">
+<meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
+<meta property="og:url" content="https://www.dimzayan.com/the-bitcoin-voicepaper/">
+<meta property="og:site_name" content="dimzayan">
+<meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@dimzayan">
+<meta name="twitter:label1" content="Est. reading time">
+<meta name="twitter:data1" content="2 minutes">
+
+<link rel="stylesheet" id="dimzayan-style-css" href="../index_files/style.css" media="all">
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
+
+<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
+<style>
+	main {
+		padding : 4em;
+	}
+
+	.block {
+		min-width: 200px;
+		max-width: 300px;
+		width: 300px;
+		margin : 2em 4em 2em 0;
+	}
+
+	.block img {
+		width: 100%;
+	}
+
+	#assets {
+		display: flex;
+		overflow-x: auto;
+		flex-wrap: wrap;
+	}
+
+	#templates {
+		display: none;
+	}
+
+
+@media (max-width: 767.98px) {
+	main {
+		padding : 2em;
+	}
+
+	.block {
+		margin-top: 4em;
+		
+	}
+}
+</style>
+<body>
+	<nav id="breadcrumbs">
+		<a href="../index.html" id="cta-home" class="cta-home">Dim</a>
+		<a href="#" class='cta-explore'>Fake Rares</a>
+
+	</nav>
+
+	
+	<main>
+		<hero>
+		<h1>FAKE RARES</h1>
+		<p>Dim has been contributing to the <a href="https://fakeraredirectory.wordpress.com/fake-pepe-directory/">Fake Rare</a> project since series 2</p>
+	</hero>
+		<div class="" id="assets">
+	
+		</div>
+	</main>
+
+</body>
+	<div id="templates">
+			<div class="block ">
+				<div class="asset">
+					<div class="visual">
+						<img src="" />
+					</div>
+					<h4><a class="name" href=""></a></h4>
+					<p>Series <span class="series-number"></span>
+				</div>
+			</div>
+</div>
+
+<script>
+
+const assets = [
+	{
+		name: 'PEPEPLEBZ',
+		image_url: 'https://fakeasf.club/assets/PEPEPLEBZ/PEPEPLEBZ.gif',
+		series: 2
+	},
+	{
+		name: 'PEPENIRO',
+		image_url: 'http://imgur.com/VKYrKZ3.gif',
+		series: 2
+	},
+	{
+		name: 'PEPELIOTTA',
+		image_url: 'https://imgur.com/KdPVXnZ.gif',
+		series: 3
+	},
+	{
+		name: 'PEPEPESCI',
+		image_url: "https://dimzayan.nyc3.digitaloceanspaces.com/PEPEPESCI.gif",
+		series: 4
+	}
+	
+]
+
+
+const drawAssets = () => {
+
+
+	let $container = document.getElementById('assets');
+	for(let i=0;i<assets.length;i++) {
+	
+		let asset=assets[i]
+
+		let $block = document.querySelector("#templates .block").cloneNode(true);
+		$block.querySelector('.name').innerHTML = asset.name;
+		$block.querySelector('.series-number').innerHTML = asset.series;
+		$block.querySelector('.name').href = `https://xchain.io/asset/${asset.name}`
+		$block.querySelector('.visual img').src = asset.image_url
+		$container.append($block);
+	}
+
+
+	
+
+}	
+
+drawAssets();
+
+</script>
+</html>

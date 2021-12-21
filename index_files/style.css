@@ -14,31 +14,10 @@ a, a:visited {
 a:hover, a:hover > i , nav#social a:hover i{
 	color : #F3f3ff;
 }
-nav {
-	padding : 4rem;
-	font-size: 3em;
-	line-height: 1.5em;
-	position : absolute;
-	top : 0;
-}
-
-nav#social {
-	position: absolute;
-	right: 0;
-	font-size: 1em;
-	z-index: 999
-}
-
-nav#social a i {
-	/*color: #38F;*/
-
-}
 
 
 
-nav a {
-	display: block;
-}
+
 
 h1 {
 	font-weight: 300;
@@ -72,4 +51,37 @@ article {
 	
 	right : 0;
 }
+}
+
+
+
+/* BREADCRUMBS AND NAVS*/
+
+nav {
+	position: fixed;
+	z-index : 99999;
+	font-size: 1em;
+	padding: 2rem;
+}
+
+nav a {
+	font-weight: 200;
+	text-decoration: none;
+	display: inline-block;
+}
+
+nav a.active {
+	/*font-weight: 100;*/
+}
+
+
+
+
+#breadcrumbs {
+	margin-right : 6em;
+}
+
+#breadcrumbs a + a:before{
+	content: ".";
+	margin-right: 0.2rem;
 }
