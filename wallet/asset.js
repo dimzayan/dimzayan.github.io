@@ -210,17 +210,28 @@ class Asset extends EventTarget {
 
 	get media() {
 		let raw_description = document.createElement('span');
-		raw_description.innerHTML = this.description;
+		raw_description.innerHTML = this.data.description;
+console.log(this.data.description)
+		// let _this = this;
+		raw_description.querySelectorAll('img, video, iframe').forEach(item => {
+			if(!this._media || this._media.nodeType === 'img') {
+				this._media = item;
+				console.log(this._media)
+			}
+			
+			
+			// return this._media
+		})
 
-		if(raw_description.querySelector('img') !== null) {
+		// if(raw_description.querySelector('img') !== null) {
 			
-			this._media = raw_description.querySelector('img');
+		// 	this._media = raw_description.querySelector('img');
 			
-			return this._media
-		}
+		// 	return this._media
+		// }
 		this._media  = this._media || new Image();
 
-		if (this._media.src  !==  ''){
+		if (this._media.nodeType === 'video' || this._media.nodeType === 'iframe' || this._media.src  !==  ''){
 			return  this._media
 
 		}
@@ -278,14 +289,14 @@ class Asset extends EventTarget {
 
 	get description() {
 
-		// let copy  =  this.data.description //.replace(/<img[^>]*>/g,"")
+		
 		let raw_description = document.createElement('span');
 		raw_description.innerHTML = this.data.description;
 
-		raw_description.querySelectorAll('img, video').forEach(item => {
+		raw_description.querySelectorAll('img, video, iframe').forEach(item => {
 			item.remove();
 		})
-
+		
 		
 		return raw_description.innerHTML
 		
