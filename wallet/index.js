@@ -358,6 +358,11 @@ const showAssetDetails  = async (assetName) =>  {
 		    }
 	    }
 
+
+	    $focus.querySelector('.asset-media-container').addEventListener('click', (e) => {
+	    	e.preventDefault();
+	    })
+
 		
 	})
 

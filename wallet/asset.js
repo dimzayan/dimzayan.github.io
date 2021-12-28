@@ -211,15 +211,15 @@ class Asset extends EventTarget {
 	get media() {
 		let raw_description = document.createElement('span');
 		raw_description.innerHTML = this.data.description;
-console.log(this.data.description)
+
 		// let _this = this;
 		raw_description.querySelectorAll('img, video, iframe').forEach(item => {
-			if(!this._media || this._media.nodeType === 'img') {
+
+			if(this._media.nodeName === 'IMG') {
 				this._media = item;
-				console.log(this._media)
 			}
-			
-			
+
+
 			// return this._media
 		})
 
@@ -231,7 +231,7 @@ console.log(this.data.description)
 		// }
 		this._media  = this._media || new Image();
 
-		if (this._media.nodeType === 'video' || this._media.nodeType === 'iframe' || this._media.src  !==  ''){
+		if (this._media.nodeName === 'VIDEO' || this._media.nodeName === 'IFRAME' || this._media.src  !==  ''){
 			return  this._media
 
 		}

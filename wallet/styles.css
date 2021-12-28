@@ -498,7 +498,9 @@ body .group-name {
 
 }
 
-
+.focus {
+	min-width: 1000px;
+}
 
 .focus .asset-name {
 	display: block;
@@ -508,9 +510,16 @@ body .group-name {
 }
 
 
+.focus .asset-media-container {
+	position: relative;
+	width: 50%;
+}
+
 .focus .asset-media {
 	height: auto;
 }
+
+
 
 
 
