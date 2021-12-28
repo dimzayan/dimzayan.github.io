@@ -1,8 +1,80 @@
 var PRESETS ={}
+var FR = 'FREEDOMKEK.jpg,YOURBASEPEPE.gif,BRRRRRRRRRRR.gif,KARPEPELES.jpg,SATNIGHTPEPE.jpeg,FAKEASF.gif,FAKETORCH.gif,FAKAMOTO.jpg,WAGMIPEPE.gif,FAKEGRAM.png,SEETHRUPEPHD.gif,LABRADEPE.gif,PEPEKAWS.png,LEPEPENOIR.jpg,NOFAPPEPE.crema.png,PEPEORBIT.gif,FAKESCAPE.jpg,PEPETHER.jpg,SEAOFFROG.jpeg,PHONEYSIMPSO.png,FAKEBEEPLE.png,DARKCASHGRAB.jpeg,FAKEBALLS.png,PEPETOTER.jpg,FAKEHAIRPEP.gif,HODLPIGPEPE.png,OMARPEPE.png,FAKEDEMISE.png,PEPETHEFAKE.gif,TABLOIDPEPE.png,PEPEHODLPEPE.gif,ROCKPEPESCSR.png,VASECTOPEPE.jpeg,PEPEANDLILY.jpg,FAKESCREAM.gif,NATTYPEPE.png,PONZIBEAR.png,LORDKEKPEPE.gif,LORDFAKA.jpg,PEPSIPEPE.gif,PARREPE.png,DUCHAMPEPE.jpg,FAKECALLS.jpg,PEPTANGCLAN.jpeg,FAKEPEPELISA.jpg,REPEPERATION.webp,BLOOMER.gif,PEPEDWARDFK.gif,POPOPEPE.jpeg,FAKEINVSPEPE.png,RAREPEPEPD.png,FAKEHOURY.gif,MAKEARTPEPE.jpg,ROEFAKE.jpg,FAKEBANKSY.gif,FAKETEARS.png,RIVETERPEPE.jpg,JSONPEPE.png,PEPEBILLIONS.jpg,FAKEQUEEN.jpg,COLLEGEMONEY.png,SAINTPEPE.gif,LANDWOLFPEPE.jpg,PEPENIRO.gif,FEELSGOODGRL.jpg,PEPEMANTLE.jpg,FAKEFRIDA.png,PEPEESCOBAR.jpg,TYSONFURY.png,PEPEMUNDI.jpg,HODLHALPEPE.jpg,FAKEDJPEPE.gif,BELLPEPE.gif,PEPANDEMIC.png,FAKEROCK.png,PEPEKINDNESS.gif,CHILLPEPROSS.gif,NOOBGRAM.png,FAKEPEPA.jpeg,LADTSUNADE.gif,FAKEWYOMING.png,RAREPEPA.jpg,PEPESTREAM.gif,PEPEINSPACE.jpg,DANKGOD.jpeg,FAKEJEEZY.jpg,PEPELALA.gif,PEPESHIFT.gif,LAFAKANOSTRA.gif,SCHIFFPEPE.jpg,FAKARIO.gif,FIRSTTWEET.png,PEPEPLEBZ.gif,FAIKUPEPE.png,BLOKLETCHAIN.png,PEPSTEIN.png,THEDONPEPE.jpg,SQUIGGLEPEPE.gif,FAKELORDKEK.gif,DREAMTEAM.gif,FAKEGAMERP.png,PEPEDENZA.png,BASEDGODPEPE.png,PEPETHELOST.png,PEPERMINE.jpg,MOONFROG.jpg,PEPEWATER.png,GETPEPEODT.jpeg,TWOCHAINZPEP.gif,FAKEPUZZLE.jpg,PAPAJPEPE.png,HISPEPENESS.jpg,PEPELIOTTA.gif,POINTBREAKCD.jpg,BADBURGERDAY.png,TWOLIVEPEPE.jpg,ERNSTFAKE.gif,BALLOONPEPE.gif,SLAMDUNKPEPE.gif,PEPAVILLE.gif,PEPEPHONEHOME.gif,KINGPEP.gif,PEPEMAGRITTE.png,PEPEBLUEEYES.jpeg,PEPEMAZE.gif,CRACKEDDLXHD.gif,BTCATHPEPE.png,FAKEMEDIPEPE.png,PURPLEPEPE.png,FAKEPENPEN.gif,TWWENTYONE.jpg,FALCEACE.jpg,PEPEMOONSHOT.gif,BADABINGPEPE.gif,FAKABUKIPEPE.png,LILLYKEK.jpeg,OPTIMISTPEPE.gif,PEPEPOPO.gif,PEPEINDACITY.png,STPAULPEPE.gif,FAKEDIEGORVR.gif,GORDONKEKO.jpg,PEPEVANDOUGH.gif,PEPEISDED.png,FAKEPICKACHU.jpg,RAMENPEPE.png,PEPESUPREM.jpg,NIGHTPEPES.png,MISSPEPEPUNK.png,FAKERESERVE.jpg,PEPONONOKE.gif,FAKEONEPEPE.png,PEPESPLASH.gif,FAKEPEPEBANG.png,FAKEGREEN.gif,PEPELAVANDAL.gif,GHOSTFAKE.,FAKETONY.,FAKEAFGHOST.,FAKEGHOST.,FAKENUTMEG.,LILPEPEVERT.gif,PEPELEVANDAL.gif,PEPETHEFAKE.GUCHIFAKE.gif,LAMAPEPE.png,FAKEPARTY.jpeg,HELLAPAPELLA.gif,PEPEDONTPUSH.png,FAKARESIST.jpg,SCRILLBILL.gif,PEPETAROTSIX.gif,PEPHONEHOME.gif,PEPONACID.jpg,FAKETUPAC.gif,PEPEUNKNOWN.gif,STJOHNPEPE.gif,JIMMYHENDRIX.gif,PEPEBILLION.jpg,PEPEPESCI.gif,NFTORIGINS.jpg,QUEENOFCARDS.gif,PEPEMAGPIE.jpg';
+
+FR.split(',').forEach(c => {
+    let preset = PRESETS[c.split('.')[0]];
+    let add = {
+            group : "FAKE RARE"
+        }
+    PRESETS[c.split('.')[0]]= {
+        ...preset,
+        ...add
+    }
+})
+
+
+
+const ARTISTS  = {
+    "1FxWCUK6QkdWxvv2GmkuhhEMHJHZ4BTnNW": "Dim",
+    "1KiDcw62VqeP5subMAEVWtFH85zvkFagwy": "Zetra",
+    "14Ktbo9j34LN2spVzS4hp516gK5Ba5iGiN": "RareScrilla",
+    "18PHGKzAcMDNVNie6kwDp2s6rkKM8RBcg2": "RareScrilla",
+    "1C6Lc3wjDzDUmSkckxdvGLHHC7PbMntvid": "RyR",
+    "17c1FF2xXQ2wojoSR2DXgvrKsqVVQwpCFa": "Djangobits",
+    "14sxc2ZaGcPC51hfYksSVmQm9YUt5HVkiK": "BurstMembrane",
+    "1i7R3J5voR2TotUi4eDohPUda3R5sXqEC" : "RC",
+    "14cvk4p4LN2Lpn4AzkjUHDr7A2tKerMhzk": "Carsonated",
+    "1755FLVc7BkQfRW841hV1XkeqnTw95SKsM": "Pepenardo",
+    "18UTRuYiaXg24mfChhYTBTTuVz3ouk5RZa":  "La Faka",
+    "14Q7MPb23WL8LjMks6mU8ELGW8WsEfYoLT": "T.Wade",
+    "18mxQdLxcLstD6ttbHykvEoAYdu4eADtEf": "IndelibleTrade",
+    "1JDogZS6tQcSxwfxhv6XKKjcyicYA4Feev": "jDog",
+    "1JdCB2xd6hBtPXvFGtis9rUNw1EJ93Egif": "Coit",
+    "1FZF4hGuyirVZ81YDuZZHVGBM7mxUBtXU7": "FWD",
+    "1BKkeaq2xzHrTea4PPSWCj5Y7wg4B6c5Eq": "Da'Block God",
+    "15LqbnDnYwbnEgKsKQCCj8viPHjUiG2LkS": "FourLeafClover",
+    "1PQvEgAv7LsjbBKdWDemmoWG8bAWXULUZ3": "Nipdog",
+    "14d4MebjvmGS5SXUpW5sYFywEx3y8xXUn7": "Tasha",
+    "1PzxS9DcfrYNNGaaGWUZi6hQd2VsGhVk7U": "Vlad Costea",
+    "1EuaN7K6vGKH7tBomSVGr1KVdWvnSnfkNE": "Alondre Crypto",
+    "1ER85tmNHmKUaojwu42o2JsgRR3egHnFHX": "Nftman",
+    "1AGzFzGpKsBoqL5ynQa5VThWPkzDBvmM8y": "Chris Storm",
+    "1NzDQ7HLm6PqJ2Wy6jEKMT7Zw1UbtjUV5a": "Lord Jaime V. Shill",
+    "17w9wi7kYPT51QcM9aQR5FxWgWPTYFmet4": "Chaotic Crypto",
+    "1EjsJwDp69L8hWn8t2tyQWaGAdMwCU9nEt": "Easy B",
+    "1F8tpGn5UVbYUKYoBgQ6FNcHkxAGUdPPN": "Desktop Commando",
+    "1RogerFbX3kMby1eugCLEJAiwTMTya5nw":"Roger Fliporian",
+    "1AE4vfkDX4S49kxsuCve7zJDS5s5RtHYNs":"OE",
+    "14Vr7RYAQeLkjU9okNQKfSre7s5V224Utt":"Yotet",
+    "1AStcZCyVeVuMxaXSKfHTcg45qGDZ6Hdxk":"Parisian Forge",
+    "1MNVWrpmzTUk47HW6u5Z78MnuUfQ7iUbcp":"Kaphresh",
+    "13d9whJX43T12DUwpFHCE91Yrf8f1h5H62":"Exahash",
+    "176fnxLfR3kSFS15F82LRzU4raJk2Nya1z":"Steve Weave",
+    "15ycYAVaq93RvKZC6J3tTFRZwTejLoetrH":"Mr. Hodlpig",
+    "1K3AkTiWA9AaEQ1Vuz8KJK78ERbVrPtnS":"VaJe",
+    "1FNWcPse2ZethjUGimJ8TPptECgRtDohgK":"Btc Blaze",
+    "158wBjBt2jmD4m7gSUAoUo4krGmGg2dvp7":"M.BTC",
+    "1aD23azBTEtVuZGDPankVNuRxasCRhtrD":"Rollah",
+    "1EmJgasDJufd4sMPyqXEdvqaqMJCWd6Feb":"80s Kurt Russel",
+    "16qe8o8EjugUJCVTdD8mF3atPCfYZwSStB":"Crypsi",
+    "1MNVWrpmzTUk47HW6u5Z78MnuUfQ7iUbcp":"Kaph",
+    "1H3Nk1b9xHyJZStKQ4oD5XukEnajVFBckj":"Guzman",
+    "1KKJUSnP1EvBjWgeAY8JKc93DLqpXGJnAc":"Leigha-Beth",
+    "1AJ8Vqxhut7tENggf3iSUTRaX4qqziPCKT":"FakeBuddha",
+    "1Hjxiv4qQn6d2BY5ZWXuKVeyJjTVH5iMoN":"Mr. Hansel",
+    "1NVVLyy745iW4gYXHTSg9uHfTjScE82VT":"Jose Burrito",
+    "1KzntY9i12fusamGr7UegXpvtmLT3fLvWH":"Wizard X",
+    "13eJnHaD25Ti1rZ58f5ZNStxDDRyVLJ3R6":"ShakAttak",
+    "1K4BJHFbxD776ZCRFvRX4Sd5zjX32ScgUV":"Shannon Code",
+    "1M8tGrim6DP1zra6YAHotZfs19wxo78pzQ":"Crypto Chainer",
+    "1rjsjkAMYWN2xvsWUSbhFnyThGXKBLrMu":"GoingPepe100",
+    "1GjXFe9W7KBYFCDNPGXAzYa1FFikzx28Js":"Rare Designer",
+    "13eJnHaD25Ti1rZ58f5ZNStxDDRyVLJ3R6":"Area One"
+
+}
 
 const RAREPEPES = [
-    "BACHELORPEPE",
-    "BACKPAGEPEPE",
+
     "BACKTOPEPE",
     "BADASSPEPE",
     "BADHAIRDAY",
@@ -392,7 +464,6 @@ const RAREPEPES = [
     "LEPEWPEPE",
     "LETSTALKKEK",
     "LEVELUPPEPE",
-    "LIAMPEPE",
     "LIBERPEPE",
     "LIBERTYPEPE",
     "LIKEPEPEBRO",
@@ -1734,47 +1805,8 @@ const RAREPEPES = [
     "REALPEPEOFBH",
     "ROADMAPEPE",
     "ROCKETPEPE",
-    "RPEPE",
-    "SAKURAPENPEN",
-    "SALVATORPEPE",
-    "SEDUSAPEP",
-    "SHAKAPEPE",
-    "SHININGXPEPE",
-    "SICKPEPE",
-    "SISTNCHAPEPE",
-    "SKULLPEPE",
-    "SMALLRATPEPE",
-    "SNOWMANPEPE",
-    "SPACECOOKIE",
-    "SPACEMOUTH",
-    "SPACEXPEPE",
-    "SPADESPEPE",
-    "SPOCKPEPE",
-    "STONEPEPE",
-    "STORMYTRUMP",
-    "SUCKMYPEPE",
-    "THEKING",
-    "THELAWNMOWER",
-    "THEMASKRARE",
-    "THENEWYORKEK",
-    "THEPEPEHOFF",
-    "TRAININGT",
-    "TSUNADE",
-    "TWOWEEKSPEPE",
-    "UBUNTUPEPE",
-    "UGANDANPEPE",
-    "UNDEADPEPE",
-    "WAYPEPE",
-    "WEREWOLFKEK",
-    "WITCHPEPE",
-    "WITCHRARE",
-    "WORLDPEPEHD",
-    "XENOPEPE",
-    "XIPEPE",
-    "YODAPEP",
-    "YODAPEPE",
-    "YUNOPEPE",
-    "ZAZENPEPE"
+    "RPEPE"
+
 ]
 
 RAREPEPES.forEach(pepe =>  {
@@ -1787,6 +1819,9 @@ RAREPEPES.forEach(pepe =>  {
 GROUPS =  {
     RARE_PEPE: {
         image_url: 'rarepepe.png'
+    },
+    FAKE_RARE: {
+        image_url: 'fakerare.png'
     }
 }
 
@@ -1794,6 +1829,222 @@ GROUPS =  {
 PRESETS = {
     ...PRESETS,
     ...{
+    "LAUTRECPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/LAUTRECPEPE.jpg"
+    },
+    "VANGOUGHPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/VANGOUGHPEPE.jpg"
+    },
+    "PICASSOPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/PICASSOPEPE.jpg"
+    },
+    "KUNISADAPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/KUNISADAPEPE.jpg"
+    },
+    "ZAZENPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/ZAZENPEPE.png"
+    },
+    "YUNOPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/YUNOPEPE.gif"
+    },
+    "YODAPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/YODAPEPE.jpeg"
+    },
+    "XIPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/XIPEPE.jpeg"
+    },   
+    "XENOPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/XENOPEPE.gif"
+    }, 
+    "WORLDPEPEHD": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/WORLDPEPEHD.gif"
+    },
+    "WITCHRARE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/WITCHRARE.jpeg"
+    },
+    "WITCHPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/WITCHPEPE.jpeg"
+    },
+    "WEREWOLFKEK": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/WERWOLFKEK.jpeg"
+    },   
+    "WAYPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/WAYPEPE.png"
+    }, 
+    "UNDEADPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/UNDEADPEPE.png"
+    },
+    "UGANDANPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/UGANDANPEPE.png"
+    },
+    "UBUNTUPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/UBUNTUPEPE.png"
+    },
+    "TWOWEEKSPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/TWOWEEKSPEPE.png"
+    },   
+    "TSUNADE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/TSUNADE.jpeg"
+    }, 
+    "TRAININGT": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/TRAININGT.jpeg"
+    },
+    "THEPEPEHOFF": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/THEPEPEHOFF.gif"
+    },
+    "THENEWYORKEK": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/THENEWYORKEK.jpeg"
+    },
+    "THEMASKRARE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/THEMASKRARE.jpeg"
+    },
+    "THELAWNMOWER": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/THELAWNMOWER.gif"
+    },
+    "THEKING": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/THEKING.gif"
+    },
+    "SUCKMYPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SUCKMYPEPE.png"
+    },
+    "STORMYTRUMP": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/STORMYTRUMP.png"
+    },   
+    "STONEPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/STONEPEPE.jpeg"
+    }, 
+    "SPOCKPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SPOCKPEPE.jpeg"
+    },
+    "SPADESPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SPADESPEPE.gif"
+    },
+    "SPACEXPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SPACEXPEPE.jpeg"
+    },
+    "SPACEMOUTH": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SPACEMOUTH.jpeg"
+    },
+    "SPACECOOKIE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SPACECOOKIE.gif"
+    },
+    "SNOWMANPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SNOWMANPEPE.gif"
+    },
+    "SMALLRATPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SMALLRATPEPE.jpeg"
+    },
+    "SKULLPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SKULLPEPE.gif"
+    },
+    "SISTNCHAPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SISTNCHAPEPE.gif"
+    },
+    "SICKPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SICKPEPE.jpeg"
+    },
+    "SHININGXPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SHININGXPEPE.gif"
+    },
+    "SHAKAPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SHAKAPEPE.gif"
+    },
+    "SEDUSAPEP": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SEDUSAPEP.jpeg"
+    },
+    "SALVATORPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SALVATORPEPE.gif"
+    },
+    "SAKURAPENPEN": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/SAKURAPENPEN.gif"
+    },
+    "PEPEFIFITYONE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/PEPEFIFTYONE.gif"
+    },
+    "BACKPAGEPEPE":  {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/BACKPAGEPEPE.png"
+    },
+    "TOREROPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/TOREROPEPE.jpg"
+    },   
+    "UNCLEPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/UNCLEPEPE.jpg"
+    },   
+    "BACHELORPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/BACHELORPEPE.jpg"
+    }, 
+    "STACYPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/STACYPEPE.gif"
+    },  
+    "JESUSPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/JESUSPEPE.gif"
+    }, 
+    "LIAMPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/LIAMPEPE.jpg"
+    },
+    "BBOYPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/BBOYPEPE.jpg"
+    },
+    "HEISENPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/HEISENPEPE.jpg"
+    },
+    "HYPNOPEPE": {
+        group: "RARE PEPE",
+        img_url: "https://xchain.io/img/cards/HYPNOPEPE.gif"
+    },
 	"FREEDOMKEK": {
 		series: 0,
         group: "FAKE RARE",
@@ -1819,6 +2070,16 @@ PRESETS = {
         group: "FAKE RARE",
 		img_url: 'https://digirare.com/storage/fake-rare/FAKEASF.gif'
 	},
+    "FAKETEARS": {
+        series: 2,
+        group: "FAKE RARE",
+        img_url: 'https://i.imgur.com/TP4rZDi.png'
+    },
+    "FAKETEARS.VISITFROMLAFAKA": {
+        series: 2,
+        group: "FAKE RARE",
+        img_url: 'https://i.imgur.com/YY64N3q.png'
+    },
 
 	"FAKETORCH": {
 		series: 1,
@@ -1884,7 +2145,8 @@ PRESETS = {
 	"SEAOFFROG": {
 		series: 1,
         group: "FAKE RARE",
-		img_url: ''
+        img_url: 'https://xchain.io/img/cards/SEAOFFROG.jpeg'
+		
 	},
 	"PHONEYSIMPSO": {
 		series: 1,
@@ -1915,7 +2177,7 @@ PRESETS = {
 	"FAKEHAIRPEP": {
 		series: 1,
         group: "FAKE RARE",
-        artist: "FakeBuddha",
+      
 		img_url: ''
 	},
 	"HODLPIGPEPE": {
@@ -2093,8 +2355,13 @@ PRESETS = {
 	"JSONPEPE": {
 		series: 2,
         group: "FAKE RARE",
-		img_url: ''
+		img_url: 'https://fakeasf.club/assets/JSONPEPE/JSONPEPE.png'
 	},
+    "JSONPEPE.LAFAKARENEGADE": {
+        series: 2,
+        group: "FAKE RARE",
+        img_url: 'https://i.imgur.com/dkvUF35.png'
+    },
 	"PEPEBILLIONS": {
 		series: 2,
         group: "FAKE RARE",
@@ -2128,8 +2395,8 @@ PRESETS = {
     "PEPEESCOBAR" : {group:"FAKE RARE", series: 2},
     "TYSONFURY" : {group:"FAKE RARE", series: 2},
     "HODLHALPEPE" : {group:"FAKE RARE", series: 2},
-    "FAKEDJPEPE" : {group:"FAKE RARE", series: 2, artist: "Rare Scrilla"},
-    "BELLPEPE" : {group:"FAKE RARE", series: 2,  artist: "Art Bat"},
+    "FAKEDJPEPE" : {group:"FAKE RARE", series: 2},
+    "BELLPEPE" : {group:"FAKE RARE", series: 2},
     "PEPANDEMIC" : {group:"FAKE RARE", series: 2},
     "FAKEROCK" : {group:"FAKE RARE", series: 2},
     "PEPEKINDNESS" : {group:"FAKE RARE", series: 2},
@@ -2159,11 +2426,11 @@ PRESETS = {
     "FAKEGAMERP" : {group:"FAKE RARE", series: 2},
     "PEPEDENZA" : {group:"FAKE RARE", series: 2},
     "BASEDGODPEPE" : {group:"FAKE RARE", series: 2},
-    "PEPEMUNDI": {group: "FAKE RARE",series: 2, artist: "PEPENARDO"},
-    "PEPENIRO" : { group: "FAKE RARE", artist: "Dimzayan", series: 2},
-    "PEPEPLEBZ" : { group: "FAKE RARE", artist: "Dimzayan", series: 2},
-    "PEPELIOTTA" : { group: "FAKE RARE", artist: "Dimzayan", series: 3},
-    "HISPEPENESS": {group: "FAKE RARE",  series: 3, artist: "T. Wade"},
+    "PEPEMUNDI": {group: "FAKE RARE",series: 2},
+    "PEPENIRO" : { group: "FAKE RARE",  series: 2},
+    "PEPEPLEBZ" : { group: "FAKE RARE",  series: 2},
+    "PEPELIOTTA" : { group: "FAKE RARE", series: 3},
+    "HISPEPENESS": {group: "FAKE RARE",  series: 3},
 
     "LFNONE": {
         group: "FAKA NOSTRA"
@@ -2182,16 +2449,16 @@ PRESETS = {
         group: "FAKA NOSTRA"
     },
     "A11107355150182719202" : {
-        group: "BULLTARDIA", artist: "Dimzayan"
+        group: "BULLTARDIA"
     },
     "A11118957393733662646" : {
-        group : "BULLTARDIA", artist: "Dimzayan"
+        group : "BULLTARDIA"
     },
     "MOONFROGS" : {
-        group: "FAKE FAKES", artist: "Dimzayan"
+        group: "FAKE FAKES"
     },
     "GOODBADPEPE" : {
-        group: "FAKE FAKES", artist: "Dimzayan"
+        group: "FAKE FAKES"
     },
 
     
@@ -2209,6 +2476,10 @@ PRESETS = {
     },
     "PEPEKINDNESS": {
         group: "FAKE RARE"
+    },
+    "PEPEMINE": {
+        group: "FAKE RARE",
+        img_url: "https://i.imgur.com/Ri2aYuk.jpg"
     }
 }}
 

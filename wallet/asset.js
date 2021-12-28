@@ -1,64 +1,68 @@
-var normalizeUrl = function(str) {
-	return str.replace(/(http(s?)):\/\//i, '' ).split(';')[0]
-}
-
-var getAssetData = async function(asset_name) {
-	
-	let asset = await $.get("https://xchain.io/api/asset/"+asset_name);
-	
-	
-	return asset
-}
-
-
-	var getMarketInfo = async function(callback) {
-		// Retrieve BTC price before getting dispensers
-		let mkt = await $.ajax({
-			url: "https://xchain.io/api/network",
-			method:"GET"
-		})
-
-		return mkt
-	};
-
-var presetGroupName = (cardName) => {
-    return PRESETS[cardName] !== undefined && PRESETS[cardName].group !== undefined ? PRESETS[cardName].group : null;
-}
-
-
 class Asset extends EventTarget {
-	constructor(data, options) {
+	constructor(data, options={
+		template: '<div/>'
+	}) {
 		super()
+		
 		this.data  = data;
 		this.data  = {
 			...PRESETS[this.name],
 			...data
 		}
 		
-		this.$dom = options.template.clone();
+		this.template = options.template  ;
 		this.loaded = false;
+		this.history =  [];
+		this.hodlers  =  [];
+		this._media  =  null;
+		this.blank  = false;
 		return this
 		
 	}
 
-	async init() {
+	async init(extra = false) {
 		// console.log("loading "+this.data.asset)
-		let extra= await getAssetData(this.data.asset)
+		
+		if(!this.data.description.length  || this.data.supply === 0 ) {
 
+			this.blank  = true
+		}
+		let base= await getAssetData(this.data.asset)
+		let _this  =this;
 		this.data  = {
 			...this.data,
-			...extra
+			...base
 		}
-		this.valid = await this.normalize()
-		try  {  
-			this.history = await this.fetch_history();  
-		} catch(e)  { this.history =  []; }
-		try  { this.hodlers = await this.fetch_hodlers(); } catch(e) { this.hodlers  =  [];  }
-		try { await this.fetch_market_info(); } catch(e) {}
+
+		
+		
+		this.valid = await this.normalize();
+		this.fetch_market_info().then(  (d) => {
+			
+			_this.market_data = d.data
+			_this.dispatchEvent(new Event('change'));
+		})
+		if(extra) {
+			this.fetch_history().then(  (d) => {
+			
+				_this.history = d.data
+				_this.dispatchEvent(new Event('change'));
+			})
+			
+			this.fetch_hodlers().then(  (d) => {
+				
+				_this.hodlers = d.data
+				_this.dispatchEvent(new Event('change'));
+			})
+
+	
+		}
+
+	
 
 		this.loaded  = true
-		this.display()
-
+		
+		this.dispatchEvent(new Event('change'));
 		this.dispatchEvent(new Event('loaded'));
 		// console.log(this.data.asset+'  loaded')
 		return this
@@ -85,15 +89,14 @@ class Asset extends EventTarget {
 	                ... resp
 	                }
 	        
-
 	        // For further middleware formatting.
-	        this._description = this.data.description 
+	        // this._description = this.data.description 
 	        xchainFallBack();
     	}
 
     	// horrible hack  for rarepepes and older assets
     	let xchainFallBack = ()  => {
-			if(this.image_url  === undefined) {	
+			if(this.image_url  === undefined ) {	
 	        	this.data.image_url =  [
 	        		`https://xchain.io/img/cards/${this.data.asset}.png`,
 	        		`https://xchain.io/img/cards/${this.data.asset}.gif`,
@@ -111,8 +114,10 @@ class Asset extends EventTarget {
 
 	    if(this.data.description.endsWith('.json')) {
 
+	    	this.json_url = this.data.description;
 	    	
-	    	
+	    	this._description = ''
+
 	    	
 	        try {
 	        	// normalize additional data and combine it with existing one.
@@ -155,7 +160,11 @@ class Asset extends EventTarget {
 	    // 	// FAKASF VIDEO CARD
 	    // }
 
-	   	} else {
+	   	} else if(this.data.description.match(/(jpe?g|png|gif|bmp)$/)) {
+	    	this.data.image_url = 'http://'+normalizeUrl(this.data.description);
+	    	this._description = ''
+	    	return true
+	    }  else {
 	    	// console.warn(data.description)
 	    	// PLACEHOLDER FOR LOGIC WHEN ASSET WITH NO MEDIA CAN BE DISPLAYED
 	    	xchainFallBack()
@@ -168,7 +177,8 @@ class Asset extends EventTarget {
 		return await $.ajax({
 			url: "https://xchain.io/api/issuances/"+this.name,
 			method: "GET",
-			timeout: 5000
+			timeout: 7500,
+			error: (e) => {  }
 		})
 	}
 
@@ -176,7 +186,9 @@ class Asset extends EventTarget {
 		return await $.ajax({
 			url: "https://xchain.io/api/holders/"+this.name,
 			method: "GET",
-			timeout: 5000
+			timeout: 7500,
+			error: (e) => {  }
+
 		})
 	}
 
@@ -197,51 +209,67 @@ class Asset extends EventTarget {
 	}
 
 	get media() {
+		let raw_description = document.createElement('span');
+		raw_description.innerHTML = this.description;
 
-		let img  = new Image();
+		if(raw_description.querySelector('img') !== null) {
+			
+			this._media = raw_description.querySelector('img');
+			
+			return this._media
+		}
+		this._media  = this._media || new Image();
 
+		if (this._media.src  !==  ''){
+			return  this._media
 
+		}
 		if( Array.isArray(this.image_url)) {
-
+		
 			this.media_id =  0;
-			img.onerror = (e)  => {
+			this._media.onerror = (e)  => {
+				// console.warn(`Couldn't load ${this.image_url[this.media_id]}`)
 				this.media_id += 1;
 
 				e.target.src  = this.image_url[this.media_id]
 				if(this.media_id  >=  this.image_url.length) {
 					e.target.onerror = null;
-					if(!this.$dom.parent().find('video,  iframe').length) {
-						this.$dom.parent().addClass('blank')
-					}
+					this.dispatchEvent(new Event('mediaError'))
+					// if(!this.$dom.parent().find('video,  iframe').length) {
+					// 	this.$dom.parent().addClass('blank')
+					// }
 					
 				}
 				// console.error()
 			}
-			img.src = this.image_url[0]
-
-			// img  = `<img src="${this.image_url[0]}" source_id="0" sources="${this.image_url.join(',')}" onerror="onImageError">`
+			this._media.src = this.image_url[0];
+			
+			return this._media;
+			
 		}   else {
-			// img  = `<img src="${this.image_url}">`
+			
 			if(this.image_url === undefined) {
 				return null
 			}
-			img.src = this.image_url
+			this._media.src = this.image_url
+		
+			return this._media;
 		}
 
 
 		
-		return img;
+		
 	}
 
 	get supply() {
-		if(!this.data.supply) return undefined
-		if(!this.hodlers.data || !this.hodlers.data.length) return undefined
+		if(!this.data.supply) return []
+		if(!this.hodlers.length ) return []
 
 		return {
-			total:  this.data.supply,
-			owned: this.quantity,
-			owned_percent:  parseFloat(((this.quantity/this.data.supply)*100).toFixed(2)),
-			hodlers: this.hodlers.data.length
+			total_issued:  this.data.supply,
+			total_owned: this.quantity ,
+			total_owned_percent:  parseFloat(((this.quantity/this.data.supply)*100).toFixed(2)),
+			total_hodlers: this.hodlers.length
 		}
 
 		
@@ -249,44 +277,61 @@ class Asset extends EventTarget {
 
 
 	get description() {
-		// console.log(this)
-		let copy  =  '';
-		if(this.loaded) {
-			try{
-				let mint = this.history.data.pop();
-			
-				let date = new Date(mint.timestamp * 1000);
-			
-				copy += `Minted ${date.toLocaleString('default', { month: 'long', year:'numeric' }) }(block #${mint.block_index})\n`	
-			} catch(e) {
-				console.warn(this)
-			}
-			
-		
 
-		}
-		
+		// let copy  =  this.data.description //.replace(/<img[^>]*>/g,"")
+		let raw_description = document.createElement('span');
+		raw_description.innerHTML = this.data.description;
 
-		copy += this._description
-		if(this.isSubasset()) {
-			copy += `
-			\nSubasset of <a href="https://xchain.io/asset/${this.parentName}">${this.parentName}</a>\n
-			`
-		}
-
+		raw_description.querySelectorAll('img, video').forEach(item => {
+			item.remove();
+		})
 
 		
-		return copy
+		return raw_description.innerHTML
 		
 	}
 
+	get mint_date() {
+			
+			try{
+				let mint = this.history[this.history.length-1]
+				
+				let date = new Date(mint.timestamp * 1000);
+			
+				return `${date.toLocaleString('default', { month: 'long', year:'numeric' }) }\n`	
+			} catch(e) {
+				// console.warn(this)
+				return null
+			}
+
+	}
+
+	get block_index() {
+		try{
+			let mint = this.history[this.history.length-1]
+			
+		
+		
+			return mint.block_index
+		} catch(e) {
+			// console.warn(this)
+			return null
+		}
+	
+	}
+
 	get artist()  {
-		return this.data.artist 
+		try {
+			return this.data.artist || ARTISTS[this.data.issuer] || this.data.issuer //.substring(0,21)
+		}  catch(e) {
+			return null
+		}
+		
 	}
 
 
 	get quantity() {
-		return this.data.quantity
+		return this.data.quantity || 0
 	}
 
 
@@ -299,10 +344,22 @@ class Asset extends EventTarget {
     	return this.data.asset_longname.indexOf('.') !== -1
 	}
 
+	async fetch_subassets() {
+	
+		let resp = await $.ajax({
+			url: `https://xchain.io/api/issuances/${this.data.issuer}`,
+			method: 'GET'
+		})
+		
+		return _.filter(_.uniqBy(resp.data, 'asset'), (a) => {return  a.asset_longname.startsWith(`${this.name}.`)})
+
+	}
+
 	get dispensers() {
 		return ( 
 			async () =>  {
 				if(this._dispensers)  return  this._dispensers;
+
 				let d = await $.ajax({
 					url: "https://xchain.io/api/dispensers/"+this.name,
 					method: "GET"
@@ -314,9 +371,11 @@ class Asset extends EventTarget {
 	}
 
 	get market() {
+
 		return (
 			async () =>  {
 					let dispensers 	=  await this.dispensers 
+
 					let total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) * n.satoshirate)},  0).toFixed(7))
 					let total_gives = dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) )},  0)
 					
@@ -331,26 +390,29 @@ class Asset extends EventTarget {
 	}
 
 	async fetch_market_info() {
-		// let marketObj = await getMarketInfo()
-		
-		// if(dispReq !== undefined && dispReq.abort !== undefined) { dispReq.abort();}
+		if(this.market_data) {
+			return {data:this.market_data}
+		}
 
-		// let dispReq = await $.ajax({
-		// 	url: "https://xchain.io/api/dispensers/"+this.name,
-		// 	method: "GET"
-		// })
-
+		let market_data = {
+			ask  : null,
+			ask_tx_hash : null,
+			total_sales :  null,
+			total_gives : null,
+			last_sale_price : null,
+			last_sale_date: null,
+			last_sale_quantity:null
+		}
 		let dispensers = await this.dispensers;
 		
-		let $disp = this.$dom.find('.asset-price-info')	
-
-		
-		let available_dispensers = [];
-		let used_dispensers = [];
-
-
+		market_data.total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) * n.satoshirate)},  0).toFixed(7))
+		market_data.total_gives = dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) )},  0)
+		market_data.aps  = (market_data.total_sales/market_data.total_gives).toFixed(4) 
 
 		// Avail vs Used
+		let available_dispensers = [];
+		let used_dispensers = [];
+		
 		for(var i=0;i<dispensers.length;i++) {
 
 			if(dispensers[i].give_remaining > 0 && dispensers[i].status == 0) {
@@ -364,131 +426,119 @@ class Asset extends EventTarget {
 		// ==================// ==================
 		// REMINDER:!! Add calculations for give_quantity
 		// Available and  best offer
-		let  best_offer = null
+		
 		if(available_dispensers.length > 0) {
-			best_offer = parseFloat(available_dispensers.sort((a,b) => {a.satoshirate  < b.satoshirate})[0].satoshirate);
-			this.$dom.find('[data_asset_best_offer]').html(`<a href="https://xchain.io/tx/${available_dispensers[0].tx_hash}">${best_offer}BTC</a>`);
+			market_data.ask = parseFloat(available_dispensers.sort((a,b) => {a.satoshirate  < b.satoshirate})[0].satoshirate);
+			market_data.ask_tx_hash = available_dispensers[0].tx_hash
+			// this.$dom.find('[data_asset_best_offer]').html(`<a href="https://xchain.io/tx/${available_dispensers[0].tx_hash}">${best_offer}BTC</a>`);
 		
-
-		} else  {
-			this.$dom.find('[data_asset_best_offer]').html(`---`);
-
 		}
+		// } else  {
+		// 	this.$dom.find('[data_asset_best_offer]').html(`---`);
 
-
-		
-
-	
-		
-
-
-		// ==================
-		// Last Sale
-		let last_sale = {
-			price: null,
-			date: null,
-			quantity: null
-		}
-
-		for(var  i=0; i< dispensers.length;i++) {
-			let dispenser  = dispensers[i];
-			
-			if(dispenser.give_remaining < dispenser.escrow_quantity)  {
-				
-				let dispenses = await $.get('https://xchain.io/api/dispenses/'+dispenser.tx_hash);
-				// console.log(dispenses)
-				last_sale.quantity = dispenses.data[0].quantity 
-				last_sale.price = parseFloat(dispenser.satoshirate)
-				last_sale.timestamp = dispenses.data[0].timestamp
-				
-				
-				break;
-			}
-		}
-
-
-		if(last_sale.price  !==  null)  {
-			this.$dom.find('[data_asset_last_sale]').html(
-				`<a>${last_sale.quantity} @ ${last_sale.price}BTC on ${new Date(last_sale.timestamp * 1000).toLocaleString('default', {year: 'numeric', month: 'long', day: 'numeric' })}</a>`
-				)
-		}
-			
-	
-		$disp.find('a').on('click', (e) =>  {
-			e.stopPropagation();
-		})
+		// }
 
 
 
-			return true
+		this.market_data  = market_data
+
+		return {data:market_data}
 	}
 
 
-	display() {
-		
-
-		this.$dom.attr('data-name',this.data.asset)
-		this.$dom.find(`.asset-name`).html(this.name)
-		this.$dom.attr('id', `${this.name}`)
-		this.$dom.attr('href', `#${this.name}`)
-
-		_.each(['name','quantity','description','media', 'artist'], (key) => {
-			this.$dom.find(`.asset-${key}`).html(this[key])
-		});
-
-		_.each(this.supply,  (val,key)  => {
-
-			this.$dom.find(`.asset-supply-${key}`).html(val)
-		})
-
-
-		_.each(this.market,  (val,key)  => {
-
-			this.$dom.find(`#asset-market-${key}`).html(val)
-		})
-
-		this.group_name = presetGroupName(this.name)
-		if(this.group_name !==  null) {
-			this.$dom.find(`.asset-group`).html(`This is an official ${this.group_name} asset.`)
-
-			if(GROUPS[this.group_name.replace('', '_')])  {
-
-				this.$dom.find('.asset-group-icon').html(`<img src="${GROUPS[this.group_name.replace('', '_')].image_url}">`) 
+	get last_sale() {
+		return (
+			async () => {
+				for(var  i=0; i< this.dispensers.length;i++) {
+					let dispenser  = dispensers[i];
+					
+					if(dispenser.give_remaining < dispenser.escrow_quantity)  {
+						
+						let dispenses = await $.get('https://xchain.io/api/dispenses/'+dispenser.tx_hash);
+						// console.log(dispenses)
+						market_data.last_sale_quantity = dispenses.data[0].quantity 
+						market_data.last_sale_price = parseFloat(dispenser.satoshirate)
+						market_data.last_sale_timestamp = dispenses.data[0].timestamp
+						market_data.last_sale_date = new Date(market_data.last_sale_timestamp * 1000).toLocaleString('default', {year: 'numeric', month: 'long', day: 'numeric' })
+						
+						
+						break;
+					}
+				}
 			}
+
+
+		)();
+
+	}
+
+
+	render() {
 			
-		}  
+		// console.log(this.media)
+		let html = this.template.innerHTML;
+		let data = {
+			name: this.name,
+			id:  this.data.asset,
+			quantity: this.quantity,
+			media: this.media ? this.media.outerHTML : "loading...",
+			artist: this.artist,
+			mint_date: this.mint_date,
+			block_index: this.block_index,
+			description: this.description,
+			parent: this.parentName,
+			group: this.data.group,
+			issuer: this.data.issuer,
+			parented: (this.parentName !==  null)  || (this.group !== undefined),
+			shell: this.data.supply ? false : true,
+			current_supply: this.data.supply
+
+		}
+
+		data = {
+			...data,
+			...this.market_data,
+			...this.supply
+		}
+
+		_.each(data, (val, key) => {
+			// console.log(`${key}:${val}`)
+			// if(val  === null)  {val = '---'}
+			html = html.replaceAll(`{{${key}}}`,val)
+		})
+
+
 		
 
-		let $item_image = this.$dom.find('.asset-image');
-		
-		let $video = this.$dom.find('.asset-description video, .asset-description iframe')
-		
-		if($video.length) {
-			
-			$video.prop('muted', true) ;
-			$item_image.append($video)
+		return html
 
-		} 
+
 		
-		this.$dom.on('click', function(e) {
-			e.preventDefault();
+
+		// let $item_image = this.$dom.find('.asset-image');
+		
+		// let $video = this.$dom.find('.asset-description video, .asset-description iframe')
+		
+		// if($video.length) {
+			
+		// 	$video.prop('muted', true) ;
+		// 	$item_image.append($video)
+
+		// } 
+		
+		// this.$dom.on('click', function(e) {
+		// 	e.preventDefault();
  
-        	setDisplayMode('1xgrid');
+  //       	setDisplayMode('1xgrid');
 		
-			window.location.hash = $(this).attr('id');
+		// 	window.location.hash = $(this).attr('id');
 
-			$(window).scrollTop($(this).offset().top - 100);
+		// 	$(window).scrollTop($(this).offset().top - 100);
 
-		});
-
-
-
-	// this.$dom.find('video').prop('muted', true)
+		// });
 
 
-
-
-	return this.$dom
+	// return this.$dom
 	}
 
 

@@ -2,7 +2,7 @@
 <html lang="en-US">
 
 <head>
-	<title>Dimzayan - Wallet</title>
+	<title>Dimzayan - Dankset</title>
 
 <meta name="robots" content="all">
 <meta property="og:locale" content="en_US">
@@ -30,26 +30,27 @@
   src="../jquery.3.6.0.prod.js" 
   ></script>
 <script src="lodash.4.17.21.min.js"></script>
-<script src="jquery.waypoints.min.js"></script>
 
+<script src="bitcoin-address-validation.js"></script>
 <script src="pepedata.js"></script>
 <!--  -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js" />
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
-<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css" type="text/css" >
 
 
 	<link rel="stylesheet" href="styles.css">
 
-
+<script src="asset.js" ></script>
+<script src="collection.js" ></script>
 </head>
-<body  blank_assets="false">
+<body  blank_assets="false" >
 
 	<!-- MASTHEAD NAV -->
 	<nav id="breadcrumbs">
 		<a href="https://www.dimzayan.com" id="cta-home" class="cta-dim">Dim</a>
-		<a href="index.html" class='cta-wallet'>Wallet</a>
+		<a href="index.html" class=''>Dankset</a>
 
 
 	</nav>
@@ -58,7 +59,8 @@
 		
 		<a href="index.html#settings"  class="cta-settings" >Settings</a>
 		<nav class="menu">
-		<a href="#" class="cta-toggle-blank-assets">Show/hide assets with no visuals</a>
+		<a href="#" class="cta-toggle-blank-assets" data-active="{{blank_assets}}" >Show assets with no visuals</a>
+
 		</nav>
 		
 	</nav>
@@ -66,33 +68,35 @@
 
 	<nav id="paginator" >
 		<a href="#prev" class="prev"><</a>
-		<a href="#next" class="next">></a>
+		<a href="#next" class="next"  id="cta-next">></a>
 		
 	</nav>
 
 	<!-- MAIN -->
 	<main>
 	<section id="splash">
-		<h1>This is a Bitcoin asset wallet viewer.</h1>
-		<h2>It is designed to display content assets created on&nbsp;Bitcoin&nbsp;via&nbsp;Counterparty.</h2>
-		<h3>This is not a wallet manager (yet) so you won't be able to perform any fancy operations, But it also means you don't have to sign in or enter any private information.</h4>
-		<h5>All you have to do to start is to enter your assets Bitcoin address:</h5>
+		<h1>This is a Bitcoin asset explorer.</h1>
+		<h2>It is designed to explore visual assets created on&nbsp;Bitcoin&nbsp;via&nbsp;Counterparty.</h2>
+		<h3>Built on top of Xchain for artists and collectors.</h3>
+		<h5>Just enter a Bitcoin address or the name of an asset to get started.</h5>
 	
-		<form id="wallet-address-form">
-			<input type="text" placeholder="Enter Your Bitcoin Wallet Address" id="address-input"/>
+		<form id="search-form">
+			<input type="text" placeholder="Bitcoin address or name of an asset" id="search-input"/>
 			<input type="submit" />
+			<span id="search-error" class="error-message"></span>
 		</form>
 	</section>
 
 
-	<section id="wallets" style="text-align: center">
-		
-		<div id="wallet-loader">Loading Assets ... </div>
-   
-		<div id="wallets-container">
+	<section id="asset-viewer" style="text-align: center">
+		<div id="focus" class="focus"></div>
+		<!-- <div id="asset-viewer-loader">Loading Assets ... </div> -->
+   		<h2 id="content-title"></h2>
+		<div id="assets-container" class="collection grid">
             
 		</div>
-
+		<!-- <a  href="#"  id="more-cta">More</a> -->
+ 
 
 
 
@@ -104,90 +108,101 @@
 </body>
 
 <div id="templates">
-    <div class="block col-sm-6 col-md-4 " >
+	<div id="block-template">
+    <div class="block col-sm-6 col-md-3 " >
     	<h4 class="asset-group-name"></h4>
     	<div class="asset-group-icon"></div>
     </div>
-	<div class="collection-item  asset"  href="#" >
-		<div class="collection-item-container">
-			
-			
-			<div class="asset-image asset-media collection-item-image"></div>
+	</div>
+    <div id="asset-template">
+	<div class="collection-item  asset "  id="{{id}}" data-asset="{{name}}" shell="{{shell}}">
+		<a class="asset-media-container" href="index.html?asset={{name}}">		
+			<div class="asset-image asset-media collection-item-image">{{media}}</div>
+		</a>
+		<div class="asset-meta">
+			<a class="asset-name collection-item-title" href="index.html?asset={{name}}">{{name}}</a>
+			<a class="asset-artist" type="artist" href="index.html?by={{issuer}}">{{artist}}</a>
+			<div class="asset-quantity collection-item-quantity ">{{quantity}}/{{current_supply}}</div>
+			 
+			<div style="padding: 1em 0  0 0" data="{{ask}}">
+				<a href="https://xchain.io/tx/{{ask_tx_hash}}" class="asset-market-ask property btc " >{{ask}}</a>
+			</div>
+			<div class="icon" ></div>
 		</div>
-		<div class="collection-item-meta">
+		<div class="asset-details">
 			
-			<div class="asset-name collection-item-title"></div>
-			<div class="asset-artist"></div>
-			<div class="asset-quantity collection-item-quantity"></div>
+			<div class="asset-name collection-item-title">{{name}}</div>
+			<a class="asset-artist" type="artist" href="?by={{issuer}}">{{artist}}</a>
+			<div class="icon" ></div>
+			<!-- <div class="asset-quantity collection-item-quantity"></div> -->
+
+
+			<div class="asset-description collection-item-description ">{{description}}</div>
+			<div class="asset-parent-block  property-block" data="{{parented}}">
+				<h5>Set</h5>
+				<a type="group" class="parent-asset" data-asset="{{parent}}"  href="index.html?set={{group}}">{{group}}</a>
+				<a type="asset" class="parent-asset" data={{parent}} data-asset="{{parent}}"  href="?asset={{parent}}">{{parent}}</a>
+			</div>
 			
-			<div class="asset-date"></div>
-            <div class="asset-description collection-item-description"></div>
-            <div class="asset-supply-info property-set">
+            
+            <div class="property-set">
+            	<div class="asset-date property-block">
+					<h5>Minted</h5>
+					<p class="asset-mint_date">{{mint_date}}</p>
+					<p class="asset-mint_block" style="font-size:0.7em">Block #{{block_index}}</p>
+				</div>
+			</div>
+			 <div class="asset-supply-info property-set">
 				<div class="asset-total-supply property-block">
 					<h5>Supply</h5>
-					<p class="asset-supply-total "></p>
+					<p class="asset-supply-total ">{{total_issued}}</p>
 				</div>
-				<div class="asset-hodlers data-block">
+				<div class="asset-hodlers property-block">
 					<h5>Hodlers</h5>
-					<p class="asset-supply-hodlers "></p>
+					<p class="asset-supply-hodlers ">{{total_hodlers}}</p>
 				</div>
-				<div class="asset-shares display-on-focus-only data-block">
-					<h5>Owned</h5>
-					<p><span class="asset-supply-owned"></span>(<span class="asset-supply-owned_percent"></span>%)</p>
+				<div class="asset-shares property-block">
+					<h5>You own</h5>
+					<p><span class="asset-supply-owned_percent">{{total_owned_percent}}</span>%</p>
 				</div>
 			</div>
 
-			<div class="asset-price-info">
-				<div class="asset-best-offer">
+			<div class="asset-market-info property-set">
+				<div class="asset-best-offer property-block">
 					<h5>Ask</h5>
-					<p data_asset_best_offer></p>
+					<p class="">
+						<a href="https://xchain.io/tx/{{ask_tx_hash}}" class="asset-market-ask property btc ">{{ask}}</a>
+					</p>
 				</div>
-				<div class="asset-last-sale display-on-focus-only">
-					<h5>Last Sale</h5>
-					<p data_asset_last_sale></p>
-				</div>
-				<div class="asset-total-sales display-on-focus-only">
+	
+			</div>
+
+			<div clas="asset-market-info property-set">
+				<div class="asset-total-sales property-block">
 					<h5>Total Sales</h5>
-					<p class="asset-market-total_sales"></p>
+					<p class="asset-market-total_sales property btc">{{total_sales}}</p>
 				</div>
-				<div class="asset-average-sale ">
+				<div class="asset-last-sale  property-block" data="{{last_sale_price}}">
+					<h5>Last Sale</h5>
+					<p ><span class="asset-market-last_sale_date property">{{last_sale_date}}</span> @ <span class="asset-market-last_sale_price btc property">{{last_sale_price}}</span></p>
+				</div>
+				
+				<div class="asset-average-sale property-block " data="{{aps}}">
 					<h5>Average Price per sale (APS)</h5>
-					<p class="asset-market-aps"></p>
+					<p class="asset-market-aps  property btc">{{aps}}</p>
 				</div>
 			</div>
+
+			<a href="https://xchain.io/asset/{{name}}">Explore on xchain.io</a>
+
+
 		</div>
 		
 	</div>
-
-<!-- 	<div id="dispenser-template" class="dispenser">
-		<div class="asset-best-offer">
-			<h5>Best Offer</h5>
-			<p data_best_offer></p>
-		</div>
-		<div class="asset-last-sale">
-			<h5>Last Sale</h5>
-			<p data_last_sale></p>
-		</div>
-		<div class="asset-total-sales">
-			<h5>Total Dispenser Sales</h5>
-			<p data_asset_total_sales></p>
-		</div>
-		<div class="asset-average-sale">
-			<h5>Average Price per sale (APS)</h5>
-			<p data_asset_average_sale></p>
-		</div>
-		<a class="price" href="" target="_blank"></a>
-		<a href="https://xchain.io/asset/" target="_blank" class="xchain">Explore on Xchain</a>
-	</div> -->
 </div>
 
-<script src="asset.js" ></script>
-
-<script src="wallet.js" >
+</div>
 
 
-	
-
-
-</script>
+<script src="index.js" ></script>
 </html>
