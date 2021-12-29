@@ -317,8 +317,6 @@ const getArtistAssets  = async (address)  => {
 		asset_template: document.getElementById('asset-template').cloneNode(true)
 	})
 
-
-
 	showCollection(collection)
 }
 
@@ -378,7 +376,7 @@ const refreshAsset = (asset, container) => {
 			let loaded_count = media_container.querySelectorAll('.asset-media.loaded').length
 			let error_count = media_container.querySelectorAll('.asset-media.error').length
 			if( loaded_count === 1 && error_count === asset.media.length - 1) {
-				media_container.addClass('single_load')
+				media_container.classList.add('single_load')
 			}
 		})
 		element.addEventListener('loadstart', (e) =>  {

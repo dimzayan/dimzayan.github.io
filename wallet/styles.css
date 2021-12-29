@@ -14,8 +14,8 @@ body {
 }
 img, video {
 	
-	max-width: 90vw;
-	/*height : 12.5vh;*/
+	object-fit: contain;
+	max-height: 560px;
 	margin : 0;
 	padding : 0;
 	display: block;
@@ -197,8 +197,7 @@ body[blank_assets='false' ] .blank {
 
 
 .asset-media  {
-	
-	margin-bottom: 1em;
+
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -793,6 +792,13 @@ body .group-name {
 	right: 0;
 	top:  50%;
 }
+	.focus .asset-image img,
+	.focus .asset-image video,
+	.focus .asset-image iframe {
+		object-fit: contain;
+		max-height: 560px;
+	
+	}
 
 
 
@@ -902,13 +908,6 @@ body .group-name {
 
 
 
-	.focus .asset-image img,
-	.focus .asset-image video,
-	.focus .asset-image iframe {
-		/*min-width: 100%;
-		max-width: 100%;*/
-	
-	}
 
 	
 	.focus .asset-details  {
