@@ -580,7 +580,7 @@ window.addEventListener('load', async (event) => {
 		
 	});
 
-	user.address = localStorage.getItem('address');
+	// user.address = localStorage.getItem('address');
 
 	user.preferences  = {
 		...settings,
