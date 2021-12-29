@@ -632,10 +632,11 @@ window.addEventListener('load', async (event) => {
 		
 	// 	return
 	// }
-	if(user.address === null) {
-		setMode('splash')
+	// if(user.address === null) {
+
+	// }
+			setMode('splash')
 		Breadcrumbs.add();
-	}
 	// } else {
 	// 	setMode('grid');
 	// 	Breadcrumbs.add(user.address, (e) => {
