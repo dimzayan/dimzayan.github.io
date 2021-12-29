@@ -169,7 +169,7 @@ const showCollection = function(collection , params ) {
 		(asset)  => {
 			asset.init();
 			$collection.append(generateBlock(asset))
-			console.log(asset)
+			
 		}
 	)
 
@@ -325,7 +325,12 @@ const getArtistAssets  = async (address)  => {
 
 const refreshAsset = (asset, container) => {
 
-	container.innerHTML = asset.render();
+	update = document.createElement('div')
+	update.innerHTML = asset.render();
+
+
+	container.querySelector('.asset-meta').innerHTML = update.querySelector('.asset-meta').innerHTML
+	container.querySelector('.asset-details').outerHTML = update.querySelector('.asset-details').outerHTML
 
 	// RENDER SETS & PARENTS ICONS 
 	try {
@@ -345,26 +350,45 @@ const refreshAsset = (asset, container) => {
 
 
     // RENDER MEDIA
-    asset.media.forEach( element => {
-		let media_container = container.querySelector('.asset-media-container')
-		let media = media_container.querySelector('.asset-media').cloneNode()
+    asset.media.forEach( medium => {
+    	if(medium.added) return
+    	medium.added = true
+		let
+			media_container = container.querySelector('.asset-media-container'),
+			media = document.createElement('div'),
+			element = medium.node
+
+		media.classList.add('asset-media')
 		
 		media.append(element)
 		media_container.append(media);
+		media.classList.add(element.nodeName)
 		element.muted = true;
-		element.style.height =  '100%';
+		// element.style.maxHeight =  '100%';
 
 		element.addEventListener('load', (e) =>  {
 			
-			e.target.parentNode.style.zIndex = e.target.nodeName === 'IFRAME' ? 30 : e.target.nodeName === 'VIDEO' ? 29 : 1;
+
+			
+			// media_container.style.height = Math.max(media_container.clientHeight, e.target.height)
+			e.target.parentNode.classList.add('loaded');
+			media_container.classList.add('loaded');
+			//element.style.width = media_container.width;
+			//element.style.height = e.target.height;
+			let loaded_count = media_container.querySelectorAll('.asset-media.loaded').length
+			let error_count = media_container.querySelectorAll('.asset-media.error').length
+			if( loaded_count === 1 && error_count === asset.media.length - 1) {
+				media_container.addClass('single_load')
+			}
 		})
 		element.addEventListener('loadstart', (e) =>  {
 			
-			e.target.style.zIndex = 29 ;
-			e.target.parentNode.style.zIndex = 29 ;
+			e.target.parentNode.classList.add('loaded');
+			media_container.classList.add('loaded');
+		
 		})
 		element.addEventListener('error',(e) => {
-			e.target.style.zIndex = -1;
+			e.target.parentNode.classList.add('error');
 
 			if(!e.target.error) {
 				
@@ -375,7 +399,7 @@ const refreshAsset = (asset, container) => {
 			if(asset.media_error_count >= asset.media.length) {
 				
 				container.classList.add('blank');
-				media_container.querySelector('.asset-media').innerHTML = 'No Media'
+				media_container.querySelector('.asset-media-loader').innerHTML = 'No Media'
 			}
 			// this.dispatchEvent(new Event('mediaError'))
 		})
@@ -421,9 +445,9 @@ const showAssetDetails  = async (assetName) =>  {
 	asset.addEventListener('change', () => {
 
 	
-	   
+	   refreshAsset(asset, $focus);
 
-	    refreshAsset(asset, $focus);
+	    // refreshAsset(asset, $focus);
 		$focus.querySelector('.asset-media-container').addEventListener('click', (e) => {
 	    	e.preventDefault();
 	    });
@@ -639,9 +663,9 @@ window.addEventListener('load', async (event) => {
 
 
 window.addEventListener("scroll", () => {
-	if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+	if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight-400)) {
 
-       	if(current_collection  && current_collection.assets.length> (current_collection.page+1) *settings.per_page) {
+       	if(current_collection  && current_collection.assets && current_collection.assets.length> (current_collection.page+1) *settings.per_page) {
 			showCollection(current_collection,{page:current_collection.page+1});
     	}
     }

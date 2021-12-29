@@ -210,7 +210,7 @@ class Asset extends EventTarget {
 		return this.data.image_large ? this.data.image_large : (this.data.img_url ? this.data.img_url : this.data.image_url );
 	}
 
-	get media() {
+	fetch_media() {
 		let 
 			media = [],
 			raw_description = document.createElement('span')
@@ -220,31 +220,28 @@ class Asset extends EventTarget {
 		raw_description.querySelectorAll('img, video, iframe').forEach(item => {
 			if(item.nodeName === 'IFRAME') {
 				item.scrolling = 'no'
-				
+
 			}
 
 			if(item.nodeName === 'VIDEO') {
 				item.muted = true;
 				item.style.zIndex = -2;
-				item.src = item.querySelector('source').src 
+				try {
+					item.src = item.src
+				} catch {
+					item.src = item.querySelector('source').src 
+					
+				}
+				
 	
 
 			}
 
-			if(!_.find(this._media, (e) => {e.src === item.src})) {
-				media.push(item)
-			}
-
-			// return this._media
+			
+			media.push(item)
+			
 		})
 
-
-		// this._media  = this._media || [new Image()];
-
-		// if (this._media.nodeName === 'VIDEO' || this._media.nodeName === 'IFRAME' || this._media.src  !==  ''){
-		// 	return  this._media
-
-		// }
 		_.flatten([this.image_url]).forEach( (src) => {
 			if(src === undefined) return
 			let img = new Image()
@@ -254,50 +251,26 @@ class Asset extends EventTarget {
 			media.push(img);
 		})
 
+		return media
+	}
+
+	get media() {
+
 		// Adding only if not already present
-		media.forEach( item => {
+		this.fetch_media().forEach( item => {
 			if(this._media.map(m => m.src).includes(item.src)) return;
-			this._media.push(item)
+			this._media.push({
+				node: item,
+				src: item.src,
+				added: false
+				})
 		});
 
 		return this._media
-		// if( Array.isArray(this.image_url)) {
-		
-		// 	this.media_id =  0;
-		// 	this._media.onerror = (e)  => {
-		// 		// console.warn(`Couldn't load ${this.image_url[this.media_id]}`)
-		// 		this.media_id += 1;
 
-		// 		e.target.src  = this.image_url[this.media_id]
-		// 		if(this.media_id  >=  this.image_url.length) {
-		// 			e.target.onerror = null;
-		// 			this.dispatchEvent(new Event('mediaError'))
-		// 			// if(!this.$dom.parent().find('video,  iframe').length) {
-		// 			// 	this.$dom.parent().addClass('blank')
-		// 			// }
-					
-		// 		}
-		// 		// console.error()
-		// 	}
-		// 	this._media.src = this.image_url[0];
-			
-		// 	return this._media;
-			
-		// }   else {
-			
-		// 	if(this.image_url === undefined) {
-
-		// 		return null
-		// 	}
-		// 	this._media.src = this.image_url
-		
-		// 	return this._media;
-		// }
-
-
-		
-		// return null
 	}
+
+
 
 	get supply() {
 		if(!this.data.supply) return []

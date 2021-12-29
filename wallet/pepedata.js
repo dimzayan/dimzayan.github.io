@@ -2156,7 +2156,8 @@ PRESETS = {
  //    "PEPENIRO" : { group: "FAKE RARE",  series: 2},
  //    "PEPEPLEBZ" : { group: "FAKE RARE",  series: 2},
  //    "PEPELIOTTA" : { group: "FAKE RARE", series: 3},
- //    "HISPEPENESS": {group: "FAKE RARE",  series: 3},
+ 
+ "PEPHONEHOME": {group: "FAKE RARE",  series: 3, image_url: "https://fakeasf.club/assets/OLDIRTYPEPE/OLDIRTYPEPE.gif"},
 
     "LFNONE": {
         group: "FAKA NOSTRA"

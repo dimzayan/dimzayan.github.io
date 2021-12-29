@@ -109,19 +109,20 @@
 
 <div id="templates">
 	<div id="block-template">
-    <div class="block col-sm-6 col-md-3 " >
+    <div class="block col-sm-12 col-md-4 col-lg-3" >
     	<h4 class="asset-group-name"></h4>
     	<div class="asset-group-icon"></div>
     </div>
 	</div>
+
     <div id="asset-template">
 	<div class="collection-item  asset "  id="{{id}}" data-asset="{{name}}" shell="{{shell}}">
 		<a class="asset-media-container" href="index.html?asset={{name}}" target="dankset_asset">		
-			<div class="asset-image asset-media collection-item-image">loading...</div>
+			<div class="asset-media-loader">loading...</div>
 		</a>
 		<div class="asset-meta">
 			<a class="asset-name collection-item-title" href="index.html?asset={{name}}"  target="dankset_asset">{{name}}</a>
-			<a class="asset-artist" type="artist" href="index.html?by={{issuer}}"  target="dankset_artist">{{artist}}</a>
+			<a class="asset-artist" type="artist" href="index.html?by={{issuer}}"  >{{artist}}</a>
 			<div class="asset-current-supply collection-item-quantity " >{{current_supply}}</div>
 			 
 			<div style="padding: 1em 0  0 0" data="{{ask}}">
