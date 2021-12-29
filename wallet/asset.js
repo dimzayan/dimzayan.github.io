@@ -14,8 +14,9 @@ class Asset extends EventTarget {
 		this.loaded = false;
 		this.history =  [];
 		this.hodlers  =  [];
-		this._media  =  null;
+		this._media  =  [];
 		this.blank  = false;
+		this.media_error_count = 0;
 		return this
 		
 	}
@@ -23,7 +24,7 @@ class Asset extends EventTarget {
 	async init(extra = false) {
 		// console.log("loading "+this.data.asset)
 		
-		if(!this.data.description.length  || this.data.supply === 0 ) {
+		if(this.data.description && (!this.data.description.length  || this.data.supply === 0) ) {
 
 			this.blank  = true
 		}
@@ -194,6 +195,7 @@ class Asset extends EventTarget {
 
 
 
+
 	get name() {
     	return this.isSubasset() ? this.data.asset_longname : this.data.asset;
 	}
@@ -209,67 +211,92 @@ class Asset extends EventTarget {
 	}
 
 	get media() {
-		let raw_description = document.createElement('span');
+		let 
+			media = [],
+			raw_description = document.createElement('span')
+		
 		raw_description.innerHTML = this.data.description;
 
-		// let _this = this;
 		raw_description.querySelectorAll('img, video, iframe').forEach(item => {
-
-			if(this._media.nodeName === 'IMG') {
-				this._media = item;
+			if(item.nodeName === 'IFRAME') {
+				item.scrolling = 'no'
+				
 			}
 
+			if(item.nodeName === 'VIDEO') {
+				item.muted = true;
+				item.style.zIndex = -2;
+				item.src = item.querySelector('source').src 
+	
+
+			}
+
+			if(!_.find(this._media, (e) => {e.src === item.src})) {
+				media.push(item)
+			}
 
 			// return this._media
 		})
 
-		// if(raw_description.querySelector('img') !== null) {
-			
-		// 	this._media = raw_description.querySelector('img');
-			
-		// 	return this._media
+
+		// this._media  = this._media || [new Image()];
+
+		// if (this._media.nodeName === 'VIDEO' || this._media.nodeName === 'IFRAME' || this._media.src  !==  ''){
+		// 	return  this._media
+
 		// }
-		this._media  = this._media || new Image();
+		_.flatten([this.image_url]).forEach( (src) => {
+			if(src === undefined) return
+			let img = new Image()
+			img.src = src;
+			// console.warn(img)
+	
+			media.push(img);
+		})
 
-		if (this._media.nodeName === 'VIDEO' || this._media.nodeName === 'IFRAME' || this._media.src  !==  ''){
-			return  this._media
+		// Adding only if not already present
+		media.forEach( item => {
+			if(this._media.map(m => m.src).includes(item.src)) return;
+			this._media.push(item)
+		});
 
-		}
-		if( Array.isArray(this.image_url)) {
+		return this._media
+		// if( Array.isArray(this.image_url)) {
 		
-			this.media_id =  0;
-			this._media.onerror = (e)  => {
-				// console.warn(`Couldn't load ${this.image_url[this.media_id]}`)
-				this.media_id += 1;
+		// 	this.media_id =  0;
+		// 	this._media.onerror = (e)  => {
+		// 		// console.warn(`Couldn't load ${this.image_url[this.media_id]}`)
+		// 		this.media_id += 1;
 
-				e.target.src  = this.image_url[this.media_id]
-				if(this.media_id  >=  this.image_url.length) {
-					e.target.onerror = null;
-					this.dispatchEvent(new Event('mediaError'))
-					// if(!this.$dom.parent().find('video,  iframe').length) {
-					// 	this.$dom.parent().addClass('blank')
-					// }
+		// 		e.target.src  = this.image_url[this.media_id]
+		// 		if(this.media_id  >=  this.image_url.length) {
+		// 			e.target.onerror = null;
+		// 			this.dispatchEvent(new Event('mediaError'))
+		// 			// if(!this.$dom.parent().find('video,  iframe').length) {
+		// 			// 	this.$dom.parent().addClass('blank')
+		// 			// }
 					
-				}
-				// console.error()
-			}
-			this._media.src = this.image_url[0];
+		// 		}
+		// 		// console.error()
+		// 	}
+		// 	this._media.src = this.image_url[0];
 			
-			return this._media;
+		// 	return this._media;
 			
-		}   else {
+		// }   else {
 			
-			if(this.image_url === undefined) {
-				return null
-			}
-			this._media.src = this.image_url
+		// 	if(this.image_url === undefined) {
+
+		// 		return null
+		// 	}
+		// 	this._media.src = this.image_url
 		
-			return this._media;
-		}
+		// 	return this._media;
+		// }
 
 
 		
-		
+		// return null
 	}
 
 	get supply() {
@@ -488,18 +515,21 @@ class Asset extends EventTarget {
 			
 		// console.log(this.media)
 		let html = this.template.innerHTML;
+		// console.log(`${this.name} : ${this.media.src}`)
 		let data = {
 			name: this.name,
 			id:  this.data.asset,
 			quantity: this.quantity,
-			media: this.media ? this.media.outerHTML : "loading...",
+			
 			artist: this.artist,
 			mint_date: this.mint_date,
 			block_index: this.block_index,
 			description: this.description,
 			parent: this.parentName,
 			group: this.data.group,
+			has_group: this.data.group !== undefined,
 			issuer: this.data.issuer,
+			has_ask: this.market_data !== undefined && this.market_data.ask != null,
 			parented: (this.parentName !==  null)  || (this.group !== undefined),
 			shell: this.data.supply ? false : true,
 			current_supply: this.data.supply

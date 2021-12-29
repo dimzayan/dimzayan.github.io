@@ -10,23 +10,26 @@ class Collection {
 				template: params.asset_template
 			})
 		})
+		this.page = 0
+		this.per_page = 30
 	}
 
 
-	render(page) {
+	get(page = 0) {
 		this.page = page
 
-		let $container = $('<div>', {class:  'row collection'})
+		// let $container = document.createElement('div');
+		
 
-		let html  =  '';
+
+		// let html  =  '';
 		let range_start =  page * 30
 		let range_end = range_start + 30
 
-		_.each(
-			this.assets
+		return this.assets
 			.filter(
 				(a) => {
-					
+
 					return  a.data.supply  !== 0
 				}
 			)
@@ -35,17 +38,20 @@ class Collection {
 					return a.name > b.name
 				}
 			)
-			.slice(range_start, range_end ), 
-			(asset)  => {
-				asset.init();
-				html  +=  generateBlock(asset).outerHTML
+			.slice(range_start, range_end )
+
+		// _.each(
+		// 	, 
+		// 	(asset)  => {
+		// 		asset.init();
+		// 		$container.append(generateBlock(asset))
 				
-			}
-		)
+		// 	}
+		// )
 
 
-		
-		return html
+		// $container.innerHTML = html
+		return $container
 	}
 
 

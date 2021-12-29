@@ -116,23 +116,23 @@
 	</div>
     <div id="asset-template">
 	<div class="collection-item  asset "  id="{{id}}" data-asset="{{name}}" shell="{{shell}}">
-		<a class="asset-media-container" href="index.html?asset={{name}}">		
-			<div class="asset-image asset-media collection-item-image">{{media}}</div>
+		<a class="asset-media-container" href="index.html?asset={{name}}" target="dankset_asset">		
+			<div class="asset-image asset-media collection-item-image">loading...</div>
 		</a>
 		<div class="asset-meta">
-			<a class="asset-name collection-item-title" href="index.html?asset={{name}}">{{name}}</a>
-			<a class="asset-artist" type="artist" href="index.html?by={{issuer}}">{{artist}}</a>
-			<div class="asset-quantity collection-item-quantity ">{{quantity}}/{{current_supply}}</div>
+			<a class="asset-name collection-item-title" href="index.html?asset={{name}}"  target="dankset_asset">{{name}}</a>
+			<a class="asset-artist" type="artist" href="index.html?by={{issuer}}"  target="dankset_artist">{{artist}}</a>
+			<div class="asset-current-supply collection-item-quantity " >{{current_supply}}</div>
 			 
 			<div style="padding: 1em 0  0 0" data="{{ask}}">
 				<a href="https://xchain.io/tx/{{ask_tx_hash}}" class="asset-market-ask property btc " >{{ask}}</a>
 			</div>
-			<div class="icon" ></div>
+			<a class="icon" href="?set={{group}}"></a>
 		</div>
 		<div class="asset-details">
 			
-			<div class="asset-name collection-item-title">{{name}}</div>
-			<a class="asset-artist" type="artist" href="?by={{issuer}}">{{artist}}</a>
+			<div class="asset-name collection-item-title" >{{name}}</div>
+			<a class="asset-artist" type="artist" href="?by={{issuer}}" target="dankset_artist">{{artist}}</a>
 			<div class="icon" ></div>
 			<!-- <div class="asset-quantity collection-item-quantity"></div> -->
 
@@ -140,7 +140,7 @@
 			<div class="asset-description collection-item-description ">{{description}}</div>
 			<div class="asset-parent-block  property-block" data="{{parented}}">
 				<h5>Set</h5>
-				<a type="group" class="parent-asset" data-asset="{{parent}}"  href="index.html?set={{group}}">{{group}}</a>
+				<a type="group" class="parent-asset" data-asset="{{parent}}"  visible="{{has_group}}" href="index.html?set={{group}}">{{group}}</a>
 				<a type="asset" class="parent-asset" data={{parent}} data-asset="{{parent}}"  href="?asset={{parent}}">{{parent}}</a>
 			</div>
 			
@@ -161,18 +161,19 @@
 					<h5>Hodlers</h5>
 					<p class="asset-supply-hodlers ">{{total_hodlers}}</p>
 				</div>
-				<div class="asset-shares property-block">
+<!-- 				<div class="asset-shares property-block">
 					<h5>You own</h5>
 					<p><span class="asset-supply-owned_percent">{{total_owned_percent}}</span>%</p>
-				</div>
+				</div> -->
 			</div>
 
 			<div class="asset-market-info property-set">
-				<div class="asset-best-offer property-block">
+				<div class="asset-best-offer property-block" toggled="{{has_ask}}">
 					<h5>Ask</h5>
-					<p class="">
-						<a href="https://xchain.io/tx/{{ask_tx_hash}}" class="asset-market-ask property btc ">{{ask}}</a>
-					</p>
+					
+					<a visible_if_toggled href="https://xchain.io/tx/{{ask_tx_hash}}" class="asset-market-ask property btc ">{{ask}}</a>
+					<p hidden_if_toggled class="asset-market-ask property ">N/A</p>
+				
 				</div>
 	
 			</div>

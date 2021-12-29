@@ -134,7 +134,7 @@ var current_collection = []
 
 const showCollection = function(collection , params ) {
 	
-	console.log(collection)
+	
 
 	let 
 		$focus = document.getElementById('focus'),
@@ -146,9 +146,10 @@ const showCollection = function(collection , params ) {
 
 	collection = collection || current_collection
 	
+
 	current_collection = collection;
 	$('#asset-viewer-loader').show();
-	$focus.innerHTML = ``
+	// $focus.innerHTML = ``
 
     if(options.page === 0) {
     	$("html, body").animate({scrollTop: 0}, 1);
@@ -156,12 +157,25 @@ const showCollection = function(collection , params ) {
     }
 
     if(options.title) {
-    	$collection.innerHTML += `<h4 class="collection-title">${options.title}</h4>`
+    	let $title = document.createElement('h4')
+    	$title.classList.add('collection-title');
+    	$title.innerHTML = options.title;
+    	$collection.append($title)
    	}
 
 
-   	$collection.innerHTML += collection.render(options.page, {max: settings.per_page})
-   	console.log(options.page)
+	_.each(
+		collection.get(options.page), 
+		(asset)  => {
+			asset.init();
+			$collection.append(generateBlock(asset))
+			console.log(asset)
+		}
+	)
+
+	console.log(collection)
+   	
+
 	$('#asset-viewer-loader').hide();
 
         
@@ -192,51 +206,41 @@ const generateBlock =  (asset) => {
     $block.innerHTML = asset.render()
 
     if(asset.blank ) {
-    	
     	$block.classList.add('blank')
     }
 
-    
-    asset.addEventListener('mediaError', (e) =>  {
 
-    	let $asset  =  document.getElementById(asset.data.asset_longname);
-    	
-    	$asset.parentElement.classList.add('blank')
-    })
     asset.addEventListener('change', () => {
 
-
+    	
     	// REPLACE ONLY CONTENT THAT HAS CHANGED TO AVOID FLICKERING
-    	let $updated_content = document.createElement('div');
-    	$updated_content.innerHTML =  asset.render()
-    	
-    	let $card  =  document.getElementById(asset.data.asset)
-    	// console.log(asset)
-    	if($card === null) {
-    		$block.innerHTML =  $updated_content.outerHTML; 
-    		return;
-    	}
+    	// let $updated_content = document.createElement('div');
+    	// $updated_content.innerHTML =  asset.render()
+    	// 
+    	// let $card  =  document.getElementById(asset.data.asset)
+    	// // console.log(asset)
+    	// if($card === null) {
+    	// 	$block.innerHTML =  $updated_content.outerHTML; 
+    	// 	return;
+    	// }
 
 
-		$updated_content.querySelector(`#${asset.data.asset}`).childNodes.forEach( (node, i) => {
-			if(node.isEqualNode($card.childNodes[i])) {return }
-			$card.childNodes[i].innerHTML = node.innerHTML
-		})
+    	refreshAsset(asset,$block)
+		// $updated_content.querySelector(`#${asset.data.asset}`).childNodes.forEach( (node, i) => {
+		// 	if(node.isEqualNode($card.childNodes[i])) {return }
+		// 	$card.childNodes[i].innerHTML = node.innerHTML
+		// })
 
 
-    	   if(asset.data.supply === 0) {
+		// if(asset.media !== $card.querySelector('.asset-media').innerHTML) {
+		// 	$card.querySelector('.asset-media') = asset.media
+		// }
+
+    	if(asset.data.supply === 0) {
     
-    	$card.parentElement.classList.add('blank')
-    }
-    	
-		if(asset.data.group  && asset.data.group.length) {
-	    	let group  = GROUPS[asset.data.group.replace(' ','_')]
+    		$block.classList.add('blank')
+   		}
 
-		    if(group.image_url) {
-		    	
-		    	$card.querySelector('.icon').innerHTML = `<img src="${group.image_url}">`
-		    }
-	    }
 
 		
 	})
@@ -307,12 +311,80 @@ const getArtistAssets  = async (address)  => {
 		]
 	}
 
+
 	let collection = new Collection({
 		data : _.values(_.keyBy(obj.data, 'asset')),
 		asset_template: document.getElementById('asset-template').cloneNode(true)
 	})
 
+
+
 	showCollection(collection)
+}
+
+
+const refreshAsset = (asset, container) => {
+
+	container.innerHTML = asset.render();
+
+	// RENDER SETS & PARENTS ICONS 
+	try {
+			if(asset.data.group && asset.data.group.length) {
+
+	    	let group  = GROUPS[asset.data.group.replace(' ','_')]
+
+		    if(group.image_url) {
+		    	
+		    	container.querySelectorAll('.icon').forEach(item => {item.innerHTML = `<img src="${group.image_url}">`})
+		    }
+    	}	
+	}  catch(e) {
+
+		//console.warn(asset.data.group.replace(' ','_'))
+	}	
+
+
+    // RENDER MEDIA
+    asset.media.forEach( element => {
+		let media_container = container.querySelector('.asset-media-container')
+		let media = media_container.querySelector('.asset-media').cloneNode()
+		
+		media.append(element)
+		media_container.append(media);
+		element.muted = true;
+		element.style.height =  '100%';
+
+		element.addEventListener('load', (e) =>  {
+			
+			e.target.parentNode.style.zIndex = e.target.nodeName === 'IFRAME' ? 30 : e.target.nodeName === 'VIDEO' ? 29 : 1;
+		})
+		element.addEventListener('loadstart', (e) =>  {
+			
+			e.target.style.zIndex = 29 ;
+			e.target.parentNode.style.zIndex = 29 ;
+		})
+		element.addEventListener('error',(e) => {
+			e.target.style.zIndex = -1;
+
+			if(!e.target.error) {
+				
+				asset.media_error_count +=  1;
+			}
+			e.target.error =  true
+			
+			if(asset.media_error_count >= asset.media.length) {
+				
+				container.classList.add('blank');
+				media_container.querySelector('.asset-media').innerHTML = 'No Media'
+			}
+			// this.dispatchEvent(new Event('mediaError'))
+		})
+	});
+
+	
+	
+
+
 }
 
 
@@ -324,8 +396,9 @@ const showAssetDetails  = async (assetName) =>  {
 		$focus = document.getElementById('focus'),
 		$collection_container = document.getElementById('assets-container')
 
-	$collection_container.innerHTML  = ""
-	$focus.innerHTML  =  $focus.cloneNode(true).innerHTML
+	$collection_container.innerHTML  = "";
+	$focus.innerHTML  =  $focus.cloneNode(true).innerHTML;
+
 	let obj = await $.get(`https://xchain.io/api/asset/${assetName}`);
 	if(obj.error) {
 		return {
@@ -347,23 +420,14 @@ const showAssetDetails  = async (assetName) =>  {
 	// setMode('focus');
 	asset.addEventListener('change', () => {
 
-		$focus.innerHTML =  asset.render();
-		if(asset.data.group.length) {
+	
+	   
 
-	    	let group  = GROUPS[asset.data.group.replace(' ','_')]
-
-		    if(group.image_url) {
-		    	
-		    	$focus.querySelector('.asset-details .icon').innerHTML = `<img src="${group.image_url}">`
-		    }
-	    }
-
-
-	    $focus.querySelector('.asset-media-container').addEventListener('click', (e) => {
+	    refreshAsset(asset, $focus);
+		$focus.querySelector('.asset-media-container').addEventListener('click', (e) => {
 	    	e.preventDefault();
-	    })
+	    });
 
-		
 	})
 
 	$("html, body").animate({scrollTop: 0}, 1);
@@ -577,7 +641,7 @@ window.addEventListener('load', async (event) => {
 window.addEventListener("scroll", () => {
 	if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
 
-       	if(current_collection.assets.length> (current_collection.page+1) *settings.per_page) {
+       	if(current_collection  && current_collection.assets.length> (current_collection.page+1) *settings.per_page) {
 			showCollection(current_collection,{page:current_collection.page+1});
     	}
     }
