@@ -635,21 +635,21 @@ window.addEventListener('load', async (event) => {
 	if(user.address === null) {
 		setMode('splash')
 		Breadcrumbs.add();
-	} else {
-		setMode('grid');
-		Breadcrumbs.add(user.address, (e) => {
-			setMode('grid');
-			generateWallet(user.address);
-			$("html, body").animate({scrollTop: 0}, 1);
-			e.preventDefault();
-		});
-		generateWallet(user.address);
-
 	}
+	// } else {
+	// 	setMode('grid');
+	// 	Breadcrumbs.add(user.address, (e) => {
+	// 		setMode('grid');
+	// 		generateWallet(user.address);
+	// 		$("html, body").animate({scrollTop: 0}, 1);
+	// 		e.preventDefault();
+	// 	});
+	// 	generateWallet(user.address);
+
+	// }
 
 	document.getElementById('cta-next').addEventListener('click', (e) => {
-		console.log(this);
-		console.log(e)
+
 		showAssetDetails() 
 		return false;
 	})
