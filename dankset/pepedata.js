@@ -59,7 +59,10 @@ const ARTISTS  = {
     "1M8tGrim6DP1zra6YAHotZfs19wxo78pzQ":"Crypto Chainer",
     "1rjsjkAMYWN2xvsWUSbhFnyThGXKBLrMu":"GoingPepe100",
     "1GjXFe9W7KBYFCDNPGXAzYa1FFikzx28Js":"Rare Designer",
-    "13eJnHaD25Ti1rZ58f5ZNStxDDRyVLJ3R6":"Area One"
+    "13eJnHaD25Ti1rZ58f5ZNStxDDRyVLJ3R6":"Area One",
+    "15XMRfCCkGnm4eQ4r3iZTceMfw78L6MxHG": "Tizar Berandalan",
+    "1CMgAcCauLHc2nHhY6VEGwNLCJhjUkHLC5":  "Rebel Money",
+    "1CzqL5i4PYrWBN7QmSAgetQeDwzvwgSbKJ": "Seer Light"
 
 }
 

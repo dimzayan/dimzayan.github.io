@@ -317,6 +317,7 @@ const getArtistAssets  = async (address)  => {
 		asset_template: document.getElementById('asset-template').cloneNode(true)
 	})
 
+	document.getElementById('focus').innerHTML = `<h1>${ARTISTS[address] || address}</h1>`
 	showCollection(collection)
 }
 
@@ -372,6 +373,9 @@ const refreshAsset = (asset, container) => {
 			e.target.parentNode.classList.add('loaded');
 			media_container.classList.add('loaded');
 			//element.style.width = media_container.width;
+			if(e.target.height > 560) {
+				e.target.height = 560
+			}
 			//element.style.height = e.target.height;
 			let loaded_count = media_container.querySelectorAll('.asset-media.loaded').length
 			let error_count = media_container.querySelectorAll('.asset-media.error').length
@@ -534,6 +538,7 @@ const getSet=  (setName)  =>  {
 		asset_template: document.getElementById('asset-template').cloneNode(true)
 	})
 
+	document.getElementById('focus').innerHTML = `<h1>${setName}</h1>`
 	showCollection(group_collection)
 	
 
@@ -601,7 +606,7 @@ window.addEventListener('load', async (event) => {
 
 	if(getUrlParameter('by')) {
 		getArtistAssets(getUrlParameter('by'));
-		Breadcrumbs.add(`By ${getUrlParameter('by')}`, (e) => {
+		Breadcrumbs.add(`By ${ARTISTS[getUrlParameter('by')]  || getUrlParameter('by') }`, (e) => {
 			window.location.href =  `?set=${getUrlParameter('by')}`
 			e.preventDefault();
 		});

@@ -158,6 +158,9 @@ body[blank_assets='false' ] .blank {
 	display: none;
 }
 
+.focus h1 {
+	margin : 4em;
+}
 
 .focus.blank {
 	display: block !important;
