@@ -159,6 +159,10 @@ body[blank_assets='false' ] .blank {
 }
 
 
+.focus.blank {
+	display: block !important;
+}
+
 .focus .asset  {
 	display: flex !important;
 	justify-content: left;

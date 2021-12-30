@@ -479,18 +479,30 @@ const showAssetDetails  = async (assetName) =>  {
 
 const  search  = async (input) => {
 
-	
+		console.log(input)
 		if(bitcoinAddressValidation.validate(input)) {
 			// user.address = input;
 			// localStorage.setItem('address', user.address);
 			window.location.href=`index.html?at=${input}`
-			// setMode('grid');
-			// generateWallet(user.address);
-			return
+			
+			return {
+				success: true
+			}
 		}  else {
-			window.location.href=`index.html?asset=${input}`
-			// return await showAssetDetails(input)
-			return
+			let resp = await getAssetData(input);
+
+			if(resp.error) {
+				return {
+					error: 'Asset not found',
+					success:  false
+				}
+			} else {
+				window.location.href=`index.html?asset=${input}`
+				
+				return {
+					success: true
+				}
+			}
 		}
 
 		
@@ -571,7 +583,7 @@ window.addEventListener('load', async (event) => {
 		e.preventDefault();
 
 		let rst  = await  search($("#search-input").val());
-
+		
 		if(!rst.success) {
 			$("#search-error").html(rst.error)
 		}  else  {
