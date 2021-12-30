@@ -483,7 +483,7 @@ const showAssetDetails  = async (assetName) =>  {
 
 const  search  = async (input) => {
 
-		console.log(input)
+	
 		if(bitcoinAddressValidation.validate(input)) {
 			// user.address = input;
 			// localStorage.setItem('address', user.address);
@@ -496,6 +496,14 @@ const  search  = async (input) => {
 			let resp = await getAssetData(input);
 
 			if(resp.error) {
+				let a = _.findKey(ARTISTS,  (a) => { return a.toUpperCase() === input.toUpperCase()})
+				if(a) {
+					
+					window.location.href=`index.html?by=${a}`
+					return {
+						success: true
+					}
+				}
 				return {
 					error: 'Asset not found',
 					success:  false
