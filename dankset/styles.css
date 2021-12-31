@@ -655,11 +655,19 @@ body .group-name {
 			margin-right : 6em;
 		}
 
-		#breadcrumbs a + a:before{
+		#breadcrumbs span + span:before{
 			content: ".";
 			margin-right: 0.2rem;
 		}
 
+		#breadcrumbs span.toggled a {
+			display: none
+		}
+
+		#breadcrumbs form  {
+			margin: 0;
+			display: inline
+		}
 		/*#breadcrumbs a + a:before {
 			content: ">";
 		}*/

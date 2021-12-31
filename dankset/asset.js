@@ -332,11 +332,10 @@ class Asset extends EventTarget {
 	}
 
 	get artist()  {
-		try {
-			return this.data.artist || ARTISTS[this.data.issuer] || this.data.issuer //.substring(0,21)
-		}  catch(e) {
-			return null
-		}
+
+		if(!this._artist) 
+			this._artist = User.find_by_address(this.data.issuer)
+		return this._artist
 		
 	}
 
@@ -486,6 +485,7 @@ class Asset extends EventTarget {
 
 	render() {
 			
+
 		// console.log(this.media)
 		let html = this.template.innerHTML;
 		// console.log(`${this.name} : ${this.media.src}`)
@@ -494,7 +494,7 @@ class Asset extends EventTarget {
 			id:  this.data.asset,
 			quantity: this.quantity,
 			
-			artist: this.artist,
+			artist: this.artist.name  ||  this.data.issuer,
 			mint_date: this.mint_date,
 			block_index: this.block_index,
 			description: this.description,

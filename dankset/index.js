@@ -61,9 +61,11 @@ var Breadcrumbs = {
 		}
 
 		if(label !== undefined) {
-			let $crumb = $('<a href="#" class="active">'+label+'</a>');
-			$crumb.on('click', onClickEvent)
-			$('#breadcrumbs').append($crumb);
+			let crumb = document.createElement('span');
+			crumb.innerHTML = '<a href="#" class="active">'+label+'</a>';
+			document.querySelector('#breadcrumbs').append(crumb)
+			crumb.querySelector('a').addEventListener('click',  onClickEvent);
+			
 		}
 	}
 }
@@ -300,24 +302,47 @@ const generateWallet = async (address) => {
     showCollection(user.wallet)
 }
 
-const getArtistAssets  = async (address)  => {
-	setMode('grid')
-	let obj = await $.get(`https://xchain.io/api/issuances/${address}`);
-	for(var i=1; i<Math.ceil(obj.total/100);i++){
-		let add = await $.get(`https://xchain.io/api/issuances/${address}?page=${i+1}`);
-		obj.data = [
-		...obj.data,
-		...add.data
-		]
-	}
+const getUserAssets  = async (user)  => {
+
+	setMode('grid');
+
+	var issuances = _.flatten(await Promise.all(_.map(
+		user.addresses,  
+		async (address) => {
+			let  
+				obj = {data:[]},
+				incomplete = true,
+				page = 1;
+			
+			while(incomplete)  {
+				let add = await $.get(`https://xchain.io/api/issuances/${address}?page=${page}`);
+				page += 1;
+				
+				obj.data = [
+				...obj.data,
+				...add.data
+				]
+
+				if(obj.data.length >=  add.total) {
+					incomplete = false
+				}
+				
+			}
+			
+
+			
+			return obj.data
+		}
+	)))
+	
 
 
 	let collection = new Collection({
-		data : _.values(_.keyBy(obj.data, 'asset')),
+		data : _.values(_.keyBy(issuances, 'asset')),
 		asset_template: document.getElementById('asset-template').cloneNode(true)
 	})
 
-	document.getElementById('focus').innerHTML = `<h1>${ARTISTS[address] || address}</h1>`
+	document.getElementById('focus').innerHTML = `<h1>${user.name  ? user.name  : user.addresses[0]}</h1>`
 	showCollection(collection)
 }
 
@@ -493,17 +518,19 @@ const  search  = async (input) => {
 				success: true
 			}
 		}  else {
+			let a = User.find_by_name(input)
+			
+			if(a.addresses.length) {
+				
+				window.location.href=`index.html?by=${a.name}`
+				return {
+					success: true
+				}
+			}
 			let resp = await getAssetData(input);
 
 			if(resp.error) {
-				let a = _.findKey(ARTISTS,  (a) => { return a.toUpperCase() === input.toUpperCase()})
-				if(a) {
-					
-					window.location.href=`index.html?by=${a}`
-					return {
-						success: true
-					}
-				}
+				
 				return {
 					error: 'Asset not found',
 					success:  false
@@ -552,9 +579,43 @@ const getSet=  (setName)  =>  {
 
 }
 
+const openSearchForm  = (e) => {
+
+	if(e.target.parentNode.classList.contains('toggled')) return;
+	e.target.parentNode.classList.add('toggled')
+
+	let 
+		crumb = document.querySelector('#breadcrumbs a.active'),
+		form = document.querySelector('#splash .search-form').cloneNode(true),
+		input =  form.querySelector('.search-input')
+
+	input.value  =  crumb.innerHTML.replace('By ','').replace('at ','')
+
+	
+	crumb.parentNode.append(form);
+	input.select()
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		
+
+		let rst  = await  search(e.target.querySelector('.search-input').value);
+		
+		if(!rst.success) {
+			
+			e.target.querySelector('.error-message').innerHTML  = rst.error;
+		}  else  {
+			setMode('grid');
+		}
+	})
+
+
+}
 
 
 window.addEventListener('load', async (event) => {
+
+	await User.fetch()
 
 	$('a.cta-wallet').on('click',  (e) => {
 		e.preventDefault()
@@ -592,13 +653,14 @@ window.addEventListener('load', async (event) => {
   //    }, 250))
 
 
-	$('#search-form').submit(async (e) =>  {
+	$('.search-form').submit(async (e) =>  {
 		e.preventDefault();
 
-		let rst  = await  search($("#search-input").val());
+
+		let rst  = await  search(e.target.querySelector('.search-input').value);
 		
 		if(!rst.success) {
-			$("#search-error").html(rst.error)
+			e.target.querySelector('.error-message').innerHTML  = rst.error;
 		}  else  {
 			setMode('grid');
 		}
@@ -613,23 +675,38 @@ window.addEventListener('load', async (event) => {
 	}
 
 	if(getUrlParameter('by')) {
-		getArtistAssets(getUrlParameter('by'));
-		Breadcrumbs.add(`By ${ARTISTS[getUrlParameter('by')]  || getUrlParameter('by') }`, (e) => {
-			window.location.href =  `?set=${getUrlParameter('by')}`
+		
+		let 
+			user_data = _.find(User.data, (u) => {return  u.name.toLowerCase() === getUrlParameter('by').toLowerCase() }),
+			user = user_data ? new User(user_data) :  new User({addresses:  getUrlParameter('by')})
+			
+			
+		getUserAssets(user);
+		Breadcrumbs.add(`by ${user.name ? user.name :  user.addresses[0]}`, (e) => {
+			
+			openSearchForm(e);
+			// window.location.href =  `?by=${getUrlParameter('by')}`
 			e.preventDefault();
 		});
 		return ;
 	}
 
 	if(getUrlParameter('asset')) {
-		showAssetDetails(getUrlParameter('asset'))
+
+		showAssetDetails(getUrlParameter('asset'));
+		Breadcrumbs.add(getUrlParameter('asset'), (e) => {
+			
+			openSearchForm(e);
+			// window.location.href =  `?by=${getUrlParameter('by')}`
+			e.preventDefault();
+		});
 		return ;
 	}
 	
 	if(getUrlParameter('at')) {
 		generateWallet(getUrlParameter('at'));
-		Breadcrumbs.add(`${getUrlParameter('at')}`, (e) => {
-			window.location.href =  `?set=${getUrlParameter('at')}`
+		Breadcrumbs.add(`at ${getUrlParameter('at')}`, (e) => {
+			openSearchForm(e);
 			e.preventDefault();
 		});
 		return ;
@@ -638,7 +715,8 @@ window.addEventListener('load', async (event) => {
 	if(getUrlParameter('set')) {
 		getSet(getUrlParameter('set'));
 		Breadcrumbs.add(getUrlParameter('set'), (e) => {
-			window.location.href =  `?set=${getUrlParameter('set')}`
+			openSearchForm()
+			// window.location.href =  `?set=${getUrlParameter('set')}`
 			e.preventDefault();
 		});
 		return;
