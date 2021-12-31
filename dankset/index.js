@@ -205,7 +205,9 @@ const generateBlock =  (asset) => {
 	let $block = document.querySelector('#block-template .block').cloneNode();
     // let count = $block.find('.collection-item').length;
     // $block.attr('id',`${asset.name}-block`);
-    $block.innerHTML = asset.render()
+    $block.innerHTML = asset.render({
+    	template: document.getElementById('asset-template').cloneNode(true)
+    })
 
     if(asset.blank ) {
     	$block.classList.add('blank')
@@ -306,39 +308,16 @@ const getUserAssets  = async (user)  => {
 
 	setMode('grid');
 
-	var issuances = _.flatten(await Promise.all(_.map(
-		user.addresses,  
-		async (address) => {
-			let  
-				obj = {data:[]},
-				incomplete = true,
-				page = 1;
-			
-			while(incomplete)  {
-				let add = await $.get(`https://xchain.io/api/issuances/${address}?page=${page}`);
-				page += 1;
-				
-				obj.data = [
-				...obj.data,
-				...add.data
-				]
-
-				if(obj.data.length >=  add.total) {
-					incomplete = false
-				}
-				
-			}
-			
-
-			
-			return obj.data
-		}
-	)))
-	
+	let issuances = await user.issuances();
+	let filt =
+	_.chain(issuances)
+	.groupBy('asset')
+	.reject((g) => {return user.addresses.indexOf(g[0].issuer) === -1})
+	.value()
 
 
 	let collection = new Collection({
-		data : _.values(_.keyBy(issuances, 'asset')),
+		data : _.values(_.keyBy(_.flatten(filt), 'asset')),
 		asset_template: document.getElementById('asset-template').cloneNode(true)
 	})
 
@@ -350,7 +329,9 @@ const getUserAssets  = async (user)  => {
 const refreshAsset = (asset, container) => {
 
 	update = document.createElement('div')
-	update.innerHTML = asset.render();
+	update.innerHTML = asset.render({
+		template: document.getElementById('asset-template').cloneNode(true)
+	});
 
 
 	container.querySelector('.asset-meta').innerHTML = update.querySelector('.asset-meta').innerHTML
@@ -450,8 +431,9 @@ const showAssetDetails  = async (assetName) =>  {
 	$collection_container.innerHTML  = "";
 	$focus.innerHTML  =  $focus.cloneNode(true).innerHTML;
 
-	let obj = await $.get(`https://xchain.io/api/asset/${assetName}`);
-	if(obj.error) {
+	let asset = await  Asset.find_and_create(assetName);
+	// let obj = await $.get(`https://xchain.io/api/asset/${assetName}`);
+	if(!asset) {
 		return {
 			success: false,
 			error: 'Asset not found'
@@ -459,13 +441,16 @@ const showAssetDetails  = async (assetName) =>  {
 	}
 
 
-	let asset = new Asset(obj,  {
-		template: document.getElementById('asset-template').cloneNode(true) //$('#templates .collection-item-template')
-	});
+	// let asset = new Asset(obj,  {
+	// 	template:  //$('#templates .collection-item-template')
+	// });
+	
 	asset.init(true)
 
 
-	$focus.innerHTML =  asset.render();
+	$focus.innerHTML =  asset.render({
+		template: document.getElementById('asset-template').cloneNode(true)
+	});
 
 	//showCollection(collection);
 	// setMode('focus');

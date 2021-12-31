@@ -1,7 +1,5 @@
 class Asset extends EventTarget {
-	constructor(data, options={
-		template: '<div/>'
-	}) {
+	constructor(data, options) {
 		super()
 		
 		this.data  = data;
@@ -10,7 +8,7 @@ class Asset extends EventTarget {
 			...data
 		}
 		
-		this.template = options.template  ;
+		// this.template = options.template  ;
 		this.loaded = false;
 		this.history =  [];
 		this.hodlers  =  [];
@@ -351,7 +349,13 @@ class Asset extends EventTarget {
     
 
 	isSubasset() {
-    	return this.data.asset_longname.indexOf('.') !== -1
+		try {
+			return this.data.asset_longname.indexOf('.') !== -1
+		} catch(e) {
+			
+			return false
+		}
+    	
 	}
 
 	async fetch_subassets() {
@@ -474,11 +478,11 @@ class Asset extends EventTarget {
 
 
 
-	render() {
+	render(options) {
 			
 
 		// console.log(this.media)
-		let html = this.template.innerHTML;
+		let html = options.template.innerHTML;
 		// console.log(`${this.name} : ${this.media.src}`)
 		let data = {
 			name: this.name,
@@ -544,6 +548,16 @@ class Asset extends EventTarget {
 
 
 	// return this.$dom
+	}
+
+
+	static async find_and_create(assetName) {
+
+		let obj = await $.get(`https://xchain.io/api/asset/${assetName}`);
+		if(obj.error) return null;
+
+		return new Asset(obj);
+
 	}
 
 

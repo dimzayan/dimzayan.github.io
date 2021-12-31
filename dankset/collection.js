@@ -5,10 +5,8 @@ class Collection {
 		this.address = params.address;
 		this.data =  params.data;
 		this.assets = this.data.map( asset =>  {
-			return  new Asset(asset,{
-
-				template: params.asset_template
-			})
+			
+			return  new Asset(asset)
 		})
 		this.page = 0
 		this.per_page = 30
