@@ -421,7 +421,7 @@ class Asset extends EventTarget {
 		
 		market_data.total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) * n.satoshirate)},  0).toFixed(7))
 		market_data.total_gives = dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) )},  0)
-		market_data.aps  = (market_data.total_sales/market_data.total_gives).toFixed(4) 
+		market_data.aps  = parseFloat((market_data.total_sales/market_data.total_gives).toFixed(4))
 
 		// Avail vs Used
 		let available_dispensers = [];
