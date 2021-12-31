@@ -425,10 +425,25 @@ class Asset extends EventTarget {
 		
 		for(var i=0;i<dispensers.length;i++) {
 
-			if(dispensers[i].give_remaining > 0 && dispensers[i].status == 0) {
-				available_dispensers.push(dispensers[i]);
+			let dispenser = dispensers[i];
+
+			if(dispenser.give_remaining > 0 && dispenser.status == 0) {
+				available_dispensers.push(dispenser);
 			}  else {
-				used_dispensers.push(dispensers[i]);
+				used_dispensers.push(dispenser);
+			}
+
+			if(dispenser.give_remaining < dispenser.escrow_quantity)  {
+						
+				let dispenses = await $.get('https://xchain.io/api/dispenses/'+dispenser.tx_hash);
+				// console.log(dispenses)
+				market_data.last_sale_quantity = dispenses.data[0].quantity 
+				market_data.last_sale_price = parseFloat(dispenser.satoshirate)
+				market_data.last_sale_timestamp = dispenses.data[0].timestamp
+				market_data.last_sale_date = new Date(market_data.last_sale_timestamp * 1000).toLocaleString('default', {year: 'numeric', month: 'long', day: 'numeric' })
+				
+				
+				break;
 			}
 			
 		}
@@ -456,31 +471,7 @@ class Asset extends EventTarget {
 	}
 
 
-	get last_sale() {
-		return (
-			async () => {
-				for(var  i=0; i< this.dispensers.length;i++) {
-					let dispenser  = dispensers[i];
-					
-					if(dispenser.give_remaining < dispenser.escrow_quantity)  {
-						
-						let dispenses = await $.get('https://xchain.io/api/dispenses/'+dispenser.tx_hash);
-						// console.log(dispenses)
-						market_data.last_sale_quantity = dispenses.data[0].quantity 
-						market_data.last_sale_price = parseFloat(dispenser.satoshirate)
-						market_data.last_sale_timestamp = dispenses.data[0].timestamp
-						market_data.last_sale_date = new Date(market_data.last_sale_timestamp * 1000).toLocaleString('default', {year: 'numeric', month: 'long', day: 'numeric' })
-						
-						
-						break;
-					}
-				}
-			}
 
-
-		)();
-
-	}
 
 
 	render() {
