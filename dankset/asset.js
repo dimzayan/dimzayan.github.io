@@ -112,45 +112,21 @@ class Asset extends EventTarget {
     	}
 
 	    if(this.data.description.endsWith('.json')) {
-
 	    	this.json_url = this.data.description;
 	    	
-	    	this._description = ''
+    		this._description = ''
 
+	    	let resp = await this.fetch_json();
+
+	    	if(resp) {
+
+	    		format(resp);
+	    		return;
+	    	} 
+	    	xchainFallBack();
 	    	
-	        try {
-	        	// normalize additional data and combine it with existing one.
-	        	// console.log(normalizeUrl(this.data.description))
-	        	resp = await $.get('https://'+normalizeUrl(this.data.description)).done((e) => {
-		            	// console.log(e);
-		            })
 
-	        	format(resp)
-
-		        return true
-		            
-	        } catch(e) {
-	           
-	            try {
-	        	// normalize additional data and combine it with existing one.
-	        	// console.log(normalizeUrl(this.data.description))
-	        	resp = await $.get('http://'+normalizeUrl(this.data.description)).done((e) => {
-		            	// console.log(e);
-		            })
-
-	        	format(resp)
-
-		        return true
-		            
-		        } catch(e) {
-		            // asset.success = false;
-		            xchainFallBack()
-		            return true
-		            
-		        }
-	            
-	        }
-	    } else if(this.data.description.startsWith('imgur') ) {
+	    }  else if(this.data.description.startsWith('imgur') ) {
 	    		let chunks = this.data.description.split(';')
 	    		this._description = chunks[1];
 	        	this.data.image_url = 'https://i.imgur.com/'+ chunks[0].split('/')[1];
@@ -171,6 +147,29 @@ class Asset extends EventTarget {
 	    }
 	}
 
+	async fetch_json() {
+    	
+        try {
+        	// normalize additional data and combine it with existing one.
+        	// console.log(normalizeUrl(this.data.description))
+        	let resp = await $.get('https://'+normalizeUrl(this.data.description))
+        	
+	        return resp
+	            
+        } catch(e) {
+           
+            try {
+
+        		let resp = await $.get('http://'+normalizeUrl(this.data.description))
+	        	return resp
+	            
+	        } catch(e) {
+	        	
+	            return null
+	        }
+            
+        }
+	}
 
 	async fetch_history() {
 		return await $.ajax({
@@ -253,10 +252,34 @@ class Asset extends EventTarget {
 	}
 
 	get media() {
+		if(this.data.media) {
+			if(this._media.length) return this._media
+			this._media = _.map(this.data.media,(link) => {
+				let node;
+				if(link.endsWith('.mp4'))  {
+					node = document.createElement('video');
+					node.autoplay = true
+					
+				} else {
+					node = document.createElement('img');
 
+				}
+
+				node.src = link
+				return {
+						node: node,
+						src: link,
+						added: false
+					}
+		
+			})
+
+			return this._media
+		}
 		// Adding only if not already present
 		this.fetch_media().forEach( item => {
 			if(this._media.map(m => m.src).includes(item.src)) return;
+
 			this._media.push({
 				node: item,
 				src: item.src,
@@ -332,6 +355,7 @@ class Asset extends EventTarget {
 	get artist()  {
 
 		if(!this._artist) 
+			console.log(User.data)
 			this._artist = User.find_by_address(this.data.issuer)
 		return this._artist
 		
