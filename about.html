@@ -25,12 +25,32 @@
 
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
+<style>
+	#breadcrumbs {
+			margin-right : 6em;
+			top  : 0;
+		}
 
+		#breadcrumbs a:first-child {
+			font-weight: bold
+		}
+
+		#breadcrumbs span + span:before{
+			content: ".";
+			margin-right: 0.2rem;
+		}
+
+		#breadcrumbs span.toggled a {
+			display: none
+		}
+</style>
 </head>
 <body>
-	<nav>
-	<h1 style="font-size:1em"><a href="./index.html"><--</a></h1>
-</nav>
+	<nav id="breadcrumbs">
+		<a href="./index.html" id="cta-home" class="cta-home">Dim</a>
+		<a href="#about" class='cta-about'>About</a>
+
+	</nav>
 
 <article>
 
