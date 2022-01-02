@@ -276,7 +276,7 @@ class Asset extends EventTarget {
 
 				
 				media.push({
-						node: node,
+						node: type,
 						src: link,
 						added: false
 					})
