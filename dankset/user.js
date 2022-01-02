@@ -1,5 +1,5 @@
 class User {
-	constructor(params)  {
+	constructor(params  = {})  {
 		this.name =  params.name ||  null;
 		this.about = params.about || "";
 		this.addresses =  _.flatten([params.addresses || []]);
@@ -20,7 +20,7 @@ class User {
 							page = 1;
 						
 						while(incomplete)  {
-							let add = await $.get(`https://xchain.io/api/issuances/${address}?page=${page}`);
+							let add = await $.get(`https://xchain.io/api/issuances/${address}/${page}/500`);
 							page += 1;
 							
 							obj.data = [
@@ -41,6 +41,11 @@ class User {
 		
 	}
 
+	static data  = []
+	static async fetch() {
+		this.data = await $.get('https://battle-safe-pixie.glitch.me/users')
+	}
+
 	static find_by_name(name) {
 		let u = _.find(this.data, (u) => {return  u.name.toLowerCase() === name.toLowerCase() }) || {name: name}
 		return new User(u)
@@ -52,8 +57,5 @@ class User {
 		return new User(u)
 	}
 
-	static data  = []
-	static async fetch() {
-		this.data = await $.get('https://battle-safe-pixie.glitch.me/users')
-	}
+
 }

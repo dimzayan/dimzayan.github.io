@@ -1,5 +1,7 @@
 var hash = window.location.hash.substr(1);
-var user = {}
+var user = new User({
+	addresses: localStorage.getItem('addresses') ?  localStorage.getItem('addresses').split(',')  :  []
+})
 var states = {
 	splash : true,
 	section: 'splash'
@@ -13,6 +15,7 @@ var settings = {
 var focus = null;
 var timer = null;
 var assets = [];
+
 
 
 const getUrlParameter = function getUrlParameter(sParam) {
@@ -84,7 +87,7 @@ var toggleBlankAssets = () => {
 
 	user.preferences.blank_assets = !user.preferences.blank_assets;
 	$('body').attr('blank_assets',  user.preferences.blank_assets);
-	localStorage.setItem('preferences', user.preferences)
+	localStorage.setItem('show_blank_assets',user.preferences.blank_assets)
 }
 
 
@@ -169,14 +172,14 @@ const showCollection = function(collection , params ) {
 	_.each(
 		collection.get(options.page), 
 		(asset)  => {
+			
 			asset.init();
 			$collection.append(generateBlock(asset))
 			
 		}
 	)
 
-	console.log(collection)
-   	
+
 
 	$('#asset-viewer-loader').hide();
 
@@ -261,13 +264,7 @@ var normalizeUrl = function(str) {
 	return str.replace(/(http(s?)):\/\//i, '' ).split(';')[0]
 }
 
-var getAssetData = async function(asset_name) {
-	
-	let asset = await $.get("https://xchain.io/api/asset/"+asset_name);
-	
-	
-	return asset
-}
+
 
 
 	var getMarketInfo = async function(callback) {
@@ -289,7 +286,7 @@ var presetGroupName = (cardName) => {
 const generateWallet = async (address) => {
     
     let obj= await $.ajax({
-			url: "https://xchain.io/api/balances/"+address,
+			url: `https://xchain.io/api/balances/${address}/1/300`,
 			method: "GET"
 		});
 
@@ -361,9 +358,25 @@ const refreshAsset = (asset, container) => {
 		let
 			media_container = container.querySelector('.asset-media-container'),
 			media = document.createElement('div'),
-			element = medium.node
+			element = document.createElement(medium.type)
 
-		media.classList.add('asset-media')
+		element.src  = medium.src
+		
+
+		if(medium.type === 'IFRAME')  {
+
+			element.height = 560;
+			element.width = media_container.offsetWidth
+		}
+
+		if(medium.type  ===  'VIDEO') {
+				element.muted  = true
+			element.autoplay = true
+			element.controls = true
+			element.loop = true
+		}
+
+		media.classList.add('asset-media');
 		
 		media.append(element)
 		media_container.append(media);
@@ -431,7 +444,7 @@ const showAssetDetails  = async (assetName) =>  {
 	$collection_container.innerHTML  = "";
 	$focus.innerHTML  =  $focus.cloneNode(true).innerHTML;
 
-	let asset = await  Asset.find_and_create(assetName);
+	let asset = await  Asset.find(assetName);
 	// let obj = await $.get(`https://xchain.io/api/asset/${assetName}`);
 	if(!asset) {
 		return {
@@ -600,7 +613,21 @@ const openSearchForm  = (e) => {
 
 window.addEventListener('load', async (event) => {
 
-	await User.fetch()
+	await User.fetch();
+
+
+	// if(user.addresses.length) {
+	// 	_.each(user.addresses, (address) => {
+	// 		let a =  document.createElement('a')
+	// 		a.href = `?at=${address}`;
+	// 		a.innerHTML  = address
+	// 		document.querySelector('.addresses').append(a)
+	// 	})
+		
+	// 		document.querySelector('.cta-sign-in').innerHTML  = 'Sign Out'
+	// }
+
+	
 
 	$('a.cta-wallet').on('click',  (e) => {
 		e.preventDefault()
@@ -694,6 +721,10 @@ window.addEventListener('load', async (event) => {
 			openSearchForm(e);
 			e.preventDefault();
 		});
+		Breadcrumbs.add(`(claim)`, (e) => {
+
+			e.precentDefault();
+		})
 		return ;
 	}
 
@@ -706,42 +737,83 @@ window.addEventListener('load', async (event) => {
 		});
 		return;
 	}
-	
-	// if(window.location.hash){
-		
-	// 	let rst  = await  search(window.location.hash.substr(1));
 
-	// 	if(!rst.success) {
-	// 		setMode('splash')
-	// 		$("#search-error").html(rst.error)
-	// 	}  else  {
-	// 		setMode('grid');
-	// 	}
-		
-	// 	return
-	// }
-	// if(user.address === null) {
-
-	// }
 			setMode('splash')
 		Breadcrumbs.add();
-	// } else {
-	// 	setMode('grid');
-	// 	Breadcrumbs.add(user.address, (e) => {
-	// 		setMode('grid');
-	// 		generateWallet(user.address);
-	// 		$("html, body").animate({scrollTop: 0}, 1);
-	// 		e.preventDefault();
-	// 	});
-	// 	generateWallet(user.address);
 
-	// }
 
 	document.getElementById('cta-next').addEventListener('click', (e) => {
 
 		showAssetDetails() 
 		return false;
 	})
+
+
+	document.querySelector('.cta-sign-in').addEventListener('click', e => {
+		e.preventDefault();
+
+		if(user.addresses.length) {
+			e.target.innerHTML = "Sign In"
+			user = new User();
+			return;
+		} 
+
+		document.getElementById('session').classList.toggle('active');
+		
+	})
+
+
+	document.querySelector('.signature-form').addEventListener('submit', async e => {
+		// var url = ;
+
+		// var xhr = new XMLHttpRequest();
+		// xhr.open("POST", url);
+
+		// xhr.setRequestHeader("Accept", "application/json");
+		// xhr.setRequestHeader("Content-Type", "application/json");
+
+		// xhr.onreadystatechange = function () {
+		//    if (xhr.readyState === 4) {
+		//       console.log(xhr.responseText);
+		//    }};
+
+		// var data = `{
+		//   "message": 78912,
+		//   "signature": "Jason Sweet",
+		//   "address": 1
+		// }`;
+		// xhr.send(data);
+		e.preventDefault();
+
+		let address= e.target.elements.address.value
+		
+		let resp = await fetch(
+				"https://billowy-linen-avatar.glitch.me/verify",
+				{
+					method: "POST",
+					headers: {
+						"Accept": "application/json",
+						"Content-Type": "application/json"
+					},
+					body:  JSON.stringify({
+						"address": address,
+						"message" : e.target.elements.message.value,
+						"signature": e.target.elements.signature.value 
+					})
+				}
+			)
+		
+		if(resp.status  === 200) {
+			user.addresses.push(address);
+			localStorage.setItem('addresses', user.addresses.join(','));
+			document.querySelector('.addresses').innerHTMl = `<a href="?at=${address}">${address}</a>`
+			document.querySelector('.cta-sign-in').innerHTML  = 'Sign Out'
+			document.querySelector('#session').classList.toggle('active');
+		}
+
+
+		
+	});
 
 
 

@@ -56,9 +56,15 @@
 		
 		<a href="index.html#settings"  class="cta-settings" >Settings</a>
 		<nav class="menu">
+			
 		<a href="#" class="cta-toggle-blank-assets" data-active="{{blank_assets}}" >Show assets with no visuals</a>
+<!-- 		<div class="addresses">
+			<h6>Yer Addies</h6>
+		</div>
+		<a href="#" class="cta-sign-in" >Sign in</a> -->
 
 		</nav>
+
 		
 	</nav>
 	
@@ -97,6 +103,19 @@
 
 
 
+	</section>
+
+	<section id="session">
+		<form class="signature-form">
+			<h4>Verify your address to sign in</h4>
+			Message:
+			<span class="signature-message"></span>
+			<input type="hidden" name="message" value="test"/>
+			<input type="text" placeholder="address" name="address" value="1LWWWTb5JZCk5LCXGZvGrskBXHUoy2fvWQ"/>
+			
+			<input type="text" placeholder="signature" name="signature" value="IHPziYZ4v92hSYFLy2hW/w9qPUt1fn2rzK+EVjbjtoC5fjP3SfIodEyhzDUSg372FXlyj71RmRqYCTL4daQldNA="/>
+			<input type="submit" value="verify"/>
+		</form>
 	</section>
 </main>
 

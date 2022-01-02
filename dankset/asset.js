@@ -21,16 +21,20 @@ class Asset extends EventTarget {
 
 	async init(extra = false) {
 		// console.log("loading "+this.data.asset)
-		
+		let 
+			base = await Asset.find(this.data.asset),
+			_this = this;
+
 		if(this.data.description && (!this.data.description.length  || this.data.supply === 0) ) {
 
 			this.blank  = true
 		}
-		let base= await getAssetData(this.data.asset)
-		let _this  =this;
+		
+
+	
 		this.data  = {
 			...this.data,
-			...base
+			...base.data
 		}
 
 		
@@ -41,12 +45,13 @@ class Asset extends EventTarget {
 			_this.market_data = d.data
 			_this.dispatchEvent(new Event('change'));
 		})
+		this.fetch_history(extra).then(  (d) => {
+		
+			_this.history = d.data
+			_this.dispatchEvent(new Event('change'));
+		})
 		if(extra) {
-			this.fetch_history().then(  (d) => {
-			
-				_this.history = d.data
-				_this.dispatchEvent(new Event('change'));
-			})
+	
 			
 			this.fetch_hodlers().then(  (d) => {
 				
@@ -215,78 +220,85 @@ class Asset extends EventTarget {
 		raw_description.innerHTML = this.data.description;
 
 		raw_description.querySelectorAll('img, video, iframe').forEach(item => {
-			if(item.nodeName === 'IFRAME') {
-				item.scrolling = 'no'
+			// if(item.nodeName === 'IFRAME') {
+			// 	item.scrolling = 'no'
 
-			}
+			// }
 
-			if(item.nodeName === 'VIDEO') {
-				item.muted = true;
-				item.style.zIndex = -2;
-				try {
-					item.src = item.src
-				} catch {
-					item.src = item.querySelector('source').src 
-					
-				}
+			// if(item.nodeName === 'VIDEO') {
+			// 	item.muted = true;
+			// 	item.style.zIndex = -2;
+			if(!item.src && item.nodeName === 'VIDEO') {
+				item.src = item.querySelector('source').src 
+			}  
+	
 				
 	
 
-			}
+			// }
 
 			
-			media.push(item)
+			media.push({
+				type: item.nodeName,
+				src: item.src,
+				added:  false
+			})
 			
 		})
 
 		_.flatten([this.image_url]).forEach( (src) => {
 			if(src === undefined) return
-			let img = new Image()
-			img.src = src;
+			// let img = new Image()
+			// img.src = src;
 			// console.warn(img)
 	
-			media.push(img);
-		})
+			media.push({
+				type: 'IMG',
+				src: src,
+				added:  false
+			});
+		});
 
-		return media
-	}
 
-	get media() {
 		if(this.data.media) {
-			if(this._media.length) return this._media
-			this._media = _.map(this.data.media,(link) => {
-				let node;
+			
+			_.each(this.data.media,(link) => {
+				let type;
 				if(link.endsWith('.mp4'))  {
-					node = document.createElement('video');
-					node.autoplay = true
+					type = 'VIDEO' //document.createElement('video');
+					// node.autoplay = true
 					
 				} else {
-					node = document.createElement('img');
+					type = 'IMG'
+					// node = document.createElement('img');
 
 				}
 
-				node.src = link
-				return {
+				
+				media.push({
 						node: node,
 						src: link,
 						added: false
-					}
+					})
 		
 			})
 
-			return this._media
+			
 		}
+		
+		return _.uniq(media)
+	}
+
+	get media() {
+
+
+		
 		// Adding only if not already present
 		this.fetch_media().forEach( item => {
 			if(this._media.map(m => m.src).includes(item.src)) return;
-
-			this._media.push({
-				node: item,
-				src: item.src,
-				added: false
-				})
+			this._media.push(item)
 		});
-
+		
 		return this._media
 
 	}
@@ -353,10 +365,17 @@ class Asset extends EventTarget {
 	}
 
 	get artist()  {
+		
+		if(!this.data.issuer) {
+			return new User({
+				name: '---'
+			})
+		}
+		this._artist  = User.find_by_address(this.data.issuer)
 
-		if(!this._artist) 
-			console.log(User.data)
-			this._artist = User.find_by_address(this.data.issuer)
+		if(!this._artist.name)
+			this._artist.name= this.data.issuer
+	
 		return this._artist
 		
 	}
@@ -427,7 +446,7 @@ class Asset extends EventTarget {
 
 	}
 
-	async fetch_market_info() {
+	async fetch_market_info(advanced =  false) {
 		if(this.market_data) {
 			return {data:this.market_data}
 		}
@@ -461,7 +480,7 @@ class Asset extends EventTarget {
 				used_dispensers.push(dispenser);
 			}
 
-			if(dispenser.give_remaining < dispenser.escrow_quantity)  {
+			if(advanced && dispenser.give_remaining < dispenser.escrow_quantity)  {
 						
 				let dispenses = await $.get('https://xchain.io/api/dispenses/'+dispenser.tx_hash);
 				// console.log(dispenses)
@@ -508,12 +527,13 @@ class Asset extends EventTarget {
 		// console.log(this.media)
 		let html = options.template.innerHTML;
 		// console.log(`${this.name} : ${this.media.src}`)
+
 		let data = {
 			name: this.name,
 			id:  this.data.asset,
 			quantity: this.quantity,
 			
-			artist: this.artist.name  ||  this.data.issuer,
+			artist: this.artist.name ,
 			mint_date: this.mint_date,
 			block_index: this.block_index,
 			description: this.description,
@@ -547,35 +567,10 @@ class Asset extends EventTarget {
 
 
 		
-
-		// let $item_image = this.$dom.find('.asset-image');
-		
-		// let $video = this.$dom.find('.asset-description video, .asset-description iframe')
-		
-		// if($video.length) {
-			
-		// 	$video.prop('muted', true) ;
-		// 	$item_image.append($video)
-
-		// } 
-		
-		// this.$dom.on('click', function(e) {
-		// 	e.preventDefault();
- 
-  //       	setDisplayMode('1xgrid');
-		
-		// 	window.location.hash = $(this).attr('id');
-
-		// 	$(window).scrollTop($(this).offset().top - 100);
-
-		// });
-
-
-	// return this.$dom
 	}
 
 
-	static async find_and_create(assetName) {
+	static async find(assetName) {
 
 		let obj = await $.get(`https://xchain.io/api/asset/${assetName}`);
 		if(obj.error) return null;
@@ -583,6 +578,7 @@ class Asset extends EventTarget {
 		return new Asset(obj);
 
 	}
+
 
 
 }

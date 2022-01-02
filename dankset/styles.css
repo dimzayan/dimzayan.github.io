@@ -228,7 +228,43 @@ body[blank_assets='false' ] .blank {
 	flex: 0 0 100%;
 }
 
+#session {
+	position: fixed;
+	top : 0;
+	left : 0;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+#session.active {
+	display: flex;
+
+}
+
+#session  form {
+	width : 560px;
+	margin:  0 auto;
+	background: #028;
+	padding: 2em;
+	color: #FFF;
+}
+
+#session form input {
+	display: block;
+}
+
+@media (min-width: 1200px) {
+	.collection {
+		min-width: 1200px;
+	}	
+}
+
 @media (min-width: 768px) {
+
+
 	.focus .asset  {
 		flex-direction: row-reverse ;
 	}
@@ -449,6 +485,7 @@ body[blank_assets='false' ] .blank {
 
 #settings-nav.active a {
 	color : #eddeed;
+	display: block;
 }
 
 #settings-nav.active > a {
@@ -471,6 +508,16 @@ body[blank_assets='false' ] .blank {
 
 #settings-nav  .menu a {
 	/*border-top : solid 1px;*/
+}
+#settings-nav h6  {
+	color: #fff
+}
+#settings-nav .addresses {
+	margin : 1em 0;
+}
+
+#settings-nav .addresses a {
+	font-size: 0.75em;
 }
 
 
@@ -586,10 +633,9 @@ body .group-name {
 
 
 
-/*.collection  iframe {
-	display: none;
+iframe {
+	border: none;
 }
-*/
 
 
 	.asset-description {
