@@ -533,7 +533,7 @@ const  search  = async (input) => {
 					success: true
 				}
 			}
-			let resp = await getAssetData(input);
+			let resp = await Asset.find(input);
 
 			if(resp.error) {
 				

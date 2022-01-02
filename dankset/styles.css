@@ -861,6 +861,11 @@ iframe {
 	
 	}
 
+	.focus .asset-media.VIDEO, 
+	.focus .asset-media.IFRAME {
+		width: 100%;
+	}
+
 
 
 @media (max-width: 767.98px) {
