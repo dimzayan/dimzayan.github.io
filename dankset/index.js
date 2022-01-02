@@ -172,7 +172,7 @@ const showCollection = function(collection , params ) {
 	_.each(
 		collection.get(options.page), 
 		(asset)  => {
-			
+
 			asset.init();
 			$collection.append(generateBlock(asset))
 			
@@ -516,6 +516,14 @@ const  search  = async (input) => {
 				success: true
 			}
 		}  else {
+			let g = GROUPS[input.toUpperCase().replace(' ','_')]
+			if(g) {
+				
+				window.location.href=`index.html?set=${g.name}`
+				return {
+					success: true
+				}
+			}
 			let a = User.find_by_name(input)
 			
 			if(a.addresses.length) {
@@ -731,9 +739,10 @@ window.addEventListener('load', async (event) => {
 	if(getUrlParameter('set')) {
 		getSet(getUrlParameter('set'));
 		Breadcrumbs.add(getUrlParameter('set'), (e) => {
-			openSearchForm()
-			// window.location.href =  `?set=${getUrlParameter('set')}`
 			e.preventDefault();
+			openSearchForm(e)
+			// window.location.href =  `?set=${getUrlParameter('set')}`
+			
 		});
 		return;
 	}
