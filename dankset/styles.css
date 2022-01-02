@@ -619,6 +619,11 @@ body .group-name {
 	top: 0;
 }
 
+.focus .asset-media.VIDEO, 
+.focus .asset-media.IFRAME {
+	width: 100%;
+}
+
 .collection .asset-media.IMG.loaded ~ .asset-media.loaded {
 	position: absolute;
 	top: 0;
@@ -629,6 +634,7 @@ body .group-name {
 	position: absolute;
 	display: none;
 }
+
 
 
 
@@ -861,10 +867,6 @@ iframe {
 	
 	}
 
-	.focus .asset-media.VIDEO, 
-	.focus .asset-media.IFRAME {
-		width: 100%;
-	}
 
 
 
