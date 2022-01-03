@@ -532,7 +532,6 @@ class Asset extends EventTarget {
 			name: this.name,
 			id:  this.data.asset,
 			quantity: this.quantity,
-			
 			artist: this.artist.name ,
 			mint_date: this.mint_date,
 			block_index: this.block_index,
@@ -544,7 +543,7 @@ class Asset extends EventTarget {
 			has_ask: this.market_data !== undefined && this.market_data.ask != null,
 			parented: (this.parentName !==  null)  || (this.group !== undefined),
 			shell: this.data.supply ? false : true,
-			current_supply: this.data.supply
+			current_supply: this.data.supply || ''
 
 		}
 
