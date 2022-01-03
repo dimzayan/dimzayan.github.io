@@ -180,7 +180,7 @@ class Asset extends EventTarget {
 		return await $.ajax({
 			url: "https://xchain.io/api/issuances/"+this.name,
 			method: "GET",
-			timeout: 7500,
+			timeout:21000,
 			error: (e) => {  }
 		})
 	}
@@ -189,7 +189,7 @@ class Asset extends EventTarget {
 		return await $.ajax({
 			url: "https://xchain.io/api/holders/"+this.name,
 			method: "GET",
-			timeout: 7500,
+			timeout: 21000,
 			error: (e) => {  }
 
 		})
@@ -543,7 +543,8 @@ class Asset extends EventTarget {
 			has_ask: this.market_data !== undefined && this.market_data.ask != null,
 			parented: (this.parentName !==  null)  || (this.group !== undefined),
 			shell: this.data.supply ? false : true,
-			current_supply: this.data.supply || ''
+			current_supply: this.data.supply || '',
+			series: this.data.series
 
 		}
 

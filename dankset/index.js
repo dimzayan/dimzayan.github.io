@@ -758,18 +758,18 @@ window.addEventListener('load', async (event) => {
 	})
 
 
-	document.querySelector('.cta-sign-in').addEventListener('click', e => {
-		e.preventDefault();
+	// document.querySelector('.cta-sign-in').addEventListener('click', e => {
+	// 	e.preventDefault();
 
-		if(user.addresses.length) {
-			e.target.innerHTML = "Sign In"
-			user = new User();
-			return;
-		} 
+	// 	if(user.addresses.length) {
+	// 		e.target.innerHTML = "Sign In"
+	// 		user = new User();
+	// 		return;
+	// 	} 
 
-		document.getElementById('session').classList.toggle('active');
+	// 	document.getElementById('session').classList.toggle('active');
 		
-	})
+	// })
 
 
 	document.querySelector('.signature-form').addEventListener('submit', async e => {
