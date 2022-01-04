@@ -110,13 +110,13 @@ class Asset extends EventTarget {
 
     	// horrible hack  for rarepepes and older assets
     	let xchainFallBack = ()  => {
-			if(this.image_url  === undefined ) {	
-	        	// this.data.image_url =  [
-	        	// 	`https://xchain.io/img/cards/${this.data.asset}.png`,
-	        	// 	`https://xchain.io/img/cards/${this.data.asset}.gif`,
-	        	// 	`https://xchain.io/img/cards/${this.data.asset}.jpg`,
-	        	// 	`https://xchain.io/img/cards/${this.data.asset}.jpeg`,
-	        	// 	]
+			if(this.data.image_url  === undefined ) {	
+	        	this.data.image_url =  [
+	        		`https://xchain.io/img/cards/${this.data.asset}.png`,
+	        		`https://xchain.io/img/cards/${this.data.asset}.gif`,
+	        		`https://xchain.io/img/cards/${this.data.asset}.jpg`,
+	        		`https://xchain.io/img/cards/${this.data.asset}.jpeg`,
+	        		]
 	        	return true;
 
 
@@ -127,18 +127,20 @@ class Asset extends EventTarget {
     	}
 
 	    if(this.data.description.endsWith('.json')) {
-	    	this.json_url = this.data.description;
 	    	
-    		this._description = ''
+	    		this.json_url = this.data.description;
+	    	
+    			this._description = ''
 
-	    	let resp = await this.fetch_json();
+	    		let resp = await this.fetch_json();
 
-	    	if(resp) {
+	    		if(resp) {
 
-	    		format(resp);
-	    		return;
-	    	} 
-	    	xchainFallBack();
+	    			format(resp);
+	    			return;
+	    		} 
+	    		xchainFallBack();
+
 	    	
 
 	    }  else if(this.data.description.startsWith('imgur') ) {
@@ -256,7 +258,7 @@ class Asset extends EventTarget {
 			
 		})
 
-		_.flatten([this.image_url]).forEach( (src) => {
+		_.flatten([this.data.image_url]).forEach( (src) => {
 			if(src === undefined) return
 			// let img = new Image()
 			// img.src = src;
@@ -269,6 +271,20 @@ class Asset extends EventTarget {
 			});
 		});
 
+		if(this.data.image_large) {
+			media.push({
+				type: 'IMG',
+				src: this.data.image_large,
+				added: false
+			})
+		}
+		if(this.data.img_url) {
+			media.push({
+				type: 'IMG',
+				src: this.data.img_url,
+				added: false
+			})
+		}
 
 		if(this.data.media) {
 			
