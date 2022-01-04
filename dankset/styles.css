@@ -626,6 +626,8 @@ body .group-name {
 .focus .asset-media.loaded ~ .asset-media.loaded {
 	position: absolute;
 	top: 0;
+	left: 0;
+	right: 0
 }
 
 .focus .asset-media.VIDEO, 
