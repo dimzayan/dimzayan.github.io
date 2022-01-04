@@ -53,7 +53,7 @@ class Asset extends EventTarget {
 			})
 		} catch(e) {
 			this.fetch_market_info().then(  (d) => {
-			
+				console.log(d.data)
 				_this.market_data = d.data
 				_this.dispatchEvent(new Event('change'));
 			})
@@ -97,6 +97,7 @@ class Asset extends EventTarget {
       			// DO nothing
       		}
 
+      		delete resp.asset; 
 	        this.data = {
 	                ...this.data,
 	                ... resp
