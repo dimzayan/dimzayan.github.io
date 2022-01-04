@@ -40,18 +40,27 @@ class Asset extends EventTarget {
 		
 		
 		this.valid = await this.normalize();
-		this.fetch_market_info().then(  (d) => {
+		try {
+			this.fetch_market_info().then(  (d) => {
 			
-			_this.market_data = d.data
-			_this.dispatchEvent(new Event('change'));
-		})
-		this.fetch_history(extra).then(  (d) => {
-		
-			_this.history = d.data
-			_this.dispatchEvent(new Event('change'));
-		})
+				_this.market_data = d.data
+				_this.dispatchEvent(new Event('change'));
+			})
+			this.fetch_history(extra).then(  (d) => {
+			
+				_this.history = d.data
+				_this.dispatchEvent(new Event('change'));
+			})
+		} catch(e) {
+			this.fetch_market_info().then(  (d) => {
+			
+				_this.market_data = d.data
+				_this.dispatchEvent(new Event('change'));
+			})
+		}
+
 		if(extra) {
-	
+		
 			
 			this.fetch_hodlers().then(  (d) => {
 				
