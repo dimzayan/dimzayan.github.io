@@ -735,41 +735,47 @@ iframe {
 
 
 				nav#paginator {
-			position: fixed;
-			bottom: 0;
-			left : 50%;
-			transform: translate(-50%);
-			top : auto;
-			display: none;
-			padding: 2rem;
+			position: static;
 		}
 
 		#paginator a {
-			font-size : 2em;
+			display: none;
+			position: fixed;
 			line-height: 1em;
-			display: inline-block;
-			margin : 0 0.2em;
+    		line-height: 1em;
+    		top : 50%;
+    		padding: 0.5em;
+			max-width: 80px;
+			font-size: 4em;
+			text-align: center;
+			color: #028;
+			text-decoration: none;
+			width: auto;
 
-			    font-size: 2em;
-    line-height: 1em;
-    display: inline-block;
-    margin: 0 0.2em;
-    background: #333;
-    border-radius: 1em;
-    width: 40px;
-    max-width: 80px;
-    padding: 0.3rem;
-    text-align: center;
-    color: #fff;
-    text-decoration: none;
+		}
+
+		#cta-prev {
+			left: 0em;
+			padding-left: 2em;
+			
+		}
+
+		#cta-next {
+			right : 0em;
+			padding-right: 2em
+		}
+
+
+		#paginator a.visible {
+			display: block;
 		}
 
 		#paginator a:hover {
-			background: #890;
+			color: #890;
 		}
 
 		#paginator a:active {
-			background: #390;
+			color: #390;
 		}
 
 

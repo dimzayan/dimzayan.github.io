@@ -5,7 +5,7 @@ class Collection {
 		this.address = params.address;
 		this.data =  params.data;
 		this.assets = this.data.map( asset =>  {
-			
+
 			return  new Asset(asset)
 		})
 		this.page = 0
@@ -21,16 +21,16 @@ class Collection {
 
 
 		// let html  =  '';
-		let range_start =  page * 30
+		let range_start =  Math.max(0, (page * 30))
 		let range_end = range_start + 30
 
 		return this.assets
-			.filter(
-				(a) => {
+			// .filter(
+			// 	(a) => {
 
-					return  a.data.supply  !== 0
-				}
-			)
+			// 		return  a.data.supply  !== 0
+			// 	}
+			// )
 			.sort(
 				(a,b) => {
 					return a.name > b.name

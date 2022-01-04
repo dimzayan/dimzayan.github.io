@@ -70,7 +70,7 @@
 	
 
 	<nav id="paginator" >
-		<a href="#prev" class="prev"><</a>
+		<a href="#prev" class="prev" id="cta-prev"><</a>
 		<a href="#next" class="next"  id="cta-next">></a>
 		
 	</nav>
@@ -133,11 +133,11 @@
 
     <div id="asset-template">
 	<div class="collection-item  asset "  id="{{id}}" data-asset="{{name}}" shell="{{shell}}">
-		<a class="asset-media-container" href="index.html?asset={{name}}" target="dankset_asset">		
+		<a class="asset-media-container" href="index.html?asset={{name}}" >		
 			<div class="asset-media-loader">loading...</div>
 		</a>
 		<div class="asset-meta">
-			<a class="asset-name collection-item-title" href="index.html?asset={{name}}"  target="dankset_asset">{{name}}</a>
+			<a class="asset-name collection-item-title" href="index.html?asset={{name}}"  >{{name}}</a>
 			<a class="asset-artist" type="artist" href="index.html?by={{artist}}"  >{{artist}}</a>
 			<div class="asset-current-supply collection-item-quantity " >{{current_supply}}</div>
 			 
@@ -149,7 +149,7 @@
 		<div class="asset-details">
 			
 			<div class="asset-name collection-item-title" >{{name}}</div>
-			<a class="asset-artist" type="artist" href="?by={{artist}}" target="dankset_artist">{{artist}}</a>
+			<a class="asset-artist" type="artist" href="?by={{artist}}">{{artist}}</a>
 			<div class="icon" ></div>
 			<!-- <div class="asset-quantity collection-item-quantity"></div> -->
 

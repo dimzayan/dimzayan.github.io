@@ -92,13 +92,6 @@ var toggleBlankAssets = () => {
 
 
 
-
-
-
-
-
-
-
 var displayMode = () => {
     clearTimeout(timer);
     $('body').addClass('display')
@@ -135,12 +128,22 @@ const setState = (state, toggle) =>  {
 	return states;
 }
 
-var current_collection = []
+const setSessionSet = (set) => {
+	sessionStorage.set = _.map(set.assets, 'name').join(',');
+}
 
-const showCollection = function(collection , params ) {
-	
-	
+const getSessionSet = () => {
+	return new Collection(
+		{
+			data:_.map(sessionStorage.set.split(','), 
+				(a) => {
+					return {name:a }
+				})
+		})
+}
 
+const showCollection = function(collection , params = {} ) {
+	
 	let 
 		$focus = document.getElementById('focus'),
 		$collection =  document.getElementById('assets-container'),
@@ -148,11 +151,15 @@ const showCollection = function(collection , params ) {
 			page: 0,
 			...params
 		}
-
-	collection = collection || current_collection
 	
 
-	current_collection = collection;
+	collection = collection || getSessionSet()
+	
+
+	if(!params.ignoreStore) {
+		setSessionSet(collection);
+	}
+	
 	$('#asset-viewer-loader').show();
 	// $focus.innerHTML = ``
 
@@ -183,6 +190,14 @@ const showCollection = function(collection , params ) {
 
 	$('#asset-viewer-loader').hide();
 
+	window.addEventListener("scroll", () => {
+		if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight-400)) {
+
+	       	if(collection  && collection.assets && collection.assets.length> (collection.page+1) *settings.per_page) {
+				showCollection(collection,{page:collection.page+1});
+	    	}
+	    }
+	});
         
     
 }
@@ -232,7 +247,11 @@ const generateBlock =  (asset) => {
     	// }
 
 
-    	refreshAsset(asset,$block)
+    	refreshAsset(asset,$block);
+
+    	    if(asset.blank ) {
+    	$block.classList.add('blank')
+    }
 		// $updated_content.querySelector(`#${asset.data.asset}`).childNodes.forEach( (node, i) => {
 		// 	if(node.isEqualNode($card.childNodes[i])) {return }
 		// 	$card.childNodes[i].innerHTML = node.innerHTML
@@ -242,11 +261,6 @@ const generateBlock =  (asset) => {
 		// if(asset.media !== $card.querySelector('.asset-media').innerHTML) {
 		// 	$card.querySelector('.asset-media') = asset.media
 		// }
-
-    	if(asset.data.supply === 0) {
-    
-    		$block.classList.add('blank')
-   		}
 
 
 		
@@ -295,8 +309,6 @@ const generateWallet = async (address) => {
 		data :  obj.data,
 		asset_template: document.getElementById('asset-template').cloneNode(true)
 	})
-
-	
    
     showCollection(user.wallet)
 }
@@ -349,6 +361,11 @@ const refreshAsset = (asset, container) => {
 
 		//console.warn(asset.data.group.replace(' ','_'))
 	}	
+
+
+	if(asset.data.supply<1 || !asset.media.length) {
+		asset.blank = true;
+	}
 
 
     // RENDER MEDIA
@@ -432,11 +449,11 @@ const refreshAsset = (asset, container) => {
 
 }
 
-
+sessionStorage.set = sessionStorage.set || []
 const showAssetDetails  = async (assetName) =>  {
 
 	if(states.mode === 'focus') return 
-	
+	sessionStorage.asset = assetName;
 	let 
 		$focus = document.getElementById('focus'),
 		$collection_container = document.getElementById('assets-container')
@@ -454,10 +471,7 @@ const showAssetDetails  = async (assetName) =>  {
 	}
 
 
-	// let asset = new Asset(obj,  {
-	// 	template:  //$('#templates .collection-item-template')
-	// });
-	
+
 	asset.init(true)
 
 
@@ -465,8 +479,7 @@ const showAssetDetails  = async (assetName) =>  {
 		template: document.getElementById('asset-template').cloneNode(true)
 	});
 
-	//showCollection(collection);
-	// setMode('focus');
+
 	asset.addEventListener('change', () => {
 
 	
@@ -492,8 +505,28 @@ const showAssetDetails  = async (assetName) =>  {
 		
 		
 
-		showCollection(subasset_collection, {title: 'Subassets'})
+		showCollection(subasset_collection, {title: 'Subassets', ignoreStore: true})
 	}
+
+	if(sessionStorage.set.length > 1) {
+		document.querySelector('#cta-next').classList.add('visible');
+		document.querySelector('#cta-prev').classList.add('visible');
+		document.querySelector('#cta-next').addEventListener('click', (e) => {
+			e.preventDefault();
+
+			showNextAsset(); 
+		
+		});
+
+		document.getElementById('cta-prev').addEventListener('click', (e) => {
+			e.preventDefault();
+			showPrevAsset(); 
+		
+		});
+
+	}
+
+
 	return {
 		success:  true
 	}
@@ -618,6 +651,24 @@ const openSearchForm  = (e) => {
 
 }
 
+const showNextAsset = () => {
+	let set = sessionStorage.set.split(',');
+
+	let index = set.indexOf(sessionStorage.asset)
+	if( index === -1) return;
+
+	if( set.length <= index+1) index=-1;
+
+	window.location.href = `./index.html?asset=${set[index+1]}`
+}
+
+const showPrevAsset = () => {
+	let set = sessionStorage.set.split(',');
+	let index = set.indexOf(sessionStorage.asset)
+	if( index === -1) return;
+	if( index === 0) index=set.length;
+	window.location.href = `./index.html?asset=${set[index-1]}`
+}
 
 window.addEventListener('load', async (event) => {
 
@@ -747,15 +798,12 @@ window.addEventListener('load', async (event) => {
 		return;
 	}
 
-			setMode('splash')
-		Breadcrumbs.add();
+	sessionStorage.set = '';
+	setMode('splash')
+	Breadcrumbs.add();
 
 
-	document.getElementById('cta-next').addEventListener('click', (e) => {
 
-		showAssetDetails() 
-		return false;
-	})
 
 
 	// document.querySelector('.cta-sign-in').addEventListener('click', e => {
@@ -770,6 +818,7 @@ window.addEventListener('load', async (event) => {
 	// 	document.getElementById('session').classList.toggle('active');
 		
 	// })
+
 
 
 	document.querySelector('.signature-form').addEventListener('submit', async e => {
@@ -830,11 +879,4 @@ window.addEventListener('load', async (event) => {
 });
 
 
-window.addEventListener("scroll", () => {
-	if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight-400)) {
 
-       	if(current_collection  && current_collection.assets && current_collection.assets.length> (current_collection.page+1) *settings.per_page) {
-			showCollection(current_collection,{page:current_collection.page+1});
-    	}
-    }
-});

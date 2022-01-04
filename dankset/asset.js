@@ -101,12 +101,12 @@ class Asset extends EventTarget {
     	// horrible hack  for rarepepes and older assets
     	let xchainFallBack = ()  => {
 			if(this.image_url  === undefined ) {	
-	        	this.data.image_url =  [
-	        		`https://xchain.io/img/cards/${this.data.asset}.png`,
-	        		`https://xchain.io/img/cards/${this.data.asset}.gif`,
-	        		`https://xchain.io/img/cards/${this.data.asset}.jpg`,
-	        		`https://xchain.io/img/cards/${this.data.asset}.jpeg`,
-	        		]
+	        	// this.data.image_url =  [
+	        	// 	`https://xchain.io/img/cards/${this.data.asset}.png`,
+	        	// 	`https://xchain.io/img/cards/${this.data.asset}.gif`,
+	        	// 	`https://xchain.io/img/cards/${this.data.asset}.jpg`,
+	        	// 	`https://xchain.io/img/cards/${this.data.asset}.jpeg`,
+	        	// 	]
 	        	return true;
 
 
@@ -462,8 +462,8 @@ class Asset extends EventTarget {
 		}
 		let dispensers = await this.dispensers;
 		
-		market_data.total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) * n.satoshirate)},  0).toFixed(7))
-		market_data.total_gives = dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) )},  0)
+		market_data.total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + (Math.max(0,(n.escrow_quantity - n.give_remaining)) * n.satoshirate)},  0).toFixed(7))
+		market_data.total_gives = dispensers.reduce((sum, n)  =>  {return sum  + (Math.max((n.escrow_quantity - n.give_remaining),0) )},  0)
 		market_data.aps  = parseFloat((market_data.total_sales/market_data.total_gives).toFixed(4))
 
 		// Avail vs Used
@@ -526,7 +526,6 @@ class Asset extends EventTarget {
 
 		// console.log(this.media)
 		let html = options.template.innerHTML;
-		// console.log(`${this.name} : ${this.media.src}`)
 
 		let data = {
 			name: this.name,
