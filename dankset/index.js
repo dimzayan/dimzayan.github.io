@@ -384,7 +384,9 @@ const refreshAsset = (asset, container) => {
 		if(medium.type === 'IFRAME')  {
 
 			element.height = 560;
-			element.width = media_container.offsetWidth
+			// element.width = 400//media_container.scrollWidth
+			
+			element.style.minWidth="400px"
 			element.scrolling = "no"
 		}
 
@@ -577,6 +579,7 @@ const  search  = async (input) => {
 					success:  false
 				}
 			} else {
+				sessionStorage.set  =  ''
 				window.location.href=`index.html?asset=${input}`
 				
 				return {
