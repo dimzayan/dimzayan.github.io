@@ -119,11 +119,14 @@ GROUPS =  {
 }
 
 _.each(GROUPS, set => {
-    
+    set.type = "SET"
     set.series.forEach ((series,n) => {
         series.split(',').forEach((c,i) => {
-            let preset = PRESETS[c.split('.')[0]];
-            let add = {
+            let 
+                name = c.split('.')[0],
+                preset = PRESETS[name],
+                add = {
+                    name: name,
                     group : set.name,
                     image_url: `https://xchain.io/img/cards/${c}`,
                     series: n

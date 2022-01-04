@@ -713,25 +713,51 @@ window.addEventListener('load', async (event) => {
 	})
 
 
-  // $('#search-input').on('keyup', _.throttle((e) => {
+  	$('.search-input').on('keyup', _.throttle((e) => {
+        e.target.parentNode.querySelector('.suggestions').innerHTML = '';
+
+        let 
+        	input = e.target.value,
+        	search = new RegExp(input, 'gi');
+
+        if(input.length < 3) return
+        let data = _.flatten([User.data,_.map(GROUPS, i => i),_.map(PRESETS, i => i)])
+
+    	_.sortBy(data, 'name').forEach((o) => {
+        		
+        		if(!o.name.match(search)) return;
+       
+        		suggestion = document.createElement('a')
+        		suggestion.classList.add('suggestion');
+
+        	
+        		switch(o.type) {
+        			case 'USER':
+        				suggestion.href = `./index.html?by=${o.name}`
+        				suggestion.innerHTML = `${o.name} (artist)`;
+        				break;
+        			case 'SET':
+        				suggestion.href = `./index.html?set=${o.name}`
+        				suggestion.innerHTML = `${o.name} (set)`;
+        				break;
+        			default:
+        				suggestion.href = `./index.html?asset=${o.name}`
+        				suggestion.innerHTML = `${o.name} (${o.group.toLowerCase()} asset)`;
+        		}
+        		
+
+        		e.target.parentNode.querySelector('.suggestions').append(suggestion)
+        	});
+        // _.map(PRESETS, i => i),_.map(GROUPS, i => i),
         
-            
-  //           let search = new RegExp($('#search-input').val(), 'gi')
-            
-  //       let data = user.wallet.data.filter(e => {
-            
-  //           return [e.asset, e.asset_longname].join(' ').match(search)
-  //       });
-        
-  //       showCollection(data)
        
         
-  //    }, 250))
+     }, 250))
 
 
 	$('.search-form').submit(async (e) =>  {
 		e.preventDefault();
-
+		e.target.querySelector('.suggestions').innerHTML = ''
 
 		let rst  = await  search(e.target.querySelector('.search-input').value);
 		

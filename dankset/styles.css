@@ -646,8 +646,16 @@ body .group-name {
 	display: none;
 }
 
-
-
+.suggestions {
+	background: #FFF;
+	padding : 0.25em;
+	z-index: 9999;
+	position: absolute;
+}
+.suggestion {
+	display: block;
+	padding: 0.15em 0;
+}
 
 
 iframe {
