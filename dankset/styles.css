@@ -734,7 +734,7 @@ iframe {
 		}*/
 
 
-				nav#paginator {
+		nav#paginator {
 			position: static;
 		}
 
@@ -990,8 +990,49 @@ iframe {
 	}
 
 
+	nav#paginator {
+		position: fixed;
+		bottom : 0;
+		width: 100vw;
+		z-index: 99999;
+	}
+	#paginator a {
+		top: auto;
+			bottom: 0;
+			background : #028;
+			color : #FFF;
+			width: 50vw;
+			z-index: 9999;
+			max-width: none;
+			padding: 0;
+	}
+
+		#cta-prev {
+			left: 0em;
+		
+		}
+
+		#cta-next {
+			right : 0em;
+			background: #049;
+		}
 
 
+	.asset-media.loaded{
+		height: auto;
+	}
+
+	.asset-media img {
+		max-width: 100vw;
+	}
+
+	.asset-media.loaded {
+		position: relative;
+	}
+
+	.asset-media.loaded ~ .asset-media.loaded {
+		position: absolute;
+	}
 	
 	.focus .asset-details  {
 		margin :  0 0 3em 0;

@@ -365,6 +365,7 @@ const refreshAsset = (asset, container) => {
 
 	if(asset.data.supply<1 || !asset.media.length) {
 		asset.blank = true;
+		container.querySelector('.asset-media-loader').innerHTML = 'No Media'
 	}
 
 
@@ -384,6 +385,7 @@ const refreshAsset = (asset, container) => {
 
 			element.height = 560;
 			element.width = media_container.offsetWidth
+			element.scrolling = "no"
 		}
 
 		if(medium.type  ===  'VIDEO') {
@@ -404,7 +406,7 @@ const refreshAsset = (asset, container) => {
 		element.addEventListener('load', (e) =>  {
 			
 
-			
+			container.querySelector('.asset-media-loader').innerHTML = ''
 			// media_container.style.height = Math.max(media_container.clientHeight, e.target.height)
 			e.target.parentNode.classList.add('loaded');
 			media_container.classList.add('loaded');
