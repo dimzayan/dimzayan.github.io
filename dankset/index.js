@@ -563,7 +563,7 @@ const  search  = async (input) => {
 			}
 			let a = User.find_by_name(input)
 			
-			if(a.addresses.length) {
+			if(a.addresses && a.addresses.length) {
 				
 				window.location.href=`index.html?by=${a.name}`
 				return {
@@ -572,7 +572,7 @@ const  search  = async (input) => {
 			}
 			let resp = await Asset.find(input);
 
-			if(resp.error) {
+			if(!resp || resp.error) {
 				
 				return {
 					error: 'Asset not found',
@@ -653,6 +653,51 @@ const openSearchForm  = (e) => {
 		}
 	})
 
+	form.querySelector('.search-input').addEventListener('keyup', _.throttle((e) => {
+        e.target.parentNode.querySelector('.suggestions').innerHTML = '';
+
+        let 
+        	input = e.target.value,
+        	search = new RegExp(input, 'gi');
+
+        if(input.length < 3) return
+        let data = _.flatten([User.data,_.map(GROUPS, i => i),_.map(PRESETS, i => i)])
+
+    	_.sortBy(data, 'name').forEach((o) => {
+        		if(!o.name) {
+        			
+        			return
+        		}
+        		if(!o.name.match(search)) return;
+       
+        		suggestion = document.createElement('a')
+        		suggestion.classList.add('suggestion');
+
+
+        		switch(o.type) {
+        			case 'USER':
+        				suggestion.href = `./index.html?by=${o.name}`
+        				suggestion.innerHTML = `${o.name} (artist)`;
+        				break;
+        			case 'SET':
+        				suggestion.href = `./index.html?set=${o.name}`
+        				suggestion.innerHTML = `${o.name} (set)`;
+        				break;
+        			default:
+        				suggestion.href = `./index.html?asset=${o.name}`
+        				suggestion.innerHTML = `${o.name} (${o.group.toLowerCase()} asset)`;
+        		}
+        			console.log(e.target.parentNode)
+        	
+
+        		e.target.parentNode.querySelector('.suggestions').append(suggestion)
+        	});
+        // _.map(PRESETS, i => i),_.map(GROUPS, i => i),
+        
+       
+        
+     }, 250))
+
 
 }
 
@@ -712,7 +757,7 @@ window.addEventListener('load', async (event) => {
 		toggleBlankAssets();
 	})
 
-
+	
   	$('.search-input').on('keyup', _.throttle((e) => {
         e.target.parentNode.querySelector('.suggestions').innerHTML = '';
 

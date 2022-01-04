@@ -731,8 +731,13 @@ iframe {
 			margin-right: 0.2rem;
 		}
 
-		#breadcrumbs span.toggled a {
-			display: none
+		#breadcrumbs span {
+			position: relative;
+			display: inline-block;
+		}
+
+		#breadcrumbs span.toggled > a {
+			display: none;
 		}
 
 		#breadcrumbs form  {
@@ -743,6 +748,13 @@ iframe {
 			content: ">";
 		}*/
 
+		#breadcrumbs .suggestions a {
+			display: block;
+		}
+
+		#breadcrumbs .suggestions a:before {
+			content: "";
+		}
 
 		nav#paginator {
 			position: static;

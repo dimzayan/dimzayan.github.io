@@ -459,7 +459,7 @@ class Asset extends EventTarget {
 			async () =>  {
 					let dispensers 	=  await this.dispensers 
 
-					let total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) * n.satoshirate)},  0).toFixed(7))
+					let total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) * n.satoshirate)/n.give_quantity},  0).toFixed(7))
 					let total_gives = dispensers.reduce((sum, n)  =>  {return sum  + ((n.escrow_quantity - n.give_remaining) )},  0)
 					
 				return {
@@ -488,7 +488,7 @@ class Asset extends EventTarget {
 		}
 		let dispensers = await this.dispensers;
 		
-		market_data.total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + (Math.max(0,(n.escrow_quantity - n.give_remaining)) * n.satoshirate)},  0).toFixed(7))
+		market_data.total_sales =  parseFloat(dispensers.reduce((sum, n)  =>  {return sum  + (Math.max(0,(n.escrow_quantity - n.give_remaining)) * n.satoshirate)/n.give_quantity},  0).toFixed(7))
 		market_data.total_gives = dispensers.reduce((sum, n)  =>  {return sum  + (Math.max((n.escrow_quantity - n.give_remaining),0) )},  0)
 		market_data.aps  = parseFloat((market_data.total_sales/market_data.total_gives).toFixed(4))
 
