@@ -1,87 +1,375 @@
 <!DOCTYPE html>
 
-<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en-US">
+<!--  <include src="./head.html"></include> -->
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="profile" href="https://gmpg.org/xfn/11">
-<link href="./index_files/bootstrap.min.css" rel="stylesheet">
-<link rel=icon href=./favicon.png>
+ 	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Dimzayan - Dim Zayan</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="profile" href="https://gmpg.org/xfn/11">
+		<!-- <link href="./index_files/bootstrap.min.css" rel="stylesheet"> -->
+		<link rel=icon href=./favicon.png>
 
-<meta name="robots" content="all">
-<meta property="og:locale" content="en_US">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Dim Zayan">
-<meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
-<meta property="og:url" content="https://www.dimzayan.com">
-<meta property="og:site_name" content="dimzayan">
-<meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@dimzayan">
-<meta name="twitter:label1" content="Est. reading time">
-<meta name="twitter:data1" content="2 minutes">
+		<title>Dimzayan - Dim Zayan</title>
 
-<link rel="stylesheet" id="dimzayan-style-css" href="./index_files/style.css" media="all">
+		<meta name="robots" content="all">
+		<meta property="og:locale" content="en_US">
+		<meta property="og:type" content="article">
+		<meta property="og:title" content="Dim Zayan">
+		<meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
+		<meta property="og:url" content="https://www.dimzayan.com">
+		<meta property="og:site_name" content="dimzayan">
+		<meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:site" content="@cryptgm">
+		<meta name="twitter:label1" content="Est. reading time">
+		<meta name="twitter:data1" content="2 minutes">
 
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
+		<!-- <link rel="stylesheet" id="dimzayan-style-css" href="./index_files/style.css" media="all"> -->
 
-<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
 
-	<style>
-		nav {
-	padding : 4rem;
-	font-size: 3em;
-	line-height: 1.5em;
-	position : absolute;
-	top : 0;
 
-}
+		<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
 
-nav#social {
-	position: absolute;
-	right: 0;
-	font-size: 1em;
-	z-index: 999
-}
+		<style>
+				* {
+					font-family: "Fira Sans";
+					text-decoration: none;
+					font-weight: 300;
+				}
+			nav {
+				padding : 4rem;
+				font-size: 3em;
+				line-height: 1.5em;
+				/*position : absolute;*/
+				top : 0;
+				position: sticky;
 
-nav#social a i {
-	/*color: #38F;*/
+			}
 
-}
-nav a {
-	display: block;
-	font-weight: 100;
-}
-	</style>
+		div.social {
+			/*position: absolute;*/
+			/*right: 0;*/
+			font-size: 0.8em;
+			z-index: 999;
+			margin-top:  1em;
+		}
+
+		div#social a i {
+			/*color: #38F;*/
+
+		}
+		nav a {
+			display: block;
+			font-weight: 100;
+			font-size: 30px;
+			line-height: 16px;
+			overflow: hidden;
+			margin: 0 0 10px 0;
+		}
+
+
+		nav h1 a {
+			overflow: visible;
+		}
+		nav a:hover {
+			overflow: visible;
+		} 
+
+		nav a.active {
+			overflow: visible;
+			color:  #000;
+			font-weight: 500;
+		}
+
+		div.social a {
+
+			font-size: 20px;
+			/*z-index: 999*/
+
+		}
+
+		body {
+			display: flex;
+
+		}
+
+
+
+		article {
+			justify-content: center;
+			align-items:  left;
+			display: flex;
+			flex-direction: column;
+			flex:  1;
+			margin : 4em auto;
+			max-width:	840px;
+		}
+
+		article section {
+			width:  100%;
+		}
+
+		article	img {
+			max-width: 100%;
+			margin:  4em 0 1.5em 0;
+		}
+
+		main {
+			flex:  1;
+		}
+
+		h2 {
+			font-weight:  300;
+			font-size: 2em;
+			width: 100%;
+		}
+
+		p {
+			font-weight: 300;
+			margin:  0 0 2em 0;
+			max-width: 720px;
+		}
+
+		figcaption {
+			font-style: italic;
+			font-weight:  300;
+			font-size:  0.8rem;	
+		}
+
+		.row {
+			display: flex;
+		}
+
+		.row img {
+			height:  200px;
+			margin:  0 1em;
+		}
+
+			</style>
 </head>
+
+
 <body id="home">
+	<header>
 	<nav style="z-index:232">
-	<h1 style="font-size:1em"><a href="./about.html" style="font-weight:300">Dim</a></h1>
+		<h1 style="font-size:1em"><a href="./about.html" style="font-weight:600">Dim</a></h1>
+		<a href="#ABOUT">About</a>
+		<a href="#FAKERARA">FakeRara</a>
+		<a href="#RAREVISION">Rarevision</a>
+		<a href="#RAREDREAM">Raredream</a>
+		<a href="#FAKERARES">Fake Rares</a>
+		<a href="#PLEBZ">PLebz</a>
+		<a href="#BULLTARDIA">Bulltardia</a>
+		<a href="#VOICEPAPER">Voicepaper</a>
+		<a href="#RITUALS">Rituals</a>
+		<a href="#JOURNEYS">Journeys</a>
+		<a href="#WORSHIPS">Worships</a>
+		<a href="#VESSELS">Vessels</a>
+		<a href="#DANKSET">Dankset</a>
+		<div class="social">
+			<a href="http://www.twitter.com/cryptgm">Twitter</a>
+		<a href="http://www.instagram.com/dimzayan">Instagram</a>
+		</div>
+	</nav>
+
 	
-	<a href="./plebs/index.html">Plebs Geographic</a>
-	<a href="./waas/index.html">WaaS</a>
-	<a href="http://www.bulltardia.com">Bulltardia</a>
-	<a href="https://dankset.io/sets/fake-rare/by/dim">Fake Rares</a>
-	<a href="https://dankset.io">Dankset</a>
-	<a href="./a-new-kind-of-kingdom/index.html">New Kind of Kingdom</a>
-	<a href="http://www.instagram.com/dimzayan">Everything Else</a>
-	</nav>
+</header>
+	<main>
+	<article id="ABOUT">
+		<p> Dim Zayan is a multidisciplinary artist and researcher whose work explores cultural shifts that derive from the fast-paced digitalization of our economy. Dim is interested in how conservative, static entities such as our current financial system are adapting to a changing landscape dominated by AI models and algorithms and how they transmute to peer-to-peer interactions. He is also fascinated by the place of spirituality among this new paradigm. </p>
+		<p>
+		 A fervent Bitcoin advocate, Dim interweaves its foundational philosophies into his artistry. He's a notable contributor to the Pepe/Fake Rare movement and the author of Bulltardia, a Bitcoin comic series.</p>
 
-	<nav id="social">
-		<a href="http://www.twitter.com/cryptgm"><i class="fab fa-twitter"></i></a>
-		<a href="http://www.instagram.com/dimzayan"><i class="fab fa-instagram"></i></a>
+		<p>Born in Paris, France, Dim now lives in the United States between Marfa, Texas and Granby, Connecticut.</p>
+
+		<section id="exhibition">
+			<h3>Exhibitions</h3>
+			<dl>
+				<dd>Pepefest, 2023, Avant Galerie, Paris, group show</dd>
+				
+				<dd>DYOR, 2022, Künsthalle Zürich, Germany, group show</dd>
+				<dd>NFT NYC 2023, Pepe is Art, group show</dd>
+				<dd>Bitcoin Renaissance 2022, Miami, USA, group show</dd>
+				<dd>Fake Miami, USA, group show</dd>
+				<dd>Bitcoin Conf 2021, Miami, 2021</dd>
+				<dd>Art in Dumbo, 2017, Brooklyn, Group Show</dd>
+			</dl>
+		</section>
+
+		<section id="press">
+			<h3>Press</h3>
+			<dl>
+			<dd><a href="https://21ism.com/portfolio-item/dim-zayan/">Interview with Daniel Prince on 21ism, 2021</a></dd>
+			<dd><a href="https://21ism.com/portfolio-item/bitcoin-voice-paper/">The Voicepaper on 21ism, 2021</a></dd>
+			<dd><a href="https://www.bit-buy-bit.com/podcast-1/episode/3646dca8/ep73-the-evolutionary-path-with-dim-zayan/">Interview with BitBuyBit, 2021</a></dd>
+			
+			<dd><a href="https://www.btctimes.com/news/the-community-effort-that-gives-a-voice-to-the-bitcoin-white-paper">BTC TIMES: The Community Effort That Gives a Voice to the Bitcoin White Paper, 2021</a></dd>
+			<dd><a href="https://bitcoin-takeover.com/why-the-voicepaper-project-is-bitcoins-immune-system/">BTCTKVR: Why The Voicepaper Project Is Bitcoin’s Immune System, 2021</a></dd>
+			<dd><a href="https://www.youtube.com/watch?v=yMTphrVaE6I&amp;t=11s/">Interview with Nico/ BitVolt, 2020</a></dd>
+		</dl>
+		</section>
+	</article>
+	<article id="FAKERARA">
 		
-	</nav>
+		<figcaption>Fakerara, Oil on Canvas, 180x80cm, 2023</figcaption>
 
-	<!-- <video autoplay muted loop id="myVideo" style="z-index:-1;height:110vh"> -->
-  <!-- <source src="./assets/Bird.mp4" type="video/mp4"> -->
+		<h2>Fakerara</h2>
+		<img src="https://cdn.dimzayan.com/dim/Fakerara.jpg" />
+		<p>Dim's latest triptych and Fake Rare physical. On display at <a href="https://avant-galerie.com/">L'Avant Galerie Vossen</a> until October 7 2023.</p>
 
-  	<source src="./assets/Cell.mp4" type="video/mp4">
-</video>
+		<!-- <img src="https://cdn.dimzayan.com/dim/Fakerara.jpg" />
+		<figcaption>Fakerara, Oil on Canvas, 180x80cm, 2023</figcaption>
+		 -->
+		
+	</article>
+	<article id="RAREVISION">
+
+		<h2>Rarevision</h2>
+		<p>Rarevision is at the same time a collection of digital assets, a software and a physical installation. Using a collection of animations carefully composed by Dim on Counterparty, the algorithm renders a live interpretation of the transactions happening on the Bitcoin network in real time. Other factors such as the price fluctuation or volume of transactions affect the representation, making the final result a perpetual live stream of digital assets dancing to the rhythm of the new economy. In 2022, Dim was invited to show Rarevision at the Kunsthalle in Zürich during one of the first show by a major institution about historical NFTs. </p>
+		<p><a href="https://dankset.io/rarevision">View</a></p>
+
+		<blockquote class="twitter-tweet"><p lang="en" dir="ltr"><iframe width="560" height="315" src="https://www.youtube.com/embed/oDcpe4eRnGg?si=DiZcN4VlNTtF9i1O" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><iframe width="560" height="315" src="https://www.youtube.com/embed/Fh6vGRTG6ds?si=qtsFlNQBkL4950mE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></script>
+	</article>
+	<article id="RAREDREAM">
+		<h2>Raredream</h2>
+		<p>Raredream is the sequel to Rarevision and another exploration of the relationship between the activity on the Bitcoin network, digital animations and how a work can be made unique to collectors. All digital assets created for Raredream are playable with Rarevision and vice-versa.</p>
+		<p><a href="https://dankset.io/raredream.html">View</a></p>
+		<blockquote><iframe width="560" height="315" src="https://www.youtube.com/embed/KXkZSj7PJVo?si=gUUEELEZKk5kefVI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></blockquote>
+	</article>
+	<article id="FAKERARES">
+		<H2>Fake Rares</H2>
+		<p>Dim is an active contributor to the Fake Rare project launched by Rare Scrilla in 2021.</p>
+		<p><a href="https://dankset.io/sets/fake-rare/by/dim">See all of Dim's Fake Rares</a></p>
+		
+		<div class="row">
+			<img src="https://cdn.dimzayan.com/PEPEPLEBZ.gif" />
+			<img src="https://cdn.dimzayan.com/PEPELIOTTA.gif" />
+			<img src="https://cdn.dimzayan.com/PEPENIRO.gif" />
+			<img src="https://xchain.io/img/cards/PEPEBRO.jpg" />
+			<img src="https://cdn.dimzayan.com/rv/gif/RAREVISION.gif" />
+		</div>
+
+
+	</article>
+
+	<article id="PLEBZ">
+		<H2>PLEBZ</H2>
+		<p>PLEBZ is a collection of personality types and an observation over the Bitcoin journey, how it changed us as human beings and what we felt along the way.
+
+Through a series of portraits, the collection is a window to the heart and soul of the Bitcoin community.
+
+Each portrait is painted over pages from vintage National Geographic magazines from the 40s and 50s. Forgotten stories of ancient civilizations and post-war industrialization are hijacked and repurposed to showcase our contemporary Bitcoin history.</p>
+<a href="https://dimzayan.com/PLEBZ/index.html">Explore project</a>
+		<img src="https://imgur.com/YoP6z31.jpg" />
+		
+
+	</article>
+	<article id="VOICEPAPER">
+		<H2>The Bitcoin Voicepaper</H2>
+		<p>In 2021, a man named Craig Wright who falsely pretended to be the inventor of Bitcoin tried to claim intellectual property over Bitcoin's whitepaper and started suing everyone who hosted a copy of it online. As a response, Dim asked 131 people from the space to recite a section from the whitepaper. The result was this collaborative video to show that Bitcoin is a community based currency that belongs to everyone and that nobody can claim ownership over it.
+
+		In parallel, that statement also underlined the broad diversity in backgrounds, origins, aspirations of the community and that the meaning of the “Vires in Numeris” motto is contextually as computational as it is human. <a href="https://dimzayan.com/voicepaper.html">Explore project</a></p>
+		<blockquote><iframe width="560" height="315" src="https://www.youtube.com/embed/7jldYncbU6s?si=DTH2HhnQku4V8jWZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></blockquote>
+		
+	</article>
+	<article id="BULLTARDIA">
+		<H2>Bulltardia</H2>
+		<p>Bulltardia is a comic series created by Dim about Bitcoin. Set as a fable, Bulltardia weaves the lore of Bitcoin into the epic tale of a honey badger named Bit tasked by his father to return a moonstone to the moon. The comic can be read for free on <a href="https://www.bulltardia.com">bulltardia.com</a></p>
+		<img src="https://imgur.com/pX6yH8T.jpg" />
+		<blockquote><iframe width="560" height="315" src="https://www.youtube.com/embed/E0kkmAPrDBA?si=hXtEsjVSXB8D4Fi4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></blockquote>
+	</article>
+
+	<article id="RITUALS">
+		<h2>Rituals</h2>
+		<p>A series of oil paintings produced by Dim in 2018 exploring personal explorations of raw feelings. </p>
+	
+			<img src="https://cdn.dimzayan.com/dim/rituals.city.jpg" />
+			<figcaption>That city in my heart, Oil and Latex on Canvas, 2018</figcaption>
+
+			<img src="https://cdn.dimzayan.com/dim/rituals.exorcism.jpg" />
+			<figcaption>Exorcism, Oil on wood panel, 4x8ft, 2018</figcaption>
+
+			<img src="https://cdn.dimzayan.com/dim/ritual.spiritis.jpg" />
+			<figcaption>Spiritis, Oil on wood panel, 4x8ft, 2018</figcaption>
+
+			<img src="https://cdn.dimzayan.com/dim/ritual.elephant.dog.jpg" />
+			<figcaption>Dog and Elephant, Oil on canvas, , 2019</figcaption>
+
+			<img src="https://cdn.dimzayan.com/dim/ritual.beast.jpg" />
+			<figcaption>Beast, Oil on wood panel, , 2017</figcaption>
+	</article>
+	<article id="JOURNEYS">
+		<h2>Every Journey</h2>
+		<p>Every journey is a free spirited exploration mixing without retenue abstract impressions and the figurative</p>
+
+		<img src="https://cdn.dimzayan.com/dim/elephantroad.part1.48x30.2016.png" />
+		<figcaption>Elephant Road, acrylic on canvas, 48x30in, 2016</figcaption>
+
+		<img src="https://dimzayan.nyc3.digitaloceanspaces.com/dim/elephantroad.part2.48x30.2016.png" /><figcaption>Elephant Road II, acrylic on canvas, 48x30in, 2016</figcaption>
+
+		<img src="https://cdn.dimzayan.com/dim/sweetpotatoesonsunday.30x48.2016.png" />
+		<figcaption>Sweet potatoes on Sunday, acrylic on canvas, 30x48in, 2016</figcaption>
+
+	</article>
+	<article id="WORSHIPS">
+		<h2>Worships</h2>
+			<img src="https://cdn.dimzayan.com/dim/worships.sun.jpg" />
+			<figcaption>Sun Worships, acrylic on canvas, 2016</figcaption>
+
+			<img src="https://cdn.dimzayan.com/dim/worships.sea.jpg" />
+			<figcaption>Sea Worships, acrylic on canvas, 2016</figcaption>
+	</article>
+	<article id="VESSELS">
+		<h2>Vessels</h2>
+		<p>By casting beams of LED lights through layers of metal grids and acrylic panels, Dim's vessels desconstruct physical light and as a byproduct invites the viewer to take an inverse journey of perceiving the analog as digital.</p>
+		<a><img src="https://cdn.dimzayan.com/dim/Vessel.One.jpg" />
+			<figcaption>Vessel One, mixed media, 2015</figcaption></a>
+		<a><img src="https://cdn.dimzayan.com/dim/Vessel.two.gif" />
+			<figcaption>Vessel Two, mixed media, 2015</figcaption></a>
+		<a><img src="https://cdn.dimzayan.com/dim/Vessel.Three.jpg" />
+			<figcaption>Vessel Three, mixed media, 2015</figcaption></a>
+		<!-- <a><img src="https://cdn.dimzayan.com/dim/vessel.one.gif" /></a> -->
+	</article>
+	<article id="DANKSET">
+		<h2>Dankset</h2>
+		<p>In 2021, there weren't any application to allow collectors and artists to view their counterparty collection in a user friednly way. Dim created <a href="www.dankset.io">dankset.io</a> to solve that problem. Dankset became one of the most used explorers to view indepdendent XCP assets.</p>
+		
+	</article>
+</main>
 </body>
 
+<script>
 
+
+
+	document.addEventListener('DOMContentLoaded', function() {
+
+		// const observer = new IntersectionObserver(e => {
+		// 	const target = e[0].target
+		// 	const id = target.getAttribute('id')
+		// 	const navItem = document.querySelector(`nav a[href="#${id}"]`)
+		// 	console.log(id)
+		// 	const activeNavItem = document.querySelector(`nav a.active`)
+		// 	try {
+		// 		activeNavItem.classList.remove('active')
+		// 	} catch(e) {
+		// 		console.log(e)
+		// 	}
+ 	// 		navItem.classList.add('active')
+		// })	
+
+		// const articles = document.querySelectorAll("article");
+
+		// articles.forEach(function(article) {
+		// 	observer.observe(article)
+		// })
+	})
+	
+	
+</script>
 	
 </html>
