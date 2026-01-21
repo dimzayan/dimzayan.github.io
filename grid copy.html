@@ -71,9 +71,14 @@
                 }
 
 				.entity .text {
-					font-size : 0.85em;
-					line-height: 1.4em;
+					font-size : 0.9em;
+					line-height: 1.3em;
 					display: none;
+				}
+
+				#bio .text {
+					font-size: 0.9em;
+					line-height: 1.4em;
 				}
 
 				.entity .title {
@@ -102,7 +107,7 @@
 
 				}
 
-				.entity[data-clickable="true"]:hover {
+				.entity[data-active="false"][data-clickable="true"]:hover {
 					color: #5590f9
 				}
 
@@ -118,12 +123,17 @@
 
 				.entity[data-active="true"] .text {
 					display: block;
-					font-size: 0.9em;
+					
 				}	
 
 				.entity[data-active="true"] .title {
 					display: none;
 				}	
+
+				#exhibitions .text, 
+				#press .text {
+					font-size: 0.8em;
+				}
 		</style>
                 
 

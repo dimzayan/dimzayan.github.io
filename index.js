@@ -1,109 +1,164 @@
 const entities = {
     
-    exhibition1: {
-        title: "MarfaMust Group show",
-        description: "Group show in Marfa, Texas",
+    // exhibition1: {
+    //     title: "MarfaMust Group show",
+    //     text: `MarfaMust Group show in Marfa, Texas`,
        
-        link: "https://www.google.com",
-        location: 1,
-        year: 2025,
-        transformable: true,
-        _exhibition: true,
-    }, 
-    exhibition2: {
-        title: "Lannan Park",
-        description: "Group show in Marfa, Texas",
+    //     link: "https://www.google.com",
+    //     location: 1,
+    //     year: 2025,
+    //     transformable: true,
+    //     _exhibition: true,
+    // }, 
+    // exhibition2: {
+    //     title: "Lannan Park",
+    //     text: "Group show in Marfa, Texas",
        
-        link: "https://www.google.com",
-        location: 1,
-        year: 2024,
-        transformable: true,
-        _exhibition: true,
-    },
-    exhibition3: {
-        title: "Avant Galerie Vossen",
-        description: "Group show in Paris, France",
+    //     link: "https://www.google.com",
+    //     location: 1,
+    //     year: 2024,
+    //     transformable: true,
+    //     _exhibition: true,
+    // },
+    // exhibition3: {
+    //     title: "Avant Galerie Vossen",
+    //     text: "Group show in Paris, France",
       
-        link: "https://www.google.com",
-        location: 2,
-        year: 2023,
-        transformable: true,
-        _exhibition: true,
-    },
-    exhibition4: {
-        title: "DYOR",
-        description: "Group show in Zürich, Switzerland",
+    //     link: "https://www.google.com",
+    //     location: 2,
+    //     year: 2023,
+    //     transformable: true,
+    //     _exhibition: true,
+    // },
+    // exhibition4: {
+    //     title: "DYOR",
+    //     text: "Group show in Zürich, Switzerland",
        
-        link: "https://www.google.com",
-        location: 4,
-        year: 2022,
-        transformable: true,
-        _exhibition: true,
-        _displayable: true
-    },
-    exhibition5: {
-        title: "NFT NYC",
-        description: "Group show in New York City, New York",
+    //     link: "https://www.google.com",
+    //     location: 4,
+    //     year: 2022,
+    //     transformable: true,
+    //     _exhibition: true,
+    //     _displayable: true
+    // },
+    // exhibition5: {
+    //     title: "NFT NYC",
+    //     text: "Group show in New York City, New York",
         
-        link: "https://www.google.com",
-        location: 3,
-        year: 2023,
-        transformable: true,
-        _exhibition: true,
-        _displayable: true
-    },
-    exhibition6: {
-        title: "Fake Miami",
-        description: "Group show in Miami, Florida",
+    //     link: "https://www.google.com",
+    //     location: 3,
+    //     year: 2023,
+    //     transformable: true,
+    //     _exhibition: true,
+    //     _displayable: true
+    // },
+    // exhibition6: {
+    //     title: "Fake Miami",
+    //     text: "Group show in Miami, Florida",
         
-        link: "https://www.google.com",
-        location: 5,
-        year: 2022,
-        transformable: true,
-        _exhibition: true,
-        _displayable: true,
-        parent: 'exhibitions'
-    },
-    exhibition7: {
-        title: "Bitcoin Conf",
-        description: "Group show in Miami, Florida",
+    //     link: "https://www.google.com",
+    //     location: 5,
+    //     year: 2022,
+    //     transformable: true,
+    //     _exhibition: true,
+    //     _displayable: true,
+    //     parent: 'exhibitions'
+    // },
+    // exhibition7: {
+    //     title: "Bitcoin Conf",
+    //     text: "Group show in Miami, Florida",
         
-        link: "https://www.google.com",
-        location: 5,
-        year: 2021,
-        transformable: true,
-        _exhibition: true,
-        _displayable: true,
-        parent: 'exhibitions'
-    },
-    exhibition8: {
-        title: "Art in Dumbo",
-        description: "Group show in Brooklyn, New York",
+    //     link: "https://www.google.com",
+    //     location: 5,
+    //     year: 2021,
+    //     transformable: true,
+    //     _exhibition: true,
+    //     _displayable: true,
+    //     parent: 'exhibitions'
+    // },
+    // exhibition8: {
+    //     title: "Art in Dumbo",
+    //     text: "Group show in Brooklyn, New York",
        
-        link: "https://www.google.com",
-        location: 3,
-        year: 2017,
-        transformable: true,
-        _exhibition: true,
-        _displayable: true,
-        clickable: true,
-        parent: 'exhibitions'
-    },
+    //     link: "https://www.google.com",
+    //     location: 3,
+    //     year: 2017,
+    //     transformable: true,
+    //     _exhibition: true,
+    //     _displayable: true,
+    //     clickable: true,
+    //     parent: 'exhibitions'
+    // },
 
     hero: {
         title: 'Dim Zayan'   
     },
 
-   
+    press1: {
+        title: "MarfaMUST highlights local artists with directory, special showings this week",
+        link: "https://bigbendsentinel.com/2024/05/08/marfamust-highlights-local-artists-with-directory-special-showings-this-week/",
+        year: 2024,
+        _press: true,
+        transformable: true,
+        _displayable: true
+    },
+    press2: {
+        title: "Interview with Daniel Prince on 21ism",
+        link: "https://21ism.com/portfolio-item/dim-zayan/",
+        year: 2021,
+        _press: true,
+        transformable: true,
+        _displayable: true
+    },
+    press3: {
+        title: "The Voicepaper on 21ism",
+        link: "https://21ism.com/portfolio-item/bitcoin-voice-paper/",
+        year: 2021,
+        _press: true,
+        transformable: true,
+        _displayable: true
+    },
+    press4: {
+        title: "Interview with BitBuyBit",
+        link: "https://www.bit-buy-bit.com/podcast-1/episode/3646dca8/ep73-the-evolutionary-path-with-dim-zayan/",
+        year: 2021,
+        _press: true,
+        transformable: true,
+        _displayable: true
+    },
+    press5: {   
+        title: "BTC TIMES: The Community Effort That Gives a Voice to the Bitcoin White Paper",
+        link: "https://www.btctimes.com/news/the-community-effort-that-gives-a-voice-to-the-bitcoin-white-paper/",
+        year: 2021,
+        _press: true,
+        transformable: true,
+        _displayable: true
+    },
+    press6: {
+        title: "BTCTKVR: Why The Voicepaper Project Is Bitcoin's Immune System",
+        link: "https://bitcoin-takeover.com/why-the-voicepaper-project-is-bitcoins-immune-system/",
+        year: 2021,
+        _press: true,
+        transformable: true,
+        _displayable: true
+    },
+    press7: {
+        title: "Interview with Nico/ BitVolt",
+        link: "https://www.youtube.com/watch?v=yMTphrVaE6I&t=11s/",
+        year: 2020,
+        _press: true,
+        transformable: true,
+        _displayable: true
+    },
 
     work1: {
         title: "Rarevision",
         description: "Description of work 1",
         image: "https://cdn.dimzayan.com/dim/Fgp4cjcXwAMPfRh%20(1).jpeg",
         link: "https://www.google.com",
-        location: 4,
+        location: 'location4',
         year: 2025,
-        _work: true,
+        work: true,
         _digital: true,
         _physical: true,
         _video: true,
@@ -117,9 +172,9 @@ const entities = {
         description: "Description of work 2",
         image: "https://cdn.dimzayan.com/dim/FeZveoFWQAkpH23.jpeg",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location1',
         year: 2024,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -128,9 +183,9 @@ const entities = {
         description: "Description of work 3",
         image: "https://cdn.dimzayan.com/PEPEPLEBZ.gif",
         link: "https://www.google.com",
-        location: 3,
+        location: 'location5',
         year: 2023,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -139,9 +194,9 @@ const entities = {
         description: "Description of work 4",
         image: "https://cdn.dimzayan.com/PEPELIOTTA.gif",
         link: "https://www.google.com",
-        location: 1,
+        location: 'location5',
         year: 2022,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -150,9 +205,9 @@ const entities = {
         description: "Description of work 5",
         image: "https://cdn.dimzayan.com/PEPENIRO.gif",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location5',
         year: 2021,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -161,9 +216,9 @@ const entities = {
         description: "Description of work 6",
         image: "https://xchain.io/img/cards/PEPEBRO.jpg",
         link: "https://www.google.com",
-        location: 3,
+        location: 'location5',
         year: 2020,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -172,9 +227,9 @@ const entities = {
         description: "Description of work 7",
         image: "https://cdn.dimzayan.com/rv/gif/RAREVISION.gif",
         link: "https://www.google.com",
-        location: 1,
+        location: 'location5',
         year: 2021,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -183,9 +238,9 @@ const entities = {
         description: "Oil on wood panel, 4x8ft, 2018",
         image: "https://cdn.dimzayan.com/dim/ritual.spiritis.jpg",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location3',
         year: 2018,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -194,9 +249,9 @@ const entities = {
         description: "Exorcism, Oil on wood panel, 4x8ft, 2018",
         image: "https://cdn.dimzayan.com/dim/rituals.exorcism.jpg",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location3',
         year: 2019,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -205,9 +260,9 @@ const entities = {
         description: "Dog and Elephant, Oil on canvas, 2019",
         image: "https://cdn.dimzayan.com/dim/ritual.elephant.dog.jpg",
         link: "https://www.google.com",
-        location: 4,
+        location: 'location3',
         year: 2019,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -216,9 +271,9 @@ const entities = {
         description: "Beast, Oil on wood panel, 2017",
         image: "https://cdn.dimzayan.com/dim/ritual.beast.jpg",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location3',
         year: 2017,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -227,9 +282,9 @@ const entities = {
         description: "Oil and Latex on Canvas, 2018",
         image: "https://cdn.dimzayan.com/dim/rituals.city.jpg",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location3',
         year: 2018,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -238,9 +293,9 @@ const entities = {
         description: "Shamans, Oil and oil sticks and hardboard, 2019",
         image: "https://dimzayan.nyc3.digitaloceanspaces.com/dim/elephantroad.part2.48x30.2016.png",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location3',
         year: 2019,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -249,9 +304,9 @@ const entities = {
         description: "Swimmers, Oil and oil sticks and hardboard, 2019",
         image: "https://cdn.dimzayan.com/dim/worships.sea.jpg",
         link: "https://www.google.com",
-        location: 2,
+        location: 'location3',
         year: 2019,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -262,7 +317,7 @@ const entities = {
         link: "https://www.google.com",
         location: 2,
         year: 2019,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -271,9 +326,9 @@ const entities = {
         description: "Acrylic on canvas, 48x30in, 2016",
         image: "https://cdn.dimzayan.com/dim/elephantroad.part1.48x30.2016.png",
         link: "https://www.google.com",
-        location: 4,
+        location: 'location3',
         year: 2016,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -282,9 +337,9 @@ const entities = {
         description: "Acrylic on canvas, 30x48in, 2016",
         image: "https://cdn.dimzayan.com/dim/sweetpotatoesonsunday.30x48.2016.png",
         link: "https://www.google.com",
-        location: 4,
+        location: 'location3',
         year: 2016,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -294,9 +349,9 @@ const entities = {
         description: "Mixed media, 2015",
         image: "https://cdn.dimzayan.com/dim/Vessel.One.jpg",
         link: "https://www.google.com",
-        location: 4,
+        location: 'location3',
         year: 2015,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -305,9 +360,10 @@ const entities = {
         description: "Mixed media, 2015",
         image: "https://cdn.dimzayan.com/dim/Vessel.two.gif",
         link: "https://www.google.com",
-        location: 4,
+        location: 'location3',
+        parent: 'location3',
         year: 2015,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -316,9 +372,9 @@ const entities = {
         description: "Mixed media, 2015",
         image: "https://cdn.dimzayan.com/dim/Vessel.Three.jpg",
         link: "https://www.google.com",
-        location: 4,
+        location: 'location3',
         year: 2015,
-        _work: true,
+        work: true,
         transformable: true,
         _displayable: true
     },
@@ -342,15 +398,15 @@ const entities = {
 
     // },
 
-    press : {
-        _grid: true,
-        enabled: false,
-        filters: ['_displayable', '_press'],
-        sortBy: 'year',
-        columns: 1,
-        padding: 10,
-        width: 400,
-    },
+    // press : {
+    //     _grid: true,
+    //     enabled: false,
+    //     filters: ['_displayable', '_press'],
+    //     sortBy: 'year',
+    //     columns: 1,
+    //     padding: 10,
+    //     width: 400,
+    // },
     baseScene : {
         scene : true,
         enabled: true,
@@ -445,9 +501,24 @@ const entities = {
         link: true,
         clickable: true,
         title: 'Exhibitions',
-        text: 'Exhibitions',
-        command: 'onActivate',
-        commandValue: 'exhibitions',
+        text: `Selected exhibitions
+        
+        MarfaMust Group show, 2025, Marfa
+
+Lannan Park, 2024, Marfa
+
+Pepefest, 2023, Avant Galerie, Paris
+
+DYOR, 2022, Kunsthalle Zürich, Zürich
+
+NFT NYC 2022, New York City
+
+Fake Miami 2022, Miami
+
+Bitcoin Conf 2021, Miami
+
+Art in Dumbo 2017, Brooklyn`,
+     
         transformable: true,
         _displayable: true,
         parent: 'menu',
@@ -455,11 +526,24 @@ const entities = {
         size: [100,50]
     },
 
-    press_link: {
+    press: {
         link: true,
         clickable: true,
         title: 'Press',
-        text: 'Press',
+        text: `MarfaMust article on Big Bend Sentinel, 2024
+
+        Interview with Daniel Prince on 21ism, 2021
+
+The Voicepaper on 21ism, 2021
+
+Interview with BitBuyBit, 2021
+
+BTC TIMES: The Community Effort That Gives a Voice to the Bitcoin White Paper, 2021
+
+BTCTKVR: Why The Voicepaper Project Is Bitcoin's Immune System, 2021
+
+Interview with Nico/ BitVolt, 2020
+`,
         command: 'onActivate',
         commandValue: 'press',
         transformable: true,
@@ -617,6 +701,7 @@ const menuItemSystem = {
         entity.size[1] = 300
         entity.size[0] = 300
         entity.active = true
+       
         for(const child of children) {
            
 
@@ -640,10 +725,7 @@ const menuItemSystem = {
             
         }
 
-        
-        
-        
-        console.log(entity.id, entity.size)
+
         
         
     }
