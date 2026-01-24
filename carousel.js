@@ -4,7 +4,16 @@ const carouselSystem = {
 
         const carousel = engine.entities.carousel
         carousel.size = [window.innerWidth - 400, window.innerHeight]
-        carousel.offset = [400, 0]
+        carousel.offset = [0, 0]
+        carousel.works = []
+
+        const works = Object.values(engine.entities).filter(e => e.work ) 
+
+        for(const work of works) {
+            work.parent = 'carousel'
+            work.opacity = 0
+            work._dirty = true
+        }
     },
 
     onResize: function(engine, ctx) {
@@ -18,8 +27,8 @@ const carouselSystem = {
             
         } else {
 
-            carousel.size = [window.innerWidth - 400, window.innerHeight]
-            carousel.offset = [400, engine.scrollY]
+            // carousel.size = [window.innerWidth * 0.8, window.innerHeight]
+            // carousel.offset = [0, 0]
         
         }
         
@@ -32,12 +41,7 @@ const carouselSystem = {
  
 
         for(const work of works) {
-          
-            work.size = [carousel.size[0] * 0.9, carousel.size[1] * 0.5]
-            work.offset = [
-                (carousel.size[0] - work.size[0])/2,
-                (carousel.size[1] - work.size[1])/2
-            ]
+         
             
             work._dirty = true
         }
@@ -45,43 +49,64 @@ const carouselSystem = {
 
     onScroll: function(engine, ctx) {
         const carousel = engine.entities.carousel
-        carousel.offset[1] = engine.scrollY
+        // carousel.offset[1] = engine.scrollY
         carousel._dirty = true
+    },
+
+    onDeactivate: function(engine, ctx) {
+        const entity = engine.entities[ctx.entity]
+        const parent = engine.entities[entity.parent]
+
+        console.warn('deactivating', entity.id)
+        if(parent && parent.carousel ) {
+           
+            // gsap.killTweensOf(entity)
+            // gsap.to(entity, {opacity: 0, autoAlpha: 1, duration: 1, ease: 'expo2.inOut', onUpdate: () => {entity._dirty = true}})
+        }
     },
 
     onActivate: function(engine, ctx) {
         const entity = engine.entities[ctx.entity]
+        const parent = engine.entities[entity.parent]
         if(entity.carousel) {
-            
             entity.startTime = ctx.timestamp
+        }
+
+        
+
+        if(parent && parent.carousel ) {
            
-           
+
+            if(parent.selected) {
+                engine.deactivate(parent.selected)
+                parent.selected.opacity = 0    
+            }
+        
+            parent.selected = entity.id
+
+            gsap.killTweensOf(entity)
+            // gsap.set(entity, {opacity: 0, autoAlpha: 1})
+            gsap.to(entity, {opacity: 1, autoAlpha: 1, duration: 1, ease: 'expo2.inOut', onUpdate: () => {entity._dirty = true}})
+
         }
     },
 
     onSelectWorks: function(engine, ctx) {
         const carousel = engine.entities.carousel
-        const works = Object.values(engine.entities).filter(e => e.enabled && e.work)
+        
+        carousel.works = ctx.works
+       
 
         carousel.startTime = ctx.timestamp
-        if(carousel.selected) {
-            carousel.selected.opacity = 0
-            engine.deactivate(carousel.selected)
-        }
+        // if(carousel.selected) {
+        //     engine.deactivate(carousel.selected)
+        // }
         
         engine.activate(carousel.id)
 
-        for(const work of works) {
-            work.opacity = 0
-            work.size = [carousel.size[0] * 0.6, carousel.size[1] * 0.6]
-            work.offset = [
-                (carousel.size[0] - work.size[0])/2,
-                (carousel.size[1] - work.size[1])/2
-            ]
-            
-            work._dirty = true
-        }
+        
 
+        this.onResize(engine, ctx)
     },
     
     onUpdate: function(engine, ctx) {
@@ -92,39 +117,34 @@ const carouselSystem = {
         const ticks = Math.floor(elapsed / carousel.tempo)
         
         // Find all active parents that have works (locations)
-        const works = Object.values(engine.entities).filter(e => e.enabled && e.work)
+        // const works = Object.values(engine.entities).filter(e => e.enabled && e.work && e.parent === 'carousel')
 
-       
+        const works = carousel.works.map(w => engine.entities[w])
+        
+  
 
         if(works.length > 0) {
-            const work = works[ticks % works.length]
+
+
+            const activeIndex = Math.round(engine.progress * (works.length - 1))
+            const work = works[activeIndex]
             
-         
-            if(work) {
-                work.opacity = 1
-            }
+            
+
+        
             if(work && work.id !== carousel.selected) {
-                if(carousel.selected) {
-                    carousel.selected.opacity = 0
-                    engine.deactivate(carousel.selected)
-                    
-                }
+                
                 engine.activate(work.id)
-                work.opacity = 1
-                carousel.selected = work.id
-                work.parent = carousel.id
-                // work.size = carousel.itemSize
-                work.offset = [
-                    (carousel.size[0] - work.size[0])/2,
-                    (carousel.size[1] - work.size[1])/2
-                ]
-                work._dirty = true
+
+                
                 
             }
             
       
             
         }
+
+       
 
         
     }

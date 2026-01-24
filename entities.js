@@ -1,4 +1,49 @@
 const entities = {
+
+
+    baseScene : {
+        scene : true,
+        enabled: true,
+        view: ['menu', 'carousel'],
+       
+        padding: {
+            top: 0,
+            bottom: 0
+        },
+
+        
+        
+        transformable: true,
+        _displayable: true
+    },
+
+    menu: {
+        list: true,
+        parent: 'baseScene',
+        transformable: true,
+        _displayable: true,
+        padding: 10,
+        offset: [0,100],
+        itemSize: [400,50],
+        active: true
+    },
+
+    carousel : {
+
+        carousel: true,
+        transformable: true,
+        _displayable: true,
+        tempo: 6000,
+        offset: [500,200],
+        itemSize: [400,500],
+        size: [400,500]
+    },
+
+    ether : {
+        ether: true,
+        transformable: false
+        
+    },
     
     // exhibition1: {
     //     title: "MarfaMust Group show",
@@ -100,7 +145,9 @@ const entities = {
         year: 2024,
         _press: true,
         transformable: true,
-        _displayable: true
+        _displayable: true,
+        clickable: true,
+        parent: 'press'
     },
     press2: {
         title: "Interview with Daniel Prince on 21ism",
@@ -155,7 +202,7 @@ const entities = {
         title: "Rarevision",
         description: "Description of work 1",
         image: "https://cdn.dimzayan.com/dim/Fgp4cjcXwAMPfRh%20(1).jpeg",
-        link: "https://www.google.com",
+        link: "https://xchain.io/art/rarevision",
         location: 'location4',
         year: 2025,
         work: true,
@@ -165,12 +212,98 @@ const entities = {
         transformable: true,
         _displayable: true
     },
- 
+
+    selfandvoid: {
+        title: "Self and Void",
+        description: "Oil on gypsum, 2024",
+        image: "https://cdn.dimzayan.com/works/IMG_3601.webp",
+        location: 'location1',
+        year: 2024,
+        work: true,
+        _physical: true,
+        transformable: true,
+        _displayable: true
+    },
+
+    timeandwilderness: {
+        title: "Time and Wilderness",
+        description: "Oil on gypsum, 2024",
+        image: "https://cdn.dimzayan.com/works/IMG_3685.webp",
+        location: 'location1',
+        year: 2024,
+        work: true,
+        _physical: true,
+        transformable: true,
+        _displayable: true
+    },
+
+    spacetime: {
+        title: "Spacetime",
+        description: "Oil on gypsum, 2024",
+        image: "https://cdn.dimzayan.com/works/IMG_5356.webp",
+        location: 'location1',
+        year: 2024,
+        work: true,
+        _physical: true,
+        transformable: true,
+        _displayable: true,
+        featured: true
+    },
+
+    sundial_001: {
+        title: "Sundial 001",
+        description: "Oil on gypsum, 2024",
+        image: "https://cdn.dimzayan.com/works/IMG_6676.webp",
+        location: 'location1',
+        year: 2024,
+        work: true,
+        _physical: true,
+        transformable: true,
+        _displayable: true,
+        featured: true
+    },
+
+    sundial_002: {
+        title: "Sundial 002",
+        description: "Oil on gypsum, 2024",
+        image: "https://cdn.dimzayan.com/works/IMG_6667.webp",
+        location: 'location1',
+        year: 2024,
+        work: true,
+        _physical: true,
+        transformable: true,
+        _displayable: true
+    },
+
+    sundial_003: {
+        title: "Sundial 003",
+        description: "Oil on gypsum, 2024",
+        image: "https://cdn.dimzayan.com/works/IMG_6704.webp",
+        location: 'location1',
+        year: 2024,
+        work: true,
+        _physical: true,
+        transformable: true,
+        _displayable: true
+    },
+
+    sundial_004: {
+        title: "Sundial 004",
+        description: "Oil on gypsum, 2024",
+        image: "https://cdn.dimzayan.com/works/IMG_6688.webp",
+        location: 'location1',
+        year: 2024,
+        work: true, 
+        _physical: true,
+        transformable: true,
+        _displayable: true
+    },
+
     work2: {
         title: "Work 2",
         description: "Description of work 2",
         image: "https://cdn.dimzayan.com/dim/FeZveoFWQAkpH23.jpeg",
-        link: "https://www.google.com",
+        link: "https://xchain.io/art/raredream",
         location: 'location4',
         year: 2024,
         work: true,
@@ -193,7 +326,7 @@ const entities = {
         title: "Pepebro",
         description: "Description of work 6",
         image: "https://xchain.io/img/cards/PEPEBRO.jpg",
-        link: "https://www.google.com",
+     
         location: 'location5',
         year: 2020,
         work: true,
@@ -205,7 +338,7 @@ const entities = {
         title: "Rarevision Fakerare",
         description: "Description of work 7",
         image: "https://cdn.dimzayan.com/rv/gif/RAREVISION.gif",
-        link: "https://www.google.com",
+        link: "https://xchain.io/art/rarevision",
         location: 'location5',
         year: 2021,
         work: true,
@@ -362,7 +495,7 @@ const entities = {
         description: "Mixed media, 2015",
         image: "https://cdn.dimzayan.com/dim/Vessel.Three.jpg",
         link: "https://www.google.com",
-        location: 'location2',
+        location: 'location3',
    
         year: 2015,
         work: true,
@@ -390,44 +523,8 @@ const entities = {
         transformable: true,
         _displayable: true
     },
-    // works : {
-    //     _grid: true,
-    //     filters: ['_displayable',  'year'],
-    //     sortBy: 'year',
-    //     columns: 1,
-    //     padding: 12,
-    //     width: 1000,
-    //     enabled: false
-    // },
-    // exhibitions : {
-    //     _grid: true,
-    //     enabled: false,
-    //     filters: ['_displayable', '_exhibition'],
-    //     sortBy: 'year',
-    //     columns: 1,
-    //     padding: 10,
-    //     width: 400,
 
-    // },
 
-    // press : {
-    //     _grid: true,
-    //     enabled: false,
-    //     filters: ['_displayable', '_press'],
-    //     sortBy: 'year',
-    //     columns: 1,
-    //     padding: 10,
-    //     width: 400,
-    // },
-    baseScene : {
-        scene : true,
-        enabled: true,
-        view: ['menu'],
-        padding: {
-            top: 100,
-            bottom: 100
-        }
-    },
 
     
     bio: {
@@ -439,20 +536,21 @@ const entities = {
         transformable: true,
         _displayable: true,
         offset: [0,0],
-        size: [300,600],
         clickable: true,
         parent: 'menu',
         active: true,
-        opacity: 1
+        opacity: 1,
+        onSelect: {command: 'selectWorks', filter: 'featured', value: true}
       
     },
 
 
 
     location1: {
-        title: "Marfa",
-        text: `Dim moved to Marfa in 2023.  Say how Marfa was an inspiration. 
-        Marfa (say how it stands in the art world worldwide). Situated in Marfa — internationally recognised for its unique artistic ecosystem at the edge of the desert founded by Donald Judd in….XXX— the exhibition engages with the town’s tradition of radical art, experimentation, and reflection`,
+        title: "Far West Texas",
+        text: `Dim moved to Marfa in 2023 and from that point departed from his previous techniques and started working with construction materials as the subject matter. 
+        
+        Since it became home to Donald Judd, Marfa is internationally recognised for its unique artistic ecosystem at the edge of the desert the exhibition engages with the town's tradition of radical art, experimentation, and reflection`,
         parent: 'menu',
         _location: true,
         transformable: true,
@@ -475,8 +573,11 @@ const entities = {
     // },
 
     location2: {
-        title: "New York City",
-        text: `in 1999, Dim relocated to New York City. His work as a graphic designer and engineer opened the way to a new perception and led him to explore and intergrate a set of new media and the creative process.  `,
+        title: "East Coast",
+        text: `<p>in 1999, Dim relocated to New York City. His work as a graphic designer and engineer opened the way to a new perception and led him to explore and intergrate a set of new media and the creative process into his work.</p>
+        
+       
+        <p>The relationship between the human and its environment is a central theme of his work. It is a reflection of the human condition and the relationship between the human and the natural world.</p>`,
         parent: 'menu',
         _location: true,
         transformable: true,
@@ -488,7 +589,7 @@ const entities = {
     location4: {
         title: "Paris",
        
-        text: `Dim grew up in Paris, France where he studied art, design and economics. self-taught in computer science. Talk about the early influences. passions.`,
+        text: `<p>Dim grew up in Paris, France where he studied art, design and economics.</p><p>self-taught in computer science, he started programming games at 12 years old and developped culutal influences that spanned from comics like Moebius, film Kurosawa and the punk  heavy metal rap trip hop scene. Klimt, Dali, Carravagio, Klee</p> `,
         parent: 'menu',
         _location: true,
         transformable: true,
@@ -501,7 +602,8 @@ const entities = {
     location3: {
         title: "Zürich",
         parent: 'menu',
-        text: `In 2020, Dim got invited to participate to one of the first group retroscpective around NFTs. DYOR at the Kunsthalle `,
+        text: `<p>Curated by Nina Roehrs at the Kunsthalle Zürich in 2022, <a href="https://dyor.kunsthallezurich.ch/" target="_blank">DYOR</a> was an exhibition that focused on artists, projects and platforms that have had a significant influence on how the crypto art scene has developed and is today.</p><br/>
+        <p>Dim was invited to show Rarevision, a physical work with a live real-time rendering of transactions of the Bitcoin Network.</p>`,
         _location: true,
         transformable: true,
         _displayable: true,
@@ -511,7 +613,7 @@ const entities = {
     },
     location5: {
         title: "Miami",
-        text: `Bleh`,
+        text: `Dim's involvement with NFT was focused on Bitcoin promise and revolutionary concepts.  In 2021, a man named Craig Wright who falsely pretended to be the inventor of Bitcoin tried to claim intellectual property over Bitcoin's whitepaper and started suing everyone who hosted a copy of it online. As a response, Dim asked 131 people from the space to recite a section from the whitepaper. The result was this collaborative video to show that Bitcoin is a community based currency that belongs to everyone and that nobody can claim ownership over it. In parallel, that statement also underlined the broad diversity in backgrounds, origins, aspirations of the community and that the meaning of the “Vires in Numeris” motto is contextually as computational as it is human. `,
         parent: 'menu',
         _location: true,
         transformable: true,
@@ -522,7 +624,11 @@ const entities = {
     },
     location6: {
         title: "Connecticut",
-        text: `Bleh`,
+        text: `Talk about: 
+        BUlltardia
+        INspiration through the woods
+        Bitcoin 
+        `,
         parent: 'menu',
         _location: true,
         transformable: true,
@@ -536,63 +642,58 @@ const entities = {
         link: true,
         clickable: true,
         title: 'Exhibitions',
-        text: `Selected exhibitions
-        
-        MarfaMust Group show, 2025, Marfa
-
-Lannan Park, 2024, Marfa
-
-Pepefest, 2023, Avant Galerie, Paris
-
-DYOR, 2022, Kunsthalle Zürich, Zürich
-
-NFT NYC 2022, New York City
-
-Fake Miami 2022, Miami
-
-Bitcoin Conf 2021, Miami
-
-Art in Dumbo 2017, Brooklyn`,
+        text: `<dl>   
+        <dd>MarfaMust Group show, 2025, Marfa</dd>
+        <dd>Lannan Park, 2024, Marfa</dd>
+        <dd>Pepefest, 2023, Avant Galerie, Paris</dd>
+        <dd>DYOR, 2022, Kunsthalle Zürich, Zürich</dd>
+        <dd>NFT NYC 2022, New York City</dd>
+        <dd>Fake Miami 2022, Miami</dd>
+        <dd>Bitcoin Conf 2021, Miami</dd>
+        <dd>Art in Dumbo 2017, Brooklyn</dd>
+        </dl>`,
      
         transformable: true,
         _displayable: true,
         parent: 'menu',
-        padding: 10,
-        size: [100,50]
+        padding: 10
     },
 
     press: {
         link: true,
         clickable: true,
         title: 'Press',
-        text: `MarfaMust article on Big Bend Sentinel, 2024
-
-        Interview with Daniel Prince on 21ism, 2021
-
-The Voicepaper on 21ism, 2021
-
-Interview with BitBuyBit, 2021
-
-BTC TIMES: The Community Effort That Gives a Voice to the Bitcoin White Paper, 2021
-
-BTCTKVR: Why The Voicepaper Project Is Bitcoin's Immune System, 2021
-
-Interview with Nico/ BitVolt, 2020
-`,
+        text: `<dl>
+        <dd><a target="_blank" href="https://bigbendsentinel.com/2024/05/08/marfamust-highlights-local-artists-with-directory-special-showings-this-week/">MarfaMust article on Big Bend Sentinel, 2024</a></dd>
+        <dd><a target="_blank" href="https://21ism.com/portfolio-item/dim-zayan/">Interview with Daniel Prince on 21ism, 2021</a></dd>
+			<dd><a target="_blank" href="https://21ism.com/portfolio-item/bitcoin-voice-paper/">The Voicepaper on 21ism, 2021</a></dd>
+			<dd><a target="_blank" href="https://www.bit-buy-bit.com/podcast-1/episode/3646dca8/ep73-the-evolutionary-path-with-dim-zayan/">Interview with BitBuyBit, 2021</a></dd>
+			
+			<dd><a target="_blank" href="https://www.btctimes.com/news/the-community-effort-that-gives-a-voice-to-the-bitcoin-white-paper">BTC TIMES: The Community Effort That Gives a Voice to the Bitcoin White Paper, 2021</a></dd>
+			<dd><a target="_blank" href="https://bitcoin-takeover.com/why-the-voicepaper-project-is-bitcoins-immune-system/">BTCTKVR: Why The Voicepaper Project Is Bitcoin’s Immune System, 2021</a></dd>
+			<dd><a target="_blank" href="https://www.youtube.com/watch?v=yMTphrVaE6I&amp;t=11s/">Interview with Nico/ BitVolt, 2020</a></dd>
+        </dl>`,
         command: 'onActivate',
         commandValue: 'press',
         transformable: true,
         _displayable: true,
-        parent: 'menu',
-        size: [100,50]
+        parent: 'menu'
     },
     contact: {
         title: 'Contact',
-        text: `Dim Zayan
-        dim.marfa.studio@gmail.com
-        +1 646 six seven eight 1468
-        208 W El Paso St #2, Marfa 79843
-        instagram.com/dimzayan`,
+        text: `<p>Dim Zayan</p>
+        <p>208 W El Paso Street #2, 
+        <p>Marfa, Texas 79843
+        <p>USA</p>
+
+        <p>dim.marfa.studio@gmail.com</p>
+        +1 6.4.6.6.7.8.1.4.6.8
+
+        <br/>
+        Instagram: <a href="https://www.instagram.com/dimzayan/">@dimzayan</a>
+        
+        `,
+     
         command: 'onActivate',
         commandValue: 'contact',
         transformable: true,
@@ -642,27 +743,6 @@ Interview with Nico/ BitVolt, 2020
 
     // },
 
-    menu: {
-        list: true,
-        parent: 'baseScene',
-        transformable: true,
-        _displayable: true,
-        padding: 10,
-        offset: [100,0],
-        itemSize: [300,50],
-        active: true
-    },
-
-    carousel : {
-
-        carousel: true,
-        transformable: true,
-        tempo: 6000,
-        offset: [500,200],
-        itemSize: [400,500],
-        size: [400,500]
-
-    }
 
     
 }
