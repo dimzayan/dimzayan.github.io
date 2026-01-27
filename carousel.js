@@ -3,6 +3,9 @@ const carouselSystem = {
     onInit: function(engine, ctx) {
 
         const carousel = engine.entities.carousel
+        if(!carousel) {
+            return
+        }
         carousel.size = [window.innerWidth - 400, window.innerHeight]
         carousel.offset = [0, 0]
         carousel.works = []

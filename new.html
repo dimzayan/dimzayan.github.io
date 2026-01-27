@@ -6,7 +6,7 @@
  	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-		<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="profile" href="https://gmpg.org/xfn/11">
 		<!-- <link href="./index_files/bootstrap.min.css" rel="stylesheet"> -->
@@ -31,7 +31,7 @@
 
 		<script src="lib/gsap.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SmoothScroll.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollSmoother.min.js"></script>
 		<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
 
 		
@@ -40,7 +40,11 @@
 					font-family: "Fira Sans";
 					text-decoration: none;
 					font-weight: 300;
-                    background-color: #dedeef;
+					-webkit-text-size-adjust: 100%;
+					-moz-text-size-adjust: 100%;
+					-ms-text-size-adjust: 100%;
+					text-size-adjust: 100%;
+                    
 					padding: 0;
 					margin: 0;
 					
@@ -48,6 +52,8 @@
 
 				body {
 					overflow-x: hidden;
+					background-color: #dedeef;
+					/* background-color: rgb(56, 67, 144); */
 				}
                 .works {
                     display: flex;
@@ -76,9 +82,10 @@
 					position: relative;
 					/* overflow: hidden; */
 					width: 100%;
-					height: 100%;
+					height: auto;
 					font-size: inherit;
 					background: none;
+					overflow: visible;
 				}
 
 				.entity .text,
@@ -106,7 +113,7 @@
 					
 				}
 
-				.entity[data-clickable="true"]::before {
+				.entity[data-clickable="true"] .wrapper::before {
 					
 					content: "";
 					position: absolute;
@@ -115,6 +122,7 @@
 					width: 2px;
 					height: 100%;
 					background-color: #2b374b;
+					
 					/* border-radius: 50%; */
 				
 
@@ -122,13 +130,13 @@
 				}
 
 				.entity[data-active="false"][data-clickable="true"]:hover {
-					color: #5590f9
+					/* color: #5590f9 */
 				}
 
 
 
 				.entity[data-active="true"] {
-					align-items: baseline;
+					/* align-items: flex-start; */
 				}
 
 				.entity[data-active="true"][data-clickable="true"]::before {
@@ -143,6 +151,8 @@
 				.entity[data-active="true"] .title {
 					/* display: none; */
 				}	
+
+
 
 
 		
@@ -170,31 +180,36 @@
 					display: block;
 				}
 
-				#exhibitions .text, 
+				/* #exhibitions .text, 
 				#press .text {
 					font-size: 0.8em;
-				}
+				} */
 
 				.scene {
 					width: 100vw;
 					min-height: 100vh;
 					height: auto;
-					padding: 256px 0 0 0;
+					padding: 0 0 0 0;
 					top : 0;
 					left: 0;
 					overflow: visible;
 					overflow-x: hidden;
+					position: fixed;
 				}
 
 				.scene > .wrapper {
 					box-sizing: border-box;
 				}
 
-				
+				.project {
+					position: absolute;
+					left: 600px;
+					width: 400px;
+				}
 
 				#menu {
 					width : 30vw;
-					margin: 0 0;
+					margin: 256px 0;
 					padding: 0;
 					height: auto;
 					position: relative;
@@ -202,16 +217,17 @@
 					box-sizing: border-box;
 				}
 
-				#menu .wrapper {
+				#menu > .wrapper {
 					padding : 0 0 0 48px;
 					box-sizing: border-box;
 				}
 
-				#menu .wrapper > .entity {
+				#menu > .wrapper > .entity {
 					position: relative;
-					padding: 48px 0 48px 0;
-					padding:0;
-					transform-origin: left top;
+					padding:  0;
+					margin: 0 0 48px 0;
+					transform-origin: left center;
+					position: relative;
 					
 				}
 
@@ -226,24 +242,70 @@
 					margin: 0 0 12px 0
 				} */
 
-				#menu .wrapper > .entity .wrapper {
-					overflow: hidden;
-					padding: 24px;
+				.section {
+					display: flex;
+					min-height: 100vh;
+					padding: 0;
+					position: relative;
+					flex-direction: row;
+					align-items: center;
+					height: 100vh;
+					/* border: 1px solid red; */
 				}
 
-				#menu .entity .title {
-					font-size: 1em;
+
+
+				.section > .wrapper {
+					overflow: visible;
+					display: flex;
+					flex-direction: row;
+					flex-wrap: wrap;
+					justify-content: baseline;
+					align-items: center;
+					height: auto;
+					flex: 0 0 33%;
+					padding: 0 0 0 0;
+					margin: 0 0 0 0;
+					min-height: 100vh;
+					background-color: #dedeef;
+				}
+
+				.section .carousel {
+					display: flex;
+					flex: 1;
+					flex-direction: row;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
+					height: auto;
+					position: relative;
+					height: 100%;
+					
+				}
+
+
+			
+
+				.section > .wrapper > .content {
+					padding: 64px;
+					background: none;
+			
+				
+
+				}
+
+				.section .title {
+					font-size: 0.8em;
 					margin-bottom: 12px;
+					background: none;
 				}
 
-				#menu .entity .text {
-					font-size: 1.4em;
+				.section .text {
+					font-size: 1.1em;
+					line-height: 1.6em;
 				}
 
-				#menu #bio .text {
-					font-size: 1.4em;
-				}
-
+				
 
 				#menu .entity {
 			
@@ -264,35 +326,46 @@
 
 				.carousel 
 				{
-					position: fixed;
+					position: absolute;
 					top: 0;
 					left: 0;
 					right: 0;
 					width: auto;
-					height: 100vh;
+					height: 80vh;
 					overflow: hidden;
-					background-color: rgb(222, 9, 239, 0);
+				
 					display: flex;
 					justify-content: center;
 					align-items: center;
+					min-height: 80vh;
 
 				}
 
-				.carousel .wrapper {
+				/* .carousel .wrapper {
 					display: flex;
 					flex-direction: row;
 					flex-wrap: wrap;
 					justify-content: center;
 					align-items: center;
+					
 				
+				} */
+
+				.carousel .content {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					height: 100%;
+					background: none;
 				}
 
 				.carousel .entity.work {
 					height: 100%;
 					width: 80%;
 					
-					position: relative;
-					
+					position: absolute;
+					opacity : 0;
 					
 					display: flex;
 					justify-content: center;
@@ -308,7 +381,7 @@
 					align-items: center;
 					padding: 0;
 					overflow: visible;
-					height: 70%;
+					height: 75%;
 				}
 
 
@@ -319,6 +392,7 @@
 					height: 100%;
 					object-fit: contain;
 					max-width: 100%;
+					background: none;
 				}
 
 				
@@ -337,37 +411,30 @@
 					font-size: 1.2em;
 				}
 
-				#ether {
-					position: fixed;
-					top: 0;
-					left: 9000%;
-					width: 0;
-					height: 0;
-					z-index: -1;
-					display: none;
-				}
+				
 
-				#ether > * {
-					display: none;
-				}
-
-
-				#menu .text dl {
+				.text dl {
 					display: flex;
 					flex-direction: column;
 					gap: 12px;
 				}
 
-				#menu .text dl dd {
-					font-size: 0.8em
+				.text dl dd {
+					font-size: 1em
 				}
 
 				#menu .text dl dd a {
 					color: #5590f9;
 				}
 
-				#menu .text dl dd a:hover {
-					color: #5590f9;
+				.section .text dl dd a,
+				.section .text dl dd a:visited {
+					color: inherit;
+				}
+
+				.section .text dl dd a:hover {
+					text-decoration: underline;
+					/* color: #5590f9; */
 				}
 
 				#menu .text dl dd a::after {
@@ -388,26 +455,38 @@
 					margin-top: 12px;
 				}
 
-				.entity[data-enabled="false"] {
-					display: none !important;;
+
+				@media (max-width: 1024px) {
+					.section {
+						flex-direction: column;
+						height: auto;
+					}
+
+					.carousel {
+						width: 100%;
+						height: 100vh !important;
+						min-height: 100vh !important;
+					}
+
+					
 				}
+
+				/* .entity[data-enabled="false"] {
+					display: none !important;;
+				} */
 		</style>
                 
 
                
 	</head>
 	<body>
-		<main>
-			
-		</main>
-		<div id="ether">
-			<div class="wrapper"></div>
-		</div>
+		
+		
 	</body>
 
 	<script type="text/javascript">
 		gsap.registerPlugin(ScrollTrigger);
-		// gsap.registerPlugin(SmoothScroll);
+		gsap.registerPlugin(ScrollSmoother);
 	</script>
 
 	

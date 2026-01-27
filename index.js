@@ -138,6 +138,7 @@ const displayableSystem = {
     },
 
     onDeactivate: function(engine, ctx) {
+     
         const container = document.querySelector(`#${ctx.entity}`)
         container.classList.remove('active')
     },
@@ -174,12 +175,12 @@ let width = 0;
 
 
 const systems = [
-    menuSystem,
+    // menuSystem,
     clickableSystem,
     selectableSystem,
     // menuItemSystem,
     parentSystem,
-    carouselSystem,
+    // carouselSystem,
     transformableSystem,
     sceneSystem,
     displayableSystem
@@ -230,6 +231,13 @@ window.addEventListener('load', () => {
     
     
     document.addEventListener('click', (e) => {
+
+        
+        if(e.target.dataset.action) {
+            e.preventDefault();
+            events.push({id: 'onClick', data: {action: e.target.dataset.action, entity: e.target.dataset.entity}})
+            return
+        }
         const elements = document.elementsFromPoint(e.clientX, e.clientY);
         const clickableElement = elements.find(el => el.dataset.clickable);
         if(clickableElement) {

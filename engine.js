@@ -35,9 +35,23 @@ const engine = {
         }
         
        
-        const main = document.querySelector('main');
+        this.mount(this.entities.baseScene)
+        
       
         
+
+        gsap.to('body', {
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 1
+            },
+            backgroundColor: 'rgb(56, 67, 144)',
+            duration: 1,
+            ease: 'expo2.inOut'
+        })
+
         requestAnimationFrame(this.run.bind(this));
             
         
@@ -108,6 +122,14 @@ const engine = {
             this[command.command](command)
         }
     },
+
+    selectProject: function(data) {
+        console.warn('selecting project', data.entity)
+        const project = this.entities[data.entity]
+        if(project) {
+            engine.activate(project.id)
+        }
+    },
     selectWorks: function(data) {
         console.warn('selecting works', data.filter)
         const works = Object.values(this.entities).filter(entity => entity.work)
@@ -127,12 +149,16 @@ const engine = {
         events.push({id: 'onSelectWorks', filter: data.filter, works: selectedWorks})
     },
     mount: function(entity) {
-        const entityContainer = document.createElement('div');
+
+        let entityContainer = document.querySelector(`#${entity.id}`);
+        if(entityContainer) {
+            return entityContainer;
+        }
+        entityContainer = document.createElement('div');
         entityContainer.id = entity.id;
         entityContainer.classList.add('entity');
 
-        // this.timelines[entity.id] = gsap.timeline();
-
+      
 
         const wrapper = document.createElement('div');
         wrapper.classList.add('wrapper');
@@ -142,15 +168,19 @@ const engine = {
             entityContainer.classList.add('work');
         }
         
+        const content = document.createElement('div')
+        content.classList.add('content')
+        wrapper.appendChild(content)
+
         // For carousel works, hide title
-        if(entity.title ) {
+        if(entity.title && entity.showTitle) {
             const entityTitle = document.createElement('div')
             entityTitle.classList.add('title')
             entityTitle.innerText = entity.title;
             if(entity.description) {
                 entityTitle.innerHTML += `<span class="description">${entity.description}</span>`
             }
-            wrapper.appendChild(entityTitle);
+            content.appendChild(entityTitle);
         }
 
         if(entity.image) {
@@ -159,16 +189,31 @@ const engine = {
             entityImage.src = entity.image;
             entityImage.alt = entity.title || '';
             entityImage.style.width = 'auto';
-            wrapper.appendChild(entityImage);
+            content.appendChild(entityImage);
+        }
+
+        if(entity.video) {
+            const entityVideo = document.createElement('iframe');
+            entityVideo.src = entity.video;
+            entityVideo.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            entityVideo.title = entity.title || '';
+            entityVideo.allowFullscreen = true;
+            entityVideo.frameBorder = 0;
+            entityVideo.style.width = '560px';
+            entityVideo.style.height = '315px';
+            content.appendChild(entityVideo);
         }
 
         if(entity.text) {
             const entityText = document.createElement('div')
             entityText.classList.add('text')
             entityText.innerHTML = entity.text;
-            wrapper.appendChild(entityText);
+            content.appendChild(entityText);
 
         }
+
+
+        
 
 
 
@@ -184,14 +229,28 @@ const engine = {
 
         }
 
-            const parent = engine.entities[entity.parent]
+      
+        
 
-        if(parent) {
-            let parentContainer = document.querySelector(`#${parent.id}`);
-            if(parentContainer && !parentContainer.contains(entityContainer)) {
-                parentContainer.querySelector('.wrapper').appendChild(entityContainer);
-            }   
-        } 
+        // if(entity.parent) {
+        //     const parent = engine.entities[entity.parent]
+        //     let parentContainer = document.querySelector(`#${parent.id}`);
+        //     if(parentContainer && !parentContainer.contains(entityContainer)) {
+        //         parentContainer.querySelector('.wrapper').appendChild(entityContainer);
+        //     }   
+        // } 
+
+
+        if(entity.children) {
+            for(const child of entity.children) {
+                const childEntity = engine.entities[child]
+                const childContainer = this.mount(childEntity)
+                entityContainer.querySelector('.wrapper').appendChild(childContainer)
+            }
+        }
+
+
+
 
 
         if(entity.carousel) {
@@ -228,6 +287,7 @@ const engine = {
 
         let entityContainer = document.querySelector(`#${entity.id}`);   
         if(!entityContainer) {
+            return
            entityContainer = this.mount(entity)
         }
 
@@ -242,11 +302,6 @@ const engine = {
         } 
 
         
-        // Handle carousel works - position them at carousel location
-        // animation.x = entity.position[0];
-        // animation.y = entity.position[1];
-        // animation.opacity = entity.active ? 1: 0.2 //opacity;
-        // animation.padding = padding;
 
         if(entity.active) {
             entityContainer.dataset.active = entity.active;
@@ -295,6 +350,11 @@ const engine = {
 
         if(entity.work) {
             entityContainer.style.visibility = 'visible'
+            // entityContainer.style.opacity = entity.opacity
+        }
+
+        if(entity.menuItem) {
+            entityContainer.style.transform = `translate(${entity.x}px, ${entity.y}px) rotate(${entity.rotation}deg) scale(${entity.scale}) skew(${entity.skewX}deg, ${entity.skewY}deg )`
             entityContainer.style.opacity = entity.opacity
         }
     
@@ -316,7 +376,7 @@ const engine = {
             for(const entity of Object.values(engine.entities)) {
                 entity._dirty = true;
             }
-            this.queueEvent('onMount')
+            // this.queueEvent('onMount')
         }
         for(const system of engine.systems) {
             if(!system.initialized) {
