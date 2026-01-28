@@ -62,26 +62,23 @@ const sceneSystem = {
         const {entity, container} = ctx.data;
         const works = Object.values(engine.entities).filter(entity => entity.work)
 
-
-        
-        
-
         if(entity && entity.parent && entity.parent === 'baseScene') {
             container.classList.add('section')
 
-   
-
-   
-            let onUpdate = () => {}
-            let end = window.innerHeight;
+            
+    
             if(entity.works) {
-
+                entity.index = 0;
                 const carouselElement = document.createElement('div')
                 carouselElement.classList.add('carousel')
                 container.appendChild(carouselElement)
 
-                
-                entity.works.forEach(workId => {
+                const nav = document.createElement('nav')
+                nav.classList.add('nav')
+                carouselElement.appendChild(nav)
+
+
+                entity.works.forEach((workId, index) => {
                     const work = engine.entities[workId]
                     if(!work) {
                         console.error('work not found', workId)
@@ -89,39 +86,26 @@ const sceneSystem = {
                     }
                     const workContainer = engine.mount(work);
                     carouselElement.appendChild(workContainer);
+
+                    
+
+                    if(entity.works.length > 1) {
+                        const a = document.createElement('a')
+                        a.dataset.work = workId
+                        a.dataset.index = index;
+                        a.dataset.clickable = true
+                        a.dataset.action = 'selectWork'
+                        a.dataset.entity = workId
+                      
+
+                        nav.appendChild(a)
+                    }
+                 
+                    
           
                 })
 
-                onUpdate = (self) => {
-                    const progress = self.progress.toFixed(2)
-                    
-                    const activeIndex = Math.round(progress * (entity.works.length - 1));
-                    const activeWork = entity.works[activeIndex]
-                    
-                    if(activeWork !== entity.activeWork) {
-                        console.log(` selecting: ${Math.round(progress * entity.works.length)}/${entity.works.length}`);
-                        if(entity.activeWork) {
-                            console.log('deactivating', entity.activeWork)
-                            engine.deactivate(entity.activeWork)
-                            gsap.killTweensOf(`#${entity.activeWork}`)
-                            gsap.to(`#${entity.activeWork}`, {opacity: 0, zIndex: 0, duration: 1, ease: 'expo2.inOut', onUpdate: () => {entity._dirty = true}})
-                        }
-                        console.log('activating', activeWork)
-                        engine.activate(activeWork)
-                        gsap.killTweensOf(`#${activeWork}`)
-                        gsap.to(`#${activeWork}`, {opacity: 1, zIndex: 10, duration: 1, ease: 'expo2.inOut', onUpdate: () => {entity._dirty = true}})
-                        entity.activeWork = activeWork
-                    }
-                }
-
-                end = entity.works.length * window.innerHeight
             }
-        
-
-
-            const trigger = container.querySelector('.content')
-
-           
         
             ScrollTrigger.create({
                 trigger: container,
@@ -132,17 +116,17 @@ const sceneSystem = {
                 onToggle: (self) => {
                     if(self.isActive) {
                         this.activeSectionId = entity.id;
+                        this.startTime = engine.timestamp;
+                       
+                        this.selectWork(engine, {force: true})
                     }
-                    console.log( entity.id, self.isActive)
+                   
                 },
                 // onUpdate: onUpdate
             })
 
-            
       
         }
-        // gsap.set(`#${carousel.id}`, {left: this.offset})
-        // gsap.set(`#${menu.id}`, {left: 0, width: this.offset})
 
         if(!entity.scene) {
             return
@@ -197,15 +181,40 @@ const sceneSystem = {
         if(!ctx.data) { return }
 
         if(ctx.data.action  && this[ctx.data.action]) {
+          
+            console.log('onClick', ctx.data.action)
             this[ctx.data.action](engine, ctx.data)
         }
 
+
+        
       
        
     },
     
+    // nextWork: function(engine, ctx) {
+    //     const activeSection = engine.entities[this.activeSectionId];
+    //     if(!activeSection) { return }
+    //     const media = activeSection.works;
+    //     if(!media || media.length === 0) { return }
+    //     const activeIndex = Math.floor((ctx.timestamp/ this.tempo) % (media.length ));
+    //     const activeMedia = media[activeIndex];
+    //     engine.activate(activeMedia)
+    // },
+
+    onWorkOut: function(engine, ctx) {
+
+        console.log('onWorkOut', engine.timestamp)
+
+        // this.startTime = engine.timestamp ;
+    },
+
 
     onUpdate: function(engine, ctx) {
+
+        if(engine.workHover) {
+            return
+        }
        
 
         const activeSection = engine.entities[this.activeSectionId];
@@ -217,30 +226,62 @@ const sceneSystem = {
         if(!media || media.length === 0) { return }
 
 
-        const activeIndex = Math.floor((ctx.timestamp/ this.tempo) % (media.length ));
-      
-        const activeMedia = media[activeIndex];
-
-        console.log('activeMedia', activeMedia)
-        
-        if(activeMedia !== activeSection.activeMedia) {
-
-            console.log('activating', activeMedia)
-            
-            if(activeSection.activeMedia) {
-                engine.deactivate(activeSection.activeMedia)
-                gsap.killTweensOf(`#${activeSection.activeMedia}`)
-                gsap.to(`#${activeSection.activeMedia}`, {opacity: 0, zIndex: 0, duration: 1, ease: 'expo2.inOut'})
-            }
-            
-            engine.activate(activeMedia)
-            gsap.killTweensOf(`#${activeMedia}`)
-            gsap.to(`#${activeMedia}`, {opacity: 1, zIndex: 10, duration: 1, ease: 'expo2.inOut'})
-            activeSection.activeMedia = activeMedia
+        if(ctx.timestamp < (this.startTime + this.tempo)) {
+            return
         }
+
+        
+      
+        this.selectWork(engine, {index: (activeSection.index + 1) % media.length})
     
    
 
+    },
+
+
+    selectWork: function(engine, ctx) {
+
+        
+
+        let {index, force} = ctx; 
+
+        
+        
+        const activeSection = engine.entities[this.activeSectionId];
+        
+        const sectionContainer = document.querySelector(`#${activeSection.id} .carousel`);
+        index = index !== undefined ? index : activeSection.index;
+
+        if(!activeSection.works || activeSection.works.length === 0) { return }
+        if(index !== activeSection.index || force) {
+            this.startTime = engine.timestamp;
+
+            let activeMedia = activeSection.works[activeSection.index];
+            engine.deactivate(activeMedia)
+
+            if(sectionContainer) {
+                if(sectionContainer.querySelector('nav a.active')) {
+                    sectionContainer.querySelector('nav a.active').classList.remove('active')
+                }
+            }
+            gsap.killTweensOf(`#${activeMedia}`)
+            gsap.to(`#${activeMedia}`, {opacity: 0, zIndex: 0, duration: 1, ease: 'expo2.inOut'})
+            
+            
+            activeSection.index = index;
+            activeMedia = activeSection.works[activeSection.index];
+            engine.activate(activeMedia)
+            
+            if(sectionContainer) {
+                if(sectionContainer.querySelector('nav a[data-index="' + index + '"]')) {  
+                    sectionContainer.querySelector('nav a[data-index="' + index + '"]').classList.add('active')
+                
+                }
+            }
+            gsap.killTweensOf(`#${activeMedia}`)
+            gsap.to(`#${activeMedia}`, {opacity: 1, zIndex: 10, duration: 1, ease: 'expo2.inOut'})
+            
+        }
     },
 
     selectProject: function(engine, ctx) {

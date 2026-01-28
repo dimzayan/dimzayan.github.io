@@ -4,7 +4,7 @@ const entities = {
     baseScene : {
         scene : true,
         enabled: true,
-        children: ['bio', 'far_west_texas', 'east_coast', 'zurich', 'paris', 'digital_art', 'selected_projects','exhibitions', 'press', 'contact'],
+        children: ['bio', 'far_west_texas', 'east_coast', 'zurich', 'paris',  'selected_projects','exhibitions', 'press', 'contact'],
        
         padding: {
             top: 0,
@@ -351,6 +351,19 @@ const entities = {
         _displayable: true
     },
 
+    sol_001: {
+        title: "Seed of Light 001",
+        description: "Generative, Javascript, 2021",
+        image: "https://cdn.dimzayan.com/works/IMG_8816.webp",
+        location: 'east_coast',
+        year: 2021,
+        work: true,
+        _physical: false,
+        _digital: true,
+        transformable: true,
+        _displayable: true
+    },
+
 
     selected_projects: {
         title: "Selected Projects",
@@ -398,9 +411,7 @@ Marfa, Texas.</p>`,
 
     far_west_texas: {
         title: "Far West Texas",
-        text: `<p>Zayan started working with construction materials since his arrival in Marfa in 2023.</p>
-        
-        <p>Since it became home to Donald Judd, Marfa is internationally recognised for its unique artistic ecosystem at the edge of the desert the exhibition engages with the town's tradition of radical art, experimentation, and reflection. Even though he has deep respect and admiration for the work of Judd, Dim's attraction to Marfa is less due to Judd than some of the reasons why he chose to live there, namely the exceptional light and the vastness of the landscape.</p> <p>The hard edged cast shadows over the barren soils of the chihuahuan desert, the expanse of the horizon and the ever changing colors of the sky all become source of inspiration, and at times even integrant forces in his work.</p>`,
+        text: `<p>Since moving to Marfa in 2023, Zayan's work has been evolving into a dialogue with the landscape. The hard shadows across the rugged terrain, the flat wide open horizon, and the massive blue skies inform his approach to light and surface. The desert becomes a playground for experimentation with space and perception through outdoor installations and reliefs reminiscent of the surrounding landscape.</p> <p>His recent work uses construction materials as a primary medium. By sanding, carving, and painting raw gypsum board, he exposes the material's layered structure—textures and forms akin to eroded mineral surfaces.</p><p>Zayan applies similar techniques to depict sea structures. These bodies of water aren't rendered for contrast with the desert, but to suggest connection: a plateau as an ancient seabed, a geological memory still present in the stone and soil.</p>`,
         parent: 'baseScene',
         _location: true,
         transformable: true,
@@ -414,22 +425,19 @@ Marfa, Texas.</p>`,
 
     east_coast: {
         title: "East Coast",
-        text: `<p>in 1999, Dim relocated to New York City where he worked as a graphic designer and engineer. This experience opened the way to explore a broader range of media and integrate digital elements into his work.</p>
-        <p>Electronics, leds, plastics, every  medium is not chosen arbitrarily but rather as a means to express a specific reaction or emotional state.</p>
-        <p>As an example, the precise layering and spacing of sheets of plastic and metal over software controlled LED sequence was used to deconstruct and pixelate beams of LED light in his lightboxes.</p>`,
+        text: `<p>In 1999, Zayan relocated to New York City, where he worked as a graphic designer and engineer. This experience enabled him to expand his artistic practice into digital media and multidisciplinary formats.</p><p>Materials such as electronics, LEDs, and plastics are selected not arbitrarily, but for their capacity to convey specific emotional or psychological states.</p><p>For instance, in his lightboxes, precisely layered sheets of plastic and metal—combined with software-controlled LED sequences—are used to deconstruct beams of light into a pixelated rendering. </p>`,
         parent: 'baseScene',
         _location: true,
         transformable: true,
         _displayable: true,
         link: true,
         clickable: true,
-        works: ['lighbox_001', 'lighbox_002', 'lighbox_003'],
-        onSelect: {command: 'selectWorks', filter: 'location', value: 'zurich'}
+        works: ['sol_001', 'lighbox_001', 'lighbox_002']
     },
     zurich: {
         title: "Zürich",
         parent: 'menu',
-        text: `<p>In 2022, Dim was invited to show Rarevision at the Kunsthalle Zürich.</p>
+        text: `<p>In 2022, Dim Zayan was invited to show Rarevision at the Kunsthalle Zürich.</p>
         <p>Rarevision, a live and real-time rendering of transactions on the Bitcoin Network, was presented at <a href="https://dyor.kunsthallezurich.ch/" target="_blank">DYOR</a>, an exhibition curated by Nina Roehrs that focused on artists, projects and platforms that have had a significant influence on how the crypto art scene has developed and is today.</p>`,
         _location: true,
         transformable: true,
@@ -443,7 +451,7 @@ Marfa, Texas.</p>`,
     paris: {
         title: "Paris",
        
-        text: `<p>Dim was born in Paris, France in 1977 where he studied art, design and economics.</p><p>self-taught in computer science, he started programming games at 12 years old and developped culutal influences that spanned from comics like Moebius, film Kurosawa and the punk  heavy metal rap trip hop scene. Klimt, Dali, Carravagio, Klee</p> `,
+        text: `<p>Dim Zayan grew up in Paris, France where he studied art, design and economics.Self-taught in computer science, he began programming games in Basic, viewing coding as a creative practice.</p><p> Through his studies and upbringing, he was exposed to a broad range of cultural influences that spanned across genres and mediums.  Key artistic early inspirations include Carravagio, Doig, Jarmusch, Klee, Klimt, Kundera, Kurosawa, Moebius, Otomo and Paik.</p> `,
         parent: 'menu',
         _location: true,
         transformable: true,

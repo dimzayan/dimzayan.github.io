@@ -177,7 +177,7 @@ let width = 0;
 const systems = [
     // menuSystem,
     clickableSystem,
-    selectableSystem,
+    // selectableSystem,
     // menuItemSystem,
     parentSystem,
     // carouselSystem,
@@ -235,7 +235,7 @@ window.addEventListener('load', () => {
         
         if(e.target.dataset.action) {
             e.preventDefault();
-            events.push({id: 'onClick', data: {action: e.target.dataset.action, entity: e.target.dataset.entity}})
+            events.push({id: 'onClick', data: e.target.dataset})
             return
         }
         const elements = document.elementsFromPoint(e.clientX, e.clientY);
@@ -252,6 +252,21 @@ window.addEventListener('load', () => {
 
     document.addEventListener('mouseup', (e) => {
         // console.log('mouseup', e)
+    });
+
+    document.addEventListener('mouseover', (e) => {
+        const elements = document.elementsFromPoint(e.clientX, e.clientY);
+        if(elements.find(el => el.classList.contains('media')) || elements.find(el => el.classList.contains('nav'))) {
+            if(!engine.workHover) {
+                engine.workHover = true;
+                engine.queueEvent('onWorkIn')
+            }
+        } else {
+            if(engine.workHover) {
+                engine.workHover = false;
+                engine.queueEvent('onWorkOut');
+            }
+        }
     });
 
 

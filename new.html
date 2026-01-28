@@ -284,6 +284,38 @@
 				}
 
 
+				.section .carousel nav {
+
+					display: flex;
+					flex-direction: column;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
+					height: auto;
+					position: absolute;
+					right: 24px;
+					width: 24px;
+					height: 100%;
+				}
+
+				.section .carousel nav a {
+					display: block;
+					width: 4px;
+					height: 24px;
+					margin: 6px 0;
+					/* border-radius: 50%; */
+					background: rgba(0, 0, 200, 0.1);
+				}
+
+				.section .carousel nav a:hover {
+					background: rgba(200, 200, 200, 1);
+				}
+
+
+				.section .carousel nav a.active {
+					background: rgba(0, 0, 200, 0.5);
+				}
+
 			
 
 				.section > .wrapper > .content {
@@ -492,7 +524,7 @@
 	
 	<script src="entities.js"></script>
 	<script src="scene.js"></script>
-	<script src="journey.js"></script>
+
 	<script src="carousel.js"></script>
 	<script src="engine.js"></script>
 	<script src="index.js"></script>

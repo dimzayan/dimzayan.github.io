@@ -186,6 +186,7 @@ const engine = {
         if(entity.image) {
             const entityImage = document.createElement('img');
             entityImage.loading = 'lazy';
+            entityImage.classList.add('media');
             entityImage.src = entity.image;
             entityImage.alt = entity.title || '';
             entityImage.style.width = 'auto';
@@ -194,6 +195,7 @@ const engine = {
 
         if(entity.video) {
             const entityVideo = document.createElement('iframe');
+            entityVideo.classList.add('media');
             entityVideo.src = entity.video;
             entityVideo.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
             entityVideo.title = entity.title || '';
@@ -369,6 +371,7 @@ const engine = {
 
     update: function(timestamp) {
         
+        this.timestamp = timestamp;
        
         engine.events.push({id:'onUpdate', timestamp: timestamp})
         if(this.ticks === 3) {
