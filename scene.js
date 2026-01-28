@@ -111,7 +111,7 @@ const sceneSystem = {
                 trigger: container,
                 start: 'top center',
                 end: `bottom center`,
-                scrub: engine.mode === 'mobile' ? false : 2,
+                scrub: 2,
                 
                 onToggle: (self) => {
                     if(self.isActive) {
