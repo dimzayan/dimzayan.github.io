@@ -111,7 +111,7 @@ const sceneSystem = {
                 trigger: container,
                 start: 'top center',
                 end: `bottom center`,
-                scrub: 2,
+                scrub: engine.mode === 'mobile' ? false : 2,
                 
                 onToggle: (self) => {
                     if(self.isActive) {
@@ -132,21 +132,26 @@ const sceneSystem = {
             return
         }
 
-        let smoother = ScrollSmoother.create({
-            wrapper: '#baseScene',
-            content: '#baseScene > .wrapper',
-            smooth: 1,
-            lag: 0.5,
-            effects: true,
-            normalizeScroll: true,
-            touch: {
+        // Detect mobile and disable smooth scrolling
+        const isMobile = engine.mode === 'mobile' || window.innerWidth < 800;
+        
+        if (!isMobile) {
+            let smoother = ScrollSmoother.create({
+                wrapper: '#baseScene',
+                content: '#baseScene > .wrapper',
                 smooth: 1,
-                touchMultiplier: 1
-            }
-        });
+                lag: 0.5,
+                effects: true,
+                normalizeScroll: true,
+                touch: {
+                    smooth: 1,
+                    touchMultiplier: 1
+                }
+            });
 
-        smoother.effects('.content', {lag: 0.1, smooth: 1})
-        smoother.effects('.carousel', {lag: 0.2, smooth: 2})
+            smoother.effects('.content', {lag: 0.1, smooth: 1})
+            smoother.effects('.carousel', {lag: 0.2, smooth: 2})
+        }
 
 
     },

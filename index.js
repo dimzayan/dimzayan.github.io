@@ -213,19 +213,20 @@ window.addEventListener('load', () => {
     });
 
     let scrollTimeout;
+    let lastScrollTime = 0;
+    const scrollThrottle = 16; // ~60fps
+    
     window.addEventListener('scroll', () => {
+        const now = performance.now();
         
-        
-        // Clear existing timeout
-        if (scrollTimeout) {
-            clearTimeout(scrollTimeout);
+        // Throttle to ~60fps
+        if (now - lastScrollTime < scrollThrottle) {
+            return;
         }
+        lastScrollTime = now;
         
-        // Queue onScroll event only after scrolling stops (150ms delay)
-        // scrollTimeout = setTimeout(() => {
-            engine.scrollY = window.scrollY || window.pageYOffset || 0;
-            engine.queueEvent('onScroll', {timestamp: Date.now()});
-        // }, 1);
+        engine.scrollY = window.scrollY || window.pageYOffset || 0;
+        engine.queueEvent('onScroll', {timestamp: Date.now()});
     }, { passive: true });
 
     

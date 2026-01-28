@@ -92,7 +92,7 @@ const engine = {
     enable: function(entityId) {
         const entity = this.entities[entityId]
         if(!entity.enabled) {
-            console.warn('>>> enabling', entity.id)
+            // console.warn('>>> enabling', entity.id)
             entity.enabled = true
             entity._dirty = true
             // entity.opacity = 1
