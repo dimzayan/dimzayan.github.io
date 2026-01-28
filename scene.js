@@ -120,27 +120,22 @@ const sceneSystem = {
                        
                         this.selectWork(engine, {force: true})
                     }
-                   
                 },
                 // onUpdate: onUpdate
             })
-
-      
         }
 
         if(!entity.scene) {
             return
         }
 
-        // Detect mobile and disable smooth scrolling
-        const isMobile = engine.mode === 'mobile' || window.innerWidth < 800;
         
-        if (!isMobile) {
+
             let smoother = ScrollSmoother.create({
                 wrapper: '#baseScene',
                 content: '#baseScene > .wrapper',
-                smooth: 1,
-                lag: 0.5,
+                smooth: engine.mode !== 'mobile' ? 1 : 0,
+                lag: engine.mode !== 'mobile' ? 1 : 0,
                 effects: true,
                 normalizeScroll: true,
                 touch: {
@@ -149,10 +144,13 @@ const sceneSystem = {
                 }
             });
 
-            smoother.effects('.content', {lag: 0.1, smooth: 1})
-            smoother.effects('.carousel', {lag: 0.2, smooth: 2})
-        }
+            if(engine.mode !== 'mobile') {
+                smoother.effects('.content', {lag: 0.1, smooth: 1})
+                smoother.effects('.carousel', {lag: 0.2, smooth: 2})
+            }
+        
 
+        
 
     },
 
