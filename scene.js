@@ -138,6 +138,7 @@ const sceneSystem = {
             smooth: 1,
             lag: 0.5,
             effects: true,
+            normalizeScroll: true,
             touch: {
                 smooth: 1,
                 touchMultiplier: 1
