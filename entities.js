@@ -24,7 +24,7 @@ const entities = {
         work: true,
         _digital: true,
         _physical: true,
-        _video: true,
+     
         transformable: true,
         _displayable: true
     },
@@ -159,6 +159,19 @@ const entities = {
         location: 'miami',
         year: 2021,
         work: true,
+        transformable: true,
+        _displayable: true
+    },
+
+    sol_002: {
+        title: "Seed of Light 002",
+        description: "Generative, Javascript, 2021",
+        video: "https://cdn.dimzayan.com/works/greenyellow2.webm",
+        location: 'east_coast',
+        year: 2021,
+        work: true,
+        _physical: false,
+        _digital: true,
         transformable: true,
         _displayable: true
     },
@@ -432,7 +445,7 @@ Marfa, Texas.</p>`,
         _displayable: true,
         link: true,
         clickable: true,
-        works: ['sol_001', 'lighbox_001', 'lighbox_002']
+        works: ['sol_001',  'lighbox_001', 'lighbox_002', 'sol_002']
     },
     zurich: {
         title: "Zürich",
