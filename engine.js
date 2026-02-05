@@ -47,7 +47,7 @@ const engine = {
                 end: 'bottom bottom',
                 scrub: 1
             },
-            backgroundColor: 'rgb(56, 67, 144)',
+            // backgroundColor: 'rgb(142, 138, 161)',
             duration: 1,
             ease: 'expo2.inOut'
         })
@@ -173,7 +173,7 @@ const engine = {
         wrapper.appendChild(content)
 
         // For carousel works, hide title
-        if(entity.title && entity.showTitle) {
+        if(entity.title && entity.showTitle || entity.work) {
             const entityTitle = document.createElement('div')
             entityTitle.classList.add('title')
             entityTitle.innerText = entity.title;

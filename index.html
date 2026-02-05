@@ -6,7 +6,7 @@
  	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-		<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="profile" href="https://gmpg.org/xfn/11">
 		<!-- <link href="./index_files/bootstrap.min.css" rel="stylesheet"> -->
@@ -18,370 +18,545 @@
 		<meta property="og:locale" content="en_US">
 		<meta property="og:type" content="article">
 		<meta property="og:title" content="Dim Zayan">
-		<meta property="og:description" content="Dim Zayan is a multidiciplinary artist and Bitcoin advocate, creator of the Bitcoin Voicepaper and author of Bulltardia the Bitcoin fable.">
+		<meta property="og:description" content="Dim Zayan is a multidiciplinary artist based in Marfa, Texas">
 		<meta property="og:url" content="https://www.dimzayan.com">
 		<meta property="og:site_name" content="dimzayan">
 		<meta property="article:modified_time" content="2021-02-24T20:12:44+00:00">
-		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:site" content="@cryptgm">
-		<meta name="twitter:label1" content="Est. reading time">
-		<meta name="twitter:data1" content="2 minutes">
+
 
 		<!-- <link rel="stylesheet" id="dimzayan-style-css" href="./index_files/style.css" media="all"> -->
 
 		<link rel="preconnect" href="https://fonts.gstatic.com">
 		<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500;0,700;0,800;1,100;1,200&display=swap" rel="stylesheet">
 
-
+		<script src="lib/gsap.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollSmoother.min.js"></script>
 		<script src="https://kit.fontawesome.com/9ca92a1a87.js" crossorigin="anonymous"></script>
 
+		
 		<style>
 				* {
 					font-family: "Fira Sans";
 					text-decoration: none;
 					font-weight: 300;
+					-webkit-text-size-adjust: 100%;
+					-moz-text-size-adjust: 100%;
+					-ms-text-size-adjust: 100%;
+					text-size-adjust: 100%;
+                    
+					padding: 0;
+					margin: 0;
+					
 				}
-			nav {
-				padding : 4rem;
-				font-size: 3em;
-				line-height: 1.5em;
-				/*position : absolute;*/
-				top : 0;
-				position: sticky;
 
-			}
+				body {
+					overflow-x: hidden;
+					background-color: #dedede;
+					/* background-color: rgb(56, 67, 144); */
+				}
+                .works {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                }
 
-		div.social {
-			/*position: absolute;*/
-			/*right: 0;*/
-			font-size: 0.8em;
-			z-index: 999;
-			margin-top:  1em;
-		}
+				
 
-		div#social a i {
-			/*color: #38F;*/
+                .entity {
+                  
+                    display: flex;
+                    justify-content: left;
+					align-items: baseline;
+                    box-sizing: border-box;
+                    background: none;  
+                    overflow: hidden;
+					
+					
+                    /* width: 200px; */
+                }
 
-		}
-		nav a {
-			display: block;
-			font-weight: 100;
-			font-size: 16px;
-			line-height: 16px;
-			overflow: hidden;
-			margin: 0 0 10px 0;
-		}
+				.entity .wrapper {
+					position: relative;
+					/* overflow: hidden; */
+					width: 100%;
+					height: auto;
+					font-size: inherit;
+					background: none;
+					overflow: visible;
+				}
 
+				.entity .text,
+				.test-text {
+					font-size : inherit;
+					line-height: 1.2em;
+					display: none;
+					
+				}
 
-		nav h1 a {
-			overflow: visible;
-		}
-		nav a:hover {
-			overflow: visible;
-		} 
+				#bio .text {
+				
+		
+				}
 
-		nav a.active {
-			overflow: visible;
-			color:  #000;
-			font-weight: 500;
-		}
-
-	
-
-		body {
-			display: flex;
-
-		}
-
-
-
-		article {
-			justify-content: center;
-			align-items:  left;
-			display: flex;
-			flex-direction: column;
-			flex:  1;
-			margin : 4em auto;
-			max-width:	840px;
-		}
-
-		article section {
-			width:  100%;
-		}
-
-		article	img {
-			max-width: 100%;
-			margin:  4em 0 1.5em 0;
-		}
-
-		main {
-			flex:  1;
-		}
-
-		h2 {
-			font-weight:  300;
-			font-size: 2em;
-			width: 100%;
-		}
-
-		p {
-			font-weight: 300;
-			margin:  0 0 2em 0;
-			max-width: 720px;
-			line-height: 1.6em;
-		}
-
-		dl {
-			line-height: 1.6em;
-		}
-
-		figcaption {
-			font-style: italic;
-			font-weight:  300;
-			font-size:  0.8rem;	
-		}
-
-		.row {
-			display: flex;
-		}
-
-		.row img {
-			height:  200px;
-			margin:  0 1em;
-		}
-
-			</style>
-</head>
+				.entity .title {
+					font-size: 0.8em;
+				}
 
 
-<body id="home">
-	<header>
-	<nav style="z-index:232">
-		<h1 style="font-size:1em"><a href="./index.html" style="font-weight:600">Dim</a></h1>
-		<a href="#ABOUT">About</a>
-		<a href="#FAKERARA">FakeRara</a>
-		<a href="#RAREVISION">Rarevision</a>
-		<a href="#RAREDREAM">Raredream</a>
-		<a href="#FAKERARES">Fake Rares</a>
-		<a href="#PLEBZ">Plebz</a>
-		<a href="#BULLTARDIA">Bulltardia</a>
-		<a href="#VOICEPAPER">Voicepaper</a>
-		<a href="#RITUALS">Rituals</a>
-		<a href="#JOURNEYS">Journeys</a>
-		<a href="#WORSHIPS">Worships</a>
-		<a href="#VESSELS">Vessels</a>
-		<a href="#DANKSET">Dankset</a>
-		<div class="social">
+				.entity[data-clickable="true"] {
+					cursor: pointer;
+					justify-content: left;
+					overflow: visible;
+					
+				}
+
+				.entity[data-clickable="true"] .wrapper::before {
+					
+					content: "";
+					position: absolute;
+					left: -5px;
+					top: 10px;
+					width: 2px;
+					height: 100%;
+					background-color: #2b374b;
+					
+					/* border-radius: 50%; */
+				
+
+
+				}
+
+				.entity[data-active="false"][data-clickable="true"]:hover {
+					/* color: #5590f9 */
+				}
+
+
+
+				.entity[data-active="true"] {
+					/* align-items: flex-start; */
+				}
+
+				.entity[data-active="true"][data-clickable="true"]::before {
+					background-color: #5590f9;
+				}
+
+				.entity[data-active="true"] .text {
+					display: block;
+					
+				}	
+
+				.entity[data-active="true"] .title {
+					/* display: none; */
+				}	
+
+
+
+
+		
+
+
+				.work .title {
+					display: block;
+					padding: 0;
+					position: absolute;
+					bottom: 0;
+					right: 0;
+					text-align: right;
+				}
+
+				.work .description {
+					display: block;
+					font-size: 0.8em;
+					text-decoration-style: italic;
+				}
+
+				
+
+				.work[data-active="true"] .title ,
+				.work[data-active="true"] img {
+					display: block;
+				}
+
+				/* #exhibitions .text, 
+				#press .text {
+					font-size: 0.8em;
+				} */
+
+				.scene {
+					width: 100vw;
+					min-height: 100vh;
+					height: auto;
+					padding: 0 0 0 0;
+					top : 0;
+					left: 0;
+					overflow: visible;
+					overflow-x: hidden;
+					position: fixed;
+				}
+
+				.scene > .wrapper {
+					box-sizing: border-box;
+				}
+
+				.project {
+					position: absolute;
+					left: 600px;
+					width: 400px;
+				}
+
+				#menu {
+					width : 30vw;
+					margin: 256px 0;
+					padding: 0;
+					height: auto;
+					position: relative;
+					left : 0;
+					box-sizing: border-box;
+				}
+
+				#menu > .wrapper {
+					padding : 0 0 0 48px;
+					box-sizing: border-box;
+				}
+
+				#menu > .wrapper > .entity {
+					position: relative;
+					padding:  0;
+					margin: 0 0 48px 0;
+					transform-origin: left center;
+					position: relative;
+					
+				}
+
+				.menuItem {
+				
+					min-height: 40vh;
+					left: -400px;
+					
+				}
+
+				/* #menu .wrapper > .entity {
+					margin: 0 0 12px 0
+				} */
+
+				.section {
+					display: flex;
+					min-height: 100vh;
+					padding: 0;
+					position: relative;
+					flex-direction: row;
+					align-items: center;
+					height: 100vh;
+					/* border: 1px solid red; */
+				}
+
+
+
+				.section > .wrapper {
+					overflow: visible;
+					display: flex;
+					flex-direction: row;
+					flex-wrap: wrap;
+					justify-content: baseline;
+					align-items: center;
+					height: auto;
+					flex: 0 0 33%;
+					padding: 0 0 0 0;
+					margin: 0 0 0 0;
+					min-height: 100vh;
+					background-color: #e9e9e9;
+				}
+
+				.section .carousel {
+					display: flex;
+					flex: 1;
+					flex-direction: row;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
+					height: auto;
+					position: relative;
+					height: 100%;
+					
+				}
+
+
+				.section .carousel nav {
+
+					display: flex;
+					flex-direction: column;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
+					height: auto;
+					position: absolute;
+					right: 24px;
+					width: 24px;
+					height: 100%;
+				}
+
+				.section .carousel nav a {
+					display: block;
+					width: 4px;
+					height: 24px;
+					margin: 6px 0;
+					/* border-radius: 50%; */
+					background: rgba(0, 0, 100, 0.1);
+				}
+
+				.section .carousel nav { 
+						width: 100%;
+						height: 24px;
+						right: 0;
+						bottom: 24px;
+						flex-direction: row;
+						z-index: 999999;
+					}
+
+					.section .carousel nav a { 
+						width: 24px;
+						height: 4px;
+						margin: 0 6px;
+						cursor: pointer;
+					}
+
+				.section .carousel nav a:hover {
+					background: rgba(200, 200, 200, 1);
+				}
+
+
+				.section .carousel nav a.active {
+					background: rgba(0, 0, 200, 0.5);
+				}
+
 			
-		<a href="http://www.instagram.com/dimzayan">Instagram</a>
-		</div>
-	</nav>
 
-	
-</header>
-	<main>
-	<article id="ABOUT">
-		<p> Born in France in 1977, Dim Zayan is a multidisciplinary artist
-			based in Marfa, Texas. Trained in Art and Design in Paris, he
-			relocated to New York City where he began integrating
-			digital media with traditional artistic practices. His work
-			investigates contradictions inherent in contemporary
-			experience, bridging subcultures through explorations of
-			science, nature, spirituality, and technology.</p>
-
-		<section id="exhibition">
-			<h3>Exhibitions</h3>
-			<dl>
-				<dd>MarfaMust Group show, 2025, Marfa, Texas</dd>
-				<dd>Lannan Park, 2024, Marfa, Texas</dd>
-				<dd>Pepefest, 2023, Avant Galerie, Paris</dd>
-				<dd>DYOR, 2022, Kunsthalle Zürich, Zürich</dd>
-				<dd>NFT NYC 2023 Pepe is Art, New York City</dd>
-				<dd>Bitcoin Renaissance 2022, Miami</dd>
-				<dd>Fake Miami, Miami</dd>
-				<dd>Bitcoin Conf 2021, Miami</dd>
-				<dd>Art in Dumbo 2017, Brooklyn</dd>
-			</dl>
-		</section>
-
-		<section id="press">
-			<h3>Press</h3>
-			<dl>
-			<dd><a href="https://21ism.com/portfolio-item/dim-zayan/">Interview with Daniel Prince on 21ism, 2021</a></dd>
-			<dd><a href="https://21ism.com/portfolio-item/bitcoin-voice-paper/">The Voicepaper on 21ism, 2021</a></dd>
-			<dd><a href="https://www.bit-buy-bit.com/podcast-1/episode/3646dca8/ep73-the-evolutionary-path-with-dim-zayan/">Interview with BitBuyBit, 2021</a></dd>
+				.section > .wrapper > .content {
+					padding: 64px;
+					background: none;
 			
-			<dd><a href="https://www.btctimes.com/news/the-community-effort-that-gives-a-voice-to-the-bitcoin-white-paper">BTC TIMES: The Community Effort That Gives a Voice to the Bitcoin White Paper, 2021</a></dd>
-			<dd><a href="https://bitcoin-takeover.com/why-the-voicepaper-project-is-bitcoins-immune-system/">BTCTKVR: Why The Voicepaper Project Is Bitcoin’s Immune System, 2021</a></dd>
-			<dd><a href="https://www.youtube.com/watch?v=yMTphrVaE6I&amp;t=11s/">Interview with Nico/ BitVolt, 2020</a></dd>
-		</dl>
-		</section>
-	</article>
-	<article id="FAKERARA">
-		
-		<figcaption>Fakerara, Oil on Canvas, 180x80cm, 2023</figcaption>
+				
 
-		<h2>Fakerara</h2>
-		<img src="https://cdn.dimzayan.com/dim/Fakerara.jpg" />
-		<p>Dim's latest triptych and Fake Rare physical. On display at <a href="https://avant-galerie.com/">L'Avant Galerie Vossen</a> until October 7 2023.</p>
+				}
 
-		<!-- <img src="https://cdn.dimzayan.com/dim/Fakerara.jpg" />
-		<figcaption>Fakerara, Oil on Canvas, 180x80cm, 2023</figcaption>
-		 -->
-		
-	</article>
-	<article id="RAREVISION">
+				.section .title {
+					font-size: 0.8em;
+					margin-bottom: 12px;
+					background: none;
+				}
 
-		<h2>Rarevision</h2>
-		<p>Rarevision is at the same time a collection of digital assets, a software and a physical installation. Using a collection of animations carefully composed by Dim on Counterparty, the algorithm renders a live interpretation of the transactions happening on the Bitcoin network in real time. Other factors such as the price fluctuation or volume of transactions affect the representation, making the final result a perpetual live stream of digital assets dancing to the rhythm of the new economy. In 2022, Dim was invited to show Rarevision at the Kunsthalle in Zürich during one of the first show by a major institution about historical NFTs. </p>
-		<p><a href="https://dankset.io/rarevision">View</a></p>
+				.section .text {
+					font-size: 1.1em;
+					line-height: 1.6em;
+				}
 
-		
-		<img src="https://cdn.dimzayan.com/dim/Fgp4cjcXwAMPfRh%20(1).jpeg"/>
-		<img src="https://cdn.dimzayan.com/dim/FeZveoFWQAkpH23.jpeg" />
-		<blockquote class="twitter-tweet"><p lang="en" dir="ltr"><iframe width="560" height="315" src="https://www.youtube.com/embed/oDcpe4eRnGg?si=DiZcN4VlNTtF9i1O" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><iframe width="560" height="315" src="https://www.youtube.com/embed/Fh6vGRTG6ds?si=qtsFlNQBkL4950mE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></script></blockquote>
-	</article>
-	<article id="RAREDREAM">
-		<h2>Raredream</h2>
-		<p>Raredream is the sequel to Rarevision and another exploration of the relationship between the activity on the Bitcoin network, digital animations and how a work can be made unique to collectors. All digital assets created for Raredream are playable with Rarevision and vice-versa.</p>
-		<p><a href="https://dankset.io/raredream.html">View</a></p>
-		<blockquote><iframe width="560" height="315" src="https://www.youtube.com/embed/KXkZSj7PJVo?si=gUUEELEZKk5kefVI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></blockquote>
-	</article>
-	<article id="FAKERARES">
-		<H2>Fake Rares</H2>
-		<p>Dim is an active contributor to the Fake Rare project launched by Rare Scrilla in 2021.</p>
-		<p><a href="https://dankset.io/sets/fake-rare/by/dim">See all of Dim's Fake Rares</a></p>
-		
-		<div class="row">
-			<img src="https://cdn.dimzayan.com/PEPEPLEBZ.gif" />
-			<img src="https://cdn.dimzayan.com/PEPELIOTTA.gif" />
-			<img src="https://cdn.dimzayan.com/PEPENIRO.gif" />
-			<img src="https://xchain.io/img/cards/PEPEBRO.jpg" />
-			<img src="https://cdn.dimzayan.com/rv/gif/RAREVISION.gif" />
-		</div>
+				
 
-
-	</article>
-
-	<article id="PLEBZ">
-		<H2>PLEBZ</H2>
-		<p>PLEBZ is a series of imaginary figures despicting archetypes born from the new economy. Through a series of naive portraits, the collection is a window to the heart and soul of a community and how financial revolution affected us as human beings .
-
-The portraits are painted over pages from vintage National Geographic magazines from the 40s and 50s about now-forgotten stories of ancient civilizations and post-war industrialization. These vintage articles are hijacked and repurposed to showcase contemporary behaviors. Each pleb also comes with a digital animation minted on Bitcoin. </p>
-	<a href="https://dimzayan.com/plebs/index.html">Explore project</a>
-		<img src="https://imgur.com/YoP6z31.jpg" />
+				#menu .entity {
 			
-		<div class="row">
-			<img src="https://i.imgur.com/ECoYt7X.gif" />
-			<img src="https://i.imgur.com/P6jiPDI.gif" />
-			<img src="https://i.imgur.com/qEz79b5.gif" />
-			<img src="https://i.imgur.com/DA5Y2Zk.gif" />
-		</div>
+					top : 0;
+					left: 0;
+				}
 
-	</article>
-	<article id="VOICEPAPER">
-		<H2>The Bitcoin Voicepaper</H2>
-		<p>In 2021, a man named Craig Wright who falsely pretended to be the inventor of Bitcoin tried to claim intellectual property over Bitcoin's whitepaper and started suing everyone who hosted a copy of it online. As a response, Dim asked 131 people from the space to recite a section from the whitepaper. The result was this collaborative video to show that Bitcoin is a community based currency that belongs to everyone and that nobody can claim ownership over it.
+				#menu .entity.active {
+				
+				}
 
-		In parallel, that statement also underlined the broad diversity in backgrounds, origins, aspirations of the community and that the meaning of the “Vires in Numeris” motto is contextually as computational as it is human.
-	</p><p><a href="https://dimzayan.com/voicepaper.html">Explore project</a></p>
-		<blockquote><iframe width="560" height="315" src="https://www.youtube.com/embed/7jldYncbU6s?si=DTH2HhnQku4V8jWZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></blockquote>
+				
+
+				#menu .entity[data-active="false"] .text {
+					/* visibility: hidden; */
+
+				}
+
+				.carousel 
+				{
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					width: auto;
+					height: 80vh;
+					overflow: hidden;
+				
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					min-height: 80vh;
+
+				}
+
+				/* .carousel .wrapper {
+					display: flex;
+					flex-direction: row;
+					flex-wrap: wrap;
+					justify-content: center;
+					align-items: center;
+					
+				
+				} */
+
+				.carousel .content {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					height: 100%;
+					background: none;
+				}
+
+				.carousel .entity.work {
+					height: 100%;
+					width: 80%;
+					
+					position: absolute;
+					opacity : 0;
+					
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				
+				}
+			
+
+				.carousel .entity.work .wrapper{
+					display: flex;
+					flex-direction: column-reverse;
+					justify-content: center;
+					align-items: center;
+					padding: 0;
+					overflow: visible;
+					height: 75%;
+				}
+
+
+
+				.carousel .entity.work img {
+					display: block;
+					display: block;
+					height: 100%;
+					object-fit: contain;
+					max-width: 100%;
+					background: none;
+				}
+
+				
+
+
+				.carousel .entity.work[data-active="true"] {
+					
+
+				}
+
+				#menu #exhibitions .text {
+					font-size: 1.2em;
+				}
+
+				#menu #press .text {
+					font-size: 1.2em;
+				}
+
+				
+
+				.text dl {
+					display: flex;
+					flex-direction: column;
+					gap: 12px;
+				}
+
+				.text dl dd {
+					font-size: 1em
+				}
+
+				#menu .text dl dd a {
+					color: #5590f9;
+				}
+
+				.section .text dl dd a,
+				.section .text dl dd a:visited {
+					color: inherit;
+				}
+
+				.section .text dl dd a:hover {
+					text-decoration: underline;
+					/* color: #5590f9; */
+				}
+
+				#menu .text dl dd a::after {
+					content: "→";
+					margin-left: 12px;
+					font-size: 0.8em;
+					color: #5590f9;
+				}
+
+				#menu .text dl dd a:hover::after {
+					
+					margin-left: 24px;
+					
+				}
+
+				.text p + p{
+					display: block;
+					margin-top: 12px;
+				}
+
+
+				@media (max-width: 1024px) {
+					.section {
+						flex-direction: column;
+						height: auto;
+					}
+
+					.carousel {
+						width: 100%;
+						height: 100vh !important;
+						min-height: 100vh !important;
+					}
+
+					.section .carousel nav { 
+						width: 100%;
+						height: 24px;
+						right: 0;
+						bottom: 24px;
+						flex-direction: row;
+						z-index: 999999;
+					}
+
+					.section .carousel nav a { 
+						width: 24px;
+						height: 4px;
+						margin: 0 6px;
+						cursor: pointer;
+					}
+
+					
+				}
+
+				/* .entity[data-enabled="false"] {
+					display: none !important;;
+				} */
+		</style>
+                
+
+               
+	</head>
+	<body>
 		
-	</article>
-	<article id="BULLTARDIA">
-		<H2>Bulltardia</H2>
-		<p>Bulltardia is a comic series created by Dim about Bitcoin. Set as a fable, Bulltardia weaves the lore of Bitcoin into the epic tale of a honey badger named Bit tasked by his father to return a moonstone to the moon. The comic can be read for free on <a href="https://www.bulltardia.com">bulltardia.com</a></p>
-		<img src="https://imgur.com/pX6yH8T.jpg" />
-		<blockquote><iframe width="560" height="315" src="https://www.youtube.com/embed/E0kkmAPrDBA?si=hXtEsjVSXB8D4Fi4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></blockquote>
-	</article>
-
-	<article id="RITUALS">
-		<h2>Rituals</h2>
-		<p>A series of oil paintings produced by Dim in 2018 exploring personal explorations of raw feelings. </p>
-	
-			<img src="https://cdn.dimzayan.com/dim/rituals.city.jpg" />
-			<figcaption>That city in my heart, Oil and Latex on Canvas, 2018</figcaption>
-
-			<img src="https://cdn.dimzayan.com/dim/rituals.exorcism.jpg" />
-			<figcaption>Exorcism, Oil on wood panel, 4x8ft, 2018</figcaption>
-
-			<img src="https://cdn.dimzayan.com/dim/ritual.spiritis.jpg" />
-			<figcaption>Spiritis, Oil on wood panel, 4x8ft, 2018</figcaption>
-
-			<img src="https://cdn.dimzayan.com/dim/ritual.elephant.dog.jpg" />
-			<figcaption>Dog and Elephant, Oil on canvas, , 2019</figcaption>
-<!-- 
-			<img src="https://cdn.dimzayan.com/dim/ritual.beast.jpg" />
-			<figcaption>Beast, Oil on wood panel, , 2017</figcaption> -->
-	</article>
-	<article id="JOURNEYS">
-		<h2>Every Journey</h2>
-		<p>Every journey is a free spirited exploration mixing without retenue abstract impressions and the figurative</p>
-
-		<img src="https://cdn.dimzayan.com/dim/elephantroad.part1.48x30.2016.png" />
-		<figcaption>Elephant Road, acrylic on canvas, 48x30in, 2016</figcaption>
-
-		<img src="https://dimzayan.nyc3.digitaloceanspaces.com/dim/elephantroad.part2.48x30.2016.png" /><figcaption>Elephant Road II, acrylic on canvas, 48x30in, 2016</figcaption>
-
-		<img src="https://cdn.dimzayan.com/dim/sweetpotatoesonsunday.30x48.2016.png" />
-		<figcaption>Sweet potatoes on Sunday, acrylic on canvas, 30x48in, 2016</figcaption>
-
-	</article>
-	<article id="WORSHIPS">
-		<h2>Worships</h2>
-			<img src="https://cdn.dimzayan.com/dim/worships.sun.jpg" />
-			<figcaption>Sun Worships, acrylic on canvas, 2016</figcaption>
-
-			<img src="https://cdn.dimzayan.com/dim/worships.sea.jpg" />
-			<figcaption>Sea Worships, acrylic on canvas, 2016</figcaption>
-	</article>
-	<article id="VESSELS">
-		<h2>Vessels</h2>
-		<p>By casting beams of LED lights through layers of metal grids and acrylic panels, Dim's vessels desconstruct physical light and as a byproduct invites the viewer to take an inverse journey of perceiving the analog as digital.</p>
-		<a><img src="https://cdn.dimzayan.com/dim/Vessel.One.jpg" />
-			<figcaption>Vessel One, mixed media, 2015</figcaption></a>
-		<a><img src="https://cdn.dimzayan.com/dim/Vessel.two.gif" />
-			<figcaption>Vessel Two, mixed media, 2015</figcaption></a>
-		<a><img src="https://cdn.dimzayan.com/dim/Vessel.Three.jpg" />
-			<figcaption>Vessel Three, mixed media, 2015</figcaption></a>
-		<!-- <a><img src="https://cdn.dimzayan.com/dim/vessel.one.gif" /></a> -->
-	</article>
-	<article id="DANKSET">
-		<h2>Dankset</h2>
-		<p>In 2021, there weren't any application to allow collectors and artists to view their counterparty collection in a user friednly way. Dim created <a href="www.dankset.io">dankset.io</a> to solve that problem. Dankset became one of the most used explorers to view indepdendent XCP assets.</p>
 		
-	</article>
-</main>
-</body>
+	</body>
 
-<script>
+	<script type="text/javascript">
+		gsap.registerPlugin(ScrollTrigger);
+		gsap.registerPlugin(ScrollSmoother);
+	</script>
 
-
-
-	document.addEventListener('DOMContentLoaded', function() {
-
-		// const observer = new IntersectionObserver(e => {
-		// 	const target = e[0].target
-		// 	const id = target.getAttribute('id')
-		// 	const navItem = document.querySelector(`nav a[href="#${id}"]`)
-		// 	console.log(id)
-		// 	const activeNavItem = document.querySelector(`nav a.active`)
-		// 	try {
-		// 		activeNavItem.classList.remove('active')
-		// 	} catch(e) {
-		// 		console.log(e)
-		// 	}
- 	// 		navItem.classList.add('active')
-		// })	
-
-		// const articles = document.querySelectorAll("article");
-
-		// articles.forEach(function(article) {
-		// 	observer.observe(article)
-		// })
-	})
 	
-	
-</script>
+	<script src="entities.js"></script>
+	<script src="scene.js"></script>
+
+	<script src="carousel.js"></script>
+	<script src="engine.js"></script>
+	<script src="index.js"></script>
 	
 </html>

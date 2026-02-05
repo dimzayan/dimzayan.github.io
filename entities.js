@@ -4,7 +4,7 @@ const entities = {
     baseScene : {
         scene : true,
         enabled: true,
-        children: ['bio', 'far_west_texas', 'east_coast', 'zurich', 'paris',  'selected_projects','exhibitions', 'press', 'contact'],
+        children: ['bio', 'far_west_texas', 'east_coast', 'zurich', 'paris',  'exhibitions', 'press', 'contact'],
        
         padding: {
             top: 0,
@@ -30,8 +30,8 @@ const entities = {
     },
 
     selfandvoid: {
-        title: "Self and Void",
-        description: "Oil on gypsum, 2024",
+        title: "Man and dog",
+        description: "Oil and epoxy on gypsum, 2024",
         image: "https://cdn.dimzayan.com/works/IMG_3601.webp",
         location: 'far_west_texas',
         year: 2024,
@@ -55,7 +55,7 @@ const entities = {
 
     spacetime: {
         title: "Spacetime",
-        description: "Oil on gypsum, 2024",
+        description: "Oil and epoxy on gypsum, 2024",
         image: "https://cdn.dimzayan.com/works/IMG_5356.webp",
         location: 'far_west_texas',
         year: 2024,
@@ -68,7 +68,7 @@ const entities = {
 
     sundial_001: {
         title: "Sundial 001",
-        description: "Oil on gypsum, 2024",
+        description: "Oil and epoxy on gypsum, 2024",
         image: "https://cdn.dimzayan.com/works/IMG_6676.webp",
         location: 'far_west_texas',
         year: 2024,
@@ -81,7 +81,7 @@ const entities = {
 
     sundial_002: {
         title: "Sundial 002",
-        description: "Oil on gypsum, 2024",
+        description: "Oil and epoxy on gypsum, 2024",
         image: "https://cdn.dimzayan.com/works/IMG_6667.webp",
         location: 'far_west_texas',
         year: 2024,
@@ -93,7 +93,7 @@ const entities = {
 
     sundial_003: {
         title: "Sundial 003",
-        description: "Oil on gypsum, 2024",
+        description: "Oil and epoxy on gypsum, 2024",
         image: "https://cdn.dimzayan.com/works/IMG_6704.webp",
         location: 'far_west_texas',
         year: 2024,
@@ -105,7 +105,7 @@ const entities = {
 
     sundial_004: {
         title: "Sundial 004",
-        description: "Oil on gypsum, 2024",
+        description: "Oil and epoxy on gypsum, 2024",
         image: "https://cdn.dimzayan.com/works/IMG_6688.webp",
         location: 'far_west_texas',
         year: 2024,
@@ -128,7 +128,7 @@ const entities = {
     },
     pepeplebz: {
         title: "Pepeplebz",
-        description: "Description of work 3",
+        description: "Fakerare Counterparty NFT, 2021",
         image: "https://cdn.dimzayan.com/PEPEPLEBZ.gif",
         link: "https://www.google.com",
         location: 'miami',
@@ -140,7 +140,7 @@ const entities = {
 
     pepebro: {
         title: "Pepebro",
-        description: "Description of work 6",
+        description: "Oil on canvas, 2021",
         image: "https://xchain.io/img/cards/PEPEBRO.jpg",
      
         location: 'miami',
@@ -177,12 +177,39 @@ const entities = {
     },
 
     rarevision_fakerare: {
-        title: "Rarevision Fakerare",
-        description: "Description of work 7",
+        title: "Rarevision NFT",
+        description: "One of the assets used in Rarevision",
         image: "https://cdn.dimzayan.com/rv/gif/RAREVISION.gif",
         link: "https://xchain.io/art/rarevision",
         location: 'miami',
         year: 2021,
+        work: true,
+        transformable: true,
+        _displayable: true
+    },
+
+    
+
+
+    elephant_road_2: {
+        title: "Elephant Road, part II",
+        description: "Oil and oil sticks and hardboard, 2019",
+        image: "https://dimzayan.nyc3.digitaloceanspaces.com/dim/elephantroad.part2.48x30.2016.png",
+
+        location: 'east_coast',
+        year: 2019,
+        work: true,
+        transformable: true,
+        _displayable: true
+    },
+
+    dog_and_elephant: {
+        title: "Dog and Elephant",
+        description: "Oil on canvas, 2019",
+        image: "https://cdn.dimzayan.com/dim/ritual.elephant.dog.jpg",
+  
+        location: 'east_coast',
+        year: 2019,
         work: true,
         transformable: true,
         _displayable: true
@@ -212,17 +239,7 @@ const entities = {
         _displayable: true
     },
 
-    dog_and_elephant: {
-        title: "Dog and Elephant",
-        description: "Oil on canvas, 2019",
-        image: "https://cdn.dimzayan.com/dim/ritual.elephant.dog.jpg",
-  
-        location: 'east_coast',
-        year: 2019,
-        work: true,
-        transformable: true,
-        _displayable: true
-    },
+
 
     beast: {
         title: "Beast",
@@ -236,33 +253,9 @@ const entities = {
         _displayable: true
     },
 
-    ritual_city: {
-        title: "City",
-        description: "Oil and Latex on Canvas, 2018",
-        image: "https://cdn.dimzayan.com/dim/rituals.city.jpg",
-
-        location: 'east_coast',
-        year: 2018,
-        work: true,
-        transformable: true,
-        _displayable: true
-    },
-
-    elephant_road_2: {
-        title: "Elephant Road, part II",
-        description: "Oil and oil sticks and hardboard, 2019",
-        image: "https://dimzayan.nyc3.digitaloceanspaces.com/dim/elephantroad.part2.48x30.2016.png",
-
-        location: 'east_coast',
-        year: 2019,
-        work: true,
-        transformable: true,
-        _displayable: true
-    },
-
     swimmers: {
         title: "Swimmers",
-        description: "Oil and oil sticks and hardboard, 2019",
+        description: "Oil and oil sticks on canvas, 2019",
         image: "https://cdn.dimzayan.com/dim/worships.sea.jpg",
 
         location: 'paris',
@@ -274,7 +267,7 @@ const entities = {
 
     sun_worshippers: {
         title: "Sun Worshippers",
-        description: "Oil and oil sticks and hardboard, 2019",
+        description: "Oil and oil sticks on canvas, 2019",
         image: "https://cdn.dimzayan.com/dim/worships.sun.jpg",
 
         location: 'paris',
@@ -451,7 +444,7 @@ Marfa, Texas.</p>`,
         title: "Zürich",
         parent: 'menu',
         text: `<p>In 2022, Dim Zayan was invited to show Rarevision at the Kunsthalle Zürich.</p>
-        <p>Rarevision, a live and real-time rendering of transactions on the Bitcoin Network, was presented at <a href="https://dyor.kunsthallezurich.ch/" target="_blank">DYOR</a>, an exhibition curated by Nina Roehrs that focused on artists, projects and platforms that have had a significant influence on how the crypto art scene has developed and is today.</p>`,
+        <p>Rarevision, a live and real-time rendering of transactions on the Bitcoin Network, was presented at <a href="https://dyor.kunsthallezurich.ch/" target="_blank">DYOR</a>, an exhibition curated by Nina Roehrs that highlighted artists, projects, and platforms influential in shaping the crypto art scene.</p>`,
         _location: true,
         transformable: true,
         _displayable: true,
@@ -464,14 +457,14 @@ Marfa, Texas.</p>`,
     paris: {
         title: "Paris",
        
-        text: `<p>Dim Zayan grew up in Paris, France where he studied art, design and economics.Self-taught in computer science, he began programming games in Basic, viewing coding as a creative practice.</p><p> Through his studies and upbringing, he was exposed to a broad range of cultural influences that spanned across genres and mediums.  Key artistic early inspirations include Carravagio, Doig, Jarmusch, Klee, Klimt, Kundera, Kurosawa, Moebius, Otomo and Paik.</p> `,
+        text: `<p>Dim Zayan grew up in Paris, France, where he studied art, design, and economics. Self-taught in computer science, he began programming games in Basic, viewing coding as a creative practice.</p><p>Through his studies and upbringing, he was exposed to a broad range of cultural influences spanning genres and mediums. Key early artistic inspirations include Caravaggio, Crumb, Doig, Jarmusch, Klee, Klimt, Kundera, Kurosawa, Moebius, Otomo, and Paik.</p>`,
         parent: 'menu',
         _location: true,
         transformable: true,
         _displayable: true,
         link: true,
         clickable: true,
-        works: ['spiritis','exorcism','dog_and_elephant','beast','ritual_city','elephant_road_2','swimmers','sun_worshippers'],
+        works: ['elephant_road_2','spiritis','exorcism','dog_and_elephant','beast', 'swimmers','sun_worshippers'],
         onSelect: {command: 'selectWorks', filter: 'location', value: 'east_coast'}
     },
     
