@@ -47,7 +47,7 @@ const engine = {
                 end: 'bottom bottom',
                 scrub: 1
             },
-            // backgroundColor: 'rgb(142, 138, 161)',
+            backgroundColor: 'rgb(213, 213, 210)',
             duration: 1,
             ease: 'expo2.inOut'
         })
