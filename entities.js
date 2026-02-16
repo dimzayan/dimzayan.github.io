@@ -417,7 +417,7 @@ Marfa, Texas.</p>`,
 
     far_west_texas: {
         title: "Far West Texas",
-        text: `<p>Since moving to Marfa in 2023, Zayan's work has been evolving into a dialogue with the landscape. The hard shadows across the rugged terrain, the flat wide open horizon, and the massive blue skies inform his approach to light and surface. The desert becomes a playground for experimentation with space and perception through outdoor installations and reliefs reminiscent of the surrounding landscape.</p> <p>His recent work uses construction materials as a primary medium. By sanding, carving, and painting raw gypsum board, he exposes the material's layered structure—textures and forms akin to eroded mineral surfaces.</p><p>Zayan applies similar techniques to depict sea structures. These bodies of water aren't rendered for contrast with the desert, but to suggest connection: a plateau as an ancient seabed, a geological memory still present in the stone and soil.</p>`,
+        text: `<p>Since moving to Marfa in 2023, Zayan works directly with construction materials—sanding, carving, and painting raw gypsum board to expose its layered structure. The resulting textures recall eroded mineral surfaces shaped by wind and time.</p><p>The hard shadows, flat horizon, and massive skies of the high desert inform his approach to light and surface. Outdoor installations and carved reliefs echo the surrounding landscape.</p><p>Zayan applies similar techniques to depict bodies of water—not as contrast to the desert, but as connection. A plateau as an ancient seabed, a geological memory still present in the stone and soil.</p>`,
         parent: 'baseScene',
         _location: true,
         transformable: true,
@@ -471,8 +471,7 @@ Marfa, Texas.</p>`,
 
     digital_art: {
         title: "Bitcoin and digital art",
-        text: `<p>Dim's involvement with NFT was focused on Bitcoin promise and revolutionary concepts.</p>
-        <p>In 2021, a man named Craig Wright who falsely pretended to be the inventor of Bitcoin tried to claim intellectual property over Bitcoin's whitepaper and started suing everyone who hosted a copy of it online. As a response, Dim asked 131 people from the space to recite a section from the whitepaper. The result was this collaborative video to show that Bitcoin is a community based currency that belongs to everyone and that nobody can claim ownership over it. In parallel, that statement also underlined the broad diversity in backgrounds, origins, aspirations of the community and that the meaning of the “Vires in Numeris” motto is contextually as computational as it is human.</p> `,
+        text: `<p>Zayan's digital work centers on Bitcoin as a social and conceptual medium.</p><p>In 2021, when Craig Wright attempted to claim intellectual property over Bitcoin's whitepaper, Zayan organized 131 people to each recite a section—a collective act affirming that Bitcoin belongs to no one and everyone. The resulting video captures the broad diversity in backgrounds, origins, and aspirations of the community, revealing that the meaning of "Vires in Numeris" is as human as it is computational.</p>`,
         parent: 'menu',
         _location: true,
         transformable: true,
