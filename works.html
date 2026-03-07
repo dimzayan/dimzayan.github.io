@@ -207,10 +207,9 @@
       lbImg.src = CDN_HI + id + HI_EXT;
       lb.classList.add('open');
 
-      const info  = inventory[id] || {};
+      const info = inventory[id] || {};
       lbTitle.textContent = info.title || '';
-      const dims  = info.dimensions ? info.dimensions + ' in' : '';
-      const price = info.price      ? '$' + info.price        : '';
+      const dims = info.dimensions ? info.dimensions.trim().replace(/in\.?$/i, '').trim() + ' in' : '';
       lbMeta.textContent = [info.material, dims].filter(Boolean).join('  ·  ');
     }
 
@@ -226,13 +225,28 @@
       })
       .then(data => {
         inventory = data;
-        ids = Object.keys(data);
+
+        // Respect manual order from localStorage if available
+        let allIds = Object.keys(data);
+        try {
+          const savedOrder = JSON.parse(localStorage.getItem('dim_inventory_order_v2'));
+          if (Array.isArray(savedOrder)) {
+            const inData = new Set(allIds);
+            allIds = [
+              ...savedOrder.filter(id => inData.has(id)),
+              ...allIds.filter(id => !savedOrder.includes(id))
+            ];
+          }
+        } catch (e) {}
+
+        ids = allIds;
+
         ids.forEach((id, i) => {
           const a   = document.createElement('a');
           const img = document.createElement('img');
           img.src     = CDN_LOW + id + LOW_EXT;
           img.loading = 'lazy';
-          img.alt     = '';
+          img.alt     = data[id]?.title || '';
           a.appendChild(img);
           a.addEventListener('click', e => { e.preventDefault(); show(i); });
           grid.appendChild(a);
