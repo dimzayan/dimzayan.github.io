@@ -1114,70 +1114,32 @@
 
     // ── Exports ────────────────────────────────────────────────────────────
 
-    // File System Access API — persist handle in IndexedDB so save is silent after first pick
-    const FS_DB = 'dim_fs_v1', FS_STORE = 'handles', FS_KEY = 'inventory_json';
-
-    function idbRequest(mode, fn) {
-      return new Promise(resolve => {
-        const req = indexedDB.open(FS_DB, 1);
-        req.onupgradeneeded = () => req.result.createObjectStore(FS_STORE);
-        req.onsuccess = () => { try { fn(req.result, resolve); } catch(e) { resolve(null); } };
-        req.onerror = () => resolve(null);
-      });
-    }
-    function getHandle()      { return idbRequest('readonly',  (db, res) => { const r = db.transaction(FS_STORE,'readonly').objectStore(FS_STORE).get(FS_KEY); r.onsuccess = () => res(r.result||null); r.onerror = () => res(null); }); }
-    function storeHandle(h)   { return idbRequest('readwrite', (db, res) => { const tx = db.transaction(FS_STORE,'readwrite'); tx.objectStore(FS_STORE).put(h, FS_KEY); tx.oncomplete = () => res(); tx.onerror = () => res(); }); }
-
-    async function saveJsonFile(json) {
-      let handle = await getHandle();
-
-      if (handle) {
-        const perm = await handle.queryPermission({ mode: 'readwrite' });
-        if (perm !== 'granted') {
-          const asked = await handle.requestPermission({ mode: 'readwrite' });
-          if (asked !== 'granted') handle = null;
-        }
-      }
-
-      if (!handle) {
-        if (!window.showSaveFilePicker) {
-          // Browser doesn't support API — fall back to download
-          const a = document.createElement('a');
-          a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
-          a.download = 'inventory.json';
-          a.click();
-          return;
-        }
-        handle = await window.showSaveFilePicker({
-          suggestedName: 'inventory.json',
-          types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
-        });
-        await storeHandle(handle);
-      }
-
-      const writable = await handle.createWritable();
-      await writable.write(json);
-      await writable.close();
-
-      const btn = document.getElementById('json-btn');
-      const orig = btn.textContent;
-      btn.textContent = 'Saved ✓';
-      setTimeout(() => { btn.textContent = orig; }, 1500);
-    }
+    const GH_TOKEN = localStorage.getItem('dim_gh_token') || '';
+    const GH_API   = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json';
 
     document.getElementById('json-btn').addEventListener('click', async () => {
       saveData();
       const json = JSON.stringify(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'), null, 2);
+      const btn  = document.getElementById('json-btn');
+      btn.textContent = 'Saving…';
+      btn.disabled = true;
       try {
-        await saveJsonFile(json);
+        const headers = { 'Authorization': `Bearer ${GH_TOKEN}`, 'Accept': 'application/vnd.github+json' };
+        // Get current SHA (required by GitHub API to update a file)
+        const meta = await fetch(GH_API, { headers }).then(r => r.json());
+        // base64-encode (handles Unicode)
+        const content = btoa(unescape(encodeURIComponent(json)));
+        const r = await fetch(GH_API, {
+          method: 'PUT',
+          headers: { ...headers, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'update inventory', content, sha: meta.sha })
+        });
+        if (!r.ok) throw new Error(r.status);
+        btn.textContent = 'Saved ✓';
       } catch (e) {
-        if (e.name !== 'AbortError') {
-          // Unexpected error — fall back to download
-          const a = document.createElement('a');
-          a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
-          a.download = 'inventory.json';
-          a.click();
-        }
+        btn.textContent = 'Error ✗';
+      } finally {
+        setTimeout(() => { btn.textContent = 'Save JSON'; btn.disabled = false; }, 2000);
       }
     });
 
