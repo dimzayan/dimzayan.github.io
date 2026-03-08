@@ -477,6 +477,10 @@
           <input id="inv-tax" type="number" min="0" step="0.01" placeholder="0.00">
         </div>
       </div>
+      <div class="inv-field" style="flex-direction:row; align-items:center; gap:0.6rem; margin-top:0.2rem;">
+        <input type="checkbox" id="inv-discount" style="width:14px;height:14px;cursor:pointer;accent-color:#333;">
+        <label for="inv-discount" style="text-transform:none;letter-spacing:0;font-size:0.82rem;opacity:0.65;cursor:pointer;">Local discount (10%)</label>
+      </div>
       <div id="inv-modal-actions">
         <button id="inv-cancel-btn">Cancel</button>
         <button id="inv-generate-btn">Generate →</button>
@@ -1110,13 +1114,71 @@
 
     // ── Exports ────────────────────────────────────────────────────────────
 
-    document.getElementById('json-btn').addEventListener('click', () => {
+    // File System Access API — persist handle in IndexedDB so save is silent after first pick
+    const FS_DB = 'dim_fs_v1', FS_STORE = 'handles', FS_KEY = 'inventory_json';
+
+    function idbRequest(mode, fn) {
+      return new Promise(resolve => {
+        const req = indexedDB.open(FS_DB, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore(FS_STORE);
+        req.onsuccess = () => { try { fn(req.result, resolve); } catch(e) { resolve(null); } };
+        req.onerror = () => resolve(null);
+      });
+    }
+    function getHandle()      { return idbRequest('readonly',  (db, res) => { const r = db.transaction(FS_STORE,'readonly').objectStore(FS_STORE).get(FS_KEY); r.onsuccess = () => res(r.result||null); r.onerror = () => res(null); }); }
+    function storeHandle(h)   { return idbRequest('readwrite', (db, res) => { const tx = db.transaction(FS_STORE,'readwrite'); tx.objectStore(FS_STORE).put(h, FS_KEY); tx.oncomplete = () => res(); tx.onerror = () => res(); }); }
+
+    async function saveJsonFile(json) {
+      let handle = await getHandle();
+
+      if (handle) {
+        const perm = await handle.queryPermission({ mode: 'readwrite' });
+        if (perm !== 'granted') {
+          const asked = await handle.requestPermission({ mode: 'readwrite' });
+          if (asked !== 'granted') handle = null;
+        }
+      }
+
+      if (!handle) {
+        if (!window.showSaveFilePicker) {
+          // Browser doesn't support API — fall back to download
+          const a = document.createElement('a');
+          a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+          a.download = 'inventory.json';
+          a.click();
+          return;
+        }
+        handle = await window.showSaveFilePicker({
+          suggestedName: 'inventory.json',
+          types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+        });
+        await storeHandle(handle);
+      }
+
+      const writable = await handle.createWritable();
+      await writable.write(json);
+      await writable.close();
+
+      const btn = document.getElementById('json-btn');
+      const orig = btn.textContent;
+      btn.textContent = 'Saved ✓';
+      setTimeout(() => { btn.textContent = orig; }, 1500);
+    }
+
+    document.getElementById('json-btn').addEventListener('click', async () => {
       saveData();
-      const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      const a = document.createElement('a');
-      a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(current, null, 2));
-      a.download = 'inventory.json';
-      a.click();
+      const json = JSON.stringify(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'), null, 2);
+      try {
+        await saveJsonFile(json);
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          // Unexpected error — fall back to download
+          const a = document.createElement('a');
+          a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+          a.download = 'inventory.json';
+          a.click();
+        }
+      }
     });
 
     document.getElementById('export-btn').addEventListener('click', () => {
@@ -1247,6 +1309,7 @@
       const buyerAddr = document.getElementById('inv-buyer-addr').value.trim();
       const shipping  = parseFloat(document.getElementById('inv-shipping').value) || 0;
       const taxPct    = parseFloat(document.getElementById('inv-tax').value)      || 0;
+      const discount  = document.getElementById('inv-discount').checked;
 
       const items = [];
       invoiceCart.forEach(id => {
@@ -1261,7 +1324,7 @@
       const num       = nextInvoiceNum();
       const invoiceId = `inv_${Date.now()}`;
       const dateStr   = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      const inv = { num, invoiceId, date: dateStr, buyer: { name: buyerName, address: buyerAddr }, shipping, taxPct, paid: false, items };
+      const inv = { num, invoiceId, date: dateStr, buyer: { name: buyerName, address: buyerAddr }, shipping, taxPct, discount, paid: false, items };
 
       const all = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}');
       all[invoiceId] = inv;
@@ -1296,6 +1359,7 @@
       document.getElementById('inv-buyer-addr').value = '';
       document.getElementById('inv-shipping').value = '';
       document.getElementById('inv-tax').value = '';
+      document.getElementById('inv-discount').checked = false;
 
       openInvoice(invoiceId);
     });
@@ -1312,9 +1376,10 @@
 
     function generateInvoiceHTML(inv) {
       const numStr   = `Invoice.${String(inv.num).padStart(4, '0')}`;
-      const subtotal = inv.items.reduce((s, it) => s + it.price, 0);
-      const taxAmt   = subtotal * (inv.taxPct / 100);
-      const total    = subtotal + inv.shipping + taxAmt;
+      const subtotal     = inv.items.reduce((s, it) => s + it.price, 0);
+      const discountAmt  = inv.discount ? subtotal * 0.10 : 0;
+      const taxAmt       = (subtotal - discountAmt) * (inv.taxPct / 100);
+      const total        = subtotal - discountAmt + inv.shipping + taxAmt;
       const CDN_LOW  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low';
 
       const itemRows = inv.items.map(it => `
@@ -1331,8 +1396,9 @@
 
       const totalRows = `
         <tr class="total-row"><td colspan="2" class="label-cell">Subtotal</td><td class="cell-price">${fmtMoney(subtotal)}</td></tr>
-        ${inv.shipping ? `<tr class="total-row"><td colspan="2" class="label-cell">Shipping</td><td class="cell-price">${fmtMoney(inv.shipping)}</td></tr>` : ''}
-        ${inv.taxPct   ? `<tr class="total-row"><td colspan="2" class="label-cell">Sales Tax (${inv.taxPct}%)</td><td class="cell-price">${fmtMoney(taxAmt)}</td></tr>` : ''}
+        ${inv.discount  ? `<tr class="total-row"><td colspan="2" class="label-cell">Local discount (10%)</td><td class="cell-price">−${fmtMoney(discountAmt)}</td></tr>` : ''}
+        ${inv.shipping  ? `<tr class="total-row"><td colspan="2" class="label-cell">Shipping</td><td class="cell-price">${fmtMoney(inv.shipping)}</td></tr>` : ''}
+        ${inv.taxPct    ? `<tr class="total-row"><td colspan="2" class="label-cell">Sales Tax (${inv.taxPct}%)</td><td class="cell-price">${fmtMoney(taxAmt)}</td></tr>` : ''}
         <tr class="total-row grand-total"><td colspan="2" class="label-cell"><strong>Total</strong></td><td class="cell-price"><strong>${fmtMoney(total)}</strong></td></tr>`;
 
       const statusClass = inv.paid ? 'status-paid' : 'status-pending';
