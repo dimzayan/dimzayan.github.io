@@ -1,0 +1,308 @@
+{
+  "IMG_0321": {
+    "excluded": false,
+    "title": "Redscape I",
+    "dimensions": "12x19",
+    "material": "Oil, Epoxy, Gypsum",
+    "price": "1000",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0325": {
+    "excluded": false,
+    "title": "Desertscape I",
+    "dimensions": "14x23",
+    "material": "Gypsum",
+    "price": "1200",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0330": {
+    "excluded": false,
+    "title": "Fragmented reflection",
+    "dimensions": "9x11",
+    "material": "Acrylic, Paper, Gypsum",
+    "price": "600",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_1635": {
+    "excluded": false,
+    "title": "Redscape III",
+    "dimensions": "9x9.5",
+    "material": "Oil, Epoxy, Gypsum",
+    "price": "900",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0348": {
+    "excluded": false,
+    "title": "Desertscape IV",
+    "dimensions": "11x11",
+    "material": "Epoxy, Gypsum",
+    "price": "900",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0358": {
+    "excluded": false,
+    "title": "Sign of life",
+    "dimensions": "24x36",
+    "material": "Oil, Gypsum",
+    "price": "3300",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0362": {
+    "excluded": false,
+    "title": "Declivity II",
+    "dimensions": "24x35",
+    "material": "Gyspum",
+    "price": "3300",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0373": {
+    "excluded": false,
+    "title": "Tiamat study",
+    "dimensions": "17x12",
+    "material": "Acrylic, Paper, Gypsum",
+    "price": "900",
+    "year": "2026",
+    "notes": ""
+  },
+  "IMG_0383": {
+    "excluded": false,
+    "title": "Element 003",
+    "dimensions": "10.5x13",
+    "material": "Acrylic, Paper, Gypsum",
+    "price": "900",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0395": {
+    "excluded": false,
+    "title": "Acclivity I",
+    "dimensions": "24x48",
+    "material": "Oil, Gypsum, Epoxy",
+    "price": "4200",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0399": {
+    "excluded": false,
+    "title": "Declivity I",
+    "dimensions": "24x48",
+    "material": "Oil, Gyspum, Epoxy",
+    "price": "4200",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0403": {
+    "excluded": false,
+    "title": "Declivity III",
+    "dimensions": "35x45",
+    "material": "Oil, Gypsum",
+    "price": "5400",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0453": {
+    "excluded": false,
+    "title": "From dusk till dawn over the hills",
+    "dimensions": "35x54",
+    "material": "Oil, Acrylic, Gypsum",
+    "price": "6300",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0466": {
+    "excluded": false,
+    "title": "Origin story",
+    "dimensions": "45x35",
+    "material": "Acrylic, Paper",
+    "price": "2400",
+    "year": "2026",
+    "notes": ""
+  },
+  "IMG_0629": {
+    "excluded": false,
+    "title": "Range, ablaze",
+    "dimensions": "22x30",
+    "material": "Acrylic, Gyspum, epoxy, steel",
+    "price": "2700",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_1634": {
+    "excluded": false,
+    "title": "Redscape II",
+    "dimensions": "13x24",
+    "material": "Oil, Gypsum",
+    "price": "1200",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_1638": {
+    "excluded": false,
+    "title": "Desertscape II",
+    "dimensions": "13.5x17",
+    "material": "Gyspum",
+    "price": "900",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_1636": {
+    "excluded": false,
+    "title": "Desertscape III",
+    "dimensions": "14x10",
+    "material": "Gypsum",
+    "price": "900",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_1640": {
+    "excluded": false,
+    "title": "Tiamat",
+    "dimensions": "168x36",
+    "material": "Acrylic, Paper",
+    "price": "7200",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_1639": {
+    "excluded": false,
+    "title": "Look east and then rise",
+    "dimensions": "24x29",
+    "material": "Oil, gypsum, epoxy",
+    "price": "3000",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0315": {
+    "excluded": true,
+    "title": "Strata",
+    "dimensions": "12x24",
+    "material": "Oil, Epoxy, Gypsum",
+    "price": "1800",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0322": {
+    "excluded": true,
+    "title": "Element 005",
+    "dimensions": "16x14",
+    "material": "Epoxy, Gypsum",
+    "price": "900",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0329": {
+    "excluded": true,
+    "title": "Desertscape 002",
+    "dimensions": "10x14",
+    "material": "Paper, Acrylic, Epoxy, Gypsum",
+    "price": "700",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0336": {
+    "excluded": true,
+    "title": "Untitled",
+    "dimensions": "",
+    "material": "Collage, Epoxy, Gypsum",
+    "price": "500",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0339": {
+    "excluded": true,
+    "title": "Study",
+    "dimensions": "11x15",
+    "material": "Acrylic, epoxy, Gypsum",
+    "price": "700",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0345": {
+    "excluded": true,
+    "title": "Landscape I",
+    "dimensions": "",
+    "material": "Paper, Acrylic, Epoxy, Gypsum",
+    "price": "900",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0354": {
+    "excluded": true,
+    "title": "",
+    "dimensions": "",
+    "material": "Collage, Gyspum",
+    "price": "1200",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0357": {
+    "excluded": true,
+    "title": "Declivity - Oasis",
+    "dimensions": "24x26",
+    "material": "Oil, Gypsum",
+    "price": "2200",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0365": {
+    "excluded": true,
+    "title": "Landscape 002",
+    "dimensions": "",
+    "material": "Oil, Epoxy, Gypsum",
+    "price": "2300",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0379": {
+    "excluded": true,
+    "title": "Skyscape 001",
+    "dimensions": "",
+    "material": "Acrylic, Collage, Gypsum",
+    "price": "400",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0381": {
+    "excluded": true,
+    "title": "A ride through America",
+    "dimensions": "",
+    "material": "Oil, Collage, Paper, Epoxy",
+    "price": "1600",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0388": {
+    "excluded": true,
+    "title": "Cove",
+    "dimensions": "",
+    "material": "Acrylic, Collage, Gypsum",
+    "price": "500",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0481": {
+    "excluded": true,
+    "title": "Landscape 004",
+    "dimensions": "",
+    "material": "Oil, Gypsum",
+    "price": "1000",
+    "year": "",
+    "notes": ""
+  },
+  "IMG_0488": {
+    "excluded": true,
+    "title": "Element 002",
+    "dimensions": "",
+    "material": "Oil, Gypsum, Epoxy",
+    "price": "700",
+    "year": "",
+    "notes": ""
+  }
+}
