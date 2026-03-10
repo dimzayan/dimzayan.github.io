@@ -6,10 +6,10 @@
   <link rel="icon" href="./favicon.png">
   <title>Inventory — Dim Zayan</title>
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     * {
-      font-family: "Fira Sans";
+      font-family: "DM Sans";
       font-weight: 300;
       padding: 0;
       margin: 0;
@@ -142,7 +142,7 @@
       border: 1px dashed rgba(0, 0, 0, 0.22);
       border-radius: 2px;
       background: rgb(208, 208, 209);
-      font-family: "Fira Sans";
+      font-family: "DM Sans";
       font-weight: 300;
       font-size: 0.6rem;
       letter-spacing: 0.02em;
@@ -240,6 +240,64 @@
     .ctx-item.danger { color: rgba(180, 40, 40, 0.85); }
     .ctx-sep { height: 1px; background: rgba(0, 0, 0, 0.09); margin: 0.3rem 0; }
 
+    /* Edit drawer */
+    #edit-drawer {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 500px;
+      max-width: 100vw;
+      background: white;
+      box-shadow: -4px 0 28px rgba(0,0,0,0.13);
+      z-index: 400;
+      transform: translateX(100%);
+      transition: transform 0.22s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    #edit-drawer.open { transform: translateX(0); }
+    #edit-drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.09);
+      flex-shrink: 0;
+    }
+    #edit-drawer-header h3 { font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; }
+    #edit-drawer-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; opacity: 0.35; padding: 0.25rem 0.4rem; line-height: 1; }
+    #edit-drawer-close:hover { opacity: 1; }
+    #edit-drawer-body { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .edit-field label { display: block; font-size: 0.68rem; opacity: 0.45; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .edit-field input, .edit-field textarea {
+      width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px;
+      padding: 0.45rem 0.65rem; font-family: "DM Sans"; font-size: 0.85rem;
+      font-weight: 300; color: inherit; background: none; line-height: 1.5;
+    }
+    .edit-field input:focus, .edit-field textarea:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .edit-field textarea { resize: vertical; min-height: 200px; }
+    .edit-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .edit-section-label { font-size: 0.68rem; opacity: 0.45; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .edit-photos-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .edit-photo-thumb { position: relative; width: 100px; height: 100px; }
+    .edit-photo-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; display: block; }
+    .edit-photo-del { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.6); border: none; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1; }
+    .edit-photo-del:hover { background: rgba(0,0,0,0.85); }
+    .edit-photo-add {
+      width: 100px; height: 100px; border: 1.5px dashed rgba(0,0,0,0.18);
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.5rem; opacity: 0.3; user-select: none;
+    }
+    .edit-photo-add:hover { opacity: 0.6; }
+    #edit-drawer-footer {
+      padding: 1rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.09);
+      display: flex; gap: 0.75rem; justify-content: flex-end; flex-shrink: 0;
+    }
+    #edit-drawer-footer button {
+      background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px;
+      padding: 0.4rem 1.1rem; font-family: "DM Sans"; font-size: 0.82rem;
+      font-weight: 300; cursor: pointer; color: inherit;
+    }
+    #edit-drawer-footer button:hover { background: rgba(0,0,0,0.04); }
+    #edit-save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+
     /* Invoice modal */
     #inv-modal {
       display: none;
@@ -272,7 +330,7 @@
       border: 1px solid rgba(0, 0, 0, 0.17);
       border-radius: 3px;
       padding: 0.4rem 0.6rem;
-      font-family: "Fira Sans";
+      font-family: "DM Sans";
       font-size: 0.85rem;
       font-weight: 300;
       background: white;
@@ -286,7 +344,7 @@
       border: 1px solid rgba(0, 0, 0, 0.18);
       border-radius: 3px;
       padding: 0.4rem 1rem;
-      font-family: "Fira Sans";
+      font-family: "DM Sans";
       font-size: 0.82rem;
       font-weight: 300;
       cursor: pointer;
@@ -305,7 +363,7 @@
       border: none;
       border-radius: 3px;
       padding: 0.35rem 0.85rem;
-      font-family: "Fira Sans";
+      font-family: "DM Sans";
       font-size: 0.78rem;
       font-weight: 300;
       letter-spacing: 0.03em;
@@ -330,7 +388,7 @@
       border: 1px solid rgba(0, 0, 0, 0.18);
       border-radius: 3px;
       padding: 0.4rem 0.85rem;
-      font-family: "Fira Sans";
+      font-family: "DM Sans";
       font-weight: 300;
       font-size: 0.8rem;
       cursor: pointer;
@@ -449,11 +507,60 @@
 
   <!-- Context menu -->
   <div id="ctx-menu">
+    <div class="ctx-item" id="ctx-edit-item">Edit</div>
+    <div class="ctx-item" id="ctx-preview-item">Preview work sheet</div>
     <div class="ctx-item" id="ctx-invoice-item">Add to invoice</div>
     <div class="ctx-item" id="ctx-clear-invoice-item" style="display:none">Clear invoice</div>
     <div class="ctx-sep"></div>
     <div class="ctx-item" id="ctx-exclude-item">Exclude from show</div>
     <div class="ctx-item danger" id="ctx-delete-item">Delete</div>
+  </div>
+
+  <!-- Edit drawer -->
+  <div id="edit-drawer">
+    <div id="edit-drawer-header">
+      <h3 id="edit-drawer-title">Edit work</h3>
+      <button id="edit-drawer-close">✕</button>
+    </div>
+    <div id="edit-drawer-body">
+      <div class="edit-2col">
+        <div class="edit-field">
+          <label>Title</label>
+          <input id="edit-title" type="text">
+        </div>
+        <div class="edit-field">
+          <label>Year</label>
+          <input id="edit-year" type="text">
+        </div>
+      </div>
+      <div class="edit-field">
+        <label>Material</label>
+        <input id="edit-material" type="text">
+      </div>
+      <div class="edit-2col">
+        <div class="edit-field">
+          <label>Dimensions</label>
+          <input id="edit-dimensions" type="text">
+        </div>
+        <div class="edit-field">
+          <label>Price ($)</label>
+          <input id="edit-price" type="text">
+        </div>
+      </div>
+      <div class="edit-field">
+        <label>Description</label>
+        <textarea id="edit-notes"></textarea>
+      </div>
+      <div>
+        <div class="edit-section-label">Supporting photos</div>
+        <div class="edit-photos-grid" id="edit-photos-grid"></div>
+        <input type="file" id="edit-photo-input" accept="image/*" multiple style="display:none">
+      </div>
+    </div>
+    <div id="edit-drawer-footer">
+      <button id="edit-cancel-btn">Cancel</button>
+      <button id="edit-save-btn">Save</button>
+    </div>
   </div>
 
   <!-- Invoice modal -->
@@ -1016,14 +1123,19 @@
         return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
       }
 
-      const items = activeRows.map((tr, i) => ({
-        num:      i + 1,
-        id:       tr.dataset.id,
-        title:    tr.querySelector('[data-field="title"]')?.textContent.trim()      || '',
-        dims:     fmtDims(tr.querySelector('[data-field="dimensions"]')?.textContent.trim()),
-        material: tr.querySelector('[data-field="material"]')?.textContent.trim()   || '',
-        price:    fmtPrice(tr.querySelector('[data-field="price"]')?.textContent.trim()),
-      }));
+      const items = activeRows.map((tr, i) => {
+        const ref  = tr.dataset.invoiceRef ? JSON.parse(tr.dataset.invoiceRef) : null;
+        const sold = ref && ref.paid;
+        return {
+          num:      i + 1,
+          id:       tr.dataset.id,
+          title:    tr.querySelector('[data-field="title"]')?.textContent.trim()      || '',
+          dims:     fmtDims(tr.querySelector('[data-field="dimensions"]')?.textContent.trim()),
+          material: tr.querySelector('[data-field="material"]')?.textContent.trim()   || '',
+          price:    fmtPrice(tr.querySelector('[data-field="price"]')?.textContent.trim()),
+          sold,
+        };
+      });
 
       const PER_PAGE = 5;
       const pages = [];
@@ -1055,7 +1167,7 @@
                 <div class="item-num">${item.num}</div>
                 <div class="title">${item.title || '—'}</div>
                 <div class="meta">${[item.dims, item.material].filter(Boolean).join('&ensp;·&ensp;')}</div>
-                ${item.price ? `<div class="price">${item.price}</div>` : ''}
+                ${item.sold ? `<div class="price sold">SOLD</div>` : (item.price ? `<div class="price">${item.price}</div>` : '')}
               </div>
             </div>`).join('')}
           <div class="page-footer">dim.studio.marfa@gmail.com</div>
@@ -1066,11 +1178,11 @@
 <html><head>
   <meta charset="UTF-8">
   <title>Dim Zayan — Works</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;500&display=swap" rel="stylesheet">
   <style>
     @page { size: letter portrait; margin: 0.65in 0.85in 0.7in; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: "Fira Sans", sans-serif; font-weight: 300; font-size: 10pt; color: #1a1a1a; }
+    body { font-family: "DM Sans", sans-serif; font-weight: 300; font-size: 10pt; color: #1a1a1a; }
     .page { page-break-after: always; }
     .page:last-child { page-break-after: avoid; }
     .page-header {
@@ -1081,7 +1193,7 @@
     .page-num { font-size: 7.5pt; color: #999; }
     .item {
       display: flex; gap: 18pt; align-items: flex-start;
-      padding: 14pt 0; border-bottom: 0.5pt solid #ddd;
+      padding: 9pt 0; border-bottom: 0.5pt solid #ddd;
     }
     .thumb {
       width: 100pt; height: 100pt; object-fit: contain; background: #f0f0f0;
@@ -1096,9 +1208,9 @@
     .cover-img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .page-footer {
       font-size: 7.5pt; color: #aaa; text-align: center; padding-top: 8pt;
-      border-top: 0.5pt solid #e0e0e0; letter-spacing: 0.04em;
-      margin-top: 14pt;
+      letter-spacing: 0.04em; margin-top: 14pt;
     }
+    .sold { color: #b52c2c; font-weight: 400; }
     @media print {
       .cover-page { height: 100vh; page-break-after: always; }
     }
@@ -1185,6 +1297,124 @@
       document.getElementById('inv-count').textContent = n;
     }
 
+    // ── Edit drawer ──────────────────────────────────────────────────────────
+
+    const PHOTOS_KEY = 'dim_work_photos_v1';
+
+    function getWorkPhotos(id) {
+      try { return (JSON.parse(localStorage.getItem(PHOTOS_KEY)) || {})[id] || []; }
+      catch(e) { return []; }
+    }
+
+    function setWorkPhotos(id, photos) {
+      const all = JSON.parse(localStorage.getItem(PHOTOS_KEY) || '{}');
+      if (photos.length) all[id] = photos; else delete all[id];
+      localStorage.setItem(PHOTOS_KEY, JSON.stringify(all));
+    }
+
+    function compressPhoto(file, cb) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const MAX = 1600;
+          const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          cb(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    let editRow    = null;
+    let editPhotos = [];
+
+    function openEditDrawer(tr) {
+      editRow = tr;
+      const g  = f => tr.querySelector(`[data-field="${f}"]`)?.textContent.trim() || '';
+      const id = tr.dataset.id;
+      document.getElementById('edit-drawer-title').textContent = g('title') || 'Edit work';
+      document.getElementById('edit-title').value      = g('title');
+      document.getElementById('edit-year').value       = g('year');
+      document.getElementById('edit-material').value   = g('material');
+      document.getElementById('edit-dimensions').value = g('dimensions');
+      document.getElementById('edit-price').value      = g('price');
+      document.getElementById('edit-notes').value      = g('notes');
+      editPhotos = getWorkPhotos(id).slice();
+      renderEditPhotos();
+      document.getElementById('edit-drawer').classList.add('open');
+    }
+
+    function renderEditPhotos() {
+      const grid = document.getElementById('edit-photos-grid');
+      grid.innerHTML = '';
+      editPhotos.forEach((src, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'edit-photo-thumb';
+        const img = document.createElement('img');
+        img.src = src;
+        const del = document.createElement('button');
+        del.className = 'edit-photo-del';
+        del.textContent = '✕';
+        del.addEventListener('click', () => { editPhotos.splice(i, 1); renderEditPhotos(); });
+        wrap.appendChild(img);
+        wrap.appendChild(del);
+        grid.appendChild(wrap);
+      });
+      const addBtn = document.createElement('div');
+      addBtn.className = 'edit-photo-add';
+      addBtn.textContent = '+';
+      addBtn.addEventListener('click', () => document.getElementById('edit-photo-input').click());
+      grid.appendChild(addBtn);
+    }
+
+    function closeEditDrawer() {
+      document.getElementById('edit-drawer').classList.remove('open');
+      editRow = null;
+      editPhotos = [];
+    }
+
+    document.getElementById('edit-drawer-close').addEventListener('click', closeEditDrawer);
+    document.getElementById('edit-cancel-btn').addEventListener('click', closeEditDrawer);
+
+    document.getElementById('edit-photo-input').addEventListener('change', function() {
+      const files = Array.from(this.files);
+      let done = 0;
+      files.forEach(file => {
+        compressPhoto(file, dataUrl => {
+          editPhotos.push(dataUrl);
+          done++;
+          if (done === files.length) renderEditPhotos();
+        });
+      });
+      this.value = '';
+    });
+
+    document.getElementById('edit-save-btn').addEventListener('click', () => {
+      if (!editRow) return;
+      const id = editRow.dataset.id;
+      const vals = {
+        title:      document.getElementById('edit-title').value.trim(),
+        year:       document.getElementById('edit-year').value.trim(),
+        material:   document.getElementById('edit-material').value.trim(),
+        dimensions: document.getElementById('edit-dimensions').value.trim(),
+        price:      document.getElementById('edit-price').value.trim(),
+        notes:      document.getElementById('edit-notes').value,
+      };
+      Object.entries(vals).forEach(([f, v]) => {
+        const td = editRow.querySelector(`[data-field="${f}"]`);
+        if (td) td.textContent = v;
+      });
+      setWorkPhotos(id, editPhotos);
+      saveData();
+      closeEditDrawer();
+    });
+
     // ── Context menu ────────────────────────────────────────────────────────
 
     let ctxRow = null;
@@ -1222,6 +1452,20 @@
 
     document.addEventListener('click', () => {
       document.getElementById('ctx-menu').style.display = 'none';
+    });
+
+    document.getElementById('ctx-edit-item').addEventListener('click', () => {
+      if (!ctxRow) return;
+      const tr = ctxRow;
+      ctxRow = null;
+      openEditDrawer(tr);
+    });
+
+    document.getElementById('ctx-preview-item').addEventListener('click', () => {
+      if (!ctxRow) return;
+      const id = ctxRow.dataset.id;
+      window.open('/preview.html?id=' + encodeURIComponent(id), '_blank');
+      ctxRow = null;
     });
 
     document.getElementById('ctx-invoice-item').addEventListener('click', () => {
@@ -1391,9 +1635,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${numStr}</title>
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-* { font-family:"Fira Sans"; font-weight:300; padding:0; margin:0; box-sizing:border-box; }
+* { font-family:"DM Sans"; font-weight:300; padding:0; margin:0; box-sizing:border-box; }
 body { background:#f4f4f4; color:#111; }
 .page { max-width:660px; margin:0 auto; background:white; padding:2.5rem 2.8rem 3rem; min-height:100vh; }
 .header-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2.5rem; }
@@ -1419,7 +1663,7 @@ td { padding:0.8rem 0.65rem; vertical-align:top; border:1px solid rgba(0,0,0,0.0
 .payment-block { font-size:0.76rem; line-height:1.8; opacity:0.55; border-top:1px solid rgba(0,0,0,0.09); padding-top:1.4rem; margin-top:1.8rem; }
 .payment-title { font-weight:500; margin-bottom:0.4rem; opacity:0.9; font-size:0.78rem; }
 .no-print { margin-top:2rem; display:flex; gap:0.75rem; }
-.no-print button { background:none; border:1px solid rgba(0,0,0,0.18); border-radius:3px; padding:0.4rem 1rem; font-family:"Fira Sans"; font-size:0.78rem; font-weight:300; cursor:pointer; }
+.no-print button { background:none; border:1px solid rgba(0,0,0,0.18); border-radius:3px; padding:0.4rem 1rem; font-family:"DM Sans"; font-size:0.78rem; font-weight:300; cursor:pointer; }
 .btn-paid { background:rgba(0,0,0,0.85)!important; color:white!important; border-color:transparent!important; }
 @media print { body { background:white; } .page { padding:0; } .no-print { display:none; } }
 @page { margin:0.9in 1in; }
