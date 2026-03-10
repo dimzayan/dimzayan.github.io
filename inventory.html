@@ -204,6 +204,7 @@
     tr.excluded .thumb-input        { opacity: 0.4; }
     tr.excluded .col-num            { color: rgba(0, 0, 0, 0.1); }
     tr.excluded td[contenteditable] { color: rgba(0, 0, 0, 0.28); }
+    tr.reserved td[contenteditable] { color: rgba(30, 120, 60, 0.75); }
 
     /* In-cart highlight */
     tr.in-cart { background: rgba(50, 80, 200, 0.05) !important; }
@@ -221,6 +222,11 @@
     }
     .inv-tag:hover { color: rgba(0, 0, 0, 0.7); border-color: rgba(0, 0, 0, 0.4); }
     .inv-tag.paid { color: rgba(30, 130, 60, 0.7); border-color: rgba(30, 130, 60, 0.35); }
+    .res-tag {
+      display: inline-block; font-size: 0.65rem; letter-spacing: 0.05em;
+      color: rgba(30, 120, 60, 0.65); padding: 0.15rem 0.35rem;
+      border-radius: 2px; border: 1px solid rgba(30, 120, 60, 0.28);
+    }
 
     /* Context menu */
     #ctx-menu {
@@ -512,6 +518,7 @@
     <div class="ctx-item" id="ctx-invoice-item">Add to invoice</div>
     <div class="ctx-item" id="ctx-clear-invoice-item" style="display:none">Clear invoice</div>
     <div class="ctx-sep"></div>
+    <div class="ctx-item" id="ctx-reserve-item">Mark as reserved</div>
     <div class="ctx-item" id="ctx-exclude-item">Exclude from show</div>
     <div class="ctx-item danger" id="ctx-delete-item">Delete</div>
   </div>
@@ -644,7 +651,7 @@
       const obj = {};
       document.querySelectorAll('#inventory-body tr[data-id]').forEach(tr => {
         const id = tr.dataset.id;
-        obj[id] = { excluded: tr.classList.contains('excluded') };
+        obj[id] = { excluded: tr.classList.contains('excluded'), reserved: tr.classList.contains('reserved') };
         if (tr.dataset.invoiceRef) {
           try { obj[id].invoiced = JSON.parse(tr.dataset.invoiceRef); } catch (e) {}
         }
@@ -860,6 +867,7 @@
       const tr = document.createElement('tr');
       tr.dataset.id = id;
       if (isExcluded) tr.classList.add('excluded');
+      if (rowData.reserved) tr.classList.add('reserved');
 
       // Drag handle
       const tdDrag = document.createElement('td');
@@ -918,6 +926,12 @@
       // Invoice status column
       const tdInv = document.createElement('td');
       tdInv.className = 'col-inv';
+      if (rowData.reserved) {
+        const resTag = document.createElement('span');
+        resTag.className = 'res-tag';
+        resTag.textContent = 'RES';
+        tdInv.appendChild(resTag);
+      }
       if (rowData.invoiced) {
         tr.classList.add('invoiced');
         tr.dataset.invoiceRef = JSON.stringify(rowData.invoiced);
@@ -1124,8 +1138,9 @@
       }
 
       const items = activeRows.map((tr, i) => {
-        const ref  = tr.dataset.invoiceRef ? JSON.parse(tr.dataset.invoiceRef) : null;
-        const sold = ref && ref.paid;
+        const ref      = tr.dataset.invoiceRef ? JSON.parse(tr.dataset.invoiceRef) : null;
+        const sold     = !!ref;
+        const reserved = tr.classList.contains('reserved');
         return {
           num:      i + 1,
           id:       tr.dataset.id,
@@ -1134,6 +1149,7 @@
           material: tr.querySelector('[data-field="material"]')?.textContent.trim()   || '',
           price:    fmtPrice(tr.querySelector('[data-field="price"]')?.textContent.trim()),
           sold,
+          reserved,
         };
       });
 
@@ -1167,7 +1183,7 @@
                 <div class="item-num">${item.num}</div>
                 <div class="title">${item.title || '—'}</div>
                 <div class="meta">${[item.dims, item.material].filter(Boolean).join('&ensp;·&ensp;')}</div>
-                ${item.sold ? `<div class="price sold">SOLD</div>` : (item.price ? `<div class="price">${item.price}</div>` : '')}
+                ${item.sold ? `<div class="price sold">SOLD</div>` : item.reserved ? `<div class="price reserved-label">RESERVED</div>` : (item.price ? `<div class="price">${item.price}</div>` : '')}
               </div>
             </div>`).join('')}
           <div class="page-footer">dim.studio.marfa@gmail.com</div>
@@ -1211,6 +1227,7 @@
       letter-spacing: 0.04em; margin-top: 14pt;
     }
     .sold { color: #b52c2c; font-weight: 400; }
+    .reserved-label { color: #1e7a3c; font-weight: 400; }
     @media print {
       .cover-page { height: 100vh; page-break-after: always; }
     }
@@ -1427,9 +1444,11 @@
       const isInvoiced = tr.classList.contains('invoiced');
       const inCart     = invoiceCart.has(id);
 
-      const invItem   = document.getElementById('ctx-invoice-item');
-      const clearItem = document.getElementById('ctx-clear-invoice-item');
-      const exclItem  = document.getElementById('ctx-exclude-item');
+      const invItem     = document.getElementById('ctx-invoice-item');
+      const clearItem   = document.getElementById('ctx-clear-invoice-item');
+      const exclItem    = document.getElementById('ctx-exclude-item');
+      const reserveItem = document.getElementById('ctx-reserve-item');
+      const isReserved  = tr.classList.contains('reserved');
 
       if (isInvoiced) {
         invItem.textContent = 'Open invoice';
@@ -1438,7 +1457,8 @@
         invItem.textContent = inCart ? 'Remove from invoice' : 'Add to invoice';
         clearItem.style.display = 'none';
       }
-      exclItem.textContent = isExcluded ? 'Include in show' : 'Exclude from show';
+      exclItem.textContent    = isExcluded ? 'Include in show' : 'Exclude from show';
+      reserveItem.textContent = isReserved  ? 'Clear reservation' : 'Mark as reserved';
 
       const menu = document.getElementById('ctx-menu');
       menu.style.display = 'block';
@@ -1491,6 +1511,25 @@
       delete ctxRow.dataset.invoiceRef;
       const tdInv = ctxRow.querySelector('.col-inv');
       if (tdInv) tdInv.innerHTML = '';
+      saveData();
+      ctxRow = null;
+    });
+
+    document.getElementById('ctx-reserve-item').addEventListener('click', () => {
+      if (!ctxRow) return;
+      const isNowReserved = ctxRow.classList.toggle('reserved');
+      const tdInv = ctxRow.querySelector('.col-inv');
+      if (tdInv) {
+        const existing = tdInv.querySelector('.res-tag');
+        if (isNowReserved && !existing) {
+          const tag = document.createElement('span');
+          tag.className = 'res-tag';
+          tag.textContent = 'RES';
+          tdInv.insertBefore(tag, tdInv.firstChild);
+        } else if (!isNowReserved && existing) {
+          existing.remove();
+        }
+      }
       saveData();
       ctxRow = null;
     });
