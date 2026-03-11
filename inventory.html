@@ -1484,7 +1484,7 @@
     document.getElementById('ctx-preview-item').addEventListener('click', () => {
       if (!ctxRow) return;
       const id = ctxRow.dataset.id;
-      window.open('/preview.html?id=' + encodeURIComponent(id), '_blank');
+      window.open('preview.html?id=' + encodeURIComponent(id), '_blank');
       ctxRow = null;
     });
 
