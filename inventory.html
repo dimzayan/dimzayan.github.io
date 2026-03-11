@@ -1042,22 +1042,19 @@
       applySortUI();
     }
 
-    // Fetch inventory.json first; fall back to localStorage
-    fetch('inventory.json')
+    // inventory.json is the source of truth — always fetch fresh
+    fetch('inventory.json?v=' + Date.now())
       .then(r => r.ok ? r.json() : Promise.reject())
       .then(jsonData => {
-        const rawLocal = localStorage.getItem(STORAGE_KEY);
-        if (rawLocal) {
-          // localStorage is authoritative (owner's edits, invoice state);
-          // merge in any new ids from the published json
-          const localData = JSON.parse(rawLocal);
-          Object.keys(jsonData).forEach(id => { if (!localData[id]) localData[id] = jsonData[id]; });
-          renderData(localData);
-        } else {
-          // First visit — seed from inventory.json and persist locally
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(jsonData));
-          renderData(jsonData);
-        }
+        // Overlay invoice references from localStorage (private, not in json)
+        const localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        Object.keys(jsonData).forEach(id => {
+          if (localData[id] && localData[id].invoiced) {
+            jsonData[id].invoiced = localData[id].invoiced;
+          }
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(jsonData));
+        renderData(jsonData);
       })
       .catch(() => renderData(loadData()));
 
