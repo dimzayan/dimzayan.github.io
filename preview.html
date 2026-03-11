@@ -110,7 +110,7 @@
       document.getElementById('content').innerHTML =
         '<div class="not-found">No work ID specified.</div>';
     } else {
-      fetch('inventory.json')
+      fetch('inventory.json?v=' + Date.now())
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
         .catch(function() {
           try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }

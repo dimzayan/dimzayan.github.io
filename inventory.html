@@ -1248,9 +1248,7 @@
 
     // ── Exports ────────────────────────────────────────────────────────────
 
-    const GH_TOKEN = localStorage.getItem('dim_gh_token') || '';
-    
-    const GH_API   = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json';
+    const GH_API = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json';
 
     document.getElementById('json-btn').addEventListener('click', async () => {
       saveData();
@@ -1259,7 +1257,9 @@
       btn.textContent = 'Saving…';
       btn.disabled = true;
       try {
-        const headers = { 'Authorization': `Bearer ${GH_TOKEN}`, 'Accept': 'application/vnd.github+json' };
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) throw new Error('no token');
+        const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' };
         // Get current SHA (required by GitHub API to update a file)
         const meta = await fetch(GH_API, { headers }).then(r => r.json());
         // base64-encode (handles Unicode)
@@ -1272,7 +1272,7 @@
         if (!r.ok) throw new Error(r.status);
         btn.textContent = 'Saved ✓';
       } catch (e) {
-        btn.textContent = 'Error ✗';
+        btn.textContent = e.message === 'no token' ? 'No token ✗' : 'Error ✗';
       } finally {
         setTimeout(() => { btn.textContent = 'Save JSON'; btn.disabled = false; }, 2000);
       }
