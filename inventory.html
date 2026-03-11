@@ -1042,20 +1042,16 @@
       applySortUI();
     }
 
-    // localStorage is authoritative; inventory.json fills in missing entries
+    // inventory.json is always the source of truth for work data
     fetch('inventory.json?v=' + Date.now())
       .then(r => r.ok ? r.json() : Promise.reject())
-      .then(jsonData => {
-        const rawLocal = localStorage.getItem(STORAGE_KEY);
-        if (rawLocal) {
-          const localData = JSON.parse(rawLocal);
-          // Bring in any ids not yet in localStorage
-          Object.keys(jsonData).forEach(id => { if (!localData[id]) localData[id] = jsonData[id]; });
-          renderData(localData);
-        } else {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(jsonData));
-          renderData(jsonData);
-        }
+      .then(data => {
+        // Overlay invoice refs from localStorage (private, not stored in json)
+        const local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        Object.keys(data).forEach(id => {
+          if (local[id] && local[id].invoiced) data[id].invoiced = local[id].invoiced;
+        });
+        renderData(data);
       })
       .catch(() => renderData(loadData()));
 
