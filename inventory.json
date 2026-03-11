@@ -2,11 +2,6 @@
   "IMG_0629": {
     "excluded": false,
     "reserved": false,
-    "invoiced": {
-      "invoiceId": "inv_1773250236087",
-      "num": 125,
-      "paid": false
-    },
     "title": "Range, ablaze",
     "dimensions": "22x30",
     "material": "Acrylic, Gyspum, epoxy, steel",
@@ -21,17 +16,12 @@
     "dimensions": "12x19",
     "material": "Oil, Epoxy, Gypsum",
     "price": "1000",
-    "year": "",
+    "year": "2025",
     "notes": ""
   },
   "IMG_1634": {
     "excluded": false,
     "reserved": false,
-    "invoiced": {
-      "invoiceId": "inv_1773086872445",
-      "num": 123,
-      "paid": true
-    },
     "title": "Redscape II",
     "dimensions": "13x24",
     "material": "Oil, Gypsum",
@@ -42,11 +32,6 @@
   "IMG_1635": {
     "excluded": false,
     "reserved": false,
-    "invoiced": {
-      "invoiceId": "inv_1773090271061",
-      "num": 124,
-      "paid": true
-    },
     "title": "Redscape III",
     "dimensions": "9x9.5",
     "material": "Oil, Epoxy, Gypsum",
@@ -87,11 +72,6 @@
   "IMG_0348": {
     "excluded": false,
     "reserved": false,
-    "invoiced": {
-      "invoiceId": "inv_1773086872445",
-      "num": 123,
-      "paid": true
-    },
     "title": "Desertscape IV",
     "dimensions": "11x11",
     "material": "Epoxy, Gypsum",
@@ -172,11 +152,6 @@
   "IMG_0373": {
     "excluded": false,
     "reserved": false,
-    "invoiced": {
-      "invoiceId": "inv_1773016569936",
-      "num": 122,
-      "paid": false
-    },
     "title": "Tiamat study",
     "dimensions": "17x12",
     "material": "Acrylic, Paper, Gypsum",
