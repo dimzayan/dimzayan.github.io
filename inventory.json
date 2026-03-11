@@ -11,7 +11,7 @@
     "dimensions": "22x30",
     "material": "Acrylic, Gyspum, epoxy, steel",
     "price": "2700",
-    "year": "2024",
+    "year": "",
     "notes": ""
   },
   "IMG_0321": {
@@ -21,7 +21,7 @@
     "dimensions": "12x19",
     "material": "Oil, Epoxy, Gypsum",
     "price": "1000",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_1634": {
@@ -36,7 +36,7 @@
     "dimensions": "13x24",
     "material": "Oil, Gypsum",
     "price": "1200",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_1635": {
@@ -51,7 +51,7 @@
     "dimensions": "9x9.5",
     "material": "Oil, Epoxy, Gypsum",
     "price": "900",
-    "year": "2025",
+    "year": "",
     "notes": ""
   },
   "IMG_0325": {
@@ -61,7 +61,7 @@
     "dimensions": "14x23",
     "material": "Gypsum",
     "price": "1200",
-    "year": "2025",
+    "year": "",
     "notes": ""
   },
   "IMG_1638": {
@@ -71,7 +71,7 @@
     "dimensions": "13.5x17",
     "material": "Gyspum",
     "price": "900",
-    "year": "2025",
+    "year": "",
     "notes": ""
   },
   "IMG_1636": {
@@ -81,7 +81,7 @@
     "dimensions": "14x10",
     "material": "Gypsum",
     "price": "900",
-    "year": "2025",
+    "year": "",
     "notes": ""
   },
   "IMG_0348": {
@@ -96,7 +96,7 @@
     "dimensions": "11x11",
     "material": "Epoxy, Gypsum",
     "price": "900",
-    "year": "2025",
+    "year": "",
     "notes": ""
   },
   "IMG_0395": {
@@ -106,7 +106,7 @@
     "dimensions": "24x48",
     "material": "Oil, Gypsum, Epoxy",
     "price": "4200",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_0399": {
@@ -116,7 +116,7 @@
     "dimensions": "24x48",
     "material": "Oil, Gyspum, Epoxy",
     "price": "4200",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_0362": {
@@ -126,7 +126,7 @@
     "dimensions": "24x35",
     "material": "Gyspum",
     "price": "3300",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_0403": {
@@ -136,7 +136,7 @@
     "dimensions": "35x45",
     "material": "Oil, Gypsum",
     "price": "5400",
-    "year": "2025",
+    "year": "",
     "notes": ""
   },
   "IMG_1640": {
@@ -146,7 +146,7 @@
     "dimensions": "168x36",
     "material": "Acrylic, Paper",
     "price": "7200",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_0358": {
@@ -156,7 +156,7 @@
     "dimensions": "24x36",
     "material": "Oil, Gypsum",
     "price": "3300",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_0383": {
@@ -166,7 +166,7 @@
     "dimensions": "10.5x13",
     "material": "Acrylic, Paper, Gypsum",
     "price": "900",
-    "year": "2025",
+    "year": "",
     "notes": ""
   },
   "IMG_0373": {
@@ -181,7 +181,7 @@
     "dimensions": "17x12",
     "material": "Acrylic, Paper, Gypsum",
     "price": "900",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_0466": {
@@ -191,28 +191,28 @@
     "dimensions": "45x35",
     "material": "Acrylic, Paper",
     "price": "2400",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_1639": {
     "excluded": false,
-    "reserved": true,
+    "reserved": false,
     "title": "Look east and then rise",
-    "dimensions": "24x29x2",
-    "material": "Oil, drywall, epoxy, steel backing",
+    "dimensions": "24x29",
+    "material": "Oil, gypsum, epoxy",
     "price": "3000",
-    "year": "2026",
-    "notes": "Rather than the orbital sander and sandpaper used in the Declivity series, Zayan worked the surface with an angle grinder, carving bold strokes directly into the drywall. Left intentionally visible, these marks shift the emphasis toward gesture — and together with the color and subject matter, give the work an overall feel reminiscent of a Japanese woodblock print.  The composition is organized into three distinct areas, each treated to underline its nature. In the upper section, tones of mauve and orange interlace rather than overlap the broad strokes, evoking a rising sun. The lower section reverses this logic: deep blue washes lay over the carved marks, creating depth and transforming the incisions into something resembling underwater reefs. Between them, the landmass occupies a central field, acting as a neutral balance between opposing forces. Backing: Steel, epoxy"
+    "year": "",
+    "notes": ""
   },
   "IMG_0453": {
     "excluded": false,
     "reserved": false,
     "title": "From dusk till dawn over the hills",
-    "dimensions": "35x54x1 1/4",
-    "material": "Oil, acrylic, drywall, polyurethane",
+    "dimensions": "35x54",
+    "material": "Oil, Acrylic, Gypsum",
     "price": "6300",
-    "year": "2026",
-    "notes": "\"From dusk till dawn over the hills\" is the first work in the Nightscape series and marks his initial use of scratching to create contrast. The painting began with twelve layers of blue, forming a deep, monolithic void at its center. Zayan then sanded and scratched the lower portion of the canvas to reveal a landscape beneath, using physical removal of paint as part of his process. The final piece depicts a night scene over rolling hills, which, under the morning light conditions, visually transitions into dawn. Backing: Wood, epoxy"
+    "year": "",
+    "notes": "\"From dusk till dawn over the hills\" is the first work in the Nightscape series and marks his initial use of scratching to create contrast.The painting began with twelve layers of blue, forming a deep, monolithic void at its center. Zayan then sanded and scratched thelower portion of the canvas to reveal a landscape beneath, using physical removal of paint as part of his process. The final piecedepicts a night scene over rolling hills, which, under the morning light conditions, visually transitions into dawn. Backing: Wood, epoxy"
   },
   "IMG_0330": {
     "excluded": false,
@@ -221,8 +221,8 @@
     "dimensions": "9x11",
     "material": "Acrylic, Paper, Gypsum",
     "price": "600",
-    "year": "2025",
-    "notes": "test"
+    "year": "",
+    "notes": ""
   },
   "IMG_0315": {
     "excluded": true,
