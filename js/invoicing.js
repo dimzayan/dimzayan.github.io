@@ -249,14 +249,14 @@ if (btn) btn.addEventListener('click', function() {
 <\/script></body></html>`;
   }
 
-  function openInvoice(invoiceId) {
+  window.openInvoice = function openInvoice(invoiceId) {
     const all = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}');
     const inv = all[invoiceId];
     if (!inv) { alert('Invoice not found.'); return; }
     const win = window.open('', '_blank');
     win.document.write(generateInvoiceHTML(inv));
     win.document.close();
-  }
+  };
 
   // Called from invoice window when marked as paid
   window.dimZayanInvoicePaid = function(invoiceId) {
