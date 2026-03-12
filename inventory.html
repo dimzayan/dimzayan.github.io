@@ -630,6 +630,8 @@
     const placeholder = { title: 'Title', dimensions: 'e.g. 24×36 in', material: 'Material', price: '$', year: 'Year', notes: 'Notes' };
     const colClass    = { title: 'col-title', dimensions: 'col-dims', material: 'col-material', price: 'col-price', year: 'col-year', notes: 'col-notes' };
 
+    const tbody = document.getElementById('inventory-body');
+
     // ── Data (DOM read) ────────────────────────────────────────────────────
 
     function gatherData() {
