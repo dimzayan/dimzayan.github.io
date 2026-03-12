@@ -941,8 +941,9 @@
       applySortUI();
     }
 
-    // inventory.json is always the source of truth for work data
-    fetch('inventory.json?v=' + Date.now())
+
+
+    fetch('https://dimzayan.com/inventory.json?v=' + Date.now())
       .then(r => r.ok ? r.json() : Promise.reject())
       .then(data => {
         // Restore invoice refs from localStorage (private, not in json)
