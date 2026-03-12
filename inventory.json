@@ -21,7 +21,7 @@
     "dimensions": "12x19",
     "material": "Oil, Epoxy, Gypsum",
     "price": "1000",
-    "year": "2026",
+    "year": "2025",
     "notes": ""
   },
   "IMG_1634": {
@@ -36,7 +36,7 @@
     "dimensions": "13x24",
     "material": "Oil, Gypsum",
     "price": "1200",
-    "year": "2026",
+    "year": "",
     "notes": ""
   },
   "IMG_1635": {
@@ -62,7 +62,7 @@
     "material": "Gypsum",
     "price": "1200",
     "year": "",
-    "notes": ""
+    "notes": "dkcsk"
   },
   "IMG_1638": {
     "excluded": false,
