@@ -75,6 +75,7 @@
 
     function render(id, data) {
       const work = data[id];
+      console.log(data);
       const el = document.getElementById('content');
       if (!work) {
         el.innerHTML = '<div class="not-found">Work not found.</div>';
