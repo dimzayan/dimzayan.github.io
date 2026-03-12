@@ -249,14 +249,22 @@ if (btn) btn.addEventListener('click', function() {
 <\/script></body></html>`;
   }
 
-  window.openInvoice = function openInvoice(invoiceId) {
+  function openInvoice(invoiceId) {
     const all = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}');
     const inv = all[invoiceId];
     if (!inv) { alert('Invoice not found.'); return; }
     const win = window.open('', '_blank');
     win.document.write(generateInvoiceHTML(inv));
     win.document.close();
-  };
+  }
+
+  // Delegated listener for inv-tag clicks (createRow sets data-invoice-id)
+  document.addEventListener('click', function(e) {
+    const tag = e.target.closest('.inv-tag[data-invoice-id]');
+    if (!tag) return;
+    e.stopPropagation();
+    openInvoice(tag.dataset.invoiceId);
+  });
 
   // Called from invoice window when marked as paid
   window.dimZayanInvoicePaid = function(invoiceId) {

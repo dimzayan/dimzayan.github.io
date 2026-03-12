@@ -897,7 +897,7 @@
         tag.className = 'inv-tag' + (rowData.invoiced.paid ? ' paid' : '');
         tag.textContent = `INV.${String(rowData.invoiced.num).padStart(4, '0')}`;
         tag.title = rowData.invoiced.paid ? 'Paid — click to open' : 'Pending — click to open';
-        tag.addEventListener('click', e => { e.stopPropagation(); openInvoice(rowData.invoiced.invoiceId); });
+        tag.dataset.invoiceId = rowData.invoiced.invoiceId;
         tdInv.appendChild(tag);
       }
       tr.appendChild(tdInv);
