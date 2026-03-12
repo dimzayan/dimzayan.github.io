@@ -26,7 +26,7 @@
     "dimensions": "13x24",
     "material": "Oil, Gypsum",
     "price": "1200",
-    "year": "",
+    "year": "2026",
     "notes": ""
   },
   "IMG_1635": {
@@ -36,7 +36,7 @@
     "dimensions": "9x9.5",
     "material": "Oil, Epoxy, Gypsum",
     "price": "900",
-    "year": "",
+    "year": "2025",
     "notes": ""
   },
   "IMG_0325": {
@@ -46,7 +46,7 @@
     "dimensions": "14x23",
     "material": "Gypsum",
     "price": "1200",
-    "year": "",
+    "year": "2025",
     "notes": ""
   },
   "IMG_1638": {
@@ -292,7 +292,7 @@
   "IMG_0379": {
     "excluded": true,
     "reserved": false,
-    "title": "Skyscape 001",
+    "title": "Skyscape 001",
     "dimensions": "",
     "material": "Acrylic, Collage, Gypsum",
     "price": "400",
