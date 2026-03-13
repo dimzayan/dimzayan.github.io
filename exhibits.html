@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dim Zayan</title>
   <link rel="icon" href="./favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; background: #000; }
+    html, body { width: 100%; height: 100%; background: #000; font-family: 'DM Sans', sans-serif; }
 
     #cover {
+      position: relative;
       width: 100vw;
       height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
     }
 
@@ -25,16 +25,45 @@
       display: block;
     }
 
+    #cover-header {
+      position: absolute;
+      top: 4em;
+      left: 4em;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3em;
+    }
+
+    .cover-artist {
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .cover-title {
+      font-size: 0.8rem;
+      font-weight: 300;
+      opacity: 0.75;
+    }
+
     .not-found {
       color: #555;
-      font-family: sans-serif;
       font-size: 0.9rem;
       text-align: center;
+      padding: 4em;
     }
   </style>
 </head>
 <body>
-  <div id="cover"></div>
+  <div id="cover">
+    <div id="cover-header">
+      <span class="cover-artist">Dim Zayan</span>
+      <span class="cover-title" id="cover-title"></span>
+    </div>
+  </div>
 
   <script>
     const CDN_HI = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
@@ -54,6 +83,7 @@
             return;
           }
           document.title = exhibit.title + ' — Dim Zayan';
+          document.getElementById('cover-title').textContent = exhibit.title;
           const img = document.createElement('img');
           img.src = CDN_HI + exhibit.media[0];
           img.alt = exhibit.title;
