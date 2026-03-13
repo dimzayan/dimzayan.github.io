@@ -174,10 +174,13 @@
     if (!id) {
       cover.innerHTML = '<div class="not-found">No exhibit specified.</div>';
     } else {
-      fetch('exhibits.json?v=' + Date.now())
-        .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-        .then(function(data) {
-          const exhibit = data[id];
+      Promise.all([
+        fetch('exhibits.json?v='  + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); }),
+        fetch('inventory.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+      ]).then(function(results) {
+          const exhibit   = results[0][id];
+          const inventory = results[1];
+
           if (!exhibit) {
             cover.innerHTML = '<div class="not-found">Exhibit not found.</div>';
             return;
@@ -195,20 +198,23 @@
           }
 
           // About
-          const aboutText = document.getElementById('about-text');
           if (exhibit.description) {
-            aboutText.textContent = exhibit.description;
+            document.getElementById('about-text').textContent = exhibit.description;
           } else {
             document.getElementById('about').style.display = 'none';
           }
 
-          // Works
+          // Works — all inventory entries tagged with this exhibit id
+          const works = Object.entries(inventory).filter(function(entry) {
+            return entry[1].exhibit === id && !entry[1].excluded;
+          });
           const grid = document.getElementById('works-grid');
-          if (exhibit.media && exhibit.media.length) {
-            exhibit.media.forEach(function(filename) {
+          if (works.length) {
+            works.forEach(function(entry) {
               const img = document.createElement('img');
-              img.src = CDN_HI + filename;
-              img.alt = exhibit.title;
+              img.src = CDN_HI + entry[0] + '.webp';
+              img.alt = entry[1].title || '';
+              img.title = entry[1].title || '';
               grid.appendChild(img);
             });
           } else {
