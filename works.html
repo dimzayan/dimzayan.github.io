@@ -204,7 +204,7 @@
     function show(index) {
       current = (index + ids.length) % ids.length;
       const id = ids[current];
-      lbImg.src = CDN_HI + id + HI_EXT;
+      lbImg.src = CDN_HI + (inventory[id]?.photo || id) + HI_EXT;
       lb.classList.add('open');
 
       const info = inventory[id] || {};
@@ -244,7 +244,7 @@
         ids.forEach((id, i) => {
           const a   = document.createElement('a');
           const img = document.createElement('img');
-          img.src     = CDN_LOW + id + LOW_EXT;
+          img.src     = CDN_LOW + (data[id]?.photo || id) + LOW_EXT;
           img.loading = 'lazy';
           img.alt     = data[id]?.title || '';
           a.appendChild(img);

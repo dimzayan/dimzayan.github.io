@@ -23,7 +23,7 @@
       const reserved = tr.classList.contains('reserved');
       return {
         num:      i + 1,
-        id:       tr.dataset.id,
+        id:       tr.dataset.photo || tr.dataset.id,
         title:    tr.querySelector('[data-field="title"]')?.textContent.trim()      || '',
         dims:     fmtDims(tr.querySelector('[data-field="dimensions"]')?.textContent.trim()),
         material: tr.querySelector('[data-field="material"]')?.textContent.trim()   || '',

@@ -212,7 +212,7 @@
           if (works.length) {
             works.forEach(function(entry) {
               const img = document.createElement('img');
-              img.src = CDN_HI + entry[0] + '.webp';
+              img.src = CDN_HI + (entry[1].photo || entry[0]) + '.webp';
               img.alt = entry[1].title || '';
               img.title = entry[1].title || '';
               grid.appendChild(img);

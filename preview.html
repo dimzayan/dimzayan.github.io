@@ -100,7 +100,7 @@
         : '';
 
       el.innerHTML =
-        '<div class="img-wrap"><img src="' + CDN_HI + id + '.webp" alt="' + (work.title || '') + '"></div>' +
+        '<div class="img-wrap"><img src="' + CDN_HI + (work.photo || id) + '.webp" alt="' + (work.title || '') + '"></div>' +
         '<div class="title">' + (work.title || '') + '</div>' +
         (work.year  ? '<div class="year">'  + work.year  + '</div>' : '') +
         (meta       ? '<div class="meta">'  + meta        + '</div>' : '') +
