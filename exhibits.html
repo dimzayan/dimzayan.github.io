@@ -125,6 +125,29 @@
       opacity: 0.4;
     }
 
+    /* ── Cover dots ── */
+    #cover-dots {
+      position: absolute;
+      bottom: 1.2em;
+      right: 1.4em;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .cover-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .cover-dot.active { background: rgba(0,0,0,0.7); }
+    .cover-dot:hover  { background: rgba(0,0,0,0.5); }
+
     .not-found {
       color: #555;
       font-size: 0.9rem;
@@ -143,6 +166,7 @@
       <span>Do Right Hall, Marfa, TX</span>
       <span>March 5–15 2026</span>
     </footer>
+    <div id="cover-dots"></div>
   </div>
 
   <section id="about" class="exhibit-section">
@@ -166,18 +190,39 @@
   </footer>
 
   <script>
-    const CDN_HI = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+    const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+    const GH_API  = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json';
 
-    const id = new URLSearchParams(window.location.search).get('id');
+    const id    = new URLSearchParams(window.location.search).get('id');
     const cover = document.getElementById('cover');
 
     if (!id) {
       cover.innerHTML = '<div class="not-found">No exhibit specified.</div>';
     } else {
-      Promise.all([
-        fetch('exhibits.json?v='  + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); }),
-        fetch('inventory.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-      ]).then(function(results) {
+      (async function() {
+        // Fetch inventory — use GitHub API if token available (bypasses CDN cache)
+        async function fetchInventory() {
+          const token = localStorage.getItem('dim_gh_token') || '';
+          if (token) {
+            try {
+              const meta = await fetch(GH_API, {
+                headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
+                cache: 'no-store'
+              }).then(function(r) { return r.json(); });
+              if (meta.content) {
+                return JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
+              }
+            } catch(e) {}
+          }
+          return fetch('inventory.json?v=' + Date.now())
+            .then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+        }
+
+        try {
+          const results  = await Promise.all([
+            fetch('exhibits.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); }),
+            fetchInventory()
+          ]);
           const exhibit   = results[0][id];
           const inventory = results[1];
 
@@ -189,12 +234,27 @@
           document.title = exhibit.title + ' — Dim Zayan';
           document.getElementById('cover-title').textContent = exhibit.title;
 
-          // Cover image
-          if (exhibit.media && exhibit.media.length) {
-            const img = document.createElement('img');
-            img.src = CDN_HI + exhibit.media[0];
-            img.alt = exhibit.title;
-            cover.appendChild(img);
+          // Cover image + dots
+          const media = exhibit.media || [];
+          if (media.length) {
+            const coverImg = document.createElement('img');
+            coverImg.src = CDN_HI + media[0];
+            coverImg.alt = exhibit.title;
+            cover.appendChild(coverImg);
+
+            if (media.length > 1) {
+              const dotsEl = document.getElementById('cover-dots');
+              media.forEach(function(filename, i) {
+                const dot = document.createElement('div');
+                dot.className = 'cover-dot' + (i === 0 ? ' active' : '');
+                dot.addEventListener('click', function() {
+                  coverImg.src = CDN_HI + filename;
+                  dotsEl.querySelectorAll('.cover-dot').forEach(function(d) { d.classList.remove('active'); });
+                  dot.classList.add('active');
+                });
+                dotsEl.appendChild(dot);
+              });
+            }
           }
 
           // About
@@ -204,7 +264,7 @@
             document.getElementById('about').style.display = 'none';
           }
 
-          // Works — all inventory entries tagged with this exhibit id
+          // Works — inventory entries tagged with this exhibit id
           const works = Object.entries(inventory).filter(function(entry) {
             return entry[1].exhibit === id && !entry[1].excluded;
           });
@@ -212,8 +272,8 @@
           if (works.length) {
             works.forEach(function(entry) {
               const img = document.createElement('img');
-              img.src = CDN_HI + (entry[1].photo || entry[0]) + '.webp';
-              img.alt = entry[1].title || '';
+              img.src   = CDN_HI + (entry[1].photo || entry[0]) + '.webp';
+              img.alt   = entry[1].title || '';
               img.title = entry[1].title || '';
               grid.appendChild(img);
             });
@@ -235,10 +295,10 @@
           } else {
             document.getElementById('press').style.display = 'none';
           }
-        })
-        .catch(function() {
+        } catch(e) {
           cover.innerHTML = '<div class="not-found">Could not load exhibit.</div>';
-        });
+        }
+      })();
     }
   </script>
 </body>
