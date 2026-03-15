@@ -2,395 +2,420 @@
   "IMG_0629": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0905",
+    "invoiced": {
+      "invoiceId": "inv_1773250236087",
+      "num": 125,
+      "paid": false
+    },
     "title": "Range, ablaze",
     "dimensions": "22x30",
     "material": "Acrylic, Gyspum, epoxy, steel",
     "price": "2700",
     "year": "2024",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0629"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0321": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0911",
     "title": "Redscape I",
     "dimensions": "12x19",
     "material": "Oil, Epoxy, Gypsum",
     "price": "1000",
-    "year": "2025",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0321"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_1634": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_1634",
+    "invoiced": {
+      "invoiceId": "inv_1773086872445",
+      "num": 123,
+      "paid": true
+    },
     "title": "Redscape II",
     "dimensions": "13x24",
     "material": "Oil, Gypsum",
     "price": "1200",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_1634"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_1635": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_1635",
+    "invoiced": {
+      "invoiceId": "inv_1773090271061",
+      "num": 124,
+      "paid": true
+    },
     "title": "Redscape III",
     "dimensions": "9x9.5",
     "material": "Oil, Epoxy, Gypsum",
     "price": "900",
-    "year": "",
+    "year": "2025",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_1635"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0325": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_0325",
     "title": "Desertscape I",
     "dimensions": "14x23",
     "material": "Gypsum",
     "price": "1200",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0325"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_1638": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0896",
     "title": "Desertscape II",
     "dimensions": "13.5x17",
     "material": "Gyspum",
     "price": "900",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_1638"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_1636": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_1636",
     "title": "Desertscape III",
     "dimensions": "14x10",
     "material": "Gypsum",
     "price": "900",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_1636"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0348": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_0348",
+    "invoiced": {
+      "invoiceId": "inv_1773086872445",
+      "num": 123,
+      "paid": true
+    },
     "title": "Desertscape IV",
     "dimensions": "11x11",
     "material": "Epoxy, Gypsum",
     "price": "900",
-    "year": "",
+    "year": "2025",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0348"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0395": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0884",
     "title": "Acclivity I",
     "dimensions": "24x48",
     "material": "Oil, Gypsum, Epoxy",
     "price": "4200",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0395"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0399": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0863",
     "title": "Declivity I",
     "dimensions": "24x48",
     "material": "Oil, Gyspum, Epoxy",
     "price": "4200",
-    "year": "",
-    "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0399"
+    "year": "2026",
+    "notes": "test",
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0362": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0867",
     "title": "Declivity II",
     "dimensions": "24x35",
     "material": "Gyspum",
     "price": "3300",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0362"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0403": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0832",
     "title": "Declivity III",
     "dimensions": "35x45",
     "material": "Oil, Gypsum",
     "price": "5400",
-    "year": "",
+    "year": "2025",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0403"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_1640": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0877",
     "title": "Tiamat",
     "dimensions": "168x36",
     "material": "Acrylic, Paper",
     "price": "7200",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_1640"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0358": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0835",
     "title": "Sign of life",
     "dimensions": "24x36",
     "material": "Oil, Gypsum",
     "price": "3300",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0358"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0383": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0839",
     "title": "Element 003",
     "dimensions": "10.5x13",
     "material": "Acrylic, Paper, Gypsum",
     "price": "900",
-    "year": "",
+    "year": "2025",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0383"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0373": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_0373",
+    "invoiced": {
+      "invoiceId": "inv_1773016569936",
+      "num": 122,
+      "paid": false
+    },
     "title": "Tiamat study",
     "dimensions": "17x12",
     "material": "Acrylic, Paper, Gypsum",
     "price": "900",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0373"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0466": {
     "excluded": false,
     "reserved": false,
+    "photo": "_DSC0849",
     "title": "Origin story",
     "dimensions": "45x35",
     "material": "Acrylic, Paper",
     "price": "2400",
-    "year": "",
+    "year": "2026",
     "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0466"
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_1639": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_1639",
     "title": "Look east and then rise",
     "dimensions": "24x29",
     "material": "Oil, gypsum, epoxy",
     "price": "3000",
-    "year": "",
-    "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_1639"
+    "year": "2026",
+    "notes": "Rather than the orbital sander and sandpaper used in the Declivity series, Zayan worked the surface with an angle grinder, carving bold strokes directly into the drywall. Left intentionally visible, these marks shift the emphasis toward gesture — and together with the color and subject matter, give the work an overall feel reminiscent of a Japanese woodblock print. The composition is organized into three distinct areas, each treated to underline its nature. In the upper section, tones of mauve and orange interlace rather than overlap the broad strokes, evoking a rising sun. The lower section reverses this logic: deep blue washes lay over the carved marks, creating depth and transforming the incisions into something resembling underwater reefs. Between them, the landmass occupies a central field, acting as a neutral balance between opposing forces. Backing: Steel, epoxy",
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0453": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_0453",
     "title": "From dusk till dawn over the hills",
     "dimensions": "35x54",
-    "material": "Oil, Acrylic, Gypsum",
+    "material": "Oil, Acrylic, Drywall",
     "price": "6300",
-    "year": "",
-    "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0453"
+    "year": "2026",
+    "notes": "\"From dusk till dawn over the hills\" is the first work in the Nightscape series and marks his initial use of scratching to create contrast. The painting began with twelve layers of blue, forming a deep, monolithic void at its center. Zayan then sanded and scratched the lower portion of the canvas to reveal a landscape beneath, using physical removal of paint as part of his process. The final piece depicts a night scene over rolling hills, which, under the morning light conditions, visually transitions into dawn. Backing: Wood, epoxy",
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0330": {
     "excluded": false,
     "reserved": false,
+    "photo": "IMG_0330",
     "title": "Fragmented reflection",
     "dimensions": "9x11",
-    "material": "Acrylic, Paper, Gypsum",
+    "material": "Acrylic, Paper, Drywall",
     "price": "600",
-    "year": "",
-    "notes": "",
-    "exhibit": "a-three-quarter-view-of-the-future",
-    "photo": "IMG_0330"
+    "year": "2025",
+    "notes": "An early study of texture using painter's paper.The partial but broad sanding of the painted surface creates a singular contrast between light and dark areas, evoking a close-up reflection on water. Backing: Recessed drywall",
+    "exhibit": "a-three-quarter-view-of-the-future"
   },
   "IMG_0315": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0315",
     "title": "Strata",
     "dimensions": "12x24",
     "material": "Oil, Epoxy, Gypsum",
     "price": "1800",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0315"
+    "notes": ""
   },
   "IMG_0322": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0322",
     "title": "Element 005",
     "dimensions": "16x14",
     "material": "Epoxy, Gypsum",
     "price": "900",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0322"
+    "notes": ""
   },
   "IMG_0329": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0329",
     "title": "Desertscape 002",
     "dimensions": "10x14",
     "material": "Paper, Acrylic, Epoxy, Gypsum",
     "price": "700",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0329"
+    "notes": ""
   },
   "IMG_0336": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0336",
     "title": "Untitled",
     "dimensions": "",
     "material": "Collage, Epoxy, Gypsum",
     "price": "500",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0336"
+    "notes": ""
   },
   "IMG_0339": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0339",
     "title": "Study",
     "dimensions": "11x15",
     "material": "Acrylic, epoxy, Gypsum",
     "price": "700",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0339"
+    "notes": ""
   },
   "IMG_0345": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0345",
     "title": "Landscape I",
     "dimensions": "",
     "material": "Paper, Acrylic, Epoxy, Gypsum",
     "price": "900",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0345"
+    "notes": ""
   },
   "IMG_0354": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0354",
     "title": "",
     "dimensions": "",
     "material": "Collage, Gyspum",
     "price": "1200",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0354"
+    "notes": ""
   },
   "IMG_0357": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0357",
     "title": "Declivity - Oasis",
     "dimensions": "24x26",
     "material": "Oil, Gypsum",
     "price": "2200",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0357"
+    "notes": ""
   },
   "IMG_0365": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0365",
     "title": "Landscape 002",
     "dimensions": "",
     "material": "Oil, Epoxy, Gypsum",
     "price": "2300",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0365"
+    "notes": ""
   },
   "IMG_0379": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0379",
     "title": "Skyscape 001",
     "dimensions": "",
     "material": "Acrylic, Collage, Gypsum",
     "price": "400",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0379"
+    "notes": ""
   },
   "IMG_0381": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0381",
     "title": "A ride through America",
     "dimensions": "",
     "material": "Oil, Collage, Paper, Epoxy",
     "price": "1600",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0381"
+    "notes": ""
   },
   "IMG_0388": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0388",
     "title": "Cove",
     "dimensions": "",
     "material": "Acrylic, Collage, Gypsum",
     "price": "500",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0388"
+    "notes": ""
   },
   "IMG_0481": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0481",
     "title": "Landscape 004",
     "dimensions": "",
     "material": "Oil, Gypsum",
     "price": "1000",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0481"
+    "notes": ""
   },
   "IMG_0488": {
     "excluded": true,
     "reserved": false,
+    "photo": "IMG_0488",
     "title": "Element 002",
     "dimensions": "",
     "material": "Oil, Gypsum, Epoxy",
     "price": "700",
     "year": "",
-    "notes": "",
-    "photo": "IMG_0488"
+    "notes": ""
   }
 }
