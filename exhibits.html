@@ -22,11 +22,16 @@
     }
 
     #cover img {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      z-index: 0;
     }
+
+    #cover-header, #cover-footer, #cover-dots { z-index: 1; }
 
     #cover-header {
       position: absolute;
