@@ -159,6 +159,84 @@
       text-align: center;
       padding: 4em;
     }
+
+    /* ── Works grid hover ── */
+    #works .works-grid img {
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    #works .works-grid img:hover { opacity: 0.82; }
+
+    /* ── Lightbox ── */
+    #lb {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.93);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #lb.open { display: flex; }
+
+    #lb-img {
+      max-width: calc(100vw - 120px);
+      max-height: 78vh;
+      object-fit: contain;
+      display: block;
+      user-select: none;
+    }
+
+    #lb-info {
+      margin-top: 1.2rem;
+      text-align: center;
+      color: #fff;
+      line-height: 1.6;
+    }
+    #lb-title { font-size: 0.9rem; font-weight: 300; opacity: 0.9; }
+    #lb-meta  { font-size: 0.72rem; font-weight: 300; opacity: 0.45; }
+    #lb-price { font-size: 0.78rem; font-weight: 300; opacity: 0.7; margin-top: 0.15rem; }
+    #lb-price.sold { color: #e07070; opacity: 1; }
+    #lb-price.reserved { color: #6bbf85; opacity: 1; }
+
+    #lb-close {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.5rem;
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+      opacity: 0.45;
+      background: none;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      line-height: 1;
+    }
+    #lb-close:hover { opacity: 1; }
+
+    .lb-arrow {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 1.4rem;
+      cursor: pointer;
+      opacity: 0.35;
+      background: none;
+      border: none;
+      padding: 1rem;
+      line-height: 1;
+      user-select: none;
+    }
+    .lb-arrow:hover { opacity: 1; }
+    #lb-prev { left: 0.5rem; }
+    #lb-next { right: 0.5rem; }
+
+    @media (max-width: 600px) {
+      #lb-img { max-width: 100vw; max-height: 65vh; }
+      .lb-arrow { font-size: 1rem; padding: 0.75rem; }
+    }
   </style>
 </head>
 <body>
@@ -193,6 +271,18 @@
     <span>Dim Zayan</span>
     <span>dimzayan.com</span>
   </footer>
+
+  <div id="lb">
+    <button id="lb-close">✕</button>
+    <button class="lb-arrow" id="lb-prev">&#8592;</button>
+    <img id="lb-img" src="" alt="">
+    <button class="lb-arrow" id="lb-next">&#8594;</button>
+    <div id="lb-info">
+      <div id="lb-title"></div>
+      <div id="lb-meta"></div>
+      <div id="lb-price"></div>
+    </div>
+  </div>
 
   <script>
     const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
@@ -275,16 +365,63 @@
           });
           const grid = document.getElementById('works-grid');
           if (works.length) {
-            works.forEach(function(entry) {
+            works.forEach(function(entry, i) {
               const img = document.createElement('img');
               img.src   = CDN_HI + (entry[1].photo || entry[0]) + '.webp';
               img.alt   = entry[1].title || '';
-              img.title = entry[1].title || '';
+              img.addEventListener('click', function() { lbShow(i); });
               grid.appendChild(img);
             });
           } else {
             document.getElementById('works').style.display = 'none';
           }
+
+          // Lightbox
+          const lb      = document.getElementById('lb');
+          const lbImg   = document.getElementById('lb-img');
+          const lbTitle = document.getElementById('lb-title');
+          const lbMeta  = document.getElementById('lb-meta');
+          const lbPrice = document.getElementById('lb-price');
+          let lbCurrent = 0;
+
+          function lbShow(index) {
+            lbCurrent = (index + works.length) % works.length;
+            const w    = works[lbCurrent][1];
+            const wid  = works[lbCurrent][0];
+            lbImg.src  = CDN_HI + (w.photo || wid) + '.webp';
+            lbImg.alt  = w.title || '';
+            lbTitle.textContent = w.title || '';
+            const dims = w.dimensions ? w.dimensions.trim().replace(/in\.?$/i, '').trim() + ' in' : '';
+            lbMeta.textContent  = [w.material, dims].filter(Boolean).join('  ·  ');
+            lbPrice.textContent = '';
+            lbPrice.className   = '';
+            if (w.invoiced) {
+              lbPrice.textContent = 'Sold';
+              lbPrice.className   = 'sold';
+            } else if (w.reserved) {
+              lbPrice.textContent = 'Reserved';
+              lbPrice.className   = 'reserved';
+            } else if (w.price) {
+              lbPrice.textContent = '$' + Number(w.price).toLocaleString('en-US');
+            }
+            lb.classList.add('open');
+          }
+
+          function lbClose() {
+            lb.classList.remove('open');
+            lbImg.src = '';
+          }
+
+          document.getElementById('lb-prev').addEventListener('click', function() { lbShow(lbCurrent - 1); });
+          document.getElementById('lb-next').addEventListener('click', function() { lbShow(lbCurrent + 1); });
+          document.getElementById('lb-close').addEventListener('click', lbClose);
+          lb.addEventListener('click', function(e) { if (e.target === lb) lbClose(); });
+          document.addEventListener('keydown', function(e) {
+            if (!lb.classList.contains('open')) return;
+            if (e.key === 'ArrowLeft')  lbShow(lbCurrent - 1);
+            if (e.key === 'ArrowRight') lbShow(lbCurrent + 1);
+            if (e.key === 'Escape')     lbClose();
+          });
 
           // Press
           const pressList = document.getElementById('press-list');
