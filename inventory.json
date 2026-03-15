@@ -24,7 +24,7 @@
     "material": "Oil, Epoxy, Gypsum",
     "price": "1000",
     "year": "2026",
-    "notes": "The redscape"
+    "notes": ""
   },
   "IMG_1634": {
     "excluded": false,
@@ -225,7 +225,7 @@
   "IMG_0453": {
     "excluded": false,
     "reserved": false,
-    "photo": "_DSC0859",
+    "photo": "IMG_0453",
     "title": "From dusk till dawn over the hills",
     "dimensions": "35x54",
     "material": "Oil, Acrylic, Drywall",
