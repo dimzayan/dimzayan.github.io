@@ -639,7 +639,7 @@
       'IMG_0453','IMG_0466','IMG_0481','IMG_0488'
     ];
 
-    const GH_API      = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json';
+    const GH_API      = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
     const fields      = ['title', 'dimensions', 'material', 'price', 'year', 'notes'];
     const placeholder = { title: 'Title', dimensions: 'e.g. 24×36 in', material: 'Material', price: '$', year: 'Year', notes: 'Notes' };
     const colClass    = { title: 'col-title', dimensions: 'col-dims', material: 'col-material', price: 'col-price', year: 'col-year', notes: 'col-notes' };
@@ -1084,7 +1084,7 @@
         const r = await fetch(GH_API, {
           method: 'PUT',
           headers: { ...headers, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'update inventory', content, sha: meta.sha })
+          body: JSON.stringify({ message: 'update inventory', content, sha: meta.sha, branch: 'master' })
         });
         if (!r.ok) {
           const body = await r.json().catch(() => ({}));
