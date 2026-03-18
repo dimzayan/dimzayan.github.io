@@ -653,6 +653,7 @@
       document.querySelectorAll('#inventory-body tr[data-id]').forEach(tr => {
         const id = tr.dataset.id;
         obj[id] = { excluded: tr.classList.contains('excluded'), reserved: tr.classList.contains('reserved'), photo: tr.dataset.photo || id };
+        if (tr.dataset.exhibit) obj[id].exhibit = tr.dataset.exhibit;
         if (tr.dataset.invoiceRef) {
           try { obj[id].invoiced = JSON.parse(tr.dataset.invoiceRef); } catch(e) {}
         }
@@ -840,6 +841,7 @@
       const tr = document.createElement('tr');
       tr.dataset.id    = id;
       tr.dataset.photo = rowData.photo || id;
+      if (rowData.exhibit) tr.dataset.exhibit = rowData.exhibit;
       if (isExcluded) tr.classList.add('excluded');
       if (rowData.reserved) tr.classList.add('reserved');
 
