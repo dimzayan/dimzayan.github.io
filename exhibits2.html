@@ -633,8 +633,24 @@
     }
 
     // ── Series detection ──────────────────────────────────────────
-    function detectSeries(works) {
-      const ROMAN = /\s+(I{1,3}|IV|VI{0,3}|IX|X{1,2}|study)$/i;
+    function detectSeries(works, explicitSeries) {
+      const inventory = Object.fromEntries(works);
+
+      if (explicitSeries && Object.keys(explicitSeries).length) {
+        const assigned = new Set();
+        const series = {};
+        Object.entries(explicitSeries).forEach(function([name, ids]) {
+          const entries = ids
+            .filter(function(id) { return inventory[id]; })
+            .map(function(id) { return [id, inventory[id]]; });
+          if (entries.length) { series[name] = entries; ids.forEach(function(id) { assigned.add(id); }); }
+        });
+        const singles = works.filter(function(e) { return !assigned.has(e[0]); });
+        return { series, singles };
+      }
+
+      // Fallback: auto-detect by Roman numeral suffix
+      const ROMAN = /\s+(I{1,3}|IV|VI{0,3}|IX|X{1,2})$/i;
       const groups = {};
       const singles = [];
       works.forEach(function(entry) {
@@ -648,7 +664,6 @@
           singles.push(entry);
         }
       });
-      // Merge groups with only 1 entry into singles
       const series = {};
       Object.entries(groups).forEach(function([name, entries]) {
         if (entries.length > 1) series[name] = entries;
@@ -693,8 +708,8 @@
     }
 
     // ── Render works ──────────────────────────────────────────────
-    function renderWorks(works) {
-      const { series, singles } = detectSeries(works);
+    function renderWorks(works, explicitSeries) {
+      const { series, singles } = detectSeries(works, explicitSeries);
       const container = document.getElementById('works-container');
 
       // Series blocks
@@ -871,7 +886,7 @@
           return entry[1].exhibit === queryId && !entry[1].excluded;
         });
         if (works.length) {
-          renderWorks(works);
+          renderWorks(works, exhibit.series);
         } else {
           document.getElementById('works-sections').style.display = 'none';
         }

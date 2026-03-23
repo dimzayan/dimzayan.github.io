@@ -6,6 +6,13 @@
     "location": "Marfa, TX",
     "press": [],
     "description": "Engaging both structure and surface, Zayan constructs layered compositions through iterative processes of pouring, staining, sanding, and sealing. Earth-toned fields, weathered edges, and irregular contours evoke landscapes shaped by time, erosion, and human intervention. Form emerges through excavation as much as construction, with each work retaining visible traces of process and material condition.",
-    "media": ["_DSC0951.webp", "IMG_0944.webp","_DSC0877.webp", "_DSC0942.webp"]
+    "media": ["_DSC0951.webp", "IMG_0944.webp","_DSC0877.webp", "_DSC0942.webp"],
+    "series": {
+      "Seascape": ["IMG_1640", "IMG_0373", "IMG_0466"],
+      "Redscape": ["IMG_0321", "IMG_1634", "IMG_1635"],
+      "Desertscape": ["IMG_0325", "IMG_1638", "IMG_1636", "IMG_0348"],
+      "Acclivity": ["IMG_0395"],
+      "Declivity": ["IMG_0399", "IMG_0362", "IMG_0403"]
+    }
   }
 }
