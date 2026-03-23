@@ -277,7 +277,8 @@
       padding: 0.45rem 0.65rem; font-family: "DM Sans"; font-size: 0.85rem;
       font-weight: 300; color: inherit; background: none; line-height: 1.5;
     }
-    .edit-field input:focus, .edit-field textarea:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .edit-field input:focus, .edit-field textarea:focus, .edit-field select:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .edit-field select { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.45rem 0.65rem; font-family: "DM Sans"; font-size: 0.85rem; font-weight: 300; color: inherit; background: white; appearance: none; cursor: pointer; }
     .edit-field textarea { resize: vertical; min-height: 200px; }
     .edit-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
     .edit-section-label { font-size: 0.68rem; opacity: 0.45; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.6rem; }
@@ -561,6 +562,12 @@
         <label>Description</label>
         <textarea id="edit-notes"></textarea>
       </div>
+      <div class="edit-field">
+        <label>Exhibit</label>
+        <select id="edit-exhibit">
+          <option value="">— None —</option>
+        </select>
+      </div>
       <div>
         <div class="edit-section-label">Main photo</div>
         <div id="edit-main-photo-wrap">
@@ -640,6 +647,7 @@
     ];
 
     const GH_API      = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
+    const GH_API_EXHIBITS = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json?ref=master';
     const fields      = ['title', 'dimensions', 'material', 'price', 'year', 'notes'];
     const placeholder = { title: 'Title', dimensions: 'e.g. 24×36 in', material: 'Material', price: '$', year: 'Year', notes: 'Notes' };
     const colClass    = { title: 'col-title', dimensions: 'col-dims', material: 'col-material', price: 'col-price', year: 'col-year', notes: 'col-notes' };
@@ -1003,6 +1011,33 @@
       }
     })();
 
+    // ── Load exhibits for dropdown ─────────────────────────────────────────
+
+    (async function loadExhibits() {
+      const token = localStorage.getItem('dim_gh_token') || '';
+      let data = {};
+      try {
+        if (token) {
+          const meta = await fetch(GH_API_EXHIBITS, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' },
+            cache: 'no-store'
+          }).then(r => r.json());
+          if (meta.content) {
+            data = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
+          }
+        } else {
+          data = await fetch('exhibits.json?v=' + Date.now()).then(r => r.ok ? r.json() : {});
+        }
+      } catch(e) {}
+      const sel = document.getElementById('edit-exhibit');
+      Object.entries(data).forEach(([key, ex]) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = ex.title || key;
+        sel.appendChild(opt);
+      });
+    })();
+
     // ── Add row ────────────────────────────────────────────────────────────
 
     document.getElementById('add-btn').addEventListener('click', () => {
@@ -1167,6 +1202,7 @@
       document.getElementById('edit-notes').value      = g('notes');
       const photo = tr.dataset.photo || id;
       document.getElementById('edit-photo-id').value = photo;
+      document.getElementById('edit-exhibit').value = tr.dataset.exhibit || '';
       document.getElementById('edit-main-photo-preview').src =
         `https://dimzayan.nyc3.digitaloceanspaces.com/works/low/${photo}.webp`;
       editPhotos = getWorkPhotos(id).slice();
@@ -1241,8 +1277,11 @@
         if (td) td.textContent = v;
       });
       setWorkPhotos(id, editPhotos);
-      const newPhoto = document.getElementById('edit-photo-id').value.trim() || id;
+      const newPhoto   = document.getElementById('edit-photo-id').value.trim() || id;
+      const newExhibit = document.getElementById('edit-exhibit').value;
       editRow.dataset.photo = newPhoto;
+      if (newExhibit) editRow.dataset.exhibit = newExhibit;
+      else delete editRow.dataset.exhibit;
       const thumbImg = editRow.querySelector('.thumb');
       if (thumbImg) thumbImg.src = `https://dimzayan.nyc3.digitaloceanspaces.com/works/low/${newPhoto}.webp`;
       closeEditDrawer();

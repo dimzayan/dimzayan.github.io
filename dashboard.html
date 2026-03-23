@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio — Dim Zayan</title>
+  <link rel="icon" href="./favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
+
+    header {
+      padding: 2rem 2.5rem 1.5rem;
+      display: flex; align-items: baseline; justify-content: space-between;
+    }
+    .header-title { font-size: 0.85rem; letter-spacing: 0.04em; opacity: 0.5; }
+
+    .dashboard {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 1rem 2.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .card-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.45;
+    }
+
+    .card-action {
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: #111;
+      text-decoration: none;
+      opacity: 0.5;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      padding: 0;
+      letter-spacing: 0.02em;
+    }
+    .card-action:hover { opacity: 1; }
+
+    /* Inventory card */
+    .inventory-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 1.5rem;
+      text-decoration: none;
+      color: #111;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      transition: background 0.12s;
+    }
+    .inventory-link:hover { background: rgba(0,0,0,0.02); }
+    .inventory-link span:last-child { opacity: 0.25; font-size: 0.8rem; }
+
+    /* Exhibits list */
+    .exhibit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      transition: background 0.12s;
+    }
+    .exhibit-row:last-child { border-bottom: none; }
+    .exhibit-row:hover { background: rgba(0,0,0,0.02); }
+    .exhibit-row-info { display: flex; flex-direction: column; gap: 0.15rem; }
+    .exhibit-row-title { font-size: 0.88rem; font-weight: 300; }
+    .exhibit-row-meta { font-size: 0.72rem; opacity: 0.38; }
+    .exhibit-row-actions { display: flex; gap: 1rem; }
+    .exhibit-row-actions a {
+      font-size: 0.72rem; opacity: 0.35; color: #111; text-decoration: none;
+    }
+    .exhibit-row-actions a:hover { opacity: 1; }
+
+    .empty-state {
+      padding: 2.5rem 1.5rem;
+      font-size: 0.82rem;
+      opacity: 0.3;
+      text-align: center;
+    }
+
+    /* Create exhibit form */
+    #create-form {
+      display: none;
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid rgba(0,0,0,0.07);
+      background: rgba(0,0,0,0.015);
+      display: none;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    #create-form.open { display: flex; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .form-field label {
+      display: block;
+      font-size: 0.68rem;
+      opacity: 0.4;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.28rem;
+    }
+    .form-field input, .form-field textarea {
+      width: 100%;
+      border: 1px solid rgba(0,0,0,0.14);
+      border-radius: 3px;
+      padding: 0.42rem 0.65rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 300;
+      color: #111;
+      background: white;
+    }
+    .form-field input:focus, .form-field textarea:focus {
+      outline: none;
+      border-color: rgba(0,0,0,0.4);
+    }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+
+    .form-actions {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: flex-end;
+    }
+    .form-actions button {
+      background: none;
+      border: 1px solid rgba(0,0,0,0.18);
+      border-radius: 3px;
+      padding: 0.38rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 300;
+      cursor: pointer;
+      color: #111;
+    }
+    .form-actions button:hover { background: rgba(0,0,0,0.04); }
+    #create-save-btn {
+      background: rgba(0,0,0,0.85) !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+    #create-status { font-size: 0.75rem; opacity: 0.5; align-self: center; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="header-title">Dim Zayan — Studio</span>
+  </header>
+
+  <div class="dashboard">
+
+    <!-- Inventory -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-label">Inventory</span>
+      </div>
+      <a class="inventory-link" href="inventory.html">
+        <span>Works</span>
+        <span>→</span>
+      </a>
+    </div>
+
+    <!-- Exhibits -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-label">Exhibits</span>
+        <button class="card-action" id="new-exhibit-btn">+ New exhibit</button>
+      </div>
+      <div id="exhibits-list"><div class="empty-state">Loading…</div></div>
+      <div id="create-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Title</label>
+            <input id="cf-title" type="text" placeholder="A three-quarter view of the future">
+          </div>
+          <div class="form-field">
+            <label>Year</label>
+            <input id="cf-year" type="text" placeholder="2026">
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Location</label>
+          <input id="cf-location" type="text" placeholder="Marfa, TX">
+        </div>
+        <div class="form-field">
+          <label>Description</label>
+          <textarea id="cf-description" placeholder="Optional"></textarea>
+        </div>
+        <div class="form-actions">
+          <span id="create-status"></span>
+          <button id="create-cancel-btn">Cancel</button>
+          <button id="create-save-btn">Create exhibit</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const GH_API_EXHIBITS  = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json?ref=master';
+    const GH_API_EXHIBITS_PUT = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json';
+
+    let exhibitsData = {};
+    let exhibitsSha  = '';
+
+    async function loadExhibits() {
+      const token = localStorage.getItem('dim_gh_token') || '';
+      try {
+        if (token) {
+          const meta = await fetch(GH_API_EXHIBITS, {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
+            cache: 'no-store'
+          }).then(function(r) { return r.json(); });
+          if (meta.content) {
+            exhibitsSha  = meta.sha;
+            exhibitsData = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
+            renderExhibits();
+            return;
+          }
+        }
+        const data = await fetch('exhibits.json?v=' + Date.now())
+          .then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+        exhibitsData = data;
+        renderExhibits();
+      } catch(e) {
+        document.getElementById('exhibits-list').innerHTML =
+          '<div class="empty-state">Could not load exhibits.</div>';
+      }
+    }
+
+    function renderExhibits() {
+      const list = document.getElementById('exhibits-list');
+      const keys = Object.keys(exhibitsData);
+      if (!keys.length) {
+        list.innerHTML = '<div class="empty-state">No exhibits yet.</div>';
+        return;
+      }
+      list.innerHTML = '';
+      keys.forEach(function(key) {
+        const ex  = exhibitsData[key];
+        const row = document.createElement('div');
+        row.className = 'exhibit-row';
+        const meta = [ex.location, ex.year].filter(Boolean).join(' · ');
+        row.innerHTML =
+          '<div class="exhibit-row-info">' +
+            '<div class="exhibit-row-title">' + (ex.title || key) + '</div>' +
+            (meta ? '<div class="exhibit-row-meta">' + meta + '</div>' : '') +
+          '</div>' +
+          '<div class="exhibit-row-actions">' +
+            '<a href="exhibits.html?id=' + encodeURIComponent(key) + '" target="_blank">View</a>' +
+          '</div>';
+        list.appendChild(row);
+      });
+    }
+
+    // New exhibit form
+    document.getElementById('new-exhibit-btn').addEventListener('click', function() {
+      document.getElementById('create-form').classList.add('open');
+      document.getElementById('cf-title').focus();
+    });
+
+    document.getElementById('create-cancel-btn').addEventListener('click', function() {
+      document.getElementById('create-form').classList.remove('open');
+      clearForm();
+    });
+
+    document.getElementById('create-save-btn').addEventListener('click', async function() {
+      const title = document.getElementById('cf-title').value.trim();
+      if (!title) { document.getElementById('cf-title').focus(); return; }
+
+      const token = localStorage.getItem('dim_gh_token') || '';
+      if (!token) {
+        document.getElementById('create-status').textContent = 'No token';
+        return;
+      }
+
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      if (exhibitsData[slug]) {
+        document.getElementById('create-status').textContent = 'ID already exists';
+        return;
+      }
+
+      exhibitsData[slug] = {
+        id:          slug,
+        title:       title,
+        year:        document.getElementById('cf-year').value.trim(),
+        location:    document.getElementById('cf-location').value.trim(),
+        press:       [],
+        description: document.getElementById('cf-description').value.trim(),
+        media:       []
+      };
+
+      const btn = document.getElementById('create-save-btn');
+      btn.disabled = true;
+      document.getElementById('create-status').textContent = 'Saving…';
+
+      try {
+        const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+        // Get latest SHA if we don't have it
+        if (!exhibitsSha) {
+          const meta = await fetch(GH_API_EXHIBITS, { headers, cache: 'no-store' }).then(function(r) { return r.json(); });
+          exhibitsSha = meta.sha;
+        }
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(exhibitsData, null, 2))));
+        const r = await fetch(GH_API_EXHIBITS_PUT, {
+          method: 'PUT',
+          headers: { ...headers, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'add exhibit: ' + slug, content, sha: exhibitsSha, branch: 'master' })
+        });
+        if (!r.ok) {
+          const body = await r.json().catch(function() { return {}; });
+          throw new Error(r.status + ': ' + (body.message || 'unknown'));
+        }
+        const result = await r.json();
+        exhibitsSha = result.content.sha;
+        renderExhibits();
+        document.getElementById('create-form').classList.remove('open');
+        clearForm();
+        document.getElementById('create-status').textContent = '';
+      } catch(e) {
+        document.getElementById('create-status').textContent = 'Error: ' + e.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    function clearForm() {
+      ['cf-title','cf-year','cf-location','cf-description'].forEach(function(id) {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('create-status').textContent = '';
+    }
+
+    loadExhibits();
+  </script>
+</body>
+</html>
