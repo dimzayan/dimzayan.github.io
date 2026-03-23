@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dim Zayan</title>
+  <link rel="icon" href="./favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,200;0,300;1,100;1,200&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { background: #fff; scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 200; color: #111; background: #fff; overflow-x: hidden; }
+
+    /* ── Reveal ─────────────────────────────────────────────────────── */
+    .reveal { opacity: 0; transition: opacity 1.1s ease, transform 1s ease; transform: translateY(18px); }
+    .reveal.up { transform: translateY(18px); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.15s; } .d2 { transition-delay: 0.3s; } .d3 { transition-delay: 0.45s; }
+
+    /* ── Hero ───────────────────────────────────────────────────────── */
+    #hero {
+      position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #d8d4ce;
+    }
+    #hero-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block; opacity: 0; transition: opacity 2.2s ease;
+    }
+    #hero-img.loaded { opacity: 1; }
+    #hero-chrome {
+      position: absolute; inset: 0; padding: 2rem 2.5rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .h-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .h-artist {
+      font-size: 0.66rem; font-weight: 200; letter-spacing: 0.22em;
+      text-transform: uppercase; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.14);
+    }
+    .h-link {
+      font-size: 0.66rem; font-weight: 200; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); text-decoration: none; text-shadow: 0 1px 6px rgba(0,0,0,0.12);
+    }
+    .h-link:hover { color: #fff; }
+    .h-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+    #hero-title {
+      font-size: clamp(1.9rem, 4.2vw, 3.6rem); font-weight: 100; line-height: 1.12;
+      color: #fff; max-width: 600px; letter-spacing: -0.01em;
+      text-shadow: 0 1px 14px rgba(0,0,0,0.13);
+    }
+    #hero-sub {
+      text-align: right; font-size: 0.66rem; font-weight: 200; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.6); line-height: 2; text-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    #hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      opacity: 0.38; transition: opacity 0.6s;
+    }
+    #hero-scroll span { font-size: 0.54rem; letter-spacing: 0.24em; text-transform: uppercase; color: #fff; }
+    .s-tick { width: 1px; height: 38px; background: #fff; transform-origin: top; animation: tick 2.2s ease-in-out infinite; }
+    @keyframes tick { 0%{transform:scaleY(0);opacity:0} 35%{transform:scaleY(1);opacity:.65} 100%{transform:scaleY(1);opacity:0} }
+
+    /* ── Opening ────────────────────────────────────────────────────── */
+    #opening {
+      max-width: 700px; margin: 0 auto; padding: 9rem 3rem 8rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+    }
+    .opening-rule { width: 28px; height: 1px; background: rgba(0,0,0,0.15); margin-bottom: 2.5rem; }
+    #opening-text {
+      font-size: clamp(1rem, 1.75vw, 1.15rem); font-weight: 200;
+      line-height: 2.05; color: #2a2a2a;
+    }
+    #opening-byline {
+      margin-top: 2.8rem; font-size: 0.65rem; font-weight: 200;
+      letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.28;
+    }
+
+    /* ── Context note (pre-works) ───────────────────────────────────── */
+    .show-context {
+      max-width: 700px; margin: 0 auto; padding: 5rem 3rem 6rem;
+      font-size: 0.88rem; font-weight: 200; line-height: 2;
+      color: #555; font-style: italic; border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* ── Transition image (full bleed break) ───────────────────────── */
+    .break-img {
+      width: 100%; overflow: hidden;
+    }
+    .break-img img {
+      width: 100%; height: 88vh; object-fit: cover; display: block;
+    }
+
+    /* ── Series encounter (full-bleed first work) ───────────────────── */
+    .encounter {
+      position: relative; width: 100%; overflow: hidden; cursor: pointer;
+      display: block; text-decoration: none;
+    }
+    .encounter img {
+      width: 100%; height: 94vh; object-fit: cover; display: block;
+      transition: transform 9s ease;
+    }
+    .encounter-hint {
+      position: absolute; bottom: 2rem; left: 2.5rem;
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); text-shadow: 0 1px 6px rgba(0,0,0,0.12);
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .encounter:hover .encounter-hint { opacity: 1; }
+
+    /* ── Series context block ───────────────────────────────────────── */
+    .series-ctx {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 6rem 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .ctx-left {
+      padding: 0 5rem 0 3rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .ctx-series-label {
+      font-size: 0.6rem; font-weight: 300; letter-spacing: 0.22em;
+      text-transform: uppercase; opacity: 0.28; margin-bottom: 1rem;
+    }
+
+    .ctx-series-name {
+      font-size: clamp(2.4rem, 4vw, 3.8rem); font-weight: 100;
+      line-height: 1.05; letter-spacing: -0.01em; color: #111;
+    }
+
+    .ctx-right {
+      padding: 0 3rem 0 5rem;
+      display: flex; align-items: center;
+    }
+
+    .ctx-blurb {
+      font-size: 0.95rem; font-weight: 200; line-height: 2;
+      color: #333; max-width: 480px;
+    }
+
+    /* ── Series remaining works ─────────────────────────────────────── */
+    .series-works {
+      padding: 0 0 7rem;
+    }
+
+    /* Work image — no captions */
+    .wimg {
+      display: block; overflow: hidden; position: relative;
+      text-decoration: none; cursor: pointer;
+    }
+    .wimg img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.7s ease;
+    }
+    .wimg:hover img { transform: scale(1.016); }
+    .wimg-title {
+      position: absolute; bottom: 1.2rem; left: 1.4rem;
+      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.6); text-shadow: 0 1px 6px rgba(0,0,0,0.15);
+      opacity: 0; transition: opacity 0.35s;
+    }
+    .wimg:hover .wimg-title { opacity: 1; }
+
+    /* Layout primitives */
+    .ly-full .wimg { height: 80vh; }
+    .ly-full { margin-bottom: 3px; }
+
+    .ly-pair { display: grid; gap: 3px; margin-bottom: 3px; }
+    .ly-pair .wimg { height: 62vh; }
+    .split-55 { grid-template-columns: 55fr 45fr; }
+    .split-50 { grid-template-columns: 1fr 1fr; }
+    .split-40 { grid-template-columns: 40fr 60fr; }
+    .split-65 { grid-template-columns: 65fr 35fr; }
+
+    .ly-trio { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; margin-bottom: 3px; }
+    .ly-trio .wimg { height: 48vh; }
+
+    /* Inset (image not full-bleed, floats in whitespace) */
+    .ly-inset {
+      padding: 3rem 6vw;
+      display: flex; justify-content: center;
+      margin-bottom: 3px;
+    }
+    .ly-inset .wimg { width: 68%; }
+    .ly-inset .wimg img { height: 72vh; }
+
+    /* Offset text + image side by side (for singles) */
+    .ly-offset {
+      display: grid; gap: 0; margin-bottom: 6rem;
+    }
+    .ly-offset.il { grid-template-columns: 60% 40%; }
+    .ly-offset.ir { grid-template-columns: 40% 60%; }
+    .ly-offset .wimg img { height: 72vh; }
+    .offset-prose {
+      padding: 0 4.5rem; display: flex; flex-direction: column;
+      justify-content: center; gap: 1.4rem;
+    }
+    .op-series { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.25; }
+    .op-title { font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 100; line-height: 1.2; color: #111; }
+    .op-link {
+      font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #111; text-decoration: none; opacity: 0.3; border-bottom: 1px solid rgba(0,0,0,0.18);
+      padding-bottom: 0.2rem; align-self: flex-start; transition: opacity 0.2s;
+    }
+    .op-link:hover { opacity: 0.8; }
+
+    /* ── Interlude (between series) ─────────────────────────────────── */
+    .interlude {
+      padding: 6rem 3rem; max-width: 600px; margin: 0 auto; text-align: center;
+    }
+    .interlude-text {
+      font-size: 0.82rem; font-weight: 200; font-style: italic;
+      line-height: 2; color: #777; letter-spacing: 0.02em;
+    }
+
+    /* ── Location ───────────────────────────────────────────────────── */
+    #location {
+      background: #f7f4ef; padding: 8rem 0;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .loc-grid {
+      max-width: 1100px; margin: 0 auto; padding: 0 3rem;
+      display: grid; grid-template-columns: 240px 1fr; gap: 8rem; align-items: start;
+    }
+    .loc-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.28; }
+    .loc-name { font-size: 1.1rem; font-weight: 100; line-height: 1.5; margin-top: 1rem; }
+    .loc-addr { margin-top: 1.4rem; font-size: 0.7rem; opacity: 0.35; line-height: 2; }
+    .loc-body { font-size: 0.97rem; font-weight: 200; line-height: 2.05; color: #2c2c2c; }
+    .loc-body p + p { margin-top: 1.8em; }
+
+    /* ── Artist ─────────────────────────────────────────────────────── */
+    #artist { background: #fff; padding: 8rem 0; border-top: 1px solid rgba(0,0,0,0.06); }
+    .art-grid {
+      max-width: 1100px; margin: 0 auto; padding: 0 3rem;
+      display: grid; grid-template-columns: 240px 1fr; gap: 8rem; align-items: start;
+    }
+    .art-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.28; }
+    .art-name { font-size: 1.1rem; font-weight: 100; margin-top: 1rem; }
+    .art-detail { margin-top: 1.2rem; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.3; line-height: 2; }
+    .art-body { font-size: 0.97rem; font-weight: 200; line-height: 2.05; color: #2c2c2c; }
+    .art-body p + p { margin-top: 1.8em; }
+    .art-link {
+      display: inline-block; margin-top: 2.5rem; font-size: 0.64rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #111; text-decoration: none; opacity: 0.3;
+      border-bottom: 1px solid rgba(0,0,0,0.18); padding-bottom: 0.2rem; transition: opacity 0.2s;
+    }
+    .art-link:hover { opacity: 0.85; }
+
+    /* ── Press ──────────────────────────────────────────────────────── */
+    #press-section {
+      display: none; max-width: 1100px; margin: 0 auto; padding: 5rem 3rem;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .press-lbl { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.28; margin-bottom: 2rem; }
+    #press-links a {
+      display: block; font-size: 0.82rem; font-weight: 200; color: #111; text-decoration: none;
+      opacity: 0.4; padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    #press-links a:hover { opacity: 0.9; }
+
+    /* ── Footer ─────────────────────────────────────────────────────── */
+    #site-footer {
+      padding: 2.5rem 3rem; border-top: 1px solid rgba(0,0,0,0.06);
+      display: flex; justify-content: space-between;
+      font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.25;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .series-ctx { grid-template-columns: 1fr; }
+      .ctx-left { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.06); padding: 0 1.5rem 3rem; }
+      .ctx-right { padding: 3rem 1.5rem 0; }
+      .ly-pair { grid-template-columns: 1fr !important; }
+      .ly-trio { grid-template-columns: 1fr 1fr; }
+      .ly-offset { grid-template-columns: 1fr !important; }
+      .offset-prose { padding: 2rem 1.5rem 0; }
+      .ly-inset { padding: 2rem 1.5rem; }
+      .ly-inset .wimg { width: 100%; }
+      .loc-grid, .art-grid { grid-template-columns: 1fr; gap: 3rem; padding: 0 1.5rem; }
+      #opening, .show-context { padding-left: 1.5rem; padding-right: 1.5rem; }
+      #hero-title { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section id="hero">
+    <img id="hero-img" src="" alt="">
+    <div id="hero-chrome">
+      <div class="h-top">
+        <span class="h-artist">Dim Zayan</span>
+        <a class="h-link" href="/">dimzayan.com</a>
+      </div>
+      <div class="h-bottom">
+        <h1 id="hero-title"></h1>
+        <div id="hero-sub"></div>
+      </div>
+    </div>
+    <div id="hero-scroll"><div class="s-tick"></div><span>Scroll</span></div>
+  </section>
+
+  <!-- Opening statement -->
+  <section id="opening-section">
+    <div id="opening">
+      <div class="opening-rule reveal"></div>
+      <p id="opening-text" class="reveal d1"></p>
+      <p id="opening-byline" class="opening-byline reveal d2"></p>
+    </div>
+    <div class="show-context reveal">
+      <p id="show-context-text"></p>
+    </div>
+  </section>
+
+  <!-- Works (injected) -->
+  <div id="works-root"></div>
+
+  <!-- Press -->
+  <div id="press-section">
+    <div class="press-lbl reveal">Press</div>
+    <div id="press-links" class="reveal d1"></div>
+  </div>
+
+  <!-- Location -->
+  <section id="location">
+    <div class="loc-grid">
+      <div class="reveal">
+        <div class="loc-label">Venue</div>
+        <div class="loc-name">Do Right Hall<br>Marfa, Texas</div>
+        <div class="loc-addr">208 W El Paso St<br>Marfa TX 79843<br><br>March 5–15, 2026</div>
+      </div>
+      <div class="loc-body reveal d1">
+        <p>Do Right Hall sits on the western edge of Marfa's quiet grid — a converted structure that holds the particular quality of the high Chihuahuan Desert light. At nearly five thousand feet, the air is thin and the light is absolute. Horizontal, direct, without negotiation. It is a space that asks the work to stand without the insulation of conventional gallery conditions.</p>
+        <p>Marfa has drawn serious practitioners since Donald Judd arrived in the early seventies, drawn by the same merciless clarity. The landscape here does not recede into background — it presses in, remains present. The paintings in this exhibition were made two blocks away, in a studio facing west, and carry that pressure in every layer of their making.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Artist -->
+  <section id="artist">
+    <div class="art-grid">
+      <div class="reveal">
+        <div class="art-label">Artist</div>
+        <div class="art-name">Dim Zayan</div>
+        <div class="art-detail">b. France, 1977<br>Based Marfa, TX</div>
+      </div>
+      <div class="reveal d1">
+        <div class="art-body">
+          <p>Dim Zayan works in oil and epoxy on raw gypsum panels, using an angle grinder to carve and incise the surface before painting begins. The gypsum is not a neutral support — it is sedimentary, geological, resistant. The grinding removes as much as it reveals, leaving channels and compressions that the paint pools into or is repelled by.</p>
+          <p>Born in France in 1977 and working across Europe and the Americas, Zayan has been based in Marfa, Texas since 2022. The high desert — its silence, its scale, its particular insistence — has become the primary ground of his work, not as representation but as physical pressure. These paintings are not images of land. They are records of time spent inside it.</p>
+          <p>Zayan co-founded MarfaMUST, an artist-for-artist collective presenting work outside institutional frameworks, in spaces chosen for their resistance to the expected.</p>
+        </div>
+        <a class="art-link" href="/">dimzayan.com</a>
+      </div>
+    </div>
+  </section>
+
+  <footer id="site-footer">
+    <span>Dim Zayan</span>
+    <span id="footer-title"></span>
+    <span>dimzayan.com</span>
+  </footer>
+
+  <script>
+    const CDN = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+    const GH_API = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
+    const qid = new URLSearchParams(window.location.search).get('id');
+
+    // Reveal observer
+    const obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -24px 0px' });
+    function watch() { document.querySelectorAll('.reveal:not(.visible)').forEach(function(el) { obs.observe(el); }); }
+
+    // Work image cell
+    function wimg(id, w, cls) {
+      const a = document.createElement('a');
+      a.className = 'wimg reveal' + (cls ? ' ' + cls : '');
+      a.href = 'preview.html?id=' + encodeURIComponent(id);
+      const img = document.createElement('img');
+      img.src = CDN + (w.photo || id) + '.webp';
+      img.alt = w.title || '';
+      img.loading = 'lazy';
+      const hint = document.createElement('div');
+      hint.className = 'wimg-title';
+      hint.textContent = w.title || '';
+      a.appendChild(img); a.appendChild(hint);
+      return a;
+    }
+
+    // Full-bleed encounter (no link — just atmospheric)
+    function encounter(id, w) {
+      const a = document.createElement('a');
+      a.className = 'encounter reveal';
+      a.href = 'preview.html?id=' + encodeURIComponent(id);
+      const img = document.createElement('img');
+      img.src = CDN + (w.photo || id) + '.webp';
+      img.alt = w.title || '';
+      img.loading = 'lazy';
+      const hint = document.createElement('div');
+      hint.className = 'encounter-hint';
+      hint.textContent = w.title || '';
+      a.appendChild(img); a.appendChild(hint);
+      return a;
+    }
+
+    // Break image (cover photo used as visual breath between series)
+    function breakImg(filename) {
+      const d = document.createElement('div');
+      d.className = 'break-img reveal';
+      const img = document.createElement('img');
+      img.src = CDN + filename;
+      img.alt = '';
+      img.loading = 'lazy';
+      d.appendChild(img);
+      return d;
+    }
+
+    // Render remaining works after encounter (no captions, pure image layouts)
+    function renderRemainder(entries, root) {
+      const n = entries.length;
+      if (n === 0) return;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'series-works';
+
+      if (n === 1) {
+        // Inset, floating in space
+        const ly = document.createElement('div'); ly.className = 'ly-inset';
+        ly.appendChild(wimg(entries[0][0], entries[0][1]));
+        wrap.appendChild(ly);
+
+      } else if (n === 2) {
+        const ly = document.createElement('div'); ly.className = 'ly-pair split-55';
+        entries.forEach(function(e) { ly.appendChild(wimg(e[0], e[1])); });
+        wrap.appendChild(ly);
+
+      } else if (n === 3) {
+        // First wide, then pair
+        const ly1 = document.createElement('div'); ly1.className = 'ly-full';
+        ly1.appendChild(wimg(entries[0][0], entries[0][1]));
+        wrap.appendChild(ly1);
+        const ly2 = document.createElement('div'); ly2.className = 'ly-pair split-40';
+        [entries[1], entries[2]].forEach(function(e) { ly2.appendChild(wimg(e[0], e[1])); });
+        wrap.appendChild(ly2);
+
+      } else {
+        // Trio then any remainder
+        const ly1 = document.createElement('div'); ly1.className = 'ly-trio';
+        entries.slice(0, 3).forEach(function(e) { ly1.appendChild(wimg(e[0], e[1])); });
+        wrap.appendChild(ly1);
+        if (n > 3) {
+          const ly2 = document.createElement('div'); ly2.className = 'ly-pair split-50';
+          entries.slice(3).forEach(function(e) { ly2.appendChild(wimg(e[0], e[1])); });
+          wrap.appendChild(ly2);
+        }
+      }
+
+      root.appendChild(wrap);
+    }
+
+    // Render singles (works not in a series)
+    function renderSingles(entries, root) {
+      if (!entries.length) return;
+
+      // Interlude heading
+      const il = document.createElement('div');
+      il.className = 'interlude reveal';
+      il.innerHTML = '<p class="interlude-text">Works presented individually</p>';
+      root.appendChild(il);
+
+      // Alternating offset layouts
+      let i = 0;
+      while (i < entries.length) {
+        if (i + 1 < entries.length) {
+          // Pair as offset: big left + text, then big right + text
+          const side = i % 4 < 2 ? 'il' : 'ir';
+          const e = entries[i];
+          const div = document.createElement('div');
+          div.className = 'ly-offset reveal ' + side;
+          const wi = wimg(e[0], e[1]);
+          const prose = document.createElement('div');
+          prose.className = 'offset-prose';
+          prose.innerHTML =
+            '<span class="op-title">' + (e[1].title || '') + '</span>' +
+            '<a class="op-link" href="preview.html?id=' + encodeURIComponent(e[0]) + '">View work</a>';
+          if (side === 'il') { div.appendChild(wi); div.appendChild(prose); }
+          else               { div.appendChild(prose); div.appendChild(wi); }
+          root.appendChild(div);
+
+          // Pair the next one full-width
+          const e2 = entries[i + 1];
+          const fw = document.createElement('div'); fw.className = 'ly-full';
+          fw.appendChild(wimg(e2[0], e2[1]));
+          root.appendChild(fw);
+          i += 2;
+        } else {
+          const fw = document.createElement('div'); fw.className = 'ly-full';
+          fw.appendChild(wimg(entries[i][0], entries[i][1]));
+          root.appendChild(fw);
+          i++;
+        }
+      }
+    }
+
+    // Fetch inventory
+    async function fetchInventory() {
+      const token = localStorage.getItem('dim_gh_token') || '';
+      if (token) {
+        try {
+          const meta = await fetch(GH_API, {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
+            cache: 'no-store'
+          }).then(function(r) { return r.json(); });
+          if (meta.content)
+            return JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
+        } catch(e) {}
+      }
+      return fetch('inventory.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+    }
+
+    // Boot
+    (async function() {
+      if (!qid) { document.getElementById('hero-title').textContent = 'No exhibit specified.'; return; }
+      try {
+        const [exhibitsJson, inventory] = await Promise.all([
+          fetch('exhibits.json?v=' + Date.now()).then(function(r) { return r.json(); }),
+          fetchInventory()
+        ]);
+
+        const ex = exhibitsJson[qid];
+        if (!ex) { document.getElementById('hero-title').textContent = 'Exhibit not found.'; return; }
+
+        document.title = ex.title + ' — Dim Zayan';
+        document.getElementById('footer-title').textContent = ex.title;
+
+        // Hero
+        const media = ex.media || [];
+        if (media.length) {
+          const hi = document.getElementById('hero-img');
+          hi.onload = function() { hi.classList.add('loaded'); };
+          hi.src = CDN + media[0]; hi.alt = ex.title;
+        }
+        document.getElementById('hero-title').textContent = ex.title;
+        document.getElementById('hero-sub').innerHTML =
+          (ex.location ? ex.location + '<br>' : '') + (ex.year || '');
+
+        // Opening statement
+        if (ex.description) {
+          document.getElementById('opening-text').textContent = ex.description;
+          document.getElementById('opening-byline').textContent =
+            [ex.title, ex.location, ex.year].filter(Boolean).join('  ·  ');
+        } else {
+          document.getElementById('opening-section').style.display = 'none';
+        }
+
+        // Show context note
+        document.getElementById('show-context-text').textContent =
+          'Twenty paintings occupy the main hall at Do Right Hall. No hierarchy of placement, no programmatic grouping — the works were arranged as they settled, following the logic of the space and the available light. The series emerged in the making, not in the display. What hangs here is less a survey than a single, extended thought.';
+
+        // Works
+        const allWorks = Object.entries(inventory).filter(function(e) {
+          return e[1].exhibit === qid && !e[1].excluded;
+        });
+
+        const root = document.getElementById('works-root');
+        const invMap = Object.fromEntries(allWorks);
+
+        // Cover images available as visual breaks (skip index 0 used in hero)
+        const breakPool = media.slice(1);
+        let breakIdx = 0;
+
+        if (ex.series && Object.keys(ex.series).length) {
+          const assigned = new Set();
+          const seriesEntries = Object.entries(ex.series);
+
+          seriesEntries.forEach(function(pair, si) {
+            const name = pair[0];
+            const sdata = pair[1];
+            // Support both {works:[], description:""} and plain array
+            const ids  = Array.isArray(sdata) ? sdata : (sdata.works || []);
+            const desc = Array.isArray(sdata) ? '' : (sdata.description || '');
+            const entries = ids.filter(function(id) { return invMap[id]; })
+                               .map(function(id) { return [id, invMap[id]]; });
+            if (!entries.length) return;
+            ids.forEach(function(id) { assigned.add(id); });
+
+            // Insert visual break between series (using cover media)
+            if (si > 0 && breakPool.length) {
+              root.appendChild(breakImg(breakPool[breakIdx % breakPool.length]));
+              breakIdx++;
+            }
+
+            // Encounter: first work full-bleed
+            root.appendChild(encounter(entries[0][0], entries[0][1]));
+
+            // Series name + blurb
+            const ctx = document.createElement('div');
+            ctx.className = 'series-ctx';
+            ctx.innerHTML =
+              '<div class="ctx-left reveal">' +
+                '<div class="ctx-series-label">Series</div>' +
+                '<div class="ctx-series-name">' + name + '</div>' +
+              '</div>' +
+              '<div class="ctx-right reveal d1">' +
+                (desc ? '<p class="ctx-blurb">' + desc + '</p>' : '') +
+              '</div>';
+            root.appendChild(ctx);
+
+            // Remaining works
+            renderRemainder(entries.slice(1), root);
+          });
+
+          // Singles
+          const singles = allWorks.filter(function(e) { return !assigned.has(e[0]); });
+          if (singles.length) {
+            if (breakPool.length) {
+              root.appendChild(breakImg(breakPool[breakIdx % breakPool.length]));
+              breakIdx++;
+            }
+            renderSingles(singles, root);
+          }
+
+        } else {
+          renderSingles(allWorks, root);
+        }
+
+        // Press
+        if (ex.press && ex.press.length) {
+          document.getElementById('press-section').style.display = 'block';
+          ex.press.forEach(function(url) {
+            const a = document.createElement('a');
+            a.href = url; a.target = '_blank'; a.rel = 'noopener';
+            a.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            document.getElementById('press-links').appendChild(a);
+          });
+        }
+
+        watch();
+
+      } catch(e) {
+        document.getElementById('hero-title').textContent = 'Could not load exhibit.';
+      }
+    })();
+
+    window.addEventListener('scroll', function() {
+      document.getElementById('hero-scroll').style.opacity = '0';
+    }, { once: true });
+  </script>
+</body>
+</html>
