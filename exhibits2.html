@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dim Zayan</title>
+  <link rel="icon" href="./favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,200;0,300;1,100;1,200&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ink:   #0c0c0c;
+      --chalk: #f0ece5;
+      --mid:   #888;
+      --serif-stack: Georgia, 'Times New Roman', serif;
+    }
+
+    html { background: #000; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 200;
+      color: var(--ink);
+      background: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ─── Scroll reveal ───────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.12s; }
+    .reveal-delay-2 { transition-delay: 0.24s; }
+    .reveal-delay-3 { transition-delay: 0.36s; }
+
+    /* ─── Hero ────────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity 1.8s ease;
+      filter: brightness(0.72);
+    }
+    #hero-img.loaded { opacity: 1; }
+
+    #hero-ui {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem 2.5rem;
+      z-index: 1;
+    }
+
+    #hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .hero-artist {
+      font-size: 0.72rem;
+      font-weight: 200;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(240,236,229,0.8);
+    }
+
+    .hero-nav a {
+      font-size: 0.7rem;
+      font-weight: 200;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(240,236,229,0.45);
+      text-decoration: none;
+    }
+    .hero-nav a:hover { color: rgba(240,236,229,0.85); }
+
+    #hero-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    #hero-title {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 100;
+      line-height: 1.1;
+      color: var(--chalk);
+      max-width: 680px;
+      letter-spacing: -0.01em;
+    }
+
+    #hero-meta {
+      text-align: right;
+      font-size: 0.7rem;
+      font-weight: 200;
+      letter-spacing: 0.1em;
+      color: rgba(240,236,229,0.45);
+      line-height: 1.9;
+    }
+
+    #hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.35;
+      cursor: pointer;
+    }
+    #hero-scroll span {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--chalk);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 36px;
+      background: var(--chalk);
+      animation: scrollline 1.8s ease-in-out infinite;
+      transform-origin: top;
+    }
+    @keyframes scrollline {
+      0%   { transform: scaleY(0); opacity: 0; }
+      40%  { transform: scaleY(1); opacity: 1; }
+      100% { transform: scaleY(1); opacity: 0; }
+    }
+
+    /* ─── Shared layout ───────────────────────────────────────────── */
+    .section { position: relative; }
+    .section-light { background: #fff; color: var(--ink); }
+    .section-warm  { background: #f8f5f0; color: var(--ink); }
+    .section-dark  { background: var(--ink); color: var(--chalk); }
+
+    .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    .section-label {
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.35;
+    }
+
+    /* ─── Statement ───────────────────────────────────────────────── */
+    #statement {
+      padding: 8rem 3rem;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    #statement-text {
+      font-size: clamp(1.05rem, 2vw, 1.22rem);
+      font-weight: 200;
+      line-height: 2;
+      color: #2a2a2a;
+    }
+
+    #statement-header {
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    /* ─── Media strip ─────────────────────────────────────────────── */
+    #media-strip {
+      background: #0c0c0c;
+    }
+
+    .media-frame {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .media-frame img {
+      width: 100%;
+      height: 90vh;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.88);
+      transition: transform 8s ease, filter 0.4s ease;
+    }
+    .media-frame:hover img { filter: brightness(1); }
+
+    .media-caption {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(240,236,229,0.4);
+    }
+
+    /* ─── Location ────────────────────────────────────────────────── */
+    #location {
+      padding: 8rem 0;
+      background: var(--ink);
+      color: var(--chalk);
+    }
+
+    #location .inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .location-label-block {
+      padding-top: 0.35rem;
+    }
+
+    .location-name {
+      font-size: 1.3rem;
+      font-weight: 100;
+      line-height: 1.4;
+      margin-top: 1rem;
+      color: var(--chalk);
+    }
+
+    .location-address {
+      margin-top: 1.5rem;
+      font-size: 0.72rem;
+      font-weight: 200;
+      letter-spacing: 0.06em;
+      opacity: 0.4;
+      line-height: 1.8;
+    }
+
+    .location-body {
+      font-size: 1rem;
+      font-weight: 200;
+      line-height: 2;
+      color: rgba(240,236,229,0.75);
+    }
+
+    .location-body p + p { margin-top: 1.8em; }
+
+    /* ─── Works ───────────────────────────────────────────────────── */
+    #works-sections { background: #fff; }
+
+    .series-block {
+      padding: 6rem 0 4rem;
+      border-top: 1px solid rgba(0,0,0,0.07);
+    }
+
+    .series-block:first-child { border-top: none; }
+
+    .series-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .series-name {
+      font-size: 0.62rem;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.32;
+    }
+
+    .series-count {
+      font-size: 0.6rem;
+      font-weight: 200;
+      opacity: 0.2;
+      letter-spacing: 0.08em;
+    }
+
+    /* Series grid layouts */
+    .works-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+    }
+
+    .works-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+
+    .works-grid-featured {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3px;
+      margin-bottom: 3px;
+    }
+
+    .works-grid-featured + .works-grid-3 {
+      /* stacked below featured */
+    }
+
+    .work-cell {
+      display: block;
+      overflow: hidden;
+      position: relative;
+      background: #f0ede8;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .work-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease, opacity 0.3s ease;
+    }
+
+    .work-cell:hover img {
+      transform: scale(1.025);
+      opacity: 0.88;
+    }
+
+    .work-cell-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 3rem 1.4rem 1.2rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .work-cell:hover .work-cell-caption { opacity: 1; }
+
+    .work-cell-title {
+      font-size: 0.8rem;
+      font-weight: 200;
+      color: rgba(240,236,229,0.95);
+      letter-spacing: 0.03em;
+    }
+
+    .work-cell-meta {
+      font-size: 0.65rem;
+      font-weight: 200;
+      color: rgba(240,236,229,0.5);
+      margin-top: 0.2rem;
+    }
+
+    /* Square and portrait aspect ratios */
+    .aspect-sq   { aspect-ratio: 1; }
+    .aspect-port { aspect-ratio: 4 / 5; }
+    .aspect-land { aspect-ratio: 5 / 4; }
+
+    /* Singular works (no series) */
+    .singles-block {
+      padding: 4rem 0 6rem;
+      border-top: 1px solid rgba(0,0,0,0.07);
+    }
+
+    .singles-header {
+      margin-bottom: 3rem;
+    }
+
+    .singles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 3px;
+    }
+
+    /* ─── Press ───────────────────────────────────────────────────── */
+    #press-section {
+      padding: 5rem 0;
+      border-top: 1px solid rgba(0,0,0,0.07);
+      background: #fff;
+    }
+
+    .press-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    .press-links {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .press-links a {
+      font-size: 0.82rem;
+      font-weight: 200;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.45;
+      letter-spacing: 0.03em;
+    }
+    .press-links a:hover { opacity: 1; }
+
+    /* ─── Artist ──────────────────────────────────────────────────── */
+    #artist-section {
+      padding: 8rem 0;
+      background: var(--ink);
+      color: var(--chalk);
+    }
+
+    #artist-section .inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .artist-label-block { padding-top: 0.35rem; }
+
+    .artist-name {
+      font-size: 1.3rem;
+      font-weight: 100;
+      margin-top: 1rem;
+    }
+
+    .artist-detail {
+      margin-top: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 200;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      line-height: 2;
+    }
+
+    .artist-body {
+      font-size: 1rem;
+      font-weight: 200;
+      line-height: 2;
+      color: rgba(240,236,229,0.75);
+    }
+
+    .artist-body p + p { margin-top: 1.8em; }
+
+    .artist-link {
+      display: inline-block;
+      margin-top: 2.5rem;
+      font-size: 0.7rem;
+      font-weight: 200;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(240,236,229,0.45);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(240,236,229,0.15);
+      padding-bottom: 0.25rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .artist-link:hover {
+      color: rgba(240,236,229,0.9);
+      border-color: rgba(240,236,229,0.45);
+    }
+
+    /* ─── Site footer ─────────────────────────────────────────────── */
+    #site-footer {
+      background: #000;
+      padding: 2.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.65rem;
+      font-weight: 200;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(240,236,229,0.25);
+    }
+
+    /* ─── Responsive ──────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      #location .inner,
+      #artist-section .inner { grid-template-columns: 1fr; gap: 3rem; }
+      .works-grid-featured { grid-template-columns: 1fr; }
+      .works-grid-2 { grid-template-columns: 1fr; }
+      .works-grid-3 { grid-template-columns: 1fr 1fr; }
+      #statement { padding: 5rem 1.5rem; }
+      .inner { padding: 0 1.5rem; }
+      #hero-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section id="hero">
+    <img id="hero-img" src="" alt="">
+    <div id="hero-ui">
+      <div id="hero-top">
+        <span class="hero-artist">Dim Zayan</span>
+        <nav class="hero-nav"><a href="/">dimzayan.com</a></nav>
+      </div>
+      <div id="hero-bottom">
+        <h1 id="hero-title"></h1>
+        <div id="hero-meta"></div>
+      </div>
+    </div>
+    <div id="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- Statement -->
+  <section class="section section-light">
+    <div id="statement">
+      <div id="statement-header" class="reveal">
+        <span class="section-label" id="statement-label"></span>
+        <span class="section-label" id="statement-dates"></span>
+      </div>
+      <p id="statement-text" class="reveal reveal-delay-1"></p>
+    </div>
+  </section>
+
+  <!-- Media strip -->
+  <section id="media-strip" class="section"></section>
+
+  <!-- Location -->
+  <section id="location" class="section section-dark">
+    <div class="inner">
+      <div class="location-label-block reveal">
+        <span class="section-label" style="opacity:0.25;color:var(--chalk)">Venue</span>
+        <div class="location-name">Do Right Hall<br>Marfa, Texas</div>
+        <div class="location-address">
+          208 W El Paso St<br>
+          Marfa TX 79843<br><br>
+          March 5–15, 2026
+        </div>
+      </div>
+      <div class="location-body reveal reveal-delay-1">
+        <p>Do Right Hall occupies a converted space on the western edge of Marfa's quiet grid. At nearly five thousand feet above sea level, in the high Chihuahuan Desert, it holds a quality of light that is both ruthless and clarifying — horizontal, unwavering, without apology. It is a space that strips context away from work and asks it to exist on its own terms.</p>
+        <p>Marfa has been a locus for serious art since Donald Judd arrived in the early seventies, drawn by the same merciless clarity. The landscape does not yield to the work. It asks the work to reckon with something older and more patient than institutions. The paintings in this exhibition were made in a studio two blocks away, and carry that reckoning in their surface.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Works -->
+  <section id="works-sections" class="section section-light">
+    <div class="inner" style="padding-top: 1px;">
+      <div id="works-container"></div>
+    </div>
+  </section>
+
+  <!-- Press (conditionally shown) -->
+  <section id="press-section" class="section" style="display:none">
+    <div class="press-inner">
+      <span class="section-label reveal">Press</span>
+      <div class="press-links reveal reveal-delay-1" id="press-links"></div>
+    </div>
+  </section>
+
+  <!-- Artist -->
+  <section id="artist-section" class="section section-dark">
+    <div class="inner">
+      <div class="artist-label-block reveal">
+        <span class="section-label" style="opacity:0.25;color:var(--chalk)">Artist</span>
+        <div class="artist-name">Dim Zayan</div>
+        <div class="artist-detail">
+          b. France, 1977<br>
+          Based in Marfa, TX
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="artist-body">
+          <p>Dim Zayan works in oil and epoxy on raw gypsum panels, using an angle grinder to carve and incise the surface before painting begins. The gypsum is not a neutral support — it is sedimentary, dense with its own history, and it resists. The grinder removes as much as it reveals, leaving behind channels and compressions that the paint then pools into, or is repelled by.</p>
+          <p>Trained in France and working for two decades across Europe and the Americas, Zayan arrived in Marfa drawn by the proximity of landscape to practice. The high desert of West Texas — its silence, its scale, its particular insistence — has become the primary subject of his work, not as representation but as physical pressure. The paintings are not images of land. They are records of time spent inside it.</p>
+          <p>Zayan co-founded MarfaMUST, an artist-for-artist collective that operates outside the institutional framework, presenting work in spaces chosen for their resistance to the expected.</p>
+        </div>
+        <a class="artist-link" href="/">dimzayan.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="site-footer">
+    <span>Dim Zayan</span>
+    <span id="footer-year"></span>
+    <span>dimzayan.com</span>
+  </footer>
+
+  <script>
+    const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+    const GH_API  = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
+
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    const queryId = new URLSearchParams(window.location.search).get('id');
+
+    // ── Scroll reveal ──────────────────────────────────────────────
+    const revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    function observeReveals() {
+      document.querySelectorAll('.reveal:not(.visible)').forEach(function(el) {
+        revealObs.observe(el);
+      });
+    }
+
+    // ── Series detection ──────────────────────────────────────────
+    function detectSeries(works) {
+      const ROMAN = /\s+(I{1,3}|IV|VI{0,3}|IX|X{1,2}|study)$/i;
+      const groups = {};
+      const singles = [];
+      works.forEach(function(entry) {
+        const title = entry[1].title || '';
+        const m = title.match(ROMAN);
+        if (m) {
+          const base = title.slice(0, title.length - m[0].length).trim();
+          if (!groups[base]) groups[base] = [];
+          groups[base].push(entry);
+        } else {
+          singles.push(entry);
+        }
+      });
+      // Merge groups with only 1 entry into singles
+      const series = {};
+      Object.entries(groups).forEach(function([name, entries]) {
+        if (entries.length > 1) series[name] = entries;
+        else singles.push(...entries);
+      });
+      return { series, singles };
+    }
+
+    // ── Work cell ─────────────────────────────────────────────────
+    function makeWorkCell(id, w, aspectClass) {
+      const a = document.createElement('a');
+      a.className = 'work-cell reveal ' + (aspectClass || 'aspect-sq');
+      a.href = 'preview.html?id=' + encodeURIComponent(id);
+
+      const img = document.createElement('img');
+      img.src     = CDN_HI + (w.photo || id) + '.webp';
+      img.alt     = w.title || '';
+      img.loading = 'lazy';
+
+      const cap = document.createElement('div');
+      cap.className = 'work-cell-caption';
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'work-cell-title';
+      titleEl.textContent = w.title || '';
+
+      const dims = w.dimensions ? w.dimensions.trim().replace(/in\.?$/i,'').trim() + ' in' : '';
+      const meta = [w.material, dims].filter(Boolean).join('  ·  ');
+      if (meta) {
+        const metaEl = document.createElement('div');
+        metaEl.className = 'work-cell-meta';
+        metaEl.textContent = meta;
+        cap.appendChild(titleEl);
+        cap.appendChild(metaEl);
+      } else {
+        cap.appendChild(titleEl);
+      }
+
+      a.appendChild(img);
+      a.appendChild(cap);
+      return a;
+    }
+
+    // ── Render works ──────────────────────────────────────────────
+    function renderWorks(works) {
+      const { series, singles } = detectSeries(works);
+      const container = document.getElementById('works-container');
+
+      // Series blocks
+      Object.entries(series).forEach(function([name, entries]) {
+        const block = document.createElement('div');
+        block.className = 'series-block';
+
+        const header = document.createElement('div');
+        header.className = 'series-header';
+        header.innerHTML =
+          '<span class="series-name reveal">' + name + '</span>' +
+          '<span class="series-count reveal reveal-delay-1">' + entries.length + ' works</span>';
+        block.appendChild(header);
+
+        if (entries.length === 2) {
+          const grid = document.createElement('div');
+          grid.className = 'works-grid-2';
+          entries.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-port')); });
+          block.appendChild(grid);
+        } else if (entries.length === 3) {
+          const grid = document.createElement('div');
+          grid.className = 'works-grid-3';
+          entries.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
+          block.appendChild(grid);
+        } else {
+          // Featured first + grid for rest
+          const feat = document.createElement('div');
+          feat.className = 'works-grid-featured';
+          feat.appendChild(makeWorkCell(entries[0][0], entries[0][1], 'aspect-land'));
+          const sub = document.createElement('div');
+          entries.slice(1).forEach(function(e) { sub.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
+          sub.style.cssText = 'display:flex;flex-direction:column;gap:3px';
+          feat.appendChild(sub);
+          block.appendChild(feat);
+          if (entries.length > 3) {
+            const rest = document.createElement('div');
+            rest.className = 'works-grid-3';
+            rest.style.marginTop = '3px';
+            entries.slice(3).forEach(function(e) { rest.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
+            block.appendChild(rest);
+          }
+        }
+
+        container.appendChild(block);
+      });
+
+      // Singles block
+      if (singles.length) {
+        const block = document.createElement('div');
+        block.className = singles.length < 4 ? 'series-block' : 'singles-block';
+
+        const header = document.createElement('div');
+        header.className = singles.length < 4 ? 'series-header' : 'singles-header';
+        header.innerHTML = '<span class="series-name reveal">Selected works</span>';
+        block.appendChild(header);
+
+        if (singles.length <= 2) {
+          const grid = document.createElement('div');
+          grid.className = 'works-grid-2';
+          singles.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-port')); });
+          block.appendChild(grid);
+        } else {
+          const grid = document.createElement('div');
+          grid.className = 'singles-grid';
+          singles.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
+          block.appendChild(grid);
+        }
+
+        container.appendChild(block);
+      }
+
+      observeReveals();
+    }
+
+    // ── Fetch & render ────────────────────────────────────────────
+    async function fetchInventory() {
+      const token = localStorage.getItem('dim_gh_token') || '';
+      if (token) {
+        try {
+          const meta = await fetch(GH_API, {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
+            cache: 'no-store'
+          }).then(function(r) { return r.json(); });
+          if (meta.content) {
+            return JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
+          }
+        } catch(e) {}
+      }
+      return fetch('inventory.json?v=' + Date.now())
+        .then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+    }
+
+    (async function() {
+      if (!queryId) {
+        document.getElementById('hero-title').textContent = 'No exhibit specified.';
+        return;
+      }
+
+      try {
+        const [exhibitsJson, inventory] = await Promise.all([
+          fetch('exhibits.json?v=' + Date.now()).then(function(r) { return r.json(); }),
+          fetchInventory()
+        ]);
+
+        const exhibit = exhibitsJson[queryId];
+        if (!exhibit) {
+          document.getElementById('hero-title').textContent = 'Exhibit not found.';
+          return;
+        }
+
+        // Page title
+        document.title = exhibit.title + ' — Dim Zayan';
+
+        // Hero
+        const media = exhibit.media || [];
+        if (media.length) {
+          const heroImg = document.getElementById('hero-img');
+          heroImg.onload = function() { heroImg.classList.add('loaded'); };
+          heroImg.src = CDN_HI + media[0];
+          heroImg.alt = exhibit.title;
+        }
+        document.getElementById('hero-title').textContent = exhibit.title;
+        document.getElementById('hero-meta').innerHTML =
+          (exhibit.location ? exhibit.location + '<br>' : '') +
+          (exhibit.year     ? exhibit.year               : '');
+
+        // Statement
+        document.getElementById('statement-label').textContent = 'Exhibition';
+        document.getElementById('statement-dates').textContent =
+          exhibit.location ? exhibit.location : '';
+        if (exhibit.description) {
+          document.getElementById('statement-text').textContent = exhibit.description;
+        } else {
+          document.getElementById('statement').style.display = 'none';
+        }
+
+        // Media strip (remaining cover images)
+        const strip = document.getElementById('media-strip');
+        if (media.length > 1) {
+          media.slice(1).forEach(function(filename, i) {
+            const frame = document.createElement('div');
+            frame.className = 'media-frame reveal';
+            const img = document.createElement('img');
+            img.src     = CDN_HI + filename;
+            img.loading = 'lazy';
+            img.alt     = exhibit.title;
+            const cap = document.createElement('div');
+            cap.className = 'media-caption';
+            cap.textContent = (i + 2) + ' / ' + media.length;
+            frame.appendChild(img);
+            frame.appendChild(cap);
+            strip.appendChild(frame);
+          });
+        } else {
+          strip.style.display = 'none';
+        }
+
+        // Press
+        if (exhibit.press && exhibit.press.length) {
+          document.getElementById('press-section').style.display = '';
+          const list = document.getElementById('press-links');
+          exhibit.press.forEach(function(url) {
+            const a = document.createElement('a');
+            a.href   = url;
+            a.target = '_blank';
+            a.rel    = 'noopener';
+            a.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            list.appendChild(a);
+          });
+        }
+
+        // Works
+        const works = Object.entries(inventory).filter(function(entry) {
+          return entry[1].exhibit === queryId && !entry[1].excluded;
+        });
+        if (works.length) {
+          renderWorks(works);
+        } else {
+          document.getElementById('works-sections').style.display = 'none';
+        }
+
+        // Init reveals
+        observeReveals();
+
+      } catch(e) {
+        document.getElementById('hero-title').textContent = 'Could not load exhibit.';
+      }
+    })();
+
+    // Scroll hint fades after first scroll
+    window.addEventListener('scroll', function() {
+      document.getElementById('hero-scroll').style.opacity = '0';
+    }, { once: true });
+  </script>
+</body>
+</html>
