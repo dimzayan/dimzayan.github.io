@@ -6,45 +6,38 @@
   <title>Dim Zayan</title>
   <link rel="icon" href="./favicon.png">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,200;0,300;1,100;1,200&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,200;0,300;1,200&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    :root {
-      --ink:   #0c0c0c;
-      --chalk: #f0ece5;
-      --mid:   #888;
-      --serif-stack: Georgia, 'Times New Roman', serif;
-    }
-
-    html { background: #000; scroll-behavior: smooth; }
+    html { background: #fff; scroll-behavior: smooth; }
 
     body {
       font-family: 'DM Sans', sans-serif;
       font-weight: 200;
-      color: var(--ink);
+      color: #111;
       background: #fff;
       overflow-x: hidden;
     }
 
-    /* ─── Scroll reveal ───────────────────────────────────────────── */
+    /* ── Reveal ─────────────────────────────────────────────────── */
     .reveal {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.85s ease, transform 0.85s ease;
+      transform: translateY(22px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-delay-1 { transition-delay: 0.12s; }
-    .reveal-delay-2 { transition-delay: 0.24s; }
-    .reveal-delay-3 { transition-delay: 0.36s; }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.22s; }
+    .d3 { transition-delay: 0.34s; }
 
-    /* ─── Hero ────────────────────────────────────────────────────── */
+    /* ── Hero ───────────────────────────────────────────────────── */
     #hero {
       position: relative;
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background: #000;
+      background: #e8e4de;
     }
 
     #hero-img {
@@ -55,8 +48,7 @@
       object-fit: cover;
       display: block;
       opacity: 0;
-      transition: opacity 1.8s ease;
-      filter: brightness(0.72);
+      transition: opacity 2s ease;
     }
     #hero-img.loaded { opacity: 1; }
 
@@ -66,33 +58,37 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 2rem 2.5rem;
-      z-index: 1;
+      padding: 2rem 2.5rem 2.2rem;
+      pointer-events: none;
     }
 
     #hero-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      pointer-events: all;
     }
 
     .hero-artist {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 200;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(240,236,229,0.8);
+      color: #fff;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.18);
     }
 
     .hero-nav a {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 200;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(240,236,229,0.45);
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
+      pointer-events: all;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.15);
     }
-    .hero-nav a:hover { color: rgba(240,236,229,0.85); }
+    .hero-nav a:hover { color: #fff; }
 
     #hero-bottom {
       display: flex;
@@ -101,101 +97,88 @@
     }
 
     #hero-title {
-      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
       font-weight: 100;
-      line-height: 1.1;
-      color: var(--chalk);
-      max-width: 680px;
+      line-height: 1.12;
+      color: #fff;
+      max-width: 640px;
       letter-spacing: -0.01em;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.15);
     }
 
     #hero-meta {
       text-align: right;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 200;
       letter-spacing: 0.1em;
-      color: rgba(240,236,229,0.45);
-      line-height: 1.9;
+      color: rgba(255,255,255,0.65);
+      line-height: 2;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.12);
     }
 
     #hero-scroll {
       position: absolute;
-      bottom: 2rem;
+      bottom: 2.2rem;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      opacity: 0.35;
-      cursor: pointer;
+      gap: 8px;
+      opacity: 0.4;
+      transition: opacity 0.5s;
     }
     #hero-scroll span {
-      font-size: 0.58rem;
-      letter-spacing: 0.2em;
+      font-size: 0.56rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--chalk);
+      color: #fff;
     }
-    .scroll-line {
+    .scroll-tick {
       width: 1px;
-      height: 36px;
-      background: var(--chalk);
-      animation: scrollline 1.8s ease-in-out infinite;
+      height: 40px;
+      background: #fff;
       transform-origin: top;
+      animation: tick 2s ease-in-out infinite;
     }
-    @keyframes scrollline {
+    @keyframes tick {
       0%   { transform: scaleY(0); opacity: 0; }
-      40%  { transform: scaleY(1); opacity: 1; }
+      35%  { transform: scaleY(1); opacity: 0.7; }
       100% { transform: scaleY(1); opacity: 0; }
     }
 
-    /* ─── Shared layout ───────────────────────────────────────────── */
-    .section { position: relative; }
-    .section-light { background: #fff; color: var(--ink); }
-    .section-warm  { background: #f8f5f0; color: var(--ink); }
-    .section-dark  { background: var(--ink); color: var(--chalk); }
-
-    .inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 3rem;
-    }
-
-    .section-label {
-      font-size: 0.6rem;
-      font-weight: 300;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      opacity: 0.35;
-    }
-
-    /* ─── Statement ───────────────────────────────────────────────── */
+    /* ── Statement ──────────────────────────────────────────────── */
     #statement {
-      padding: 8rem 3rem;
-      max-width: 780px;
+      max-width: 740px;
       margin: 0 auto;
+      padding: 8rem 3rem 7rem;
+    }
+
+    .stmt-rule {
+      width: 32px;
+      height: 1px;
+      background: rgba(0,0,0,0.18);
+      margin-bottom: 2.5rem;
     }
 
     #statement-text {
-      font-size: clamp(1.05rem, 2vw, 1.22rem);
+      font-size: clamp(1rem, 1.8vw, 1.18rem);
       font-weight: 200;
-      line-height: 2;
-      color: #2a2a2a;
+      line-height: 2.05;
+      color: #2c2c2c;
     }
 
-    #statement-header {
-      margin-bottom: 3rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
+    .stmt-byline {
+      margin-top: 2.5rem;
+      font-size: 0.68rem;
+      font-weight: 200;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.3;
     }
 
-    /* ─── Media strip ─────────────────────────────────────────────── */
-    #media-strip {
-      background: #0c0c0c;
-    }
+    /* ── Media strip ────────────────────────────────────────────── */
+    #media-strip { background: #f5f2ee; }
 
     .media-frame {
       width: 100%;
@@ -205,307 +188,353 @@
 
     .media-frame img {
       width: 100%;
-      height: 90vh;
+      height: 92vh;
       object-fit: cover;
       display: block;
-      filter: brightness(0.88);
-      transition: transform 8s ease, filter 0.4s ease;
+      transition: transform 9s ease;
     }
-    .media-frame:hover img { filter: brightness(1); }
 
-    .media-caption {
+    .media-index {
       position: absolute;
-      bottom: 2rem;
+      bottom: 1.8rem;
       right: 2rem;
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(240,236,229,0.4);
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      color: rgba(255,255,255,0.55);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
 
-    /* ─── Location ────────────────────────────────────────────────── */
+    /* ── Location ───────────────────────────────────────────────── */
     #location {
       padding: 8rem 0;
-      background: var(--ink);
-      color: var(--chalk);
+      background: #f8f5f0;
     }
 
     #location .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem;
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 6rem;
+      grid-template-columns: 260px 1fr;
+      gap: 7rem;
       align-items: start;
     }
 
-    .location-label-block {
-      padding-top: 0.35rem;
+    .loc-label {
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.3;
     }
 
-    .location-name {
-      font-size: 1.3rem;
+    .loc-name {
+      font-size: 1.15rem;
       font-weight: 100;
-      line-height: 1.4;
+      line-height: 1.45;
       margin-top: 1rem;
-      color: var(--chalk);
+      color: #111;
     }
 
-    .location-address {
+    .loc-address {
       margin-top: 1.5rem;
-      font-size: 0.72rem;
-      font-weight: 200;
-      letter-spacing: 0.06em;
-      opacity: 0.4;
-      line-height: 1.8;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      opacity: 0.38;
+      line-height: 1.9;
     }
 
-    .location-body {
+    .loc-body {
       font-size: 1rem;
       font-weight: 200;
-      line-height: 2;
-      color: rgba(240,236,229,0.75);
+      line-height: 2.05;
+      color: #2c2c2c;
+    }
+    .loc-body p + p { margin-top: 1.8em; }
+
+    /* ── Works ──────────────────────────────────────────────────── */
+    #works-wrap {
+      padding-bottom: 8rem;
     }
 
-    .location-body p + p { margin-top: 1.8em; }
-
-    /* ─── Works ───────────────────────────────────────────────────── */
-    #works-sections { background: #fff; }
-
-    .series-block {
-      padding: 6rem 0 4rem;
-      border-top: 1px solid rgba(0,0,0,0.07);
-    }
-
-    .series-block:first-child { border-top: none; }
-
-    .series-header {
+    /* Series title */
+    .series-title-block {
+      padding: 7rem 3rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
       display: flex;
       align-items: baseline;
-      gap: 1.5rem;
-      margin-bottom: 3rem;
+      gap: 2rem;
+      border-top: 1px solid rgba(0,0,0,0.07);
+    }
+    .series-title-block:first-child { border-top: none; }
+
+    .s-name {
+      font-size: clamp(2.4rem, 4.5vw, 4rem);
+      font-weight: 100;
+      letter-spacing: -0.01em;
+      color: #111;
     }
 
-    .series-name {
+    .s-count {
       font-size: 0.62rem;
-      font-weight: 300;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      opacity: 0.32;
-    }
-
-    .series-count {
-      font-size: 0.6rem;
       font-weight: 200;
-      opacity: 0.2;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.25;
+      padding-bottom: 0.4rem;
     }
 
-    /* Series grid layouts */
-    .works-grid-2 {
+    /* Figure + caption */
+    figure.wf {
+      margin: 0;
+      display: block;
+    }
+
+    figure.wf a {
+      display: block;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    figure.wf img {
+      width: 100%;
+      display: block;
+      transition: transform 0.7s ease;
+    }
+    figure.wf a:hover img { transform: scale(1.018); }
+
+    figcaption {
+      padding: 1rem 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .fig-left { display: flex; flex-direction: column; gap: 0.22rem; }
+
+    .fig-title {
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: #111;
+      letter-spacing: 0.01em;
+    }
+
+    .fig-meta {
+      font-size: 0.66rem;
+      font-weight: 200;
+      color: #111;
+      opacity: 0.38;
+      letter-spacing: 0.04em;
+    }
+
+    .fig-price {
+      font-size: 0.72rem;
+      font-weight: 200;
+      opacity: 0.5;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .fig-price.sold     { color: #a83030; opacity: 0.8; }
+    .fig-price.reserved { color: #2e7d4f; opacity: 0.8; }
+
+    /* Work layout primitives */
+    .wl-full {
+      padding: 0 0 4rem;
+    }
+    .wl-full figure.wf img { height: 80vh; object-fit: cover; }
+
+    .wl-pair {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 3px;
+      margin-bottom: 4rem;
     }
+    .wl-pair.split-6040 { grid-template-columns: 6fr 4fr; }
+    .wl-pair.split-5050 { grid-template-columns: 1fr 1fr; }
+    .wl-pair.split-4060 { grid-template-columns: 4fr 6fr; }
+    .wl-pair figure.wf img { height: 62vh; object-fit: cover; }
 
-    .works-grid-3 {
+    .wl-trio {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 3px;
+      margin-bottom: 4rem;
     }
+    .wl-trio figure.wf img { height: 50vh; object-fit: cover; }
 
-    .works-grid-featured {
+    /* Offset single: image 62% wide + text block */
+    .wl-offset {
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 3px;
-      margin-bottom: 3px;
+      gap: 0;
+      margin-bottom: 4rem;
+      align-items: center;
     }
+    .wl-offset.img-left  { grid-template-columns: 62% 38%; }
+    .wl-offset.img-right { grid-template-columns: 38% 62%; }
+    .wl-offset figure.wf img { height: 68vh; object-fit: cover; }
 
-    .works-grid-featured + .works-grid-3 {
-      /* stacked below featured */
+    .offset-text {
+      padding: 0 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
     }
-
-    .work-cell {
-      display: block;
-      overflow: hidden;
-      position: relative;
-      background: #f0ede8;
-      cursor: pointer;
+    .offset-text .o-series {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.28;
+    }
+    .offset-text .o-title {
+      font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+      font-weight: 100;
+      line-height: 1.25;
+      color: #111;
+    }
+    .offset-text .o-meta {
+      font-size: 0.72rem;
+      opacity: 0.4;
+      line-height: 1.8;
+    }
+    .offset-text .o-price {
+      font-size: 0.78rem;
+      opacity: 0.6;
+    }
+    .offset-text .o-price.sold     { color: #a83030; opacity: 0.85; }
+    .offset-text .o-price.reserved { color: #2e7d4f; opacity: 0.85; }
+    .offset-text a.o-link {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #111;
       text-decoration: none;
-      color: inherit;
+      opacity: 0.3;
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+      padding-bottom: 0.2rem;
+      align-self: flex-start;
+      margin-top: 0.8rem;
     }
+    .offset-text a.o-link:hover { opacity: 0.8; }
 
-    .work-cell img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.6s ease, opacity 0.3s ease;
-    }
-
-    .work-cell:hover img {
-      transform: scale(1.025);
-      opacity: 0.88;
-    }
-
-    .work-cell-caption {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 3rem 1.4rem 1.2rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .work-cell:hover .work-cell-caption { opacity: 1; }
-
-    .work-cell-title {
-      font-size: 0.8rem;
-      font-weight: 200;
-      color: rgba(240,236,229,0.95);
-      letter-spacing: 0.03em;
-    }
-
-    .work-cell-meta {
-      font-size: 0.65rem;
-      font-weight: 200;
-      color: rgba(240,236,229,0.5);
-      margin-top: 0.2rem;
-    }
-
-    /* Square and portrait aspect ratios */
-    .aspect-sq   { aspect-ratio: 1; }
-    .aspect-port { aspect-ratio: 4 / 5; }
-    .aspect-land { aspect-ratio: 5 / 4; }
-
-    /* Singular works (no series) */
-    .singles-block {
-      padding: 4rem 0 6rem;
-      border-top: 1px solid rgba(0,0,0,0.07);
-    }
-
-    .singles-header {
-      margin-bottom: 3rem;
-    }
-
-    .singles-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 3px;
-    }
-
-    /* ─── Press ───────────────────────────────────────────────────── */
-    #press-section {
-      padding: 5rem 0;
-      border-top: 1px solid rgba(0,0,0,0.07);
-      background: #fff;
-    }
-
-    .press-inner {
+    /* Section padded container */
+    .wl-inner {
       max-width: 1100px;
       margin: 0 auto;
       padding: 0 3rem;
     }
 
-    .press-links {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
+    /* ── Press ──────────────────────────────────────────────────── */
+    #press-section {
+      display: none;
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-top: 1px solid rgba(0,0,0,0.07);
     }
 
-    .press-links a {
+    .press-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.3;
+      margin-bottom: 2rem;
+    }
+
+    #press-links a {
+      display: block;
       font-size: 0.82rem;
       font-weight: 200;
-      color: var(--ink);
+      color: #111;
       text-decoration: none;
-      opacity: 0.45;
-      letter-spacing: 0.03em;
+      opacity: 0.4;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
     }
-    .press-links a:hover { opacity: 1; }
+    #press-links a:hover { opacity: 0.9; }
 
-    /* ─── Artist ──────────────────────────────────────────────────── */
+    /* ── Artist ─────────────────────────────────────────────────── */
     #artist-section {
+      background: #f8f5f0;
       padding: 8rem 0;
-      background: var(--ink);
-      color: var(--chalk);
+      border-top: 1px solid rgba(0,0,0,0.07);
     }
 
     #artist-section .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem;
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 6rem;
+      grid-template-columns: 260px 1fr;
+      gap: 7rem;
       align-items: start;
     }
 
-    .artist-label-block { padding-top: 0.35rem; }
+    .artist-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.3; }
 
     .artist-name {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 100;
       margin-top: 1rem;
+      color: #111;
     }
 
     .artist-detail {
-      margin-top: 1.5rem;
+      margin-top: 1.2rem;
       font-size: 0.7rem;
-      font-weight: 200;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      opacity: 0.35;
+      opacity: 0.32;
       line-height: 2;
     }
 
     .artist-body {
       font-size: 1rem;
       font-weight: 200;
-      line-height: 2;
-      color: rgba(240,236,229,0.75);
+      line-height: 2.05;
+      color: #2c2c2c;
     }
-
     .artist-body p + p { margin-top: 1.8em; }
 
     .artist-link {
       display: inline-block;
       margin-top: 2.5rem;
-      font-size: 0.7rem;
-      font-weight: 200;
+      font-size: 0.66rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(240,236,229,0.45);
+      color: #111;
       text-decoration: none;
-      border-bottom: 1px solid rgba(240,236,229,0.15);
+      opacity: 0.35;
+      border-bottom: 1px solid rgba(0,0,0,0.2);
       padding-bottom: 0.25rem;
-      transition: color 0.2s, border-color 0.2s;
+      transition: opacity 0.2s;
     }
-    .artist-link:hover {
-      color: rgba(240,236,229,0.9);
-      border-color: rgba(240,236,229,0.45);
-    }
+    .artist-link:hover { opacity: 0.85; }
 
-    /* ─── Site footer ─────────────────────────────────────────────── */
+    /* ── Footer ─────────────────────────────────────────────────── */
     #site-footer {
-      background: #000;
       padding: 2.5rem 3rem;
+      border-top: 1px solid rgba(0,0,0,0.07);
       display: flex;
       justify-content: space-between;
-      align-items: center;
       font-size: 0.65rem;
-      font-weight: 200;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(240,236,229,0.25);
+      opacity: 0.28;
     }
 
-    /* ─── Responsive ──────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      #location .inner,
-      #artist-section .inner { grid-template-columns: 1fr; gap: 3rem; }
-      .works-grid-featured { grid-template-columns: 1fr; }
-      .works-grid-2 { grid-template-columns: 1fr; }
-      .works-grid-3 { grid-template-columns: 1fr 1fr; }
+    /* ── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .wl-pair, .wl-offset { grid-template-columns: 1fr !important; }
+      .wl-offset figure.wf img { height: 55vh; }
+      .offset-text { padding: 1.5rem 0 0; }
+      .wl-trio { grid-template-columns: 1fr 1fr; }
+      #location .inner, #artist-section .inner { grid-template-columns: 1fr; gap: 3rem; }
       #statement { padding: 5rem 1.5rem; }
-      .inner { padding: 0 1.5rem; }
+      .wl-inner, #statement { padding-left: 1.5rem; padding-right: 1.5rem; }
+      #location .inner { padding: 0 1.5rem; }
+      #artist-section .inner { padding: 0 1.5rem; }
+      .series-title-block { padding: 5rem 1.5rem 3rem; }
       #hero-title { font-size: 2rem; }
     }
   </style>
@@ -526,265 +555,312 @@
       </div>
     </div>
     <div id="hero-scroll">
-      <div class="scroll-line"></div>
+      <div class="scroll-tick"></div>
       <span>Scroll</span>
     </div>
   </section>
 
   <!-- Statement -->
-  <section class="section section-light">
+  <section id="statement-section">
     <div id="statement">
-      <div id="statement-header" class="reveal">
-        <span class="section-label" id="statement-label"></span>
-        <span class="section-label" id="statement-dates"></span>
-      </div>
-      <p id="statement-text" class="reveal reveal-delay-1"></p>
+      <div class="stmt-rule reveal"></div>
+      <p id="statement-text" class="reveal d1"></p>
+      <p class="stmt-byline reveal d2" id="stmt-byline"></p>
     </div>
   </section>
 
   <!-- Media strip -->
-  <section id="media-strip" class="section"></section>
+  <section id="media-strip"></section>
 
   <!-- Location -->
-  <section id="location" class="section section-dark">
+  <section id="location">
     <div class="inner">
-      <div class="location-label-block reveal">
-        <span class="section-label" style="opacity:0.25;color:var(--chalk)">Venue</span>
-        <div class="location-name">Do Right Hall<br>Marfa, Texas</div>
-        <div class="location-address">
-          208 W El Paso St<br>
-          Marfa TX 79843<br><br>
-          March 5–15, 2026
-        </div>
+      <div class="reveal">
+        <div class="loc-label">Venue</div>
+        <div class="loc-name">Do Right Hall<br>Marfa, Texas</div>
+        <div class="loc-address">208 W El Paso St<br>Marfa TX 79843<br><br>March 5–15, 2026</div>
       </div>
-      <div class="location-body reveal reveal-delay-1">
-        <p>Do Right Hall occupies a converted space on the western edge of Marfa's quiet grid. At nearly five thousand feet above sea level, in the high Chihuahuan Desert, it holds a quality of light that is both ruthless and clarifying — horizontal, unwavering, without apology. It is a space that strips context away from work and asks it to exist on its own terms.</p>
-        <p>Marfa has been a locus for serious art since Donald Judd arrived in the early seventies, drawn by the same merciless clarity. The landscape does not yield to the work. It asks the work to reckon with something older and more patient than institutions. The paintings in this exhibition were made in a studio two blocks away, and carry that reckoning in their surface.</p>
+      <div class="loc-body reveal d1">
+        <p>Do Right Hall sits on the western edge of Marfa's quiet grid — a converted structure that holds the particular quality of the high Chihuahuan Desert light. At nearly five thousand feet, the air is thin and the light is absolute. Horizontal, direct, without negotiation. It is a space that asks the work to stand without the insulation of conventional gallery conditions.</p>
+        <p>Marfa has drawn serious practitioners since Donald Judd arrived in the early seventies, drawn by the same quality of light and the distance from institutional frameworks. The landscape here does not recede into background. It remains present, pressing. The paintings in this exhibition were made two blocks away, in a studio facing west, and they carry that pressure in their surface and in their making.</p>
       </div>
     </div>
   </section>
 
   <!-- Works -->
-  <section id="works-sections" class="section section-light">
-    <div class="inner" style="padding-top: 1px;">
-      <div id="works-container"></div>
-    </div>
-  </section>
+  <section id="works-wrap"></section>
 
-  <!-- Press (conditionally shown) -->
-  <section id="press-section" class="section" style="display:none">
-    <div class="press-inner">
-      <span class="section-label reveal">Press</span>
-      <div class="press-links reveal reveal-delay-1" id="press-links"></div>
-    </div>
-  </section>
+  <!-- Press -->
+  <div id="press-section">
+    <div class="press-label reveal">Press</div>
+    <div id="press-links" class="reveal d1"></div>
+  </div>
 
   <!-- Artist -->
-  <section id="artist-section" class="section section-dark">
+  <section id="artist-section">
     <div class="inner">
-      <div class="artist-label-block reveal">
-        <span class="section-label" style="opacity:0.25;color:var(--chalk)">Artist</span>
+      <div class="reveal">
+        <div class="artist-label">Artist</div>
         <div class="artist-name">Dim Zayan</div>
-        <div class="artist-detail">
-          b. France, 1977<br>
-          Based in Marfa, TX
-        </div>
+        <div class="artist-detail">b. France, 1977<br>Based Marfa, TX</div>
       </div>
-      <div class="reveal reveal-delay-1">
+      <div class="reveal d1">
         <div class="artist-body">
-          <p>Dim Zayan works in oil and epoxy on raw gypsum panels, using an angle grinder to carve and incise the surface before painting begins. The gypsum is not a neutral support — it is sedimentary, dense with its own history, and it resists. The grinder removes as much as it reveals, leaving behind channels and compressions that the paint then pools into, or is repelled by.</p>
-          <p>Trained in France and working for two decades across Europe and the Americas, Zayan arrived in Marfa drawn by the proximity of landscape to practice. The high desert of West Texas — its silence, its scale, its particular insistence — has become the primary subject of his work, not as representation but as physical pressure. The paintings are not images of land. They are records of time spent inside it.</p>
-          <p>Zayan co-founded MarfaMUST, an artist-for-artist collective that operates outside the institutional framework, presenting work in spaces chosen for their resistance to the expected.</p>
+          <p>Dim Zayan works in oil and epoxy on raw gypsum panels, using an angle grinder to carve and incise the surface before painting begins. The gypsum is not a neutral support — it is sedimentary, geological, resistant. The grinding removes as much as it reveals, leaving channels and compressions that the paint pools into or is repelled by. Surface and depth are inseparable.</p>
+          <p>Born in France in 1977 and working across Europe and the Americas, Zayan arrived in Marfa drawn by the proximity of landscape to practice. The high desert of West Texas — its silence, its scale, its particular insistence — has become the primary ground of his work, not as representation but as physical pressure. These paintings are not images of land. They are records of time spent inside it.</p>
+          <p>Zayan co-founded MarfaMUST, an artist-for-artist collective presenting work outside institutional frameworks, in spaces chosen for their resistance to the expected.</p>
         </div>
         <a class="artist-link" href="/">dimzayan.com</a>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer id="site-footer">
     <span>Dim Zayan</span>
-    <span id="footer-year"></span>
+    <span id="footer-exhibit-title"></span>
     <span>dimzayan.com</span>
   </footer>
 
   <script>
-    const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
-    const GH_API  = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
-
-    document.getElementById('footer-year').textContent = new Date().getFullYear();
+    const CDN_HI = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+    const GH_API = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
 
     const queryId = new URLSearchParams(window.location.search).get('id');
 
-    // ── Scroll reveal ──────────────────────────────────────────────
-    const revealObs = new IntersectionObserver(function(entries) {
+    // ── Scroll reveal ────────────────────────────────────────────
+    const revObs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          revealObs.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add('visible'); revObs.unobserve(e.target); }
       });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
 
-    function observeReveals() {
-      document.querySelectorAll('.reveal:not(.visible)').forEach(function(el) {
-        revealObs.observe(el);
-      });
+    function observe() {
+      document.querySelectorAll('.reveal:not(.visible)').forEach(function(el) { revObs.observe(el); });
     }
 
-    // ── Series detection ──────────────────────────────────────────
-    function detectSeries(works, explicitSeries) {
-      const inventory = Object.fromEntries(works);
-
-      if (explicitSeries && Object.keys(explicitSeries).length) {
-        const assigned = new Set();
-        const series = {};
-        Object.entries(explicitSeries).forEach(function([name, ids]) {
-          const entries = ids
-            .filter(function(id) { return inventory[id]; })
-            .map(function(id) { return [id, inventory[id]]; });
-          if (entries.length) { series[name] = entries; ids.forEach(function(id) { assigned.add(id); }); }
-        });
-        const singles = works.filter(function(e) { return !assigned.has(e[0]); });
-        return { series, singles };
-      }
-
-      // Fallback: auto-detect by Roman numeral suffix
-      const ROMAN = /\s+(I{1,3}|IV|VI{0,3}|IX|X{1,2})$/i;
-      const groups = {};
-      const singles = [];
-      works.forEach(function(entry) {
-        const title = entry[1].title || '';
-        const m = title.match(ROMAN);
-        if (m) {
-          const base = title.slice(0, title.length - m[0].length).trim();
-          if (!groups[base]) groups[base] = [];
-          groups[base].push(entry);
-        } else {
-          singles.push(entry);
-        }
-      });
-      const series = {};
-      Object.entries(groups).forEach(function([name, entries]) {
-        if (entries.length > 1) series[name] = entries;
-        else singles.push(...entries);
-      });
-      return { series, singles };
+    // ── Figcaption helper ────────────────────────────────────────
+    function fmtDims(raw) {
+      if (!raw) return '';
+      return /in\.?$/i.test(raw.trim()) ? raw.trim() : raw.trim() + ' in';
     }
 
-    // ── Work cell ─────────────────────────────────────────────────
-    function makeWorkCell(id, w, aspectClass) {
+    function makeFig(id, w, heightClass) {
+      const fig = document.createElement('figure');
+      fig.className = 'wf reveal';
+
       const a = document.createElement('a');
-      a.className = 'work-cell reveal ' + (aspectClass || 'aspect-sq');
       a.href = 'preview.html?id=' + encodeURIComponent(id);
 
       const img = document.createElement('img');
       img.src     = CDN_HI + (w.photo || id) + '.webp';
       img.alt     = w.title || '';
       img.loading = 'lazy';
-
-      const cap = document.createElement('div');
-      cap.className = 'work-cell-caption';
-
-      const titleEl = document.createElement('div');
-      titleEl.className = 'work-cell-title';
-      titleEl.textContent = w.title || '';
-
-      const dims = w.dimensions ? w.dimensions.trim().replace(/in\.?$/i,'').trim() + ' in' : '';
-      const meta = [w.material, dims].filter(Boolean).join('  ·  ');
-      if (meta) {
-        const metaEl = document.createElement('div');
-        metaEl.className = 'work-cell-meta';
-        metaEl.textContent = meta;
-        cap.appendChild(titleEl);
-        cap.appendChild(metaEl);
-      } else {
-        cap.appendChild(titleEl);
-      }
+      if (heightClass) img.style.height = heightClass;
 
       a.appendChild(img);
-      a.appendChild(cap);
-      return a;
-    }
+      fig.appendChild(a);
 
-    // ── Render works ──────────────────────────────────────────────
-    function renderWorks(works, explicitSeries) {
-      const { series, singles } = detectSeries(works, explicitSeries);
-      const container = document.getElementById('works-container');
+      const cap = document.createElement('figcaption');
+      const left = document.createElement('div');
+      left.className = 'fig-left';
 
-      // Series blocks
-      Object.entries(series).forEach(function([name, entries]) {
-        const block = document.createElement('div');
-        block.className = 'series-block';
+      const tEl = document.createElement('span');
+      tEl.className = 'fig-title';
+      tEl.textContent = w.title || '';
+      left.appendChild(tEl);
 
-        const header = document.createElement('div');
-        header.className = 'series-header';
-        header.innerHTML =
-          '<span class="series-name reveal">' + name + '</span>' +
-          '<span class="series-count reveal reveal-delay-1">' + entries.length + ' works</span>';
-        block.appendChild(header);
-
-        if (entries.length === 2) {
-          const grid = document.createElement('div');
-          grid.className = 'works-grid-2';
-          entries.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-port')); });
-          block.appendChild(grid);
-        } else if (entries.length === 3) {
-          const grid = document.createElement('div');
-          grid.className = 'works-grid-3';
-          entries.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
-          block.appendChild(grid);
-        } else {
-          // Featured first + grid for rest
-          const feat = document.createElement('div');
-          feat.className = 'works-grid-featured';
-          feat.appendChild(makeWorkCell(entries[0][0], entries[0][1], 'aspect-land'));
-          const sub = document.createElement('div');
-          entries.slice(1).forEach(function(e) { sub.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
-          sub.style.cssText = 'display:flex;flex-direction:column;gap:3px';
-          feat.appendChild(sub);
-          block.appendChild(feat);
-          if (entries.length > 3) {
-            const rest = document.createElement('div');
-            rest.className = 'works-grid-3';
-            rest.style.marginTop = '3px';
-            entries.slice(3).forEach(function(e) { rest.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
-            block.appendChild(rest);
-          }
-        }
-
-        container.appendChild(block);
-      });
-
-      // Singles block
-      if (singles.length) {
-        const block = document.createElement('div');
-        block.className = singles.length < 4 ? 'series-block' : 'singles-block';
-
-        const header = document.createElement('div');
-        header.className = singles.length < 4 ? 'series-header' : 'singles-header';
-        header.innerHTML = '<span class="series-name reveal">Selected works</span>';
-        block.appendChild(header);
-
-        if (singles.length <= 2) {
-          const grid = document.createElement('div');
-          grid.className = 'works-grid-2';
-          singles.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-port')); });
-          block.appendChild(grid);
-        } else {
-          const grid = document.createElement('div');
-          grid.className = 'singles-grid';
-          singles.forEach(function(e) { grid.appendChild(makeWorkCell(e[0], e[1], 'aspect-sq')); });
-          block.appendChild(grid);
-        }
-
-        container.appendChild(block);
+      const dims = fmtDims(w.dimensions || '');
+      const meta = [w.material, dims].filter(Boolean).join('  ·  ');
+      if (meta) {
+        const mEl = document.createElement('span');
+        mEl.className = 'fig-meta';
+        mEl.textContent = meta + (w.year ? '  ·  ' + w.year : '');
+        left.appendChild(mEl);
       }
 
-      observeReveals();
+      cap.appendChild(left);
+
+      const pEl = document.createElement('span');
+      if (w.invoiced) {
+        pEl.className = 'fig-price sold'; pEl.textContent = 'Sold';
+      } else if (w.reserved) {
+        pEl.className = 'fig-price reserved'; pEl.textContent = 'Reserved';
+      } else if (w.price) {
+        pEl.className = 'fig-price';
+        pEl.textContent = '$' + Number(w.price).toLocaleString('en-US');
+      }
+      cap.appendChild(pEl);
+
+      fig.appendChild(cap);
+      return fig;
     }
 
-    // ── Fetch & render ────────────────────────────────────────────
+    // ── Offset block (large image + text panel) ──────────────────
+    function makeOffset(id, w, side, seriesName) {
+      const div = document.createElement('div');
+      div.className = 'wl-offset reveal ' + (side === 'right' ? 'img-right' : 'img-left');
+
+      const fig = document.createElement('figure');
+      fig.className = 'wf';
+      const a = document.createElement('a');
+      a.href = 'preview.html?id=' + encodeURIComponent(id);
+      const img = document.createElement('img');
+      img.src = CDN_HI + (w.photo || id) + '.webp';
+      img.alt = w.title || '';
+      img.loading = 'lazy';
+      a.appendChild(img); fig.appendChild(a);
+
+      const txt = document.createElement('div');
+      txt.className = 'offset-text';
+
+      if (seriesName) {
+        const sEl = document.createElement('div');
+        sEl.className = 'o-series'; sEl.textContent = seriesName;
+        txt.appendChild(sEl);
+      }
+
+      const tEl = document.createElement('div');
+      tEl.className = 'o-title'; tEl.textContent = w.title || '';
+      txt.appendChild(tEl);
+
+      const dims = fmtDims(w.dimensions || '');
+      const meta = [w.material, dims].filter(Boolean).join('\n');
+      if (meta || w.year) {
+        const mEl = document.createElement('div');
+        mEl.className = 'o-meta';
+        mEl.textContent = [w.year, meta].filter(Boolean).join('\n');
+        mEl.style.whiteSpace = 'pre-line';
+        txt.appendChild(mEl);
+      }
+
+      if (w.invoiced) {
+        const pEl = document.createElement('div');
+        pEl.className = 'o-price sold'; pEl.textContent = 'Sold'; txt.appendChild(pEl);
+      } else if (w.reserved) {
+        const pEl = document.createElement('div');
+        pEl.className = 'o-price reserved'; pEl.textContent = 'Reserved'; txt.appendChild(pEl);
+      } else if (w.price) {
+        const pEl = document.createElement('div');
+        pEl.className = 'o-price';
+        pEl.textContent = '$' + Number(w.price).toLocaleString('en-US');
+        txt.appendChild(pEl);
+      }
+
+      const lnk = document.createElement('a');
+      lnk.className = 'o-link'; lnk.href = 'preview.html?id=' + encodeURIComponent(id);
+      lnk.textContent = 'View work'; txt.appendChild(lnk);
+
+      if (side === 'right') { div.appendChild(txt); div.appendChild(fig); }
+      else                  { div.appendChild(fig);  div.appendChild(txt); }
+
+      return div;
+    }
+
+    // ── Series renderer ──────────────────────────────────────────
+    function renderSeries(name, entries, wrap) {
+      // Title block
+      const tb = document.createElement('div');
+      tb.className = 'series-title-block';
+      tb.innerHTML =
+        '<span class="s-name reveal">' + name + '</span>' +
+        '<span class="s-count reveal d1">' + entries.length + (entries.length === 1 ? ' work' : ' works') + '</span>';
+      wrap.appendChild(tb);
+
+      const inner = document.createElement('div');
+      inner.className = 'wl-inner';
+
+      const n = entries.length;
+
+      if (n === 1) {
+        // Offset: image + text panel
+        const block = document.createElement('div');
+        block.className = 'wl-full';
+        block.appendChild(makeOffset(entries[0][0], entries[0][1], 'left', name));
+        inner.appendChild(block);
+
+      } else if (n === 2) {
+        // Pair 50/50
+        const pair = document.createElement('div');
+        pair.className = 'wl-pair split-5050';
+        entries.forEach(function(e) { pair.appendChild(makeFig(e[0], e[1])); });
+        inner.appendChild(pair);
+
+      } else if (n === 3) {
+        // First full-width offset, then pair
+        inner.appendChild(makeOffset(entries[0][0], entries[0][1], 'left', name));
+        const pair = document.createElement('div');
+        pair.className = 'wl-pair split-6040';
+        pair.style.marginTop = '3px';
+        [entries[1], entries[2]].forEach(function(e) { pair.appendChild(makeFig(e[0], e[1])); });
+        inner.appendChild(pair);
+
+      } else {
+        // Full-width first, trio of remainder, then any overflow as pairs
+        const full = document.createElement('div');
+        full.className = 'wl-full';
+        full.appendChild(makeFig(entries[0][0], entries[0][1]));
+        inner.appendChild(full);
+
+        const trio = document.createElement('div');
+        trio.className = 'wl-trio';
+        entries.slice(1, 4).forEach(function(e) { trio.appendChild(makeFig(e[0], e[1])); });
+        inner.appendChild(trio);
+
+        if (entries.length > 4) {
+          const extra = document.createElement('div');
+          extra.className = 'wl-pair split-5050';
+          extra.style.marginTop = '3px';
+          entries.slice(4).forEach(function(e) { extra.appendChild(makeFig(e[0], e[1])); });
+          inner.appendChild(extra);
+        }
+      }
+
+      wrap.appendChild(inner);
+    }
+
+    // ── Singles renderer ─────────────────────────────────────────
+    function renderSingles(entries, wrap) {
+      if (!entries.length) return;
+
+      const tb = document.createElement('div');
+      tb.className = 'series-title-block';
+      tb.innerHTML = '<span class="s-name reveal">Selected works</span>';
+      wrap.appendChild(tb);
+
+      const inner = document.createElement('div');
+      inner.className = 'wl-inner';
+
+      entries.forEach(function(e, i) {
+        if (i % 3 === 0) {
+          // Full-width offset alternating sides
+          const side = (Math.floor(i / 3) % 2 === 0) ? 'left' : 'right';
+          const block = document.createElement('div');
+          block.style.marginBottom = '4rem';
+          block.appendChild(makeOffset(e[0], e[1], side));
+          inner.appendChild(block);
+        } else if (i % 3 === 1 && entries[i + 1]) {
+          // Pair with next entry
+          const pair = document.createElement('div');
+          pair.className = 'wl-pair split-5050';
+          pair.style.marginBottom = '4rem';
+          pair.appendChild(makeFig(e[0], e[1]));
+          pair.appendChild(makeFig(entries[i + 1][0], entries[i + 1][1]));
+          inner.appendChild(pair);
+        } else if (i % 3 === 2) {
+          // Already rendered in the pair above
+        } else {
+          // Orphan
+          const block = document.createElement('div');
+          block.className = 'wl-full';
+          block.appendChild(makeFig(e[0], e[1]));
+          inner.appendChild(block);
+        }
+      });
+
+      wrap.appendChild(inner);
+    }
+
+    // ── Inventory fetch ──────────────────────────────────────────
     async function fetchInventory() {
       const token = localStorage.getItem('dim_gh_token') || '';
       if (token) {
@@ -793,20 +869,17 @@
             headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
             cache: 'no-store'
           }).then(function(r) { return r.json(); });
-          if (meta.content) {
+          if (meta.content)
             return JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
-          }
         } catch(e) {}
       }
       return fetch('inventory.json?v=' + Date.now())
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
     }
 
+    // ── Boot ─────────────────────────────────────────────────────
     (async function() {
-      if (!queryId) {
-        document.getElementById('hero-title').textContent = 'No exhibit specified.';
-        return;
-      }
+      if (!queryId) { document.getElementById('hero-title').textContent = 'No exhibit specified.'; return; }
 
       try {
         const [exhibitsJson, inventory] = await Promise.all([
@@ -815,91 +888,93 @@
         ]);
 
         const exhibit = exhibitsJson[queryId];
-        if (!exhibit) {
-          document.getElementById('hero-title').textContent = 'Exhibit not found.';
-          return;
-        }
+        if (!exhibit) { document.getElementById('hero-title').textContent = 'Exhibit not found.'; return; }
 
-        // Page title
         document.title = exhibit.title + ' — Dim Zayan';
+        document.getElementById('footer-exhibit-title').textContent = exhibit.title;
 
         // Hero
         const media = exhibit.media || [];
         if (media.length) {
-          const heroImg = document.getElementById('hero-img');
-          heroImg.onload = function() { heroImg.classList.add('loaded'); };
-          heroImg.src = CDN_HI + media[0];
-          heroImg.alt = exhibit.title;
+          const hi = document.getElementById('hero-img');
+          hi.onload = function() { hi.classList.add('loaded'); };
+          hi.src = CDN_HI + media[0];
+          hi.alt = exhibit.title;
         }
         document.getElementById('hero-title').textContent = exhibit.title;
         document.getElementById('hero-meta').innerHTML =
-          (exhibit.location ? exhibit.location + '<br>' : '') +
-          (exhibit.year     ? exhibit.year               : '');
+          (exhibit.location ? exhibit.location + '<br>' : '') + (exhibit.year || '');
 
         // Statement
-        document.getElementById('statement-label').textContent = 'Exhibition';
-        document.getElementById('statement-dates').textContent =
-          exhibit.location ? exhibit.location : '';
         if (exhibit.description) {
           document.getElementById('statement-text').textContent = exhibit.description;
+          document.getElementById('stmt-byline').textContent =
+            [exhibit.title, exhibit.location, exhibit.year].filter(Boolean).join('  ·  ');
         } else {
-          document.getElementById('statement').style.display = 'none';
+          document.getElementById('statement-section').style.display = 'none';
         }
 
-        // Media strip (remaining cover images)
+        // Media strip
         const strip = document.getElementById('media-strip');
         if (media.length > 1) {
           media.slice(1).forEach(function(filename, i) {
             const frame = document.createElement('div');
             frame.className = 'media-frame reveal';
             const img = document.createElement('img');
-            img.src     = CDN_HI + filename;
-            img.loading = 'lazy';
-            img.alt     = exhibit.title;
-            const cap = document.createElement('div');
-            cap.className = 'media-caption';
-            cap.textContent = (i + 2) + ' / ' + media.length;
-            frame.appendChild(img);
-            frame.appendChild(cap);
+            img.src = CDN_HI + filename; img.loading = 'lazy'; img.alt = exhibit.title;
+            const idx = document.createElement('div');
+            idx.className = 'media-index';
+            idx.textContent = (i + 2) + ' — ' + media.length;
+            frame.appendChild(img); frame.appendChild(idx);
             strip.appendChild(frame);
           });
         } else {
           strip.style.display = 'none';
         }
 
+        // Works
+        const allWorks = Object.entries(inventory).filter(function(e) {
+          return e[1].exhibit === queryId && !e[1].excluded;
+        });
+
+        if (allWorks.length) {
+          const wrap = document.getElementById('works-wrap');
+          const inv  = Object.fromEntries(allWorks);
+
+          if (exhibit.series && Object.keys(exhibit.series).length) {
+            const assigned = new Set();
+            Object.entries(exhibit.series).forEach(function([name, ids]) {
+              const entries = ids.filter(function(id) { return inv[id]; })
+                               .map(function(id) { return [id, inv[id]]; });
+              if (entries.length) { renderSeries(name, entries, wrap); ids.forEach(function(id) { assigned.add(id); }); }
+            });
+            const singles = allWorks.filter(function(e) { return !assigned.has(e[0]); });
+            renderSingles(singles, wrap);
+          } else {
+            renderSingles(allWorks, wrap);
+          }
+        } else {
+          document.getElementById('works-wrap').style.display = 'none';
+        }
+
         // Press
         if (exhibit.press && exhibit.press.length) {
-          document.getElementById('press-section').style.display = '';
-          const list = document.getElementById('press-links');
+          document.getElementById('press-section').style.display = 'block';
           exhibit.press.forEach(function(url) {
             const a = document.createElement('a');
-            a.href   = url;
-            a.target = '_blank';
-            a.rel    = 'noopener';
+            a.href = url; a.target = '_blank'; a.rel = 'noopener';
             a.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
-            list.appendChild(a);
+            document.getElementById('press-links').appendChild(a);
           });
         }
 
-        // Works
-        const works = Object.entries(inventory).filter(function(entry) {
-          return entry[1].exhibit === queryId && !entry[1].excluded;
-        });
-        if (works.length) {
-          renderWorks(works, exhibit.series);
-        } else {
-          document.getElementById('works-sections').style.display = 'none';
-        }
-
-        // Init reveals
-        observeReveals();
+        observe();
 
       } catch(e) {
         document.getElementById('hero-title').textContent = 'Could not load exhibit.';
       }
     })();
 
-    // Scroll hint fades after first scroll
     window.addEventListener('scroll', function() {
       document.getElementById('hero-scroll').style.opacity = '0';
     }, { once: true });
