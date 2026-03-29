@@ -167,12 +167,10 @@
     var prevBtn = document.createElement('button');
     prevBtn.className = 'coll-arrow coll-prev';
     prevBtn.setAttribute('aria-label', 'Previous');
-    prevBtn.innerHTML = '&#8592;';
 
     var nextBtn = document.createElement('button');
     nextBtn.className = 'coll-arrow coll-next';
     nextBtn.setAttribute('aria-label', 'Next');
-    nextBtn.innerHTML = '&#8594;';
 
     root.appendChild(prevBtn);
     root.appendChild(nextBtn);
@@ -237,15 +235,14 @@
       }
     }
 
-    /* Initial layout */
-    requestAnimationFrame(function () {
+    /* Initial layout — setTimeout ensures container has rendered width */
+    setTimeout(function () {
       applyLayout();
       goTo(0, false);
-      /* Re-enable transitions next frame */
       requestAnimationFrame(function () {
         track.style.transition = '';
       });
-    });
+    }, 0);
 
     /* Resize */
     var resizeTimer;
