@@ -1,0 +1,321 @@
+/**
+ * Collection module — grid or carousel display of works
+ *
+ * Usage:
+ *   Collection.init(containerEl, works, options)
+ *
+ * works: array of { id, photo, title, material, dimensions, price, invoiced, reserved }
+ *
+ * options:
+ *   mode        'grid' | 'carousel'   default: 'grid'
+ *   gap         number (px)           default: 4
+ *   peek        number (px)           carousel: how much of prev/next to show. default: 0
+ *   loop        boolean               carousel: wrap around. default: false
+ *   minWidth    number (px)           grid: min column width. default: 260
+ *   aspectRatio string                item aspect ratio e.g. '1' or '4/5'. default: '1'
+ *   previewBase string                base URL for preview page. default: 'preview.html'
+ */
+(function (global) {
+  'use strict';
+
+  var CDN = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+  var STYLES_ID = 'coll-styles';
+
+  /* ── Styles ─────────────────────────────────────────────────────── */
+  var CSS = [
+    '.coll-root { position: relative; }',
+
+    /* Grid */
+    '.coll-grid {',
+    '  display: grid;',
+    '  grid-template-columns: repeat(auto-fill, minmax(var(--coll-min, 260px), 1fr));',
+    '  gap: var(--coll-gap, 4px);',
+    '}',
+    '.coll-grid-item { overflow: hidden; }',
+
+    /* Shared cell */
+    '.coll-cell {',
+    '  display: block; overflow: hidden; position: relative;',
+    '  background: #ece9e4; text-decoration: none; cursor: pointer;',
+    '  width: 100%; height: 100%;',
+    '}',
+    '.coll-cell img {',
+    '  width: 100%; height: 100%; object-fit: cover; display: block;',
+    '  transition: transform 0.65s ease;',
+    '}',
+    '.coll-cell:hover img { transform: scale(1.02); }',
+    '.coll-cell-title {',
+    '  position: absolute; bottom: 0; left: 0; right: 0;',
+    '  padding: 3rem 1.1rem 0.85rem;',
+    '  background: linear-gradient(to top, rgba(0,0,0,0.42) 0%, transparent 100%);',
+    '  font-family: "DM Sans", sans-serif; font-size: 0.68rem; font-weight: 200;',
+    '  letter-spacing: 0.1em; color: rgba(255,255,255,0.88);',
+    '  opacity: 0; transition: opacity 0.32s ease; pointer-events: none;',
+    '}',
+    '.coll-cell:hover .coll-cell-title { opacity: 1; }',
+
+    /* Carousel */
+    '.coll-carousel-clip {',
+    '  overflow: hidden; position: relative; width: 100%;',
+    '}',
+    '.coll-track {',
+    '  display: flex;',
+    '  transition: transform 0.48s cubic-bezier(0.4, 0, 0.2, 1);',
+    '  will-change: transform;',
+    '}',
+    '.coll-car-item { flex: 0 0 auto; }',
+
+    /* Arrows */
+    '.coll-arrow {',
+    '  position: absolute; top: 50%; transform: translateY(-50%);',
+    '  z-index: 20; background: none; border: none;',
+    '  font-family: "DM Sans", sans-serif; font-size: 1.4rem; font-weight: 100;',
+    '  color: #111; cursor: pointer; opacity: 0.28; padding: 1rem 0.8rem;',
+    '  line-height: 1; user-select: none; transition: opacity 0.2s;',
+    '}',
+    '.coll-arrow:hover { opacity: 0.9; }',
+    '.coll-arrow.coll-prev { left: 0; }',
+    '.coll-arrow.coll-next { right: 0; }',
+    '.coll-arrow[disabled] { opacity: 0.08; pointer-events: none; }',
+  ].join('\n');
+
+  function injectStyles() {
+    if (document.getElementById(STYLES_ID)) return;
+    var s = document.createElement('style');
+    s.id = STYLES_ID;
+    s.textContent = CSS;
+    document.head.appendChild(s);
+  }
+
+  /* ── Cell builder ───────────────────────────────────────────────── */
+  function makeCell(work, previewBase) {
+    var a = document.createElement('a');
+    a.className = 'coll-cell';
+    a.href = (previewBase || 'preview.html') + '?id=' + encodeURIComponent(work.id);
+    a.target = '_blank';
+    a.rel = 'noopener';
+
+    var img = document.createElement('img');
+    img.src = CDN + (work.photo || work.id) + '.webp';
+    img.alt = work.title || '';
+    img.loading = 'lazy';
+
+    var title = document.createElement('div');
+    title.className = 'coll-cell-title';
+    title.textContent = work.title || '';
+
+    a.appendChild(img);
+    a.appendChild(title);
+    return a;
+  }
+
+  /* ── Grid ───────────────────────────────────────────────────────── */
+  function initGrid(root, works, opts) {
+    var grid = document.createElement('div');
+    grid.className = 'coll-grid';
+    grid.style.setProperty('--coll-gap', (opts.gap != null ? opts.gap : 4) + 'px');
+    if (opts.minWidth) grid.style.setProperty('--coll-min', opts.minWidth + 'px');
+
+    works.forEach(function (w) {
+      var item = document.createElement('div');
+      item.className = 'coll-grid-item';
+      item.style.aspectRatio = opts.aspectRatio || '1';
+      item.appendChild(makeCell(w, opts.previewBase));
+      grid.appendChild(item);
+    });
+
+    root.appendChild(grid);
+  }
+
+  /* ── Carousel ───────────────────────────────────────────────────── */
+  function initCarousel(root, works, opts) {
+    var peek   = opts.peek  != null ? opts.peek  : 0;
+    var gap    = opts.gap   != null ? opts.gap   : 4;
+    var loop   = !!opts.loop;
+    var aspect = opts.aspectRatio || '1';
+    var n      = works.length;
+    var current = 0;
+
+    /* Parse aspect ratio string → numeric ratio (w/h) */
+    function parseAspect(a) {
+      if (typeof a === 'number') return a;
+      var parts = String(a).split('/');
+      return parts.length === 2 ? parseFloat(parts[0]) / parseFloat(parts[1]) : parseFloat(a) || 1;
+    }
+    var ratio = parseAspect(aspect);
+
+    /* Clip container (hides overflow) */
+    var clip = document.createElement('div');
+    clip.className = 'coll-carousel-clip';
+
+    /* Track */
+    var track = document.createElement('div');
+    track.className = 'coll-track';
+    track.style.gap = gap + 'px';
+
+    works.forEach(function (w) {
+      var item = document.createElement('div');
+      item.className = 'coll-car-item';
+      item.appendChild(makeCell(w, opts.previewBase));
+      track.appendChild(item);
+    });
+
+    clip.appendChild(track);
+    root.appendChild(clip);
+
+    /* Arrows */
+    var prevBtn = document.createElement('button');
+    prevBtn.className = 'coll-arrow coll-prev';
+    prevBtn.setAttribute('aria-label', 'Previous');
+    prevBtn.innerHTML = '&#8592;';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'coll-arrow coll-next';
+    nextBtn.setAttribute('aria-label', 'Next');
+    nextBtn.innerHTML = '&#8594;';
+
+    root.appendChild(prevBtn);
+    root.appendChild(nextBtn);
+
+    /* ── Layout calculation ─────────────────────────────────────── */
+    function getItemWidth() {
+      var W = clip.offsetWidth;
+      if (peek > 0) {
+        /* [peek][gap][item][gap][peek] = W  →  item = W - 2*peek - 2*gap */
+        return Math.max(W - 2 * peek - 2 * gap, 80);
+      }
+      /* No peek: item fills container */
+      return W;
+    }
+
+    function getOffset(idx) {
+      var iw = getItemWidth();
+      if (peek > 0) {
+        /* Centre item at idx with peek showing on both sides */
+        return (peek + gap) - idx * (iw + gap);
+      }
+      return -idx * (iw + gap);
+    }
+
+    function applyLayout() {
+      var iw = getItemWidth();
+      var ih = iw / ratio;
+      track.querySelectorAll('.coll-car-item').forEach(function (item) {
+        item.style.width  = iw + 'px';
+        item.style.height = ih + 'px';
+        var cell = item.querySelector('.coll-cell');
+        if (cell) { cell.style.width = iw + 'px'; cell.style.height = ih + 'px'; }
+      });
+    }
+
+    function goTo(idx, animate) {
+      if (!loop) {
+        idx = Math.max(0, Math.min(idx, n - 1));
+      } else {
+        idx = ((idx % n) + n) % n;
+      }
+      current = idx;
+
+      if (animate === false) {
+        track.style.transition = 'none';
+      } else {
+        track.style.transition = '';
+      }
+      track.style.transform = 'translateX(' + getOffset(current) + 'px)';
+
+      if (!loop) {
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === n - 1;
+      } else {
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+      }
+    }
+
+    /* Initial layout */
+    requestAnimationFrame(function () {
+      applyLayout();
+      goTo(0, false);
+      /* Re-enable transitions next frame */
+      requestAnimationFrame(function () {
+        track.style.transition = '';
+      });
+    });
+
+    /* Resize */
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        applyLayout();
+        goTo(current, false);
+      }, 80);
+    });
+
+    /* Arrow clicks */
+    prevBtn.addEventListener('click', function () { goTo(current - 1); });
+    nextBtn.addEventListener('click', function () { goTo(current + 1); });
+
+    /* Keyboard */
+    root.setAttribute('tabindex', '0');
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft')  { goTo(current - 1); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { goTo(current + 1); e.preventDefault(); }
+    });
+
+    /* Touch / swipe */
+    var touchX = null;
+    clip.addEventListener('touchstart', function (e) {
+      touchX = e.touches[0].clientX;
+    }, { passive: true });
+    clip.addEventListener('touchend', function (e) {
+      if (touchX === null) return;
+      var dx = touchX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
+      touchX = null;
+    }, { passive: true });
+
+    /* Prevent click when a swipe was intended */
+    var dragging = false;
+    clip.addEventListener('mousedown', function (e) {
+      touchX = e.clientX; dragging = false;
+    });
+    clip.addEventListener('mousemove', function (e) {
+      if (touchX !== null && Math.abs(e.clientX - touchX) > 8) dragging = true;
+    });
+    clip.addEventListener('mouseup', function (e) {
+      if (dragging) {
+        var dx = touchX - e.clientX;
+        if (Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
+      }
+      touchX = null; dragging = false;
+    });
+    /* Stop cell link from firing on drag */
+    clip.addEventListener('click', function (e) {
+      if (dragging) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+  }
+
+  /* ── Public API ─────────────────────────────────────────────────── */
+  function init(container, works, opts) {
+    injectStyles();
+    opts  = opts  || {};
+    works = works || [];
+
+    var root = typeof container === 'string'
+      ? document.querySelector(container)
+      : container;
+    if (!root || !works.length) return;
+
+    root.classList.add('coll-root');
+
+    if (opts.mode === 'carousel') {
+      initCarousel(root, works, opts);
+    } else {
+      initGrid(root, works, opts);
+    }
+  }
+
+  global.Collection = { init: init };
+
+}(window));

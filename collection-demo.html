@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection module — demo</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100;200;300&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 200; background: #fff; color: #111; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 4rem 3rem 6rem; }
+    h2 { font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase;
+         opacity: 0.35; margin: 4rem 0 1.5rem; }
+    h2:first-child { margin-top: 0; }
+    .demo-block { margin-bottom: 5rem; }
+    .note { font-size: 0.72rem; opacity: 0.4; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h2>Grid — auto columns</h2>
+  <div class="demo-block" id="grid-auto"></div>
+
+  <h2>Grid — 3 fixed columns</h2>
+  <div class="demo-block" id="grid-3col"></div>
+
+  <h2>Carousel — no peek, no loop</h2>
+  <div class="demo-block" id="car-basic" style="position:relative"></div>
+
+  <h2>Carousel — peek 80px, loop</h2>
+  <div class="demo-block" id="car-peek" style="position:relative"></div>
+
+  <p class="note">Click any work to open its preview in a new tab. Arrow keys navigate the carousel when focused.</p>
+
+</div>
+
+<script src="js/collection.js"></script>
+<script>
+  const GH_API = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
+
+  async function loadWorks() {
+    const token = localStorage.getItem('dim_gh_token') || '';
+    let data;
+    if (token) {
+      try {
+        const meta = await fetch(GH_API, {
+          headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
+          cache: 'no-store'
+        }).then(r => r.json());
+        if (meta.content)
+          data = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
+      } catch(e) {}
+    }
+    if (!data) data = await fetch('inventory.json?v=' + Date.now()).then(r => r.json());
+
+    // Convert to array, non-excluded only
+    return Object.entries(data)
+      .filter(([, v]) => !v.excluded)
+      .map(([id, v]) => Object.assign({ id }, v));
+  }
+
+  loadWorks().then(function(works) {
+    Collection.init('#grid-auto', works, {
+      mode: 'grid',
+      gap: 4,
+      minWidth: 240
+    });
+
+    Collection.init('#grid-3col', works.slice(0, 6), {
+      mode: 'grid',
+      gap: 4,
+      minWidth: Math.floor(document.getElementById('grid-3col').offsetWidth / 3) - 4
+    });
+
+    Collection.init('#car-basic', works, {
+      mode: 'carousel',
+      gap: 0,
+      loop: false
+    });
+
+    Collection.init('#car-peek', works, {
+      mode: 'carousel',
+      gap: 16,
+      peek: 80,
+      loop: true
+    });
+  });
+</script>
+</body>
+</html>
