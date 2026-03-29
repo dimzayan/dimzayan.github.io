@@ -12,7 +12,8 @@
  *   peek        number (px)           carousel: how much of prev/next to show. default: 0
  *   loop        boolean               carousel: wrap around. default: false
  *   minWidth    number (px)           grid: min column width. default: 260
- *   aspectRatio string                item aspect ratio e.g. '1' or '4/5'. default: '1'
+ *   height      string                carousel: CSS height of the track e.g. '70vh' or '500px'. default: '70vh'
+ *   aspectRatio string                grid: item aspect ratio e.g. '1' or '4/5'. default: '1'
  *   previewBase string                base URL for preview page. default: 'preview.html'
  */
 (function (global) {
@@ -68,15 +69,21 @@
     /* Arrows */
     '.coll-arrow {',
     '  position: absolute; top: 50%; transform: translateY(-50%);',
-    '  z-index: 20; background: none; border: none;',
-    '  font-family: "DM Sans", sans-serif; font-size: 1.4rem; font-weight: 100;',
-    '  color: #111; cursor: pointer; opacity: 0.28; padding: 1rem 0.8rem;',
-    '  line-height: 1; user-select: none; transition: opacity 0.2s;',
+    '  z-index: 20; background: none; border: none; padding: 1.2rem;',
+    '  cursor: pointer; opacity: 0.3; user-select: none; transition: opacity 0.2s;',
+    '  display: flex; align-items: center; justify-content: center;',
     '}',
-    '.coll-arrow:hover { opacity: 0.9; }',
+    '.coll-arrow::before {',
+    '  content: ""; display: block;',
+    '  width: 11px; height: 11px;',
+    '  border-top: 1.5px solid #111; border-right: 1.5px solid #111;',
+    '}',
     '.coll-arrow.coll-prev { left: 0; }',
+    '.coll-arrow.coll-prev::before { transform: rotate(-135deg) translate(-2px, 2px); }',
     '.coll-arrow.coll-next { right: 0; }',
-    '.coll-arrow[disabled] { opacity: 0.08; pointer-events: none; }',
+    '.coll-arrow.coll-next::before { transform: rotate(45deg) translate(-2px, 2px); }',
+    '.coll-arrow:hover { opacity: 1; }',
+    '.coll-arrow[disabled] { opacity: 0.07; pointer-events: none; }',
   ].join('\n');
 
   function injectStyles() {
@@ -132,21 +139,14 @@
     var peek   = opts.peek  != null ? opts.peek  : 0;
     var gap    = opts.gap   != null ? opts.gap   : 4;
     var loop   = !!opts.loop;
-    var aspect = opts.aspectRatio || '1';
+    var height = opts.height || '70vh';
     var n      = works.length;
     var current = 0;
-
-    /* Parse aspect ratio string → numeric ratio (w/h) */
-    function parseAspect(a) {
-      if (typeof a === 'number') return a;
-      var parts = String(a).split('/');
-      return parts.length === 2 ? parseFloat(parts[0]) / parseFloat(parts[1]) : parseFloat(a) || 1;
-    }
-    var ratio = parseAspect(aspect);
 
     /* Clip container (hides overflow) */
     var clip = document.createElement('div');
     clip.className = 'coll-carousel-clip';
+    clip.style.height = height;
 
     /* Track */
     var track = document.createElement('div');
@@ -199,12 +199,17 @@
 
     function applyLayout() {
       var iw = getItemWidth();
-      var ih = iw / ratio;
+      var ih = clip.offsetHeight;
       track.querySelectorAll('.coll-car-item').forEach(function (item) {
         item.style.width  = iw + 'px';
         item.style.height = ih + 'px';
         var cell = item.querySelector('.coll-cell');
-        if (cell) { cell.style.width = iw + 'px'; cell.style.height = ih + 'px'; }
+        if (cell) {
+          cell.style.width  = iw + 'px';
+          cell.style.height = ih + 'px';
+          var img = cell.querySelector('img');
+          if (img) { img.style.objectFit = 'contain'; }
+        }
       });
     }
 
