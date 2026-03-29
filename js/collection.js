@@ -95,15 +95,17 @@
   }
 
   /* ── Cell builder ───────────────────────────────────────────────── */
-  function makeCell(work, previewBase) {
+  function makeCell(work, previewBase, wall) {
     var a = document.createElement('a');
     a.className = 'coll-cell';
+    if (wall) a.style.background = 'transparent';
     a.href = (previewBase || 'preview.html') + '?id=' + encodeURIComponent(work.id);
     a.target = '_blank';
     a.rel = 'noopener';
 
     var img = document.createElement('img');
-    img.src = CDN + (work.photo || work.id) + '.webp';
+    var photo = work.photo || work.id;
+    img.src = CDN + (wall ? '__' + photo : photo) + '.webp';
     img.alt = work.title || '';
     img.loading = 'lazy';
 
@@ -140,6 +142,7 @@
     var gap    = opts.gap   != null ? opts.gap   : 4;
     var loop   = !!opts.loop;
     var height = opts.height || '70vh';
+    var wall   = !!opts.wall;
     var n      = works.length;
     var current = 0;
 
@@ -147,6 +150,7 @@
     var clip = document.createElement('div');
     clip.className = 'coll-carousel-clip';
     clip.style.height = height;
+    if (wall) clip.style.background = opts.wallColor || '#ece9e4';
 
     /* Track */
     var track = document.createElement('div');
@@ -156,7 +160,8 @@
     works.forEach(function (w) {
       var item = document.createElement('div');
       item.className = 'coll-car-item';
-      item.appendChild(makeCell(w, opts.previewBase));
+      if (wall) item.style.background = 'transparent';
+      item.appendChild(makeCell(w, opts.previewBase, wall));
       track.appendChild(item);
     });
 
