@@ -9,7 +9,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; font-weight: 200; background: #fff; color: #111; }
-    .page { max-width: 1100px; margin: 0 auto; padding: 4rem 3rem 6rem; }
+    .page { max-width: 100vw; margin: 0 auto; padding: 4rem 3rem 6rem; }
     h2 { font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase;
          opacity: 0.35; margin: 4rem 0 1.5rem; }
     h2:first-child { margin-top: 0; }
@@ -25,9 +25,6 @@
 
   <h2>Grid — 3 fixed columns</h2>
   <div class="demo-block" id="grid-3col"></div>
-
-  <h2>Carousel — no peek, no loop</h2>
-  <div class="demo-block" id="car-basic" style="position:relative"></div>
 
   <h2>Carousel — peek 80px, loop</h2>
   <div class="demo-block" id="car-peek" style="position:relative"></div>
@@ -72,12 +69,6 @@
       mode: 'grid',
       gap: 4,
       minWidth: Math.floor(document.getElementById('grid-3col').offsetWidth / 3) - 4
-    });
-
-    Collection.init('#car-basic', works, {
-      mode: 'carousel',
-      gap: 0,
-      loop: false
     });
 
     Collection.init('#car-peek', works, {
