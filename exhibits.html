@@ -83,19 +83,17 @@
     }
 
     /* ── Works ── */
-    #works .works-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1px;
-      background: rgba(0,0,0,0.06);
+    #works {
+      max-width: 100vw;
+      padding-left: 0;
+      padding-right: 0;
     }
-
-    #works .works-grid img {
+    #works .section-label {
+      padding: 0 3rem;
+    }
+    #works-carousel {
+      position: relative;
       width: 100%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      display: block;
-      background: #f0f0f0;
     }
 
     /* ── Press ── */
@@ -160,13 +158,6 @@
       padding: 4em;
     }
 
-    /* ── Works grid hover ── */
-    #works .works-grid a { display: block; }
-    #works .works-grid img {
-      cursor: pointer;
-      transition: opacity 0.15s;
-    }
-    #works .works-grid img:hover { opacity: 0.82; }
   </style>
 </head>
 <body>
@@ -189,7 +180,7 @@
 
   <section id="works" class="exhibit-section">
     <div class="section-label">Works</div>
-    <div class="works-grid" id="works-grid"></div>
+    <div id="works-carousel"></div>
   </section>
 
   <section id="press" class="exhibit-section">
@@ -203,6 +194,8 @@
   </footer>
 
 
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="js/collection.js"></script>
   <script>
     const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
     const GH_API  = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
@@ -279,20 +272,19 @@
           }
 
           // Works — inventory entries tagged with this exhibit id
-          const works = Object.entries(inventory).filter(function(entry) {
-            return entry[1].exhibit === id && !entry[1].excluded;
-          });
-          const grid = document.getElementById('works-grid');
-          if (works.length) {
-            works.forEach(function(entry) {
-              const a   = document.createElement('a');
-              a.href    = 'preview.html?id=' + encodeURIComponent(entry[0]);
-              const img = document.createElement('img');
-              img.src   = CDN_HI + (entry[1].photo || entry[0]) + '.webp';
-              img.alt   = entry[1].title || '';
-              img.title = entry[1].title || '';
-              a.appendChild(img);
-              grid.appendChild(a);
+          const worksArr = Object.entries(inventory)
+            .filter(function(entry) { return entry[1].exhibit === id && !entry[1].excluded; })
+            .map(function(entry) { return Object.assign({ id: entry[0] }, entry[1]); });
+
+          if (worksArr.length) {
+            Collection.init('#works-carousel', worksArr, {
+              mode: 'carousel',
+              gap: 32,
+              peek: 200,
+              loop: true,
+              wall: true,
+              height: '72vh',
+              previewBase: 'preview.html'
             });
           } else {
             document.getElementById('works').style.display = 'none';

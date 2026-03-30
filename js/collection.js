@@ -123,12 +123,14 @@
     img.loading = 'lazy';
     if (wall) img.className = 'coll-wall-img';
 
-    var title = document.createElement('div');
-    title.className = 'coll-cell-title';
-    title.textContent = work.title || '';
+    if (!wall) {
+      var title = document.createElement('div');
+      title.className = 'coll-cell-title';
+      title.textContent = work.title || '';
+      a.appendChild(title);
+    }
 
     a.appendChild(img);
-    a.appendChild(title);
     return a;
   }
 
