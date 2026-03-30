@@ -15,11 +15,17 @@
  *   height      string                carousel: CSS height of the track e.g. '70vh' or '500px'. default: '70vh'
  *   aspectRatio string                grid: item aspect ratio e.g. '1' or '4/5'. default: '1'
  *   previewBase string                base URL for preview page. default: 'preview.html'
+ *   wall        boolean               carousel: unified wall bg, transparent items, bg-removed images. default: false
+ *   wallColor   string                carousel: wall background color. default: '#ece9e4'
+ *
+ * If window.gsap is present, carousel uses GSAP for fluid animation + drag momentum.
  */
 (function (global) {
   'use strict';
 
-  var CDN = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+  var CDN = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
+    ? 'media/works/hi/'
+    : 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
   var STYLES_ID = 'coll-styles';
 
   /* ── Styles ─────────────────────────────────────────────────────── */
@@ -61,10 +67,17 @@
     '}',
     '.coll-track {',
     '  display: flex;',
-    '  transition: transform 0.48s cubic-bezier(0.4, 0, 0.2, 1);',
+    '  transition: transform 0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94);',
     '  will-change: transform;',
     '}',
+    '.coll-track.gsap-driven { transition: none; }',
     '.coll-car-item { flex: 0 0 auto; }',
+
+    /* Wall mode image shadow — drop-shadow follows alpha so it hugs artwork outline */
+    '.coll-wall-img {',
+    '  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.13)) drop-shadow(0 1px 3px rgba(0,0,0,0.08));',
+    '  transition: filter 0.4s ease;',
+    '}',
 
     /* Arrows */
     '.coll-arrow {',
@@ -108,6 +121,7 @@
     img.src = CDN + (wall ? '__' + photo : photo) + '.webp';
     img.alt = work.title || '';
     img.loading = 'lazy';
+    if (wall) img.className = 'coll-wall-img';
 
     var title = document.createElement('div');
     title.className = 'coll-cell-title';
@@ -145,8 +159,9 @@
     var wall   = !!opts.wall;
     var n      = works.length;
     var current = 0;
+    var useGsap = typeof global.gsap !== 'undefined';
 
-    /* Clip container (hides overflow) */
+    /* Clip container */
     var clip = document.createElement('div');
     clip.className = 'coll-carousel-clip';
     clip.style.height = height;
@@ -155,6 +170,7 @@
     /* Track */
     var track = document.createElement('div');
     track.className = 'coll-track';
+    if (useGsap) track.classList.add('gsap-driven');
     track.style.gap = gap + 'px';
 
     works.forEach(function (w) {
@@ -183,20 +199,13 @@
     /* ── Layout calculation ─────────────────────────────────────── */
     function getItemWidth() {
       var W = clip.offsetWidth;
-      if (peek > 0) {
-        /* [peek][gap][item][gap][peek] = W  →  item = W - 2*peek - 2*gap */
-        return Math.max(W - 2 * peek - 2 * gap, 80);
-      }
-      /* No peek: item fills container */
+      if (peek > 0) return Math.max(W - 2 * peek - 2 * gap, 80);
       return W;
     }
 
     function getOffset(idx) {
       var iw = getItemWidth();
-      if (peek > 0) {
-        /* Centre item at idx with peek showing on both sides */
-        return (peek + gap) - idx * (iw + gap);
-      }
+      if (peek > 0) return (peek + gap) - idx * (iw + gap);
       return -idx * (iw + gap);
     }
 
@@ -211,9 +220,28 @@
           cell.style.width  = iw + 'px';
           cell.style.height = ih + 'px';
           var img = cell.querySelector('img');
-          if (img) { img.style.objectFit = 'contain'; }
+          if (img) img.style.objectFit = 'contain';
         }
       });
+    }
+
+    /* ── Animation ──────────────────────────────────────────────── */
+    function moveTo(x, animate) {
+      if (useGsap) {
+        if (animate === false) {
+          global.gsap.set(track, { x: x });
+        } else {
+          global.gsap.to(track, { x: x, duration: 0.72, ease: 'power3.out', overwrite: true });
+        }
+      } else {
+        if (animate === false) {
+          track.style.transition = 'none';
+          track.style.transform = 'translateX(' + x + 'px)';
+        } else {
+          track.style.transition = '';
+          track.style.transform = 'translateX(' + x + 'px)';
+        }
+      }
     }
 
     function goTo(idx, animate) {
@@ -223,13 +251,7 @@
         idx = ((idx % n) + n) % n;
       }
       current = idx;
-
-      if (animate === false) {
-        track.style.transition = 'none';
-      } else {
-        track.style.transition = '';
-      }
-      track.style.transform = 'translateX(' + getOffset(current) + 'px)';
+      moveTo(getOffset(current), animate);
 
       if (!loop) {
         prevBtn.disabled = current === 0;
@@ -240,13 +262,13 @@
       }
     }
 
-    /* Initial layout — setTimeout ensures container has rendered width */
+    /* Initial layout */
     setTimeout(function () {
       applyLayout();
       goTo(0, false);
-      requestAnimationFrame(function () {
-        track.style.transition = '';
-      });
+      if (!useGsap) {
+        requestAnimationFrame(function () { track.style.transition = ''; });
+      }
     }, 0);
 
     /* Resize */
@@ -270,34 +292,91 @@
       if (e.key === 'ArrowRight') { goTo(current + 1); e.preventDefault(); }
     });
 
-    /* Touch / swipe */
-    var touchX = null;
+    /* ── Drag / swipe ───────────────────────────────────────────── */
+    var dragStartX   = null;
+    var dragStartT   = null;
+    var dragLastX    = null;
+    var dragVel      = 0;
+    var dragging     = false;
+    var trackBaseX   = 0; /* translateX at drag start */
+
+    function getCurrentX() {
+      if (useGsap) {
+        return global.gsap.getProperty(track, 'x');
+      }
+      var m = new WebKitCSSMatrix(window.getComputedStyle(track).transform);
+      return m.m41;
+    }
+
+    function onDragStart(clientX) {
+      dragStartX  = clientX;
+      dragLastX   = clientX;
+      dragStartT  = Date.now();
+      dragVel     = 0;
+      dragging    = false;
+      trackBaseX  = getCurrentX();
+      if (useGsap) global.gsap.killTweensOf(track);
+    }
+
+    function onDragMove(clientX) {
+      if (dragStartX === null) return;
+      var dx = clientX - dragStartX;
+      if (Math.abs(dx) > 4) dragging = true;
+      if (!dragging) return;
+
+      /* Velocity (px/ms) — exponential smoothing */
+      var now = Date.now();
+      var dt  = Math.max(now - dragStartT, 1);
+      dragVel = (clientX - dragLastX) / Math.max(Date.now() - dragStartT, 1) * 0.4 + dragVel * 0.6;
+      dragLastX  = clientX;
+      dragStartT = now;
+
+      var x = trackBaseX + dx;
+      if (useGsap) {
+        global.gsap.set(track, { x: x });
+      } else {
+        track.style.transition = 'none';
+        track.style.transform  = 'translateX(' + x + 'px)';
+      }
+    }
+
+    function onDragEnd(clientX) {
+      if (dragStartX === null) return;
+      var totalDx = clientX - dragStartX;
+      dragStartX = null;
+
+      if (!dragging) return;
+
+      /* Momentum: project where we'd end up, snap to nearest item */
+      var projectedX = getCurrentX() + dragVel * 180;
+      var iw = getItemWidth();
+      var step = iw + gap;
+
+      /* Invert offset formula to find fractional index */
+      var origin = peek > 0 ? peek + gap : 0;
+      var fracIdx = (origin - projectedX) / step;
+      var snapIdx = Math.round(fracIdx);
+
+      goTo(snapIdx);
+    }
+
+    /* Mouse */
+    clip.addEventListener('mousedown', function (e) { onDragStart(e.clientX); });
+    window.addEventListener('mousemove', function (e) { if (dragStartX !== null) onDragMove(e.clientX); });
+    window.addEventListener('mouseup',   function (e) { onDragEnd(e.clientX); });
+
+    /* Touch */
     clip.addEventListener('touchstart', function (e) {
-      touchX = e.touches[0].clientX;
+      onDragStart(e.touches[0].clientX);
+    }, { passive: true });
+    clip.addEventListener('touchmove', function (e) {
+      onDragMove(e.touches[0].clientX);
     }, { passive: true });
     clip.addEventListener('touchend', function (e) {
-      if (touchX === null) return;
-      var dx = touchX - e.changedTouches[0].clientX;
-      if (Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
-      touchX = null;
+      onDragEnd(e.changedTouches[0].clientX);
     }, { passive: true });
 
-    /* Prevent click when a swipe was intended */
-    var dragging = false;
-    clip.addEventListener('mousedown', function (e) {
-      touchX = e.clientX; dragging = false;
-    });
-    clip.addEventListener('mousemove', function (e) {
-      if (touchX !== null && Math.abs(e.clientX - touchX) > 8) dragging = true;
-    });
-    clip.addEventListener('mouseup', function (e) {
-      if (dragging) {
-        var dx = touchX - e.clientX;
-        if (Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
-      }
-      touchX = null; dragging = false;
-    });
-    /* Stop cell link from firing on drag */
+    /* Block link clicks on drag */
     clip.addEventListener('click', function (e) {
       if (dragging) { e.preventDefault(); e.stopPropagation(); }
     }, true);
