@@ -75,7 +75,7 @@
 
     /* Wall mode image shadow — drop-shadow follows alpha so it hugs artwork outline */
     '.coll-wall-img {',
-    '  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.13)) drop-shadow(0 1px 3px rgba(0,0,0,0.08));',
+    '  filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));',
     '  transition: filter 0.4s ease;',
     '}',
 
@@ -226,13 +226,28 @@
     }
 
     /* ── Animation ──────────────────────────────────────────────── */
+    function updateItemStates() {
+      if (!useGsap) return;
+      track.querySelectorAll('.coll-car-item').forEach(function (item, i) {
+        var active = i === current;
+        global.gsap.to(item, {
+          scale: active ? 1 : 0.94,
+          opacity: active ? 1 : 0.45,
+          duration: 0.6,
+          ease: 'power2.out',
+          overwrite: true
+        });
+      });
+    }
+
     function moveTo(x, animate) {
       if (useGsap) {
         if (animate === false) {
           global.gsap.set(track, { x: x });
         } else {
-          global.gsap.to(track, { x: x, duration: 0.72, ease: 'power3.out', overwrite: true });
+          global.gsap.to(track, { x: x, duration: 0.85, ease: 'expo.out', overwrite: true });
         }
+        updateItemStates();
       } else {
         if (animate === false) {
           track.style.transition = 'none';
@@ -266,7 +281,9 @@
     setTimeout(function () {
       applyLayout();
       goTo(0, false);
-      if (!useGsap) {
+      if (useGsap) {
+        updateItemStates();
+      } else {
         requestAnimationFrame(function () { track.style.transition = ''; });
       }
     }, 0);
