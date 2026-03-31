@@ -17,13 +17,13 @@
  *   loop        boolean               carousel: wrap around. default: false
  *   minWidth    number (px)           grid: min column width. default: 260
  *   height      string                carousel: CSS height e.g. '100vh'. default: '100vh'
- *   aspectRatio string                grid: item aspect ratio e.g. '1' or '4/5'. default: '1'
+ *   aspectRatio string                grid: item aspect ratio. default: '1'
  *   previewBase string                base URL for preview page. default: 'preview.html'
- *   wall        boolean               carousel: unified wall bg, transparent images, info panel. default: false
- *   wallColor   string                carousel: wall background color. default: '#ece9e4'
+ *   wall        boolean               carousel: wall mode — bg-removed images, info panel, zoom. default: false
+ *   wallColor   string                wall background color. default: '#ece9e4'
  *
- * Wall carousel: each item is a full-height view with image + info panel.
- * Click image to zoom in; move mouse to pan; click again to zoom out.
+ * Wall carousel: full-height view, info panel fixed at bottom (crossfades between works),
+ * click image to zoom into a full-clip overlay, mouse to pan, click again to close.
  * GSAP loaded automatically from CDN. Requires HTTP (not file://).
  */
 
@@ -33,7 +33,7 @@ const CDN = (location.hostname === 'localhost' || location.hostname === '127.0.0
 
 const STYLES_ID = 'coll-styles';
 const GSAP_CDN  = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';
-const PANEL_H   = 110; /* px reserved for info panel */
+const PANEL_H   = 110; /* px */
 
 /* ── Styles ───────────────────────────────────────────────────────── */
 const CSS = `
@@ -67,60 +67,74 @@ const CSS = `
 .coll-cell:hover .coll-cell-title { opacity: 1; }
 
 /* Carousel */
-.coll-carousel-clip { overflow: hidden; position: relative; width: 100%; }
-.coll-track { display: flex; will-change: transform; }
-.coll-car-item { flex: 0 0 auto; display: flex; flex-direction: column; }
+.coll-carousel-clip {
+  overflow: hidden; position: relative; width: 100%;
+}
+.coll-track { display: flex; will-change: transform; height: 100%; }
+.coll-car-item { flex: 0 0 auto; }
 
-/* Wall image area */
+/* Wall image area — fills item height minus the fixed panel */
 .coll-img-area {
-  flex: 1 1 auto; position: relative; overflow: hidden;
+  position: absolute; top: 0; left: 0; right: 0; bottom: ${PANEL_H}px;
   display: flex; align-items: center; justify-content: center;
-  min-height: 0;
+  overflow: hidden;
 }
 .coll-img-area img {
-  max-width: 100%; max-height: 100%;
+  max-width: 92%; max-height: 92%;
   object-fit: contain; display: block;
   filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));
-  transform-origin: 50% 50%;
-  transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
   cursor: zoom-in;
   user-select: none; -webkit-user-drag: none;
 }
-.coll-img-area img.zoomed {
-  cursor: zoom-out;
-  transition: transform 0.1s ease;
-}
-.coll-img-area img.zoom-out {
-  transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
-  cursor: zoom-in;
-}
 
-/* Info panel */
+/* Fixed info panel — sits at the bottom of the clip, outside the track */
 .coll-panel {
-  flex: 0 0 ${PANEL_H}px;
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: ${PANEL_H}px; z-index: 5; pointer-events: none;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 0.3rem; padding: 0 2rem;
   font-family: "DM Sans", sans-serif; font-weight: 200; color: #222;
   text-align: center;
 }
-.coll-panel-title {
-  font-size: 0.9rem; font-weight: 300; letter-spacing: 0.04em;
+.coll-panel-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+  transition: opacity 0.28s ease;
+  pointer-events: all;
 }
-.coll-panel-meta {
-  font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.07em;
-}
-.coll-panel-link {
+.coll-panel-inner.fading { opacity: 0; }
+.coll-panel-title  { font-size: 0.9rem; font-weight: 300; letter-spacing: 0.04em; }
+.coll-panel-meta   { font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.07em; }
+.coll-panel-link   {
   font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
   color: #222; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.18);
-  padding-bottom: 2px; opacity: 0.4; transition: opacity 0.2s; margin-top: 0.25rem;
+  padding-bottom: 2px; opacity: 0.4; transition: opacity 0.2s; margin-top: 0.2rem;
 }
 .coll-panel-link:hover { opacity: 1; }
 
-/* Arrows — vertically centred on image area, not full item */
+/* Zoom overlay — covers the full clip, above track */
+.coll-zoom-layer {
+  position: absolute; inset: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  cursor: zoom-out;
+}
+.coll-zoom-layer.active { opacity: 1; pointer-events: all; }
+.coll-zoom-layer img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; display: block;
+  filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));
+  transform-origin: 50% 50%;
+  will-change: transform-origin;
+  user-select: none; -webkit-user-drag: none;
+}
+
+/* Arrows — centred on image area (full height minus panel) */
 .coll-arrow {
-  position: absolute; z-index: 20;
+  position: absolute;
   top: calc(50% - ${PANEL_H / 2}px); transform: translateY(-50%);
-  background: none; border: none; padding: 1.2rem;
+  z-index: 6; background: none; border: none; padding: 1.2rem;
   cursor: pointer; opacity: 0.3; user-select: none; transition: opacity 0.2s;
   display: flex; align-items: center; justify-content: center;
 }
@@ -139,8 +153,7 @@ const CSS = `
 function injectStyles() {
   if (document.getElementById(STYLES_ID)) return;
   const s = document.createElement('style');
-  s.id = STYLES_ID;
-  s.textContent = CSS;
+  s.id = STYLES_ID; s.textContent = CSS;
   document.head.appendChild(s);
 }
 
@@ -163,81 +176,6 @@ function makeGridCell(work, previewBase) {
   return a;
 }
 
-/* ── Wall carousel item (image area + info panel) ─────────────────── */
-function makeWallItem(work, previewBase) {
-  const wrap = document.createElement('div');
-  wrap.className = 'coll-car-item';
-
-  /* Image area */
-  const imgArea = document.createElement('div');
-  imgArea.className = 'coll-img-area';
-
-  const img = document.createElement('img');
-  img.src = CDN + '__' + (work.photo || work.id) + '.webp';
-  img.alt = work.title || ''; img.loading = 'lazy';
-  imgArea.appendChild(img);
-
-  /* Zoom / pan */
-  let zoomed = false;
-  const ZOOM = 2.4;
-
-  img.addEventListener('click', e => {
-    if (zoomed) {
-      img.classList.remove('zoomed');
-      img.classList.add('zoom-out');
-      img.style.transform = 'scale(1)';
-      img.style.transformOrigin = '50% 50%';
-      zoomed = false;
-      setTimeout(() => img.classList.remove('zoom-out'), 460);
-    } else {
-      const r = img.getBoundingClientRect();
-      const ox = ((e.clientX - r.left) / r.width  * 100).toFixed(2);
-      const oy = ((e.clientY - r.top)  / r.height * 100).toFixed(2);
-      img.style.transformOrigin = `${ox}% ${oy}%`;
-      img.style.transform = `scale(${ZOOM})`;
-      img.classList.add('zoomed');
-      zoomed = true;
-    }
-  });
-
-  imgArea.addEventListener('mousemove', e => {
-    if (!zoomed) return;
-    const r = img.getBoundingClientRect();
-    const ox = ((e.clientX - r.left) / r.width  * 100).toFixed(2);
-    const oy = ((e.clientY - r.top)  / r.height * 100).toFixed(2);
-    img.style.transformOrigin = `${ox}% ${oy}%`;
-  });
-
-  /* Info panel */
-  const panel = document.createElement('div');
-  panel.className = 'coll-panel';
-
-  const meta = [work.material, work.dimensions, work.year].filter(Boolean).join('  ·  ');
-  const status = work.invoiced ? 'Sold' : work.reserved ? 'Reserved' : work.price || '';
-
-  const titleEl = document.createElement('div');
-  titleEl.className = 'coll-panel-title';
-  titleEl.textContent = work.title || '';
-
-  const metaEl = document.createElement('div');
-  metaEl.className = 'coll-panel-meta';
-  metaEl.textContent = [meta, status].filter(Boolean).join('  ·  ');
-
-  const link = document.createElement('a');
-  link.className = 'coll-panel-link';
-  link.href = `${previewBase || 'preview.html'}?id=${encodeURIComponent(work.id)}`;
-  link.target = '_blank'; link.rel = 'noopener';
-  link.textContent = 'View details';
-
-  panel.appendChild(titleEl);
-  if (meta || status) panel.appendChild(metaEl);
-  panel.appendChild(link);
-
-  wrap.appendChild(imgArea);
-  wrap.appendChild(panel);
-  return wrap;
-}
-
 /* ── Grid ─────────────────────────────────────────────────────────── */
 function initGrid(root, works, opts) {
   const grid = document.createElement('div');
@@ -258,13 +196,14 @@ function initGrid(root, works, opts) {
 
 /* ── Carousel ─────────────────────────────────────────────────────── */
 async function initCarousel(root, works, opts) {
-  const peek   = opts.peek   ?? 0;
-  const gap    = opts.gap    ?? 4;
-  const loop   = !!opts.loop;
-  const height = opts.height || '100vh';
-  const wall   = !!opts.wall;
-  const n      = works.length;
-  let current  = 0;
+  const peek      = opts.peek  ?? 0;
+  const gap       = opts.gap   ?? 4;
+  const loop      = !!opts.loop;
+  const height    = opts.height || '100vh';
+  const wall      = !!opts.wall;
+  const wallColor = opts.wallColor || '#ece9e4';
+  const n         = works.length;
+  let current     = 0;
 
   const gsap = await new Promise(resolve => {
     if (window.gsap) return resolve(window.gsap);
@@ -278,25 +217,102 @@ async function initCarousel(root, works, opts) {
   const clip = document.createElement('div');
   clip.className = 'coll-carousel-clip';
   clip.style.height = height;
-  if (wall) clip.style.background = opts.wallColor || '#ece9e4';
+  if (wall) clip.style.background = wallColor;
 
   /* Track */
   const track = document.createElement('div');
   track.className = 'coll-track';
   track.style.gap = `${gap}px`;
-  track.style.height = '100%';
 
   works.forEach(w => {
-    const item = wall ? makeWallItem(w, opts.previewBase) : (() => {
-      const el = document.createElement('div');
-      el.className = 'coll-car-item';
-      el.appendChild(makeGridCell(w, opts.previewBase));
-      return el;
-    })();
+    const item = document.createElement('div');
+    item.className = 'coll-car-item';
+    item.style.position = 'relative';
+
+    if (wall) {
+      const imgArea = document.createElement('div');
+      imgArea.className = 'coll-img-area';
+      const img = document.createElement('img');
+      img.src = CDN + '__' + (w.photo || w.id) + '.webp';
+      img.alt = w.title || ''; img.loading = 'lazy';
+      imgArea.appendChild(img);
+
+      /* Zoom — click opens overlay, not handled here; see zoom layer below */
+      img.addEventListener('click', () => openZoom(w, wallColor));
+
+      item.appendChild(imgArea);
+    } else {
+      item.appendChild(makeGridCell(w, opts.previewBase));
+    }
+
     track.appendChild(item);
   });
 
   clip.appendChild(track);
+
+  /* ── Fixed panel (outside track, crossfades) ─────────────────── */
+  let panelInner = null;
+  if (wall) {
+    const panel = document.createElement('div');
+    panel.className = 'coll-panel';
+    panelInner = document.createElement('div');
+    panelInner.className = 'coll-panel-inner';
+    panel.appendChild(panelInner);
+    clip.appendChild(panel);
+  }
+
+  function updatePanel(w, animate) {
+    if (!panelInner) return;
+    const meta   = [w.material, w.dimensions, w.year].filter(Boolean).join('  ·  ');
+    const status = w.invoiced ? 'Sold' : w.reserved ? 'Reserved' : w.price || '';
+
+    const render = () => {
+      panelInner.innerHTML = `
+        <div class="coll-panel-title">${w.title || ''}</div>
+        ${(meta || status) ? `<div class="coll-panel-meta">${[meta, status].filter(Boolean).join('  ·  ')}</div>` : ''}
+        <a class="coll-panel-link" href="${opts.previewBase || 'preview.html'}?id=${encodeURIComponent(w.id)}" target="_blank" rel="noopener">View details</a>
+      `;
+      panelInner.classList.remove('fading');
+    };
+
+    if (animate === false) { render(); return; }
+    panelInner.classList.add('fading');
+    setTimeout(render, 140);
+  }
+
+  /* ── Zoom overlay ────────────────────────────────────────────── */
+  const zoomLayer = document.createElement('div');
+  zoomLayer.className = 'coll-zoom-layer';
+  zoomLayer.style.background = wallColor;
+  const zoomImg = document.createElement('img');
+  zoomLayer.appendChild(zoomImg);
+  clip.appendChild(zoomLayer);
+
+  function openZoom(w) {
+    zoomImg.src = CDN + '__' + (w.photo || w.id) + '.webp';
+    zoomImg.style.transform = 'scale(1)';
+    zoomImg.style.transformOrigin = '50% 50%';
+    zoomLayer.classList.add('active');
+  }
+
+  zoomLayer.addEventListener('mousemove', e => {
+    const r = zoomLayer.getBoundingClientRect();
+    const ox = ((e.clientX - r.left) / r.width  * 100).toFixed(2);
+    const oy = ((e.clientY - r.top)  / r.height * 100).toFixed(2);
+    zoomImg.style.transformOrigin = `${ox}% ${oy}%`;
+    zoomImg.style.transform = 'scale(2.4)';
+  });
+
+  zoomLayer.addEventListener('click', () => {
+    zoomImg.style.transition = 'transform 0.35s ease, transform-origin 0.35s ease';
+    zoomImg.style.transform = 'scale(1)';
+    zoomImg.style.transformOrigin = '50% 50%';
+    setTimeout(() => {
+      zoomLayer.classList.remove('active');
+      zoomImg.style.transition = '';
+    }, 320);
+  });
+
   root.appendChild(clip);
 
   /* Arrows */
@@ -344,8 +360,7 @@ async function initCarousel(root, works, opts) {
   function updateItemStates() {
     track.querySelectorAll('.coll-car-item').forEach((item, i) => {
       gsap.to(item, {
-        scale:   i === current ? 1    : 0.94,
-        opacity: i === current ? 1    : 0.45,
+        scale: i === current ? 1 : 0.94, opacity: i === current ? 1 : 0.45,
         duration: 0.6, ease: 'power2.out', overwrite: true
       });
     });
@@ -360,6 +375,7 @@ async function initCarousel(root, works, opts) {
   function goTo(idx, animate) {
     current = loop ? ((idx % n) + n) % n : Math.max(0, Math.min(idx, n - 1));
     moveTo(getOffset(current), animate);
+    updatePanel(works[current], animate);
     prevBtn.disabled = !loop && current === 0;
     nextBtn.disabled = !loop && current === n - 1;
   }
@@ -386,13 +402,11 @@ async function initCarousel(root, works, opts) {
   let dragVel = 0, dragging = false, trackBaseX = 0;
 
   function onDragStart(clientX) {
-    dragStartX = dragLastX = clientX;
-    dragStartT = Date.now();
+    dragStartX = dragLastX = clientX; dragStartT = Date.now();
     dragVel = 0; dragging = false;
     trackBaseX = gsap.getProperty(track, 'x');
     gsap.killTweensOf(track);
   }
-
   function onDragMove(clientX) {
     if (dragStartX === null) return;
     if (Math.abs(clientX - dragStartX) > 4) dragging = true;
@@ -402,7 +416,6 @@ async function initCarousel(root, works, opts) {
     dragLastX = clientX; dragStartT = now;
     gsap.set(track, { x: trackBaseX + (clientX - dragStartX) });
   }
-
   function onDragEnd(clientX) {
     if (dragStartX === null) return;
     dragStartX = null;
