@@ -16,14 +16,15 @@
  *   peek        number (px)           carousel: how much of prev/next to show. default: 0
  *   loop        boolean               carousel: wrap around. default: false
  *   minWidth    number (px)           grid: min column width. default: 260
- *   height      string                carousel: CSS height e.g. '70vh'. default: '70vh'
+ *   height      string                carousel: CSS height e.g. '100vh'. default: '100vh'
  *   aspectRatio string                grid: item aspect ratio e.g. '1' or '4/5'. default: '1'
  *   previewBase string                base URL for preview page. default: 'preview.html'
- *   wall        boolean               carousel: unified wall bg, transparent items, bg-removed images. default: false
+ *   wall        boolean               carousel: unified wall bg, transparent images, info panel. default: false
  *   wallColor   string                carousel: wall background color. default: '#ece9e4'
  *
- * GSAP is loaded automatically from CDN when in carousel mode.
- * Requires serving over HTTP (localhost or production) — not file://.
+ * Wall carousel: each item is a full-height view with image + info panel.
+ * Click image to zoom in; move mouse to pan; click again to zoom out.
+ * GSAP loaded automatically from CDN. Requires HTTP (not file://).
  */
 
 const CDN = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
@@ -32,18 +33,19 @@ const CDN = (location.hostname === 'localhost' || location.hostname === '127.0.0
 
 const STYLES_ID = 'coll-styles';
 const GSAP_CDN  = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';
+const PANEL_H   = 110; /* px reserved for info panel */
 
 /* ── Styles ───────────────────────────────────────────────────────── */
 const CSS = `
 .coll-root { position: relative; }
 
+/* Grid */
 .coll-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--coll-min, 260px), 1fr));
   gap: var(--coll-gap, 4px);
 }
 .coll-grid-item { overflow: hidden; }
-
 .coll-cell {
   display: block; overflow: hidden; position: relative;
   background: #ece9e4; text-decoration: none; cursor: pointer;
@@ -64,29 +66,66 @@ const CSS = `
 }
 .coll-cell:hover .coll-cell-title { opacity: 1; }
 
+/* Carousel */
 .coll-carousel-clip { overflow: hidden; position: relative; width: 100%; }
-.coll-track {
-  display: flex;
-  transition: transform 0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
-}
-.coll-track.gsap-driven { transition: none; }
-.coll-car-item { flex: 0 0 auto; }
+.coll-track { display: flex; will-change: transform; }
+.coll-car-item { flex: 0 0 auto; display: flex; flex-direction: column; }
 
-.coll-wall-img {
+/* Wall image area */
+.coll-img-area {
+  flex: 1 1 auto; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 0;
+}
+.coll-img-area img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; display: block;
   filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));
-  transition: filter 0.4s ease;
+  transform-origin: 50% 50%;
+  transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
+  cursor: zoom-in;
+  user-select: none; -webkit-user-drag: none;
+}
+.coll-img-area img.zoomed {
+  cursor: zoom-out;
+  transition: transform 0.1s ease;
+}
+.coll-img-area img.zoom-out {
+  transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
+  cursor: zoom-in;
 }
 
+/* Info panel */
+.coll-panel {
+  flex: 0 0 ${PANEL_H}px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.3rem; padding: 0 2rem;
+  font-family: "DM Sans", sans-serif; font-weight: 200; color: #222;
+  text-align: center;
+}
+.coll-panel-title {
+  font-size: 0.9rem; font-weight: 300; letter-spacing: 0.04em;
+}
+.coll-panel-meta {
+  font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.07em;
+}
+.coll-panel-link {
+  font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: #222; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.18);
+  padding-bottom: 2px; opacity: 0.4; transition: opacity 0.2s; margin-top: 0.25rem;
+}
+.coll-panel-link:hover { opacity: 1; }
+
+/* Arrows — vertically centred on image area, not full item */
 .coll-arrow {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  z-index: 20; background: none; border: none; padding: 1.2rem;
+  position: absolute; z-index: 20;
+  top: calc(50% - ${PANEL_H / 2}px); transform: translateY(-50%);
+  background: none; border: none; padding: 1.2rem;
   cursor: pointer; opacity: 0.3; user-select: none; transition: opacity 0.2s;
   display: flex; align-items: center; justify-content: center;
 }
 .coll-arrow::before {
-  content: ""; display: block;
-  width: 11px; height: 11px;
+  content: ""; display: block; width: 11px; height: 11px;
   border-top: 1.5px solid #111; border-right: 1.5px solid #111;
 }
 .coll-arrow.coll-prev { left: 0; }
@@ -95,56 +134,6 @@ const CSS = `
 .coll-arrow.coll-next::before { transform: rotate(45deg) translate(-2px, 2px); }
 .coll-arrow:hover { opacity: 1; }
 .coll-arrow[disabled] { opacity: 0.07; pointer-events: none; }
-
-/* ── Lightbox ── */
-.coll-lb {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(236,233,228,0.97);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.35s ease;
-}
-.coll-lb.open { opacity: 1; pointer-events: all; }
-.coll-lb-img-wrap {
-  flex: 1 1 auto; display: flex; align-items: center; justify-content: center;
-  width: 100%; padding: 4rem 6rem 2rem;
-  min-height: 0;
-}
-.coll-lb-img-wrap img {
-  max-width: 100%; max-height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 48px rgba(0,0,0,0.11));
-  transition: opacity 0.25s ease;
-}
-.coll-lb-img-wrap img.loading { opacity: 0; }
-.coll-lb-info {
-  flex: 0 0 auto; text-align: center;
-  padding: 0 2rem 3rem;
-  font-family: "DM Sans", sans-serif; font-weight: 200; color: #222;
-}
-.coll-lb-title {
-  font-size: 0.95rem; font-weight: 300; letter-spacing: 0.04em;
-  margin-bottom: 0.35rem;
-}
-.coll-lb-meta {
-  font-size: 0.72rem; opacity: 0.45; letter-spacing: 0.06em;
-  margin-bottom: 0.9rem;
-}
-.coll-lb-link {
-  font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
-  color: #222; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.2);
-  padding-bottom: 2px; opacity: 0.5; transition: opacity 0.2s;
-}
-.coll-lb-link:hover { opacity: 1; }
-.coll-lb-close {
-  position: absolute; top: 1.4rem; right: 1.6rem;
-  background: none; border: none; cursor: pointer;
-  font-family: "DM Sans", sans-serif; font-size: 0.65rem; font-weight: 300;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  opacity: 0.35; transition: opacity 0.2s; color: #111;
-}
-.coll-lb-close:hover { opacity: 0.9; }
 `;
 
 function injectStyles() {
@@ -155,92 +144,98 @@ function injectStyles() {
   document.head.appendChild(s);
 }
 
-/* ── Lightbox ─────────────────────────────────────────────────────── */
-let lb = null;
-
-function openLightbox(work, previewBase, wall) {
-  if (!lb) {
-    lb = document.createElement('div');
-    lb.className = 'coll-lb';
-
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'coll-lb-close';
-    closeBtn.textContent = 'Close';
-    closeBtn.addEventListener('click', closeLightbox);
-
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'coll-lb-img-wrap';
-    const img = document.createElement('img');
-    imgWrap.appendChild(img);
-
-    const info = document.createElement('div');
-    info.className = 'coll-lb-info';
-
-    lb.appendChild(closeBtn);
-    lb.appendChild(imgWrap);
-    lb.appendChild(info);
-    document.body.appendChild(lb);
-
-    lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-  }
-
-  const img = lb.querySelector('.coll-lb-img-wrap img');
-  const info = lb.querySelector('.coll-lb-info');
-
-  const photo = work.photo || work.id;
-  img.classList.add('loading');
-  img.src = CDN + (wall ? '__' + photo : photo) + '.webp';
-  img.alt = work.title || '';
-  img.onload = () => img.classList.remove('loading');
-
-  const meta = [work.material, work.dimensions, work.year].filter(Boolean).join('  ·  ');
-  const status = work.invoiced ? 'Sold' : work.reserved ? 'Reserved' : work.price ? work.price : '';
-
-  info.innerHTML = `
-    <div class="coll-lb-title">${work.title || ''}</div>
-    <div class="coll-lb-meta">${[meta, status].filter(Boolean).join('  ·  ')}</div>
-    <a class="coll-lb-link" href="${previewBase || 'preview.html'}?id=${encodeURIComponent(work.id)}" target="_blank" rel="noopener">View details</a>
-  `;
-
-  requestAnimationFrame(() => lb.classList.add('open'));
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  if (!lb) return;
-  lb.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-/* ── Cell builder ─────────────────────────────────────────────────── */
-function makeCell(work, previewBase, wall, lightbox) {
+/* ── Grid cell ────────────────────────────────────────────────────── */
+function makeGridCell(work, previewBase) {
   const a = document.createElement('a');
   a.className = 'coll-cell';
-  if (wall) a.style.background = 'transparent';
   a.href = `${previewBase || 'preview.html'}?id=${encodeURIComponent(work.id)}`;
-  a.target = '_blank';
-  a.rel = 'noopener';
-  if (lightbox) {
-    a.addEventListener('click', e => { e.preventDefault(); openLightbox(work, previewBase, wall); });
-  }
+  a.target = '_blank'; a.rel = 'noopener';
 
-  const photo = work.photo || work.id;
   const img = document.createElement('img');
-  img.src = CDN + (wall ? '__' + photo : photo) + '.webp';
-  img.alt = work.title || '';
-  img.loading = 'lazy';
-  if (wall) img.className = 'coll-wall-img';
+  img.src = CDN + (work.photo || work.id) + '.webp';
+  img.alt = work.title || ''; img.loading = 'lazy';
 
-  if (!wall) {
-    const title = document.createElement('div');
-    title.className = 'coll-cell-title';
-    title.textContent = work.title || '';
-    a.appendChild(title);
-  }
+  const title = document.createElement('div');
+  title.className = 'coll-cell-title';
+  title.textContent = work.title || '';
 
-  a.appendChild(img);
+  a.appendChild(title); a.appendChild(img);
   return a;
+}
+
+/* ── Wall carousel item (image area + info panel) ─────────────────── */
+function makeWallItem(work, previewBase) {
+  const wrap = document.createElement('div');
+  wrap.className = 'coll-car-item';
+
+  /* Image area */
+  const imgArea = document.createElement('div');
+  imgArea.className = 'coll-img-area';
+
+  const img = document.createElement('img');
+  img.src = CDN + '__' + (work.photo || work.id) + '.webp';
+  img.alt = work.title || ''; img.loading = 'lazy';
+  imgArea.appendChild(img);
+
+  /* Zoom / pan */
+  let zoomed = false;
+  const ZOOM = 2.4;
+
+  img.addEventListener('click', e => {
+    if (zoomed) {
+      img.classList.remove('zoomed');
+      img.classList.add('zoom-out');
+      img.style.transform = 'scale(1)';
+      img.style.transformOrigin = '50% 50%';
+      zoomed = false;
+      setTimeout(() => img.classList.remove('zoom-out'), 460);
+    } else {
+      const r = img.getBoundingClientRect();
+      const ox = ((e.clientX - r.left) / r.width  * 100).toFixed(2);
+      const oy = ((e.clientY - r.top)  / r.height * 100).toFixed(2);
+      img.style.transformOrigin = `${ox}% ${oy}%`;
+      img.style.transform = `scale(${ZOOM})`;
+      img.classList.add('zoomed');
+      zoomed = true;
+    }
+  });
+
+  imgArea.addEventListener('mousemove', e => {
+    if (!zoomed) return;
+    const r = img.getBoundingClientRect();
+    const ox = ((e.clientX - r.left) / r.width  * 100).toFixed(2);
+    const oy = ((e.clientY - r.top)  / r.height * 100).toFixed(2);
+    img.style.transformOrigin = `${ox}% ${oy}%`;
+  });
+
+  /* Info panel */
+  const panel = document.createElement('div');
+  panel.className = 'coll-panel';
+
+  const meta = [work.material, work.dimensions, work.year].filter(Boolean).join('  ·  ');
+  const status = work.invoiced ? 'Sold' : work.reserved ? 'Reserved' : work.price || '';
+
+  const titleEl = document.createElement('div');
+  titleEl.className = 'coll-panel-title';
+  titleEl.textContent = work.title || '';
+
+  const metaEl = document.createElement('div');
+  metaEl.className = 'coll-panel-meta';
+  metaEl.textContent = [meta, status].filter(Boolean).join('  ·  ');
+
+  const link = document.createElement('a');
+  link.className = 'coll-panel-link';
+  link.href = `${previewBase || 'preview.html'}?id=${encodeURIComponent(work.id)}`;
+  link.target = '_blank'; link.rel = 'noopener';
+  link.textContent = 'View details';
+
+  panel.appendChild(titleEl);
+  if (meta || status) panel.appendChild(metaEl);
+  panel.appendChild(link);
+
+  wrap.appendChild(imgArea);
+  wrap.appendChild(panel);
+  return wrap;
 }
 
 /* ── Grid ─────────────────────────────────────────────────────────── */
@@ -254,7 +249,7 @@ function initGrid(root, works, opts) {
     const item = document.createElement('div');
     item.className = 'coll-grid-item';
     item.style.aspectRatio = opts.aspectRatio || '1';
-    item.appendChild(makeCell(w, opts.previewBase, false, opts.lightbox));
+    item.appendChild(makeGridCell(w, opts.previewBase));
     grid.appendChild(item);
   });
 
@@ -266,7 +261,7 @@ async function initCarousel(root, works, opts) {
   const peek   = opts.peek   ?? 0;
   const gap    = opts.gap    ?? 4;
   const loop   = !!opts.loop;
-  const height = opts.height || '70vh';
+  const height = opts.height || '100vh';
   const wall   = !!opts.wall;
   const n      = works.length;
   let current  = 0;
@@ -287,14 +282,17 @@ async function initCarousel(root, works, opts) {
 
   /* Track */
   const track = document.createElement('div');
-  track.className = 'coll-track gsap-driven';
+  track.className = 'coll-track';
   track.style.gap = `${gap}px`;
+  track.style.height = '100%';
 
   works.forEach(w => {
-    const item = document.createElement('div');
-    item.className = 'coll-car-item';
-    if (wall) item.style.background = 'transparent';
-    item.appendChild(makeCell(w, opts.previewBase, wall, opts.lightbox));
+    const item = wall ? makeWallItem(w, opts.previewBase) : (() => {
+      const el = document.createElement('div');
+      el.className = 'coll-car-item';
+      el.appendChild(makeGridCell(w, opts.previewBase));
+      return el;
+    })();
     track.appendChild(item);
   });
 
@@ -330,12 +328,14 @@ async function initCarousel(root, works, opts) {
     track.querySelectorAll('.coll-car-item').forEach(item => {
       item.style.width  = `${iw}px`;
       item.style.height = `${ih}px`;
-      const cell = item.querySelector('.coll-cell');
-      if (cell) {
-        cell.style.width  = `${iw}px`;
-        cell.style.height = `${ih}px`;
-        const img = cell.querySelector('img');
-        if (img) img.style.objectFit = 'contain';
+      if (!wall) {
+        const cell = item.querySelector('.coll-cell');
+        if (cell) {
+          cell.style.width = `${iw}px`;
+          cell.style.height = `${ih}px`;
+          const img = cell.querySelector('img');
+          if (img) img.style.objectFit = 'contain';
+        }
       }
     });
   }
@@ -352,11 +352,8 @@ async function initCarousel(root, works, opts) {
   }
 
   function moveTo(x, animate) {
-    if (animate === false) {
-      gsap.set(track, { x });
-    } else {
-      gsap.to(track, { x, duration: 0.85, ease: 'expo.out', overwrite: true });
-    }
+    if (animate === false) gsap.set(track, { x });
+    else gsap.to(track, { x, duration: 0.85, ease: 'expo.out', overwrite: true });
     updateItemStates();
   }
 
@@ -367,23 +364,17 @@ async function initCarousel(root, works, opts) {
     nextBtn.disabled = !loop && current === n - 1;
   }
 
-  setTimeout(() => {
-    applyLayout();
-    goTo(0, false);
-  }, 0);
+  setTimeout(() => { applyLayout(); goTo(0, false); }, 0);
 
-  /* Resize */
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => { applyLayout(); goTo(current, false); }, 80);
   });
 
-  /* Arrows */
   prevBtn.addEventListener('click', () => goTo(current - 1));
   nextBtn.addEventListener('click', () => goTo(current + 1));
 
-  /* Keyboard */
   root.setAttribute('tabindex', '0');
   root.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft')  { goTo(current - 1); e.preventDefault(); }
@@ -421,13 +412,13 @@ async function initCarousel(root, works, opts) {
     goTo(Math.round((origin - projectedX) / (getItemWidth() + gap)));
   }
 
-  clip.addEventListener('mousedown',  e => onDragStart(e.clientX));
+  clip.addEventListener('mousedown',   e => onDragStart(e.clientX));
   window.addEventListener('mousemove', e => { if (dragStartX !== null) onDragMove(e.clientX); });
   window.addEventListener('mouseup',   e => onDragEnd(e.clientX));
 
-  clip.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX),       { passive: true });
-  clip.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX),        { passive: true });
-  clip.addEventListener('touchend',   e => onDragEnd(e.changedTouches[0].clientX),  { passive: true });
+  clip.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX),      { passive: true });
+  clip.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX),       { passive: true });
+  clip.addEventListener('touchend',   e => onDragEnd(e.changedTouches[0].clientX), { passive: true });
 
   clip.addEventListener('click', e => { if (dragging) { e.preventDefault(); e.stopPropagation(); } }, true);
 }
@@ -439,11 +430,7 @@ function init(container, works, opts = {}) {
   const root = typeof container === 'string' ? document.querySelector(container) : container;
   if (!root || !works.length) return;
   root.classList.add('coll-root');
-  if (opts.mode === 'carousel') {
-    initCarousel(root, works, opts);
-  } else {
-    initGrid(root, works, opts);
-  }
+  opts.mode === 'carousel' ? initCarousel(root, works, opts) : initGrid(root, works, opts);
 }
 
 const Collection = { init };
