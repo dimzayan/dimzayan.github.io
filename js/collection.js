@@ -134,12 +134,12 @@ const CSS = `
 .coll-arrow {
   position: absolute;
   top: calc(50% - ${PANEL_H / 2}px); transform: translateY(-50%);
-  z-index: 6; background: none; border: none; padding: 1.2rem;
+  z-index: 6; background: none; border: none; padding: 1.8rem;
   cursor: pointer; opacity: 0.3; user-select: none; transition: opacity 0.2s;
   display: flex; align-items: center; justify-content: center;
 }
 .coll-arrow::before {
-  content: ""; display: block; width: 11px; height: 11px;
+  content: ""; display: block; width: 18px; height: 18px;
   border-top: 1.5px solid #111; border-right: 1.5px solid #111;
 }
 .coll-arrow.coll-prev { left: 0; }
