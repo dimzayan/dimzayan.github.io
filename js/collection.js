@@ -289,7 +289,7 @@ async function initCarousel(root, works, opts) {
   clip.appendChild(zoomLayer);
 
   function openZoom(w) {
-    zoomImg.src = CDN + '__' + (w.photo || w.id) + '.webp';
+    zoomImg.src = CDN + (w.photo || w.id) + '.webp';
     zoomImg.style.transform = 'scale(1)';
     zoomImg.style.transformOrigin = '50% 50%';
     zoomLayer.classList.add('active');
