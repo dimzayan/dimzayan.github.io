@@ -73,9 +73,10 @@ const CSS = `
 .coll-track { display: flex; will-change: transform; height: 100%; }
 .coll-car-item { flex: 0 0 auto; }
 
-/* Wall image area — fills item height minus the fixed panel */
+/* Wall image area — flex child, fills item height minus the fixed panel */
+.coll-car-item.wall { display: flex; flex-direction: column; }
 .coll-img-area {
-  position: absolute; top: 0; left: 0; right: 0; bottom: ${PANEL_H}px;
+  flex: 1 1 auto; min-height: 0;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
@@ -134,12 +135,12 @@ const CSS = `
 .coll-arrow {
   position: absolute;
   top: calc(50% - ${PANEL_H / 2}px); transform: translateY(-50%);
-  z-index: 6; background: none; border: none; padding: 1.8rem;
+  z-index: 6; background: none; border: none; padding: 2.2rem;
   cursor: pointer; opacity: 0.3; user-select: none; transition: opacity 0.2s;
   display: flex; align-items: center; justify-content: center;
 }
 .coll-arrow::before {
-  content: ""; display: block; width: 18px; height: 18px;
+  content: ""; display: block; width: 22px; height: 22px;
   border-top: 1.5px solid #111; border-right: 1.5px solid #111;
 }
 .coll-arrow.coll-prev { left: 0; }
@@ -230,17 +231,23 @@ async function initCarousel(root, works, opts) {
     item.style.position = 'relative';
 
     if (wall) {
+      item.classList.add('wall');
+
       const imgArea = document.createElement('div');
       imgArea.className = 'coll-img-area';
       const img = document.createElement('img');
       img.src = CDN + '__' + (w.photo || w.id) + '.webp';
       img.alt = w.title || ''; img.loading = 'lazy';
       imgArea.appendChild(img);
+      img.addEventListener('click', () => openZoom(w));
 
-      /* Zoom — click opens overlay, not handled here; see zoom layer below */
-      img.addEventListener('click', () => openZoom(w, wallColor));
+      /* Spacer reserves room for the fixed panel so image stays above it */
+      const spacer = document.createElement('div');
+      spacer.style.flexShrink = '0';
+      spacer.style.height = PANEL_H + 'px';
 
       item.appendChild(imgArea);
+      item.appendChild(spacer);
     } else {
       item.appendChild(makeGridCell(w, opts.previewBase));
     }
