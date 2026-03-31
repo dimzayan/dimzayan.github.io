@@ -160,7 +160,13 @@ async function initCarousel(root, works, opts) {
   const n      = works.length;
   let current  = 0;
 
-  const gsap = await import(GSAP_CDN).then(m => m.default ?? window.gsap);
+  const gsap = await new Promise(resolve => {
+    if (window.gsap) return resolve(window.gsap);
+    const s = document.createElement('script');
+    s.src = GSAP_CDN;
+    s.onload = () => resolve(window.gsap);
+    document.head.appendChild(s);
+  });
 
   /* Clip */
   const clip = document.createElement('div');
