@@ -114,6 +114,35 @@
 
     #press .press-list a:hover { opacity: 0.55; }
 
+    /* ── About the artist ── */
+    .artist-body { display: flex; flex-direction: column; gap: 1.5rem; max-width: 600px; }
+    .artist-bio { font-size: 1rem; font-weight: 200; line-height: 1.8; color: #222; }
+    .artist-site {
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #111; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.2);
+      padding-bottom: 2px; opacity: 0.45; transition: opacity 0.2s; align-self: flex-start;
+    }
+    .artist-site:hover { opacity: 1; }
+
+    /* ── Inquire ── */
+    .inquire-body { display: flex; flex-direction: column; gap: 1.2rem; }
+    .inquire-email {
+      font-size: 1.1rem; font-weight: 200; letter-spacing: 0.02em;
+      color: #111; text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.15); padding-bottom: 2px;
+      align-self: flex-start; transition: opacity 0.2s;
+    }
+    .inquire-email:hover { opacity: 0.55; }
+    .inquire-meta {
+      display: flex; flex-direction: column; gap: 0.2rem;
+      font-size: 0.82rem; font-weight: 200; color: #444; opacity: 0.6;
+    }
+    .inquire-social a {
+      font-size: 0.72rem; font-weight: 200; letter-spacing: 0.08em;
+      color: #111; text-decoration: none; opacity: 0.5; transition: opacity 0.2s;
+    }
+    .inquire-social a:hover { opacity: 1; }
+
     /* ── Footer ── */
     #site-footer {
       border-top: 1px solid rgba(0,0,0,0.08);
@@ -186,6 +215,28 @@
   <section id="press" class="exhibit-section">
     <div class="section-label">Press</div>
     <div class="press-list" id="press-list"></div>
+  </section>
+
+  <section id="artist" class="exhibit-section">
+    <div class="section-label">About the artist</div>
+    <div class="artist-body">
+      <p class="artist-bio">Dim Zayan (b. 1977, France) is a visual artist based in Marfa, Texas. Working with oil and epoxy on raw gypsum panels, he builds layered compositions through iterative processes of pouring, staining, sanding, and sealing — often incising the surface with an angle grinder. Earth-toned fields, weathered edges, and irregular contours evoke landscapes shaped by time, erosion, and human intervention. Form emerges through excavation as much as construction, each work retaining visible traces of process and material condition.</p>
+      <a class="artist-site" href="https://dimzayan.com" target="_blank" rel="noopener">dimzayan.com</a>
+    </div>
+  </section>
+
+  <section id="inquire" class="exhibit-section">
+    <div class="section-label">Inquire</div>
+    <div class="inquire-body">
+      <a class="inquire-email" href="mailto:dim.studio.marfa@gmail.com">dim.studio.marfa@gmail.com</a>
+      <div class="inquire-meta">
+        <span>208 W El Paso St, Studio 2</span>
+        <span>Marfa, TX 79843</span>
+      </div>
+      <div class="inquire-social">
+        <a href="https://instagram.com/dimzayan" target="_blank" rel="noopener">@dimzayan</a>
+      </div>
+    </div>
   </section>
 
   <footer id="site-footer">
