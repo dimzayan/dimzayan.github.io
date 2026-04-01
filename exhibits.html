@@ -220,22 +220,17 @@
   <section id="artist" class="exhibit-section">
     <div class="section-label">About the artist</div>
     <div class="artist-body">
-      <p class="artist-bio">Dim Zayan (b. 1977, France) is a visual artist based in Marfa, Texas. Working with oil and epoxy on raw gypsum panels, he builds layered compositions through iterative processes of pouring, staining, sanding, and sealing — often incising the surface with an angle grinder. Earth-toned fields, weathered edges, and irregular contours evoke landscapes shaped by time, erosion, and human intervention. Form emerges through excavation as much as construction, each work retaining visible traces of process and material condition.</p>
-      <a class="artist-site" href="https://dimzayan.com" target="_blank" rel="noopener">dimzayan.com</a>
+      <p class="artist-bio" id="artist-bio"></p>
+      <a class="artist-site" id="artist-site" target="_blank" rel="noopener"></a>
     </div>
   </section>
 
   <section id="inquire" class="exhibit-section">
     <div class="section-label">Inquire</div>
     <div class="inquire-body">
-      <a class="inquire-email" href="mailto:dim.studio.marfa@gmail.com">dim.studio.marfa@gmail.com</a>
-      <div class="inquire-meta">
-        <span>208 W El Paso St, Studio 2</span>
-        <span>Marfa, TX 79843</span>
-      </div>
-      <div class="inquire-social">
-        <a href="https://instagram.com/dimzayan" target="_blank" rel="noopener">@dimzayan</a>
-      </div>
+      <a class="inquire-email" id="inquire-email"></a>
+      <div class="inquire-meta" id="inquire-meta"></div>
+      <div class="inquire-social" id="inquire-social"></div>
     </div>
   </section>
 
@@ -278,10 +273,12 @@
         try {
           const results  = await Promise.all([
             fetch('exhibits.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); }),
-            fetchInventory()
+            fetchInventory(),
+            fetch('data.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
           ]);
           const exhibit   = results[0][id];
           const inventory = results[1];
+          const artist    = results[2].artist;
 
           if (!exhibit) {
             cover.innerHTML = '<div class="not-found">Exhibit not found.</div>';
@@ -353,6 +350,33 @@
           } else {
             document.getElementById('press').style.display = 'none';
           }
+          // Artist
+          document.getElementById('artist-bio').textContent = artist.bio || '';
+          const siteEl = document.getElementById('artist-site');
+          siteEl.href = artist.website || '#';
+          siteEl.textContent = (artist.website || '').replace(/^https?:\/\//, '');
+
+          // Inquire
+          const emailEl = document.getElementById('inquire-email');
+          emailEl.href = 'mailto:' + (artist.email || '');
+          emailEl.textContent = artist.email || '';
+
+          const metaEl = document.getElementById('inquire-meta');
+          if (artist.address) artist.address.split(',').forEach(function(line) {
+            const s = document.createElement('span');
+            s.textContent = line.trim();
+            metaEl.appendChild(s);
+          });
+
+          const socialEl = document.getElementById('inquire-social');
+          if (artist.instagram) {
+            const a = document.createElement('a');
+            a.href = 'https://instagram.com/' + artist.instagram;
+            a.target = '_blank'; a.rel = 'noopener';
+            a.textContent = '@' + artist.instagram;
+            socialEl.appendChild(a);
+          }
+
         } catch(e) {
           cover.innerHTML = '<div class="not-found">Could not load exhibit.</div>';
         }
