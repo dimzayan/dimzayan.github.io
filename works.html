@@ -218,7 +218,7 @@
       lbImg.src = '';
     }
 
-    fetch('inventory.json')
+    fetch('https://dimzayan.com/api/inventory')
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .catch(() => {
         try { return JSON.parse(localStorage.getItem('dim_inventory_v2')) || {}; } catch (e) { return {}; }

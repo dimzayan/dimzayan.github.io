@@ -278,7 +278,7 @@
     <span class="header-title">Dim Zayan — Studio</span>
     <div id="token-row" style="display:flex;align-items:center;gap:0.5rem;">
       <span id="token-status" style="font-size:0.72rem;opacity:0.4;"></span>
-      <input id="token-input" type="password" placeholder="GitHub token"
+      <input id="token-input" type="password" placeholder="API token"
         style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.55rem;width:180px;display:none;">
       <button id="token-btn" style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;background:none;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.7rem;cursor:pointer;color:#111;opacity:0.55;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.55">Set token</button>
     </div>
@@ -354,7 +354,7 @@
         <button id="re-add-room-btn">Add room</button>
       </div>
       <div class="re-save-row">
-        <button class="re-save-btn" id="re-save">Save to GitHub</button>
+        <button class="re-save-btn" id="re-save">Save</button>
         <span class="re-status" id="re-status"></span>
       </div>
     </div>
@@ -362,61 +362,24 @@
   </div>
 
   <script>
-    const GH_API_EXHIBITS     = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json?ref=master';
-    const GH_API_EXHIBITS_PUT = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json';
-    const GH_API_INVENTORY    = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
+    const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
+    const API_INVENTORY = 'https://dimzayan.com/api/inventory';
     const CDN_HI = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
 
     let exhibitsData  = {};
-    let exhibitsSha   = '';
     let inventoryData = {};
     let inventoryReady = null; // promise resolved when inventoryData is populated
 
     async function loadInventory() {
-      const token = localStorage.getItem('dim_gh_token') || '';
-      console.log('[inventory] loading, token present:', !!token);
-      if (token) {
-        try {
-          const meta = await fetch(GH_API_INVENTORY, {
-            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
-            cache: 'no-store'
-          }).then(function(r) { return r.json(); });
-          console.log('[inventory] github api response keys:', Object.keys(meta));
-          if (meta.content) {
-            inventoryData = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
-            console.log('[inventory] loaded via github api, works:', Object.keys(inventoryData).length);
-            return;
-          }
-          console.log('[inventory] github api had no content, message:', meta.message);
-        } catch(e) { console.log('[inventory] github api error:', e); }
-      }
-      // Fallback: direct fetch
       try {
-        const data = await fetch('inventory.json?v=' + Date.now())
-          .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+        const data = await fetch(API_INVENTORY).then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); });
         inventoryData = data;
-        console.log('[inventory] loaded via direct fetch, works:', Object.keys(inventoryData).length);
-      } catch(e) { console.log('[inventory] direct fetch error:', e); }
+      } catch(e) { console.log('[inventory] fetch error:', e); }
     }
 
     async function loadExhibits() {
-      const token = localStorage.getItem('dim_gh_token') || '';
-
       try {
-        if (token) {
-          const meta = await fetch(GH_API_EXHIBITS, {
-            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
-            cache: 'no-store'
-          }).then(function(r) { return r.json(); });
-          if (meta.content) {
-            exhibitsSha  = meta.sha;
-            exhibitsData = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
-            renderExhibits();
-            return;
-          }
-        }
-        const data = await fetch('exhibits.json?v=' + Date.now())
-          .then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+        const data = await fetch(API_EXHIBITS).then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
         exhibitsData = data;
         renderExhibits();
       } catch(e) {
@@ -730,26 +693,12 @@
       document.getElementById('re-status').textContent = 'Saving…';
 
       try {
-        const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
-        if (!exhibitsSha) {
-          const meta = await fetch(GH_API_EXHIBITS, { headers, cache: 'no-store' }).then(function(r) { return r.json(); });
-          exhibitsSha = meta.sha;
-        }
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(exhibitsData, null, 2))));
-        const r = await fetch(GH_API_EXHIBITS_PUT, {
+        const r = await fetch(API_EXHIBITS, {
           method: 'PUT',
-          headers: { ...headers, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: 'update rooms: ' + editExhibitId,
-            content, sha: exhibitsSha, branch: 'master'
-          })
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(exhibitsData, null, 2)
         });
-        if (!r.ok) {
-          const body = await r.json().catch(function() { return {}; });
-          throw new Error(r.status + ': ' + (body.message || 'unknown'));
-        }
-        const result = await r.json();
-        exhibitsSha = result.content.sha;
+        if (!r.ok) throw new Error(r.status + ': ' + (await r.text()));
         document.getElementById('re-status').textContent = 'Saved';
         setTimeout(function() { document.getElementById('re-status').textContent = ''; }, 2500);
       } catch(e) {
@@ -801,24 +750,12 @@
       document.getElementById('create-status').textContent = 'Saving…';
 
       try {
-        const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
-        // Get latest SHA if we don't have it
-        if (!exhibitsSha) {
-          const meta = await fetch(GH_API_EXHIBITS, { headers, cache: 'no-store' }).then(function(r) { return r.json(); });
-          exhibitsSha = meta.sha;
-        }
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(exhibitsData, null, 2))));
-        const r = await fetch(GH_API_EXHIBITS_PUT, {
+        const r = await fetch(API_EXHIBITS, {
           method: 'PUT',
-          headers: { ...headers, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'add exhibit: ' + slug, content, sha: exhibitsSha, branch: 'master' })
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(exhibitsData, null, 2)
         });
-        if (!r.ok) {
-          const body = await r.json().catch(function() { return {}; });
-          throw new Error(r.status + ': ' + (body.message || 'unknown'));
-        }
-        const result = await r.json();
-        exhibitsSha = result.content.sha;
+        if (!r.ok) throw new Error(r.status + ': ' + (await r.text()));
         renderExhibits();
         document.getElementById('create-form').classList.remove('open');
         clearForm();

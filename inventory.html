@@ -646,8 +646,8 @@
       'IMG_0453','IMG_0466','IMG_0481','IMG_0488'
     ];
 
-    const GH_API      = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
-    const GH_API_EXHIBITS = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json?ref=master';
+    const API_INVENTORY = 'https://dimzayan.com/api/inventory';
+    const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
     const fields      = ['title', 'dimensions', 'material', 'price', 'year', 'notes'];
     const placeholder = { title: 'Title', dimensions: 'e.g. 24×36 in', material: 'Material', price: '$', year: 'Year', notes: 'Notes' };
     const colClass    = { title: 'col-title', dimensions: 'col-dims', material: 'col-material', price: 'col-price', year: 'col-year', notes: 'col-notes' };
@@ -981,24 +981,8 @@
     }
 
     (async function loadInventory() {
-      const token = localStorage.getItem('dim_gh_token') || '';
-      if (token) {
-        try {
-          const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' };
-          const meta = await fetch(GH_API, { headers, cache: 'no-store' }).then(r => r.json());
-          if (meta.content) {
-            const json = decodeURIComponent(escape(atob(meta.content.replace(/\s/g, ''))));
-            const data = JSON.parse(json);
-            localStorage.setItem('dim_inventory_cache', JSON.stringify(data));
-            applyInvoiceRefs(data);
-            renderData(data);
-            return;
-          }
-        } catch(e) {}
-      }
-      // No token or API error — fall back to CDN URL
       try {
-        const data = await fetch('inventory.json?v=' + Date.now()).then(r => r.ok ? r.json() : Promise.reject());
+        const data = await fetch(API_INVENTORY).then(r => r.ok ? r.json() : Promise.reject());
         localStorage.setItem('dim_inventory_cache', JSON.stringify(data));
         applyInvoiceRefs(data);
         renderData(data);
@@ -1014,20 +998,9 @@
     // ── Load exhibits for dropdown ─────────────────────────────────────────
 
     (async function loadExhibits() {
-      const token = localStorage.getItem('dim_gh_token') || '';
       let data = {};
       try {
-        if (token) {
-          const meta = await fetch(GH_API_EXHIBITS, {
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' },
-            cache: 'no-store'
-          }).then(r => r.json());
-          if (meta.content) {
-            data = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
-          }
-        } else {
-          data = await fetch('exhibits.json?v=' + Date.now()).then(r => r.ok ? r.json() : {});
-        }
+        data = await fetch(API_EXHIBITS).then(r => r.ok ? r.json() : {});
       } catch(e) {}
       const sel = document.getElementById('edit-exhibit');
       Object.entries(data).forEach(([key, ex]) => {
@@ -1115,18 +1088,12 @@
       try {
         const token = localStorage.getItem('dim_gh_token') || '';
         if (!token) throw new Error('no token');
-        const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' };
-        const meta = await fetch(GH_API, { headers }).then(r => r.json());
-        const content = btoa(unescape(encodeURIComponent(json)));
-        const r = await fetch(GH_API, {
+        const r = await fetch(API_INVENTORY, {
           method: 'PUT',
-          headers: { ...headers, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'update inventory', content, sha: meta.sha, branch: 'master' })
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: json
         });
-        if (!r.ok) {
-          const body = await r.json().catch(() => ({}));
-          throw new Error(`${r.status}: ${body.message || 'unknown'}`);
-        }
+        if (!r.ok) throw new Error(r.status + ': ' + (await r.text()));
         localStorage.setItem('dim_inventory_cache', JSON.stringify(data));
         btn.textContent = 'Saved ✓';
       } catch (e) {
