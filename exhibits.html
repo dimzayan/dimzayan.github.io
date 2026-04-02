@@ -252,12 +252,13 @@
       cover.innerHTML = '<div class="not-found">No exhibit specified.</div>';
     } else {
       (async function() {
-        // Fetch inventory — use GitHub API if token available (bypasses CDN cache)
-        async function fetchInventory() {
+        const GH_API_EXHIBITS = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json?ref=master';
+
+        async function fetchViaGH(ghUrl, fallbackUrl) {
           const token = localStorage.getItem('dim_gh_token') || '';
           if (token) {
             try {
-              const meta = await fetch(GH_API, {
+              const meta = await fetch(ghUrl, {
                 headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
                 cache: 'no-store'
               }).then(function(r) { return r.json(); });
@@ -266,14 +267,14 @@
               }
             } catch(e) {}
           }
-          return fetch('inventory.json?v=' + Date.now())
+          return fetch(fallbackUrl + '?v=' + Date.now())
             .then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
         }
 
         try {
           const results  = await Promise.all([
-            fetch('exhibits.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); }),
-            fetchInventory(),
+            fetchViaGH(GH_API_EXHIBITS, 'exhibits.json'),
+            fetchViaGH(GH_API, 'inventory.json'),
             fetch('data.json?v=' + Date.now()).then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
           ]);
           const exhibit   = results[0][id];
@@ -289,7 +290,9 @@
           document.getElementById('cover-title').textContent = exhibit.title;
 
           // Cover image + dots
-          const media = exhibit.media || [];
+          const media = (exhibit.rooms && exhibit.rooms.length)
+            ? exhibit.rooms.map(function(r) { return r.photo; })
+            : (exhibit.media || []);
           if (media.length) {
             const coverImg = document.createElement('img');
             coverImg.src = CDN_HI + media[0];
@@ -324,14 +327,26 @@
             .map(function(entry) { return Object.assign({ id: entry[0] }, entry[1]); });
 
           if (worksArr.length) {
-            Collection.init('#works-carousel', worksArr, {
-              mode: 'carousel',
-              gap: 32,
-              peek: 200,
-              loop: true,
-              wall: true,
-              previewBase: 'preview.html'
-            });
+            if (exhibit.rooms && exhibit.rooms.length) {
+              Collection.init('#works-carousel', worksArr, {
+                mode: 'room',
+                rooms: exhibit.rooms,
+                wall: true,
+                loop: true,
+                gap: 32,
+                peek: 200,
+                previewBase: 'preview.html'
+              });
+            } else {
+              Collection.init('#works-carousel', worksArr, {
+                mode: 'carousel',
+                wall: true,
+                loop: true,
+                gap: 32,
+                peek: 200,
+                previewBase: 'preview.html'
+              });
+            }
           } else {
             document.getElementById('works').style.display = 'none';
           }

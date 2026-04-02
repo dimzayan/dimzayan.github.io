@@ -39,6 +39,33 @@ const PANEL_H   = 110; /* px */
 const CSS = `
 .coll-root { position: relative; }
 
+/* Room mode */
+.coll-room-layer {
+  position: relative; width: 100%; height: 100vh; overflow: hidden; background: #000;
+}
+.coll-room-photo {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.coll-hotspot {
+  position: absolute; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0);
+  transition: border 0.2s, background 0.2s;
+}
+.coll-hotspot:hover {
+  border: 1px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.08);
+}
+.coll-carousel-layer { position: relative; width: 100%; }
+.coll-back-btn {
+  position: absolute; top: 1rem; left: 1rem; z-index: 30;
+  background: rgba(255,255,255,0.85); border: none; border-radius: 2px;
+  font-family: "DM Sans", sans-serif; font-size: 0.72rem; font-weight: 200;
+  letter-spacing: 0.08em; color: #111; cursor: pointer;
+  padding: 0.35rem 0.75rem; opacity: 0.7; transition: opacity 0.2s;
+}
+.coll-back-btn:hover { opacity: 1; }
+.coll-room-layer .coll-arrow { top: 50%; transform: translateY(-50%); }
+
 /* Grid */
 .coll-grid {
   display: grid;
@@ -195,6 +222,158 @@ function initGrid(root, works, opts) {
   root.appendChild(grid);
 }
 
+/* ── GSAP loader ──────────────────────────────────────────────────── */
+function loadGsap() {
+  return new Promise(resolve => {
+    if (window.gsap) return resolve(window.gsap);
+    const s = document.createElement('script');
+    s.src = GSAP_CDN;
+    s.onload = () => resolve(window.gsap);
+    document.head.appendChild(s);
+  });
+}
+
+/* ── Room mode ────────────────────────────────────────────────────── */
+async function initRoom(root, works, opts) {
+  const rooms = opts.rooms || [];
+  if (!rooms.length) return initCarousel(root, works, opts);
+
+  const gsap = await loadGsap();
+
+  const workMap = {};
+  works.forEach(w => { workMap[w.id] = w; });
+
+  const orderedWorks = [];
+  const workToRoom   = {};
+  rooms.forEach((room, ri) => {
+    (room.hotspots || []).forEach(hs => {
+      if (workMap[hs.id] && workToRoom[hs.id] === undefined) {
+        orderedWorks.push(workMap[hs.id]);
+        workToRoom[hs.id] = ri;
+      }
+    });
+  });
+  works.forEach(w => {
+    if (workToRoom[w.id] === undefined) {
+      orderedWorks.push(w);
+      workToRoom[w.id] = 0;
+    }
+  });
+
+  /* DOM */
+  const roomLayer = document.createElement('div');
+  roomLayer.className = 'coll-room-layer';
+
+  const roomImg = document.createElement('img');
+  roomImg.className = 'coll-room-photo';
+  roomLayer.appendChild(roomImg);
+
+  const roomPrev = document.createElement('button');
+  roomPrev.className = 'coll-arrow coll-prev';
+  roomPrev.setAttribute('aria-label', 'Previous room');
+  const roomNext = document.createElement('button');
+  roomNext.className = 'coll-arrow coll-next';
+  roomNext.setAttribute('aria-label', 'Next room');
+  roomLayer.appendChild(roomPrev);
+  roomLayer.appendChild(roomNext);
+
+  const carouselLayer = document.createElement('div');
+  carouselLayer.className = 'coll-carousel-layer';
+  carouselLayer.style.display = 'none';
+
+  const backBtn = document.createElement('button');
+  backBtn.className = 'coll-back-btn';
+  backBtn.textContent = '\u2190 Room view';
+  carouselLayer.appendChild(backBtn);
+
+  const carouselContainer = document.createElement('div');
+  carouselLayer.appendChild(carouselContainer);
+
+  root.appendChild(roomLayer);
+  root.appendChild(carouselLayer);
+
+  let currentRoom        = 0;
+  let carouselGoTo       = null;
+  let getCarouselIdx     = () => 0;
+  let carouselApplyLayout = () => {};
+
+  function showRoom(idx, animate) {
+    currentRoom = ((idx % rooms.length) + rooms.length) % rooms.length;
+    const room  = rooms[currentRoom];
+    if (animate) {
+      gsap.to(roomImg, { opacity: 0, duration: 0.2, onComplete: () => {
+        roomImg.src = CDN + room.photo;
+        gsap.to(roomImg, { opacity: 1, duration: 0.3 });
+      }});
+    } else {
+      roomImg.src = CDN + room.photo;
+      gsap.set(roomImg, { opacity: 1 });
+    }
+    roomLayer.querySelectorAll('.coll-hotspot').forEach(el => el.remove());
+    (room.hotspots || []).forEach(hs => {
+      const w = workMap[hs.id];
+      const el = document.createElement('div');
+      el.className = 'coll-hotspot';
+      el.dataset.id = hs.id;
+      el.style.left   = hs.x + '%';
+      el.style.top    = hs.y + '%';
+      el.style.width  = hs.w + '%';
+      el.style.height = hs.h + '%';
+      if (w) el.addEventListener('click', () => clickHotspot(hs, w));
+      roomLayer.appendChild(el);
+    });
+    roomPrev.disabled = rooms.length <= 1;
+    roomNext.disabled = rooms.length <= 1;
+  }
+
+  function clickHotspot(hs, w) {
+    const workIdx = orderedWorks.findIndex(ow => ow.id === w.id);
+    const scale   = Math.min(100 / hs.w, 100 / hs.h);
+    const originX = hs.x + hs.w / 2;
+    const originY = hs.y + hs.h / 2;
+    gsap.to(roomLayer, {
+      scale, transformOrigin: `${originX}% ${originY}%`,
+      duration: 0.5, ease: 'power2.in',
+      onComplete: () => {
+        roomLayer.style.display = 'none';
+        gsap.set(roomLayer, { scale: 1, transformOrigin: '50% 50%' });
+        carouselLayer.style.opacity = '0';
+        carouselLayer.style.display = '';
+        carouselApplyLayout();
+        if (carouselGoTo) carouselGoTo(workIdx, false);
+        gsap.to(carouselLayer, { opacity: 1, duration: 0.4 });
+      }
+    });
+  }
+
+  backBtn.addEventListener('click', () => {
+    gsap.to(carouselLayer, { opacity: 0, duration: 0.3, onComplete: () => {
+      const wi = getCarouselIdx();
+      const w  = orderedWorks[wi];
+      const ri = w ? (workToRoom[w.id] ?? 0) : currentRoom;
+      carouselLayer.style.display = 'none';
+      showRoom(ri, false);
+      roomLayer.style.display = '';
+      gsap.fromTo(roomLayer, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+    }});
+  });
+
+  roomPrev.addEventListener('click', () => showRoom(currentRoom - 1, true));
+  roomNext.addEventListener('click', () => showRoom(currentRoom + 1, true));
+
+  showRoom(0, false);
+
+  await initCarousel(carouselContainer, orderedWorks, {
+    ...opts,
+    mode: 'carousel',
+    onReady: (api) => {
+      carouselGoTo        = api.goTo;
+      getCarouselIdx      = api.getCurrentIdx;
+      carouselApplyLayout = api.applyLayout;
+    }
+  });
+}
+
 /* ── Carousel ─────────────────────────────────────────────────────── */
 async function initCarousel(root, works, opts) {
   const peek      = opts.peek  ?? 0;
@@ -206,13 +385,7 @@ async function initCarousel(root, works, opts) {
   const n         = works.length;
   let current     = 0;
 
-  const gsap = await new Promise(resolve => {
-    if (window.gsap) return resolve(window.gsap);
-    const s = document.createElement('script');
-    s.src = GSAP_CDN;
-    s.onload = () => resolve(window.gsap);
-    document.head.appendChild(s);
-  });
+  const gsap = await loadGsap();
 
   /* Clip */
   const clip = document.createElement('div');
@@ -441,6 +614,8 @@ async function initCarousel(root, works, opts) {
   clip.addEventListener('touchend',   e => onDragEnd(e.changedTouches[0].clientX), { passive: true });
 
   clip.addEventListener('click', e => { if (dragging) { e.preventDefault(); e.stopPropagation(); } }, true);
+
+  if (opts.onReady) opts.onReady({ goTo, getCurrentIdx: () => current, applyLayout });
 }
 
 /* ── Public API ───────────────────────────────────────────────────── */
@@ -450,7 +625,9 @@ function init(container, works, opts = {}) {
   const root = typeof container === 'string' ? document.querySelector(container) : container;
   if (!root || !works.length) return;
   root.classList.add('coll-root');
-  opts.mode === 'carousel' ? initCarousel(root, works, opts) : initGrid(root, works, opts);
+  if (opts.mode === 'room')     initRoom(root, works, opts);
+  else if (opts.mode === 'carousel') initCarousel(root, works, opts);
+  else initGrid(root, works, opts);
 }
 
 const Collection = { init };

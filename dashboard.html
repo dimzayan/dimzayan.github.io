@@ -164,11 +164,124 @@
       border-color: transparent !important;
     }
     #create-status { font-size: 0.75rem; opacity: 0.5; align-self: center; }
+
+    /* ── Room editor ── */
+    #room-editor { display: none; }
+    .re-room-nav {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.85rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      font-size: 0.82rem; font-weight: 300;
+    }
+    .re-room-nav .re-room-label { flex: 1; opacity: 0.6; }
+    .re-room-nav button {
+      background: none; border: 1px solid rgba(0,0,0,0.15); border-radius: 2px;
+      padding: 0.2rem 0.55rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem; cursor: pointer; color: #111;
+    }
+    .re-room-nav button:hover { background: rgba(0,0,0,0.04); }
+    .re-room-nav button:disabled { opacity: 0.25; pointer-events: none; }
+    .re-room-nav .re-del-room { color: #c00; border-color: rgba(180,0,0,0.2); }
+    .re-canvas-wrap {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      background: #111;
+    }
+    .re-canvas {
+      position: relative; display: block;
+      width: 100%; cursor: crosshair; user-select: none; line-height: 0;
+    }
+    .re-canvas img { display: block; width: 100%; pointer-events: none; }
+    .re-hs {
+      position: absolute; border: 1.5px solid rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.08); cursor: pointer;
+      display: flex; align-items: flex-start; padding: 3px;
+      transition: background 0.15s;
+    }
+    .re-hs:hover { background: rgba(255,255,255,0.22); }
+    .re-hs-label {
+      font-size: 10px; font-family: 'DM Sans', sans-serif; font-weight: 300;
+      background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.9);
+      padding: 1px 4px; border-radius: 2px;
+      max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .re-hs-preview {
+      position: absolute; border: 1.5px dashed rgba(255,255,255,0.65);
+      background: rgba(255,255,255,0.1); pointer-events: none;
+    }
+    .re-assign-popup {
+      position: absolute; z-index: 30;
+      background: white; border: 1px solid rgba(0,0,0,0.15); border-radius: 3px;
+      padding: 0.55rem; display: flex; flex-direction: column; gap: 0.4rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.14); min-width: 200px;
+    }
+    .re-assign-popup select {
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+      border: 1px solid rgba(0,0,0,0.15); border-radius: 2px;
+      padding: 0.25rem 0.4rem; color: #111; background: white; width: 100%;
+    }
+    .re-assign-popup .re-popup-btns { display: flex; gap: 0.35rem; }
+    .re-assign-popup button {
+      flex: 1; font-family: 'DM Sans', sans-serif; font-size: 0.75rem;
+      border: 1px solid rgba(0,0,0,0.15); border-radius: 2px;
+      padding: 0.22rem 0; cursor: pointer; background: none; color: #111;
+    }
+    .re-assign-popup .re-popup-ok {
+      background: rgba(0,0,0,0.85); color: white; border-color: transparent;
+    }
+    .re-hs-list {
+      padding: 0.65rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      display: flex; flex-direction: column; gap: 0.25rem;
+      min-height: 2.5rem;
+    }
+    .re-hs-item {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.8rem; font-weight: 300; padding: 0.15rem 0;
+    }
+    .re-hs-item .re-hs-del {
+      background: none; border: none; font-size: 0.72rem; cursor: pointer;
+      opacity: 0.3; color: #111; padding: 0; font-family: 'DM Sans', sans-serif;
+    }
+    .re-hs-item .re-hs-del:hover { opacity: 1; color: #c00; }
+    .re-add-photo {
+      padding: 0.65rem 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      display: flex; gap: 0.5rem; align-items: center;
+    }
+    .re-add-photo input {
+      flex: 1; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px;
+      padding: 0.35rem 0.6rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; color: #111; background: white;
+    }
+    .re-add-photo input:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .re-add-photo button, .re-save-row button {
+      background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px;
+      padding: 0.35rem 0.9rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; cursor: pointer; color: #111;
+    }
+    .re-add-photo button:hover, .re-save-row button:hover { background: rgba(0,0,0,0.04); }
+    .re-save-row {
+      padding: 0.75rem 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .re-save-btn {
+      background: rgba(0,0,0,0.85) !important;
+      color: white !important; border-color: transparent !important;
+    }
+    .re-status { font-size: 0.75rem; opacity: 0.5; }
+    .re-no-rooms { padding: 0.75rem 1.5rem; font-size: 0.82rem; opacity: 0.35; }
   </style>
 </head>
 <body>
   <header>
     <span class="header-title">Dim Zayan — Studio</span>
+    <div id="token-row" style="display:flex;align-items:center;gap:0.5rem;">
+      <span id="token-status" style="font-size:0.72rem;opacity:0.4;"></span>
+      <input id="token-input" type="password" placeholder="GitHub token"
+        style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.55rem;width:180px;display:none;">
+      <button id="token-btn" style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;background:none;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.7rem;cursor:pointer;color:#111;opacity:0.55;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.55">Set token</button>
+    </div>
   </header>
 
   <div class="dashboard">
@@ -218,17 +331,77 @@
       </div>
     </div>
 
+    <!-- Room editor -->
+    <div class="card" id="room-editor">
+      <div class="card-header">
+        <span class="card-label" id="re-title">Rooms</span>
+        <button class="card-action" id="re-close">Close</button>
+      </div>
+      <div id="re-room-nav" class="re-room-nav">
+        <button id="re-prev-room">&larr;</button>
+        <span class="re-room-label" id="re-room-label">Room 1</span>
+        <button id="re-next-room">&rarr;</button>
+        <button id="re-del-room" class="re-del-room">Delete room</button>
+      </div>
+      <div class="re-canvas-wrap">
+        <div class="re-canvas" id="re-canvas">
+          <img id="re-photo" alt="">
+        </div>
+      </div>
+      <div class="re-hs-list" id="re-hs-list"></div>
+      <div class="re-add-photo">
+        <input id="re-new-photo" type="text" placeholder="Add room — filename e.g. _DSC0942.webp">
+        <button id="re-add-room-btn">Add room</button>
+      </div>
+      <div class="re-save-row">
+        <button class="re-save-btn" id="re-save">Save to GitHub</button>
+        <span class="re-status" id="re-status"></span>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    const GH_API_EXHIBITS  = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json?ref=master';
+    const GH_API_EXHIBITS     = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json?ref=master';
     const GH_API_EXHIBITS_PUT = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/exhibits.json';
+    const GH_API_INVENTORY    = 'https://api.github.com/repos/dimzayan/dimzayan.github.io/contents/inventory.json?ref=master';
+    const CDN_HI = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
 
-    let exhibitsData = {};
-    let exhibitsSha  = '';
+    let exhibitsData  = {};
+    let exhibitsSha   = '';
+    let inventoryData = {};
+    let inventoryReady = null; // promise resolved when inventoryData is populated
+
+    async function loadInventory() {
+      const token = localStorage.getItem('dim_gh_token') || '';
+      console.log('[inventory] loading, token present:', !!token);
+      if (token) {
+        try {
+          const meta = await fetch(GH_API_INVENTORY, {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' },
+            cache: 'no-store'
+          }).then(function(r) { return r.json(); });
+          console.log('[inventory] github api response keys:', Object.keys(meta));
+          if (meta.content) {
+            inventoryData = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\s/g, '')))));
+            console.log('[inventory] loaded via github api, works:', Object.keys(inventoryData).length);
+            return;
+          }
+          console.log('[inventory] github api had no content, message:', meta.message);
+        } catch(e) { console.log('[inventory] github api error:', e); }
+      }
+      // Fallback: direct fetch
+      try {
+        const data = await fetch('inventory.json?v=' + Date.now())
+          .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+        inventoryData = data;
+        console.log('[inventory] loaded via direct fetch, works:', Object.keys(inventoryData).length);
+      } catch(e) { console.log('[inventory] direct fetch error:', e); }
+    }
 
     async function loadExhibits() {
       const token = localStorage.getItem('dim_gh_token') || '';
+
       try {
         if (token) {
           const meta = await fetch(GH_API_EXHIBITS, {
@@ -271,11 +444,320 @@
             (meta ? '<div class="exhibit-row-meta">' + meta + '</div>' : '') +
           '</div>' +
           '<div class="exhibit-row-actions">' +
+            '<a href="#" data-edit-rooms="' + key + '">Edit rooms</a>' +
             '<a href="exhibits.html?id=' + encodeURIComponent(key) + '" target="_blank">View</a>' +
           '</div>';
         list.appendChild(row);
       });
+
+      list.querySelectorAll('[data-edit-rooms]').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+          e.preventDefault();
+          openRoomEditor(a.dataset.editRooms);
+        });
+      });
     }
+
+    /* ── Room editor ─────────────────────────────────────────────── */
+    let editExhibitId  = null;
+    let editRooms      = [];
+    let editRoomIdx    = 0;
+    let pendingRect    = null; // { x, y, w, h } in %
+    let drawOrigin     = null; // { x, y } in px relative to canvas
+
+    function openRoomEditor(exhibitId) {
+      editExhibitId = exhibitId;
+      editRooms     = JSON.parse(JSON.stringify(exhibitsData[exhibitId].rooms || []));
+      editRoomIdx   = 0;
+      document.getElementById('re-title').textContent =
+        'Rooms — ' + (exhibitsData[exhibitId].title || exhibitId);
+      document.getElementById('room-editor').style.display = 'block';
+      document.getElementById('room-editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      renderRoomEditor();
+    }
+
+    function renderRoomEditor() {
+      const room = editRooms[editRoomIdx];
+      const label = document.getElementById('re-room-label');
+      const prevBtn = document.getElementById('re-prev-room');
+      const nextBtn = document.getElementById('re-next-room');
+      const delBtn  = document.getElementById('re-del-room');
+
+      if (!editRooms.length) {
+        label.textContent = 'No rooms';
+        prevBtn.disabled = nextBtn.disabled = delBtn.disabled = true;
+        document.getElementById('re-photo').src = '';
+        document.getElementById('re-hs-list').innerHTML =
+          '<div style="font-size:0.8rem;opacity:0.35;padding:0.4rem 0">Add a room below to begin.</div>';
+        renderCanvas();
+        return;
+      }
+
+      label.textContent = 'Room ' + (editRoomIdx + 1) + ' of ' + editRooms.length + ' — ' + room.photo;
+      prevBtn.disabled  = editRoomIdx === 0;
+      nextBtn.disabled  = editRoomIdx === editRooms.length - 1;
+      delBtn.disabled   = false;
+
+      document.getElementById('re-photo').src = CDN_HI + room.photo;
+      renderCanvas();
+      renderHotspotList();
+    }
+
+    function renderCanvas() {
+      const canvas = document.getElementById('re-canvas');
+      // Remove existing hotspot overlays (keep img and any preview)
+      Array.from(canvas.children).forEach(function(el) {
+        if (el.tagName !== 'IMG' && !el.classList.contains('re-hs-preview')) el.remove();
+      });
+      if (!editRooms.length) return;
+      const room = editRooms[editRoomIdx];
+      (room.hotspots || []).forEach(function(hs, hi) {
+        const el = document.createElement('div');
+        el.className = 're-hs';
+        el.style.left   = hs.x + '%';
+        el.style.top    = hs.y + '%';
+        el.style.width  = hs.w + '%';
+        el.style.height = hs.h + '%';
+        // Label
+        const work = inventoryData[hs.id];
+        const label = document.createElement('div');
+        label.className = 're-hs-label';
+        label.textContent = (work && work.title) ? work.title : hs.id;
+        el.appendChild(label);
+        // Click to delete on double-click
+        el.title = 'Double-click to remove';
+        el.addEventListener('dblclick', function(e) {
+          e.stopPropagation();
+          editRooms[editRoomIdx].hotspots.splice(hi, 1);
+          renderCanvas();
+          renderHotspotList();
+        });
+        canvas.appendChild(el);
+      });
+    }
+
+    function renderHotspotList() {
+      const list = document.getElementById('re-hs-list');
+      list.innerHTML = '';
+      if (!editRooms.length) return;
+      const room = editRooms[editRoomIdx];
+      if (!room.hotspots || !room.hotspots.length) {
+        list.innerHTML = '<div style="font-size:0.8rem;opacity:0.35;padding:0.1rem 0">Draw a rectangle on the photo to add a hotspot.</div>';
+        return;
+      }
+      room.hotspots.forEach(function(hs, hi) {
+        const work = inventoryData[hs.id];
+        const row  = document.createElement('div');
+        row.className = 're-hs-item';
+        const name = document.createElement('span');
+        name.textContent = (work && work.title) ? work.title + ' (' + hs.id + ')' : hs.id;
+        const del = document.createElement('button');
+        del.className = 're-hs-del';
+        del.textContent = 'Remove';
+        del.addEventListener('click', function() {
+          editRooms[editRoomIdx].hotspots.splice(hi, 1);
+          renderCanvas();
+          renderHotspotList();
+        });
+        row.appendChild(name);
+        row.appendChild(del);
+        list.appendChild(row);
+      });
+    }
+
+    /* Canvas drawing */
+    var canvas = document.getElementById('re-canvas');
+
+    canvas.addEventListener('mousedown', function(e) {
+      if (!editRooms.length) return;
+      if (e.target.classList.contains('re-hs')) return;
+      if (e.target.closest('.re-assign-popup')) return;
+      const rect = canvas.getBoundingClientRect();
+      drawOrigin = {
+        x: (e.clientX - rect.left) / rect.width * 100,
+        y: (e.clientY - rect.top)  / rect.height * 100
+      };
+      // Create preview element
+      var preview = canvas.querySelector('.re-hs-preview');
+      if (!preview) {
+        preview = document.createElement('div');
+        preview.className = 're-hs-preview';
+        canvas.appendChild(preview);
+      }
+      preview.style.left = drawOrigin.x + '%';
+      preview.style.top  = drawOrigin.y + '%';
+      preview.style.width = '0%'; preview.style.height = '0%';
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', function(e) {
+      if (!drawOrigin) return;
+      const rect    = canvas.getBoundingClientRect();
+      const cx      = (e.clientX - rect.left) / rect.width * 100;
+      const cy      = (e.clientY - rect.top)  / rect.height * 100;
+      const x       = Math.min(drawOrigin.x, cx);
+      const y       = Math.min(drawOrigin.y, cy);
+      const w       = Math.abs(cx - drawOrigin.x);
+      const h       = Math.abs(cy - drawOrigin.y);
+      const preview = canvas.querySelector('.re-hs-preview');
+      if (preview) {
+        preview.style.left = x + '%'; preview.style.top  = y + '%';
+        preview.style.width = w + '%'; preview.style.height = h + '%';
+      }
+      pendingRect = { x: parseFloat(x.toFixed(2)), y: parseFloat(y.toFixed(2)), w: parseFloat(w.toFixed(2)), h: parseFloat(h.toFixed(2)) };
+    });
+
+    window.addEventListener('mouseup', function(e) {
+      if (!drawOrigin) return;
+      drawOrigin = null;
+      const preview = canvas.querySelector('.re-hs-preview');
+      if (preview) preview.remove();
+      if (!pendingRect || pendingRect.w < 1 || pendingRect.h < 1) { pendingRect = null; return; }
+      showAssignPopup(e.clientX, e.clientY, pendingRect);
+      pendingRect = null;
+    });
+
+    async function showAssignPopup(clientX, clientY, rect) {
+      var old = document.querySelector('.re-assign-popup');
+      if (old) old.remove();
+
+      await inventoryReady;
+
+      console.log('[hotspot] inventoryData keys:', Object.keys(inventoryData));
+      console.log('[hotspot] inventoryData sample:', JSON.stringify(Object.values(inventoryData)[0]));
+
+      const canvasRect = canvas.getBoundingClientRect();
+      const px = (clientX - canvasRect.left) / canvasRect.width * 100;
+      const py = (clientY - canvasRect.top)  / canvasRect.height * 100;
+
+      const works = Object.entries(inventoryData)
+        .filter(function(e) { return !e[1].excluded; })
+        .map(function(e) { return { id: e[0], title: e[1].title || e[0] }; })
+        .sort(function(a, b) { return a.title.localeCompare(b.title); });
+
+      console.log('[hotspot] works after filter:', works.length, works.map(function(w){return w.title;}));
+
+      const popup = document.createElement('div');
+      popup.className = 're-assign-popup';
+      popup.style.left = Math.min(px, 70) + '%';
+      popup.style.top  = Math.min(py, 75) + '%';
+
+      const btns = document.createElement('div');
+      btns.className = 're-popup-btns';
+      const ok = document.createElement('button');
+      ok.className = 're-popup-ok'; ok.textContent = 'Add hotspot';
+      const cancel = document.createElement('button');
+      cancel.textContent = 'Cancel';
+
+      // Dropdown if inventory loaded, text input otherwise
+      let getWorkId;
+      if (works.length) {
+        const sel = document.createElement('select');
+        sel.innerHTML = '<option value="">— select work —</option>';
+        works.forEach(function(w) {
+          const opt = document.createElement('option');
+          opt.value = w.id; opt.textContent = w.title;
+          sel.appendChild(opt);
+        });
+        popup.appendChild(sel);
+        getWorkId = function() { return sel.value; };
+        setTimeout(function() { sel.focus(); }, 0);
+      } else {
+        const inp = document.createElement('input');
+        inp.type = 'text'; inp.placeholder = 'Work ID e.g. IMG_0321';
+        inp.style.cssText = 'width:100%;border:1px solid rgba(0,0,0,0.15);border-radius:2px;padding:0.25rem 0.4rem;font-family:inherit;font-size:0.8rem;';
+        popup.appendChild(inp);
+        getWorkId = function() { return inp.value.trim(); };
+        setTimeout(function() { inp.focus(); }, 0);
+      }
+
+      ok.addEventListener('click', function() {
+        const id = getWorkId();
+        if (!id) return;
+        if (!editRooms[editRoomIdx].hotspots) editRooms[editRoomIdx].hotspots = [];
+        editRooms[editRoomIdx].hotspots.push({ id, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
+        popup.remove();
+        renderCanvas();
+        renderHotspotList();
+      });
+      cancel.addEventListener('click', function() { popup.remove(); });
+
+      popup.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+      btns.appendChild(ok); btns.appendChild(cancel);
+      popup.appendChild(btns);
+      canvas.appendChild(popup);
+    }
+
+    // Room nav
+    document.getElementById('re-prev-room').addEventListener('click', function() {
+      editRoomIdx = Math.max(0, editRoomIdx - 1);
+      renderRoomEditor();
+    });
+    document.getElementById('re-next-room').addEventListener('click', function() {
+      editRoomIdx = Math.min(editRooms.length - 1, editRoomIdx + 1);
+      renderRoomEditor();
+    });
+    document.getElementById('re-del-room').addEventListener('click', function() {
+      if (!editRooms.length) return;
+      if (!confirm('Delete this room?')) return;
+      editRooms.splice(editRoomIdx, 1);
+      editRoomIdx = Math.min(editRoomIdx, Math.max(0, editRooms.length - 1));
+      renderRoomEditor();
+    });
+    document.getElementById('re-add-room-btn').addEventListener('click', function() {
+      const val = document.getElementById('re-new-photo').value.trim();
+      if (!val) return;
+      editRooms.push({ photo: val, hotspots: [] });
+      editRoomIdx = editRooms.length - 1;
+      document.getElementById('re-new-photo').value = '';
+      renderRoomEditor();
+    });
+    document.getElementById('re-close').addEventListener('click', function() {
+      document.getElementById('room-editor').style.display = 'none';
+      editExhibitId = null;
+    });
+
+    document.getElementById('re-save').addEventListener('click', async function() {
+      if (!editExhibitId) return;
+      const token = localStorage.getItem('dim_gh_token') || '';
+      if (!token) { document.getElementById('re-status').textContent = 'No token'; return; }
+
+      // Write rooms back into exhibitsData
+      exhibitsData[editExhibitId].rooms = editRooms;
+
+      const btn = document.getElementById('re-save');
+      btn.disabled = true;
+      document.getElementById('re-status').textContent = 'Saving…';
+
+      try {
+        const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+        if (!exhibitsSha) {
+          const meta = await fetch(GH_API_EXHIBITS, { headers, cache: 'no-store' }).then(function(r) { return r.json(); });
+          exhibitsSha = meta.sha;
+        }
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(exhibitsData, null, 2))));
+        const r = await fetch(GH_API_EXHIBITS_PUT, {
+          method: 'PUT',
+          headers: { ...headers, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: 'update rooms: ' + editExhibitId,
+            content, sha: exhibitsSha, branch: 'master'
+          })
+        });
+        if (!r.ok) {
+          const body = await r.json().catch(function() { return {}; });
+          throw new Error(r.status + ': ' + (body.message || 'unknown'));
+        }
+        const result = await r.json();
+        exhibitsSha = result.content.sha;
+        document.getElementById('re-status').textContent = 'Saved';
+        setTimeout(function() { document.getElementById('re-status').textContent = ''; }, 2500);
+      } catch(e) {
+        document.getElementById('re-status').textContent = 'Error: ' + e.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
 
     // New exhibit form
     document.getElementById('new-exhibit-btn').addEventListener('click', function() {
@@ -355,6 +837,44 @@
       document.getElementById('create-status').textContent = '';
     }
 
+    // Token UI
+    (function() {
+      const inp = document.getElementById('token-input');
+      const btn = document.getElementById('token-btn');
+      const status = document.getElementById('token-status');
+      function updateTokenUI() {
+        const t = localStorage.getItem('dim_gh_token') || '';
+        if (t) {
+          status.textContent = 'token set';
+          btn.textContent = 'Clear';
+          inp.style.display = 'none';
+        } else {
+          status.textContent = '';
+          btn.textContent = 'Set token';
+        }
+      }
+      updateTokenUI();
+      btn.addEventListener('click', function() {
+        const t = localStorage.getItem('dim_gh_token') || '';
+        if (t) {
+          localStorage.removeItem('dim_gh_token');
+          updateTokenUI();
+        } else if (inp.style.display === 'none') {
+          inp.style.display = '';
+          inp.focus();
+        } else {
+          const val = inp.value.trim();
+          if (val) { localStorage.setItem('dim_gh_token', val); inp.value = ''; }
+          updateTokenUI();
+        }
+      });
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') btn.click();
+        if (e.key === 'Escape') { inp.style.display = 'none'; inp.value = ''; }
+      });
+    })();
+
+    inventoryReady = loadInventory();
     loadExhibits();
   </script>
 </body>

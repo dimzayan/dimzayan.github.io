@@ -16,21 +16,17 @@ DIRS = [
 ]
 EXTS = {'.webp', '.jpg', '.jpeg'}
 
-session = new_session('u2net')
+session = new_session('birefnet-general')
 
 for d in DIRS:
     files = sorted([
         f for f in d.iterdir()
-        if f.is_file() and f.suffix.lower() in EXTS and not f.stem.startswith('__')
+        if f.is_file() and f.suffix.lower() in EXTS and not f.stem.startswith('__') and not f.stem.startswith('__test')
     ])
     print(f"\n{d} — {len(files)} files\n")
 
     for i, src in enumerate(files, 1):
         out = d / f'__{src.stem}.webp'
-
-        if out.exists():
-            print(f'  [{i}/{len(files)}] SKIP  {src.name}')
-            continue
 
         print(f'  [{i}/{len(files)}] {src.name} → {out.name} ...', end=' ', flush=True)
         with open(src, 'rb') as f:
