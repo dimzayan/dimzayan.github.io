@@ -17,21 +17,18 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      overflow: hidden;
       background: #000;
     }
 
-    #cover img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      z-index: 0;
+    #cover-header, #cover-footer {
+      z-index: 10;
+      transition: opacity 0.4s ease;
     }
-
-    #cover-header, #cover-footer, #cover-dots { z-index: 1; }
+    #cover.coll-in-carousel #cover-header,
+    #cover.coll-in-carousel #cover-footer {
+      opacity: 0;
+      pointer-events: none;
+    }
 
     #cover-header {
       position: absolute;
@@ -80,20 +77,6 @@
       line-height: 1.8;
       max-width: 600px;
       color: #222;
-    }
-
-    /* ── Works ── */
-    #works {
-      max-width: 100vw;
-      padding-left: 0;
-      padding-right: 0;
-    }
-    #works .section-label {
-      padding: 0 3rem;
-    }
-    #works-carousel {
-      position: relative;
-      width: 100%;
     }
 
     /* ── Press ── */
@@ -157,29 +140,6 @@
       opacity: 0.4;
     }
 
-    /* ── Cover dots ── */
-    #cover-dots {
-      position: absolute;
-      bottom: 1.2em;
-      right: 1.4em;
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .cover-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.25);
-      cursor: pointer;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-
-    .cover-dot.active { background: rgba(0,0,0,0.7); }
-    .cover-dot:hover  { background: rgba(0,0,0,0.5); }
-
     .not-found {
       color: #555;
       font-size: 0.9rem;
@@ -199,17 +159,11 @@
       <span>Do Right Hall, Marfa, TX</span>
       <span>March 5–15 2026</span>
     </footer>
-    <div id="cover-dots"></div>
   </div>
 
   <section id="about" class="exhibit-section">
     <div class="section-label">About</div>
     <div class="description" id="about-text"></div>
-  </section>
-
-  <section id="works" class="exhibit-section">
-    <div class="section-label">Works</div>
-    <div id="works-carousel"></div>
   </section>
 
   <section id="press" class="exhibit-section">
@@ -277,31 +231,6 @@
           document.title = exhibit.title + ' — Dim Zayan';
           document.getElementById('cover-title').textContent = exhibit.title;
 
-          // Cover image + dots
-          const media = (exhibit.rooms && exhibit.rooms.length)
-            ? exhibit.rooms.map(function(r) { return r.photo; })
-            : (exhibit.media || []);
-          if (media.length) {
-            const coverImg = document.createElement('img');
-            coverImg.src = CDN_HI + media[0];
-            coverImg.alt = exhibit.title;
-            cover.appendChild(coverImg);
-
-            if (media.length > 1) {
-              const dotsEl = document.getElementById('cover-dots');
-              media.forEach(function(filename, i) {
-                const dot = document.createElement('div');
-                dot.className = 'cover-dot' + (i === 0 ? ' active' : '');
-                dot.addEventListener('click', function() {
-                  coverImg.src = CDN_HI + filename;
-                  dotsEl.querySelectorAll('.cover-dot').forEach(function(d) { d.classList.remove('active'); });
-                  dot.classList.add('active');
-                });
-                dotsEl.appendChild(dot);
-              });
-            }
-          }
-
           // About
           if (exhibit.description) {
             document.getElementById('about-text').textContent = exhibit.description;
@@ -330,28 +259,15 @@
           }
 
           if (worksArr.length) {
-            if (exhibit.rooms && exhibit.rooms.length) {
-              Collection.init('#works-carousel', worksArr, {
-                mode: 'room',
-                rooms: exhibit.rooms,
-                wall: true,
-                loop: true,
-                gap: 32,
-                peek: 200,
-                previewBase: 'preview.html'
-              });
-            } else {
-              Collection.init('#works-carousel', worksArr, {
-                mode: 'carousel',
-                wall: true,
-                loop: true,
-                gap: 32,
-                peek: 200,
-                previewBase: 'preview.html'
-              });
-            }
-          } else {
-            document.getElementById('works').style.display = 'none';
+            Collection.init('#cover', worksArr, {
+              mode: exhibit.rooms && exhibit.rooms.length ? 'room' : 'carousel',
+              rooms: exhibit.rooms,
+              wall: true,
+              loop: true,
+              gap: 32,
+              peek: 200,
+              previewBase: 'preview.html'
+            });
           }
 
           // Press

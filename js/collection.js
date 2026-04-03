@@ -44,6 +44,7 @@ const CSS = `
   position: relative; width: 100%; height: 100vh; overflow: hidden; background: #000;
 }
 .coll-room-photo {
+  position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
 .coll-hotspot {
@@ -111,7 +112,7 @@ const CSS = `
   max-width: 92%; max-height: 92%;
   object-fit: contain; display: block;
   filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));
-  cursor: zoom-in;
+  cursor: pointer;
   user-select: none; -webkit-user-drag: none;
 }
 
@@ -139,14 +140,13 @@ const CSS = `
 }
 .coll-panel-link:hover { opacity: 1; }
 
-/* Zoom overlay — covers the full clip, above track */
+/* Xfade overlay — covers the full clip, above track */
 .coll-zoom-layer {
   position: absolute; inset: 0; z-index: 20;
   display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
   opacity: 0; pointer-events: none;
-  transition: opacity 0.3s ease;
-  cursor: zoom-out;
+  transition: opacity 0.5s ease;
+  cursor: pointer;
 }
 .coll-zoom-layer.active { opacity: 1; pointer-events: all; }
 .coll-zoom-layer img {
@@ -154,7 +154,6 @@ const CSS = `
   object-fit: contain; display: block;
   filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));
   transform-origin: 50% 50%;
-  will-change: transform-origin;
   user-select: none; -webkit-user-drag: none;
 }
 
@@ -264,9 +263,15 @@ async function initRoom(root, works, opts) {
   const roomLayer = document.createElement('div');
   roomLayer.className = 'coll-room-layer';
 
-  const roomImg = document.createElement('img');
-  roomImg.className = 'coll-room-photo';
-  roomLayer.appendChild(roomImg);
+  const roomImgA = document.createElement('img');
+  roomImgA.className = 'coll-room-photo';
+  const roomImgB = document.createElement('img');
+  roomImgB.className = 'coll-room-photo';
+  roomImgB.style.opacity = '0';
+  roomLayer.appendChild(roomImgA);
+  roomLayer.appendChild(roomImgB);
+  let activeImg   = roomImgA;
+  let inactiveImg = roomImgB;
 
   const roomPrev = document.createElement('button');
   roomPrev.className = 'coll-arrow coll-prev';
@@ -297,18 +302,12 @@ async function initRoom(root, works, opts) {
   let getCarouselIdx     = () => 0;
   let carouselApplyLayout = () => {};
 
-  function showRoom(idx, animate) {
+  function showRoom(idx) {
     currentRoom = ((idx % rooms.length) + rooms.length) % rooms.length;
     const room  = rooms[currentRoom];
-    if (animate) {
-      gsap.to(roomImg, { opacity: 0, duration: 0.2, onComplete: () => {
-        roomImg.src = CDN + room.photo;
-        gsap.to(roomImg, { opacity: 1, duration: 0.3 });
-      }});
-    } else {
-      roomImg.src = CDN + room.photo;
-      gsap.set(roomImg, { opacity: 1 });
-    }
+    activeImg.src = CDN + room.photo;
+    gsap.set(activeImg,   { opacity: 1 });
+    gsap.set(inactiveImg, { opacity: 0 });
     roomLayer.querySelectorAll('.coll-hotspot').forEach(el => el.remove());
     (room.hotspots || []).forEach(hs => {
       const w = workMap[hs.id];
@@ -328,40 +327,36 @@ async function initRoom(root, works, opts) {
 
   function clickHotspot(hs, w) {
     const workIdx = orderedWorks.findIndex(ow => ow.id === w.id);
-    const scale   = Math.min(100 / hs.w, 100 / hs.h);
-    const originX = hs.x + hs.w / 2;
-    const originY = hs.y + hs.h / 2;
-    gsap.to(roomLayer, {
-      scale, transformOrigin: `${originX}% ${originY}%`,
-      duration: 0.5, ease: 'power2.in',
-      onComplete: () => {
+    root.classList.add('coll-in-carousel');
+    carouselLayer.style.opacity = '0';
+    carouselLayer.style.display = '';
+    carouselApplyLayout();
+    if (carouselGoTo) carouselGoTo(workIdx, false);
+    gsap.timeline()
+      .to(roomLayer,     { opacity: 0, duration: 0.55, ease: 'power1.inOut' }, 0)
+      .to(carouselLayer, { opacity: 1, duration: 0.55, ease: 'power1.inOut', onComplete: () => {
         roomLayer.style.display = 'none';
-        gsap.set(roomLayer, { scale: 1, transformOrigin: '50% 50%' });
-        carouselLayer.style.opacity = '0';
-        carouselLayer.style.display = '';
-        carouselApplyLayout();
-        if (carouselGoTo) carouselGoTo(workIdx, false);
-        gsap.to(carouselLayer, { opacity: 1, duration: 0.4 });
-      }
-    });
+        gsap.set(roomLayer, { opacity: 1 });
+      }}, 0);
   }
 
   backBtn.addEventListener('click', () => {
+    root.classList.remove('coll-in-carousel');
     gsap.to(carouselLayer, { opacity: 0, duration: 0.3, onComplete: () => {
       const wi = getCarouselIdx();
       const w  = orderedWorks[wi];
       const ri = w ? (workToRoom[w.id] ?? 0) : currentRoom;
       carouselLayer.style.display = 'none';
-      showRoom(ri, false);
+      showRoom(ri);
       roomLayer.style.display = '';
       gsap.fromTo(roomLayer, { opacity: 0 }, { opacity: 1, duration: 0.4 });
     }});
   });
 
-  roomPrev.addEventListener('click', () => showRoom(currentRoom - 1, true));
-  roomNext.addEventListener('click', () => showRoom(currentRoom + 1, true));
+  roomPrev.addEventListener('click', () => showRoom(currentRoom - 1));
+  roomNext.addEventListener('click', () => showRoom(currentRoom + 1));
 
-  showRoom(0, false);
+  showRoom(0);
 
   await initCarousel(carouselContainer, orderedWorks, {
     ...opts,
@@ -384,6 +379,8 @@ async function initCarousel(root, works, opts) {
   const wallColor = opts.wallColor || '#ece9e4';
   const n         = works.length;
   let current     = 0;
+  // displayIdx tracks position in the track DOM (includes clones at 0 and n+1 when looping)
+  let displayIdx  = loop ? 1 : 0;
 
   const gsap = await loadGsap();
 
@@ -398,14 +395,12 @@ async function initCarousel(root, works, opts) {
   track.className = 'coll-track';
   track.style.gap = `${gap}px`;
 
-  works.forEach(w => {
+  function makeItem(w) {
     const item = document.createElement('div');
     item.className = 'coll-car-item';
     item.style.position = 'relative';
-
     if (wall) {
       item.classList.add('wall');
-
       const imgArea = document.createElement('div');
       imgArea.className = 'coll-img-area';
       const img = document.createElement('img');
@@ -413,20 +408,21 @@ async function initCarousel(root, works, opts) {
       img.alt = w.title || ''; img.loading = 'lazy';
       imgArea.appendChild(img);
       img.addEventListener('click', () => openZoom(w));
-
-      /* Spacer reserves room for the fixed panel so image stays above it */
       const spacer = document.createElement('div');
       spacer.style.flexShrink = '0';
       spacer.style.height = PANEL_H + 'px';
-
       item.appendChild(imgArea);
       item.appendChild(spacer);
     } else {
       item.appendChild(makeGridCell(w, opts.previewBase));
     }
+    return item;
+  }
 
-    track.appendChild(item);
-  });
+  // Prepend clone of last, append clone of first for seamless looping
+  if (loop) track.appendChild(makeItem(works[n - 1]));
+  works.forEach(w => track.appendChild(makeItem(w)));
+  if (loop) track.appendChild(makeItem(works[0]));
 
   clip.appendChild(track);
 
@@ -460,7 +456,7 @@ async function initCarousel(root, works, opts) {
     setTimeout(render, 140);
   }
 
-  /* ── Zoom overlay ────────────────────────────────────────────── */
+  /* ── Xfade overlay ───────────────────────────────────────────── */
   const zoomLayer = document.createElement('div');
   zoomLayer.className = 'coll-zoom-layer';
   zoomLayer.style.background = wallColor;
@@ -470,27 +466,20 @@ async function initCarousel(root, works, opts) {
 
   function openZoom(w) {
     zoomImg.src = CDN + (w.photo || w.id) + '.webp';
-    zoomImg.style.transform = 'scale(1)';
     zoomImg.style.transformOrigin = '50% 50%';
+    zoomImg.style.transform = 'scale(1.8)';
     zoomLayer.classList.add('active');
   }
 
   zoomLayer.addEventListener('mousemove', e => {
-    const r = zoomLayer.getBoundingClientRect();
+    const r  = zoomLayer.getBoundingClientRect();
     const ox = ((e.clientX - r.left) / r.width  * 100).toFixed(2);
     const oy = ((e.clientY - r.top)  / r.height * 100).toFixed(2);
     zoomImg.style.transformOrigin = `${ox}% ${oy}%`;
-    zoomImg.style.transform = 'scale(2.4)';
   });
 
   zoomLayer.addEventListener('click', () => {
-    zoomImg.style.transition = 'transform 0.35s ease, transform-origin 0.35s ease';
-    zoomImg.style.transform = 'scale(1)';
-    zoomImg.style.transformOrigin = '50% 50%';
-    setTimeout(() => {
-      zoomLayer.classList.remove('active');
-      zoomImg.style.transition = '';
-    }, 320);
+    zoomLayer.classList.remove('active');
   });
 
   root.appendChild(clip);
@@ -537,27 +526,70 @@ async function initCarousel(root, works, opts) {
   }
 
   /* ── Animation ───────────────────────────────────────────────── */
-  function updateItemStates() {
+  function updateItemStates(instant) {
     track.querySelectorAll('.coll-car-item').forEach((item, i) => {
-      gsap.to(item, {
-        scale: i === current ? 1 : 0.94, opacity: i === current ? 1 : 0.45,
-        duration: 0.6, ease: 'power2.out', overwrite: true
-      });
+      const active = i === displayIdx;
+      if (instant) {
+        gsap.set(item, { scale: active ? 1 : 0.94, opacity: active ? 1 : 0.45 });
+      } else {
+        gsap.to(item, {
+          scale: active ? 1 : 0.94, opacity: active ? 1 : 0.45,
+          duration: 0.6, ease: 'power2.out', overwrite: true
+        });
+      }
     });
   }
 
-  function moveTo(x, animate) {
-    if (animate === false) gsap.set(track, { x });
-    else gsap.to(track, { x, duration: 0.85, ease: 'expo.out', overwrite: true });
-    updateItemStates();
+  function moveTo(x, animate, onComplete) {
+    if (animate === false) {
+      gsap.set(track, { x });
+      updateItemStates();
+      if (onComplete) onComplete();
+    } else {
+      gsap.to(track, { x, duration: 0.85, ease: 'expo.out', overwrite: true, onComplete });
+      updateItemStates();
+    }
   }
 
   function goTo(idx, animate) {
-    current = loop ? ((idx % n) + n) % n : Math.max(0, Math.min(idx, n - 1));
-    moveTo(getOffset(current), animate);
+    current    = loop ? ((idx % n) + n) % n : Math.max(0, Math.min(idx, n - 1));
+    displayIdx = loop ? current + 1 : current;
+    moveTo(getOffset(displayIdx), animate);
     updatePanel(works[current], animate);
     prevBtn.disabled = !loop && current === 0;
     nextBtn.disabled = !loop && current === n - 1;
+  }
+
+  function navigatePrev() {
+    if (loop && current === 0) {
+      // Animate to clone-of-last at displayIdx 0, then silently jump to real last
+      displayIdx = 0;
+      updatePanel(works[n - 1], true);
+      moveTo(getOffset(0), true, () => {
+        current    = n - 1;
+        displayIdx = n;
+        gsap.set(track, { x: getOffset(n) });
+        updateItemStates(true);
+      });
+    } else {
+      goTo(current - 1);
+    }
+  }
+
+  function navigateNext() {
+    if (loop && current === n - 1) {
+      // Animate to clone-of-first at displayIdx n+1, then silently jump to real first
+      displayIdx = n + 1;
+      updatePanel(works[0], true);
+      moveTo(getOffset(n + 1), true, () => {
+        current    = 0;
+        displayIdx = 1;
+        gsap.set(track, { x: getOffset(1) });
+        updateItemStates(true);
+      });
+    } else {
+      goTo(current + 1);
+    }
   }
 
   setTimeout(() => { applyLayout(); goTo(0, false); }, 0);
@@ -568,13 +600,13 @@ async function initCarousel(root, works, opts) {
     resizeTimer = setTimeout(() => { applyLayout(); goTo(current, false); }, 80);
   });
 
-  prevBtn.addEventListener('click', () => goTo(current - 1));
-  nextBtn.addEventListener('click', () => goTo(current + 1));
+  prevBtn.addEventListener('click', navigatePrev);
+  nextBtn.addEventListener('click', navigateNext);
 
   root.setAttribute('tabindex', '0');
   root.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft')  { goTo(current - 1); e.preventDefault(); }
-    if (e.key === 'ArrowRight') { goTo(current + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { navigatePrev(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { navigateNext(); e.preventDefault(); }
   });
 
   /* ── Drag / swipe ────────────────────────────────────────────── */
@@ -600,9 +632,12 @@ async function initCarousel(root, works, opts) {
     if (dragStartX === null) return;
     dragStartX = null;
     if (!dragging) return;
-    const projectedX = gsap.getProperty(track, 'x') + dragVel * 180;
-    const origin = peek > 0 ? peek + gap : 0;
-    goTo(Math.round((origin - projectedX) / (getItemWidth() + gap)));
+    const projectedX  = gsap.getProperty(track, 'x') + dragVel * 180;
+    const origin      = peek > 0 ? peek + gap : 0;
+    const rawDisplay  = Math.round((origin - projectedX) / (getItemWidth() + gap));
+    // Convert display index back to logical index (real items start at displayIdx 1 when looping)
+    const logicalIdx  = loop ? rawDisplay - 1 : rawDisplay;
+    goTo(logicalIdx);
   }
 
   clip.addEventListener('mousedown',   e => onDragStart(e.clientX));
