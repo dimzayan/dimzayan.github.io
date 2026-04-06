@@ -46,6 +46,7 @@ const CSS = `
 .coll-room-photo {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover; display: block;
+  pointer-events: none;
 }
 .coll-hotspot {
   position: absolute; cursor: pointer;
@@ -112,7 +113,7 @@ const CSS = `
   max-width: 92%; max-height: 92%;
   object-fit: contain; display: block;
   filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));
-  cursor: pointer;
+  cursor: zoom-in;
   user-select: none; -webkit-user-drag: none;
 }
 
@@ -146,7 +147,7 @@ const CSS = `
   display: flex; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none;
   transition: opacity 0.5s ease;
-  cursor: pointer;
+  cursor: zoom-out;
 }
 .coll-zoom-layer.active { opacity: 1; pointer-events: all; }
 .coll-zoom-layer img {
@@ -318,7 +319,8 @@ async function initRoom(root, works, opts) {
       el.style.top    = hs.y + '%';
       el.style.width  = hs.w + '%';
       el.style.height = hs.h + '%';
-      if (w) el.addEventListener('click', () => clickHotspot(hs, w));
+      if (hs.type === 'room') el.addEventListener('click', () => showRoom(hs.target));
+      else if (w) el.addEventListener('click', () => clickHotspot(hs, w));
       roomLayer.appendChild(el);
     });
     roomPrev.disabled = rooms.length <= 1;
@@ -499,12 +501,16 @@ async function initCarousel(root, works, opts) {
   /* ── Layout ─────────────────────────────────────────────────── */
   const getItemWidth = () => {
     const W = clip.offsetWidth;
-    return peek > 0 ? Math.max(W - 2 * peek - 2 * gap, 80) : W;
+    if (peek <= 0) return W;
+    const natural = W - 2 * peek - 2 * gap;
+    return natural >= 200 ? natural : W; // fall back to full-width on narrow screens
   };
+
+  const peekFits = () => peek > 0 && getItemWidth() < clip.offsetWidth;
 
   const getOffset = idx => {
     const iw = getItemWidth();
-    return peek > 0 ? (peek + gap) - idx * (iw + gap) : -idx * (iw + gap);
+    return peekFits() ? (peek + gap) - idx * (iw + gap) : -idx * (iw + gap);
   };
 
   function applyLayout() {

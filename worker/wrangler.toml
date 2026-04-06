@@ -10,3 +10,7 @@ id = "f413e3b7359e490690039d30e94a78ce"
 [[routes]]
 pattern = "dimzayan.com/api/*"
 zone_id = "8eeb7820ef96796038b1c4d7278aa1f8"
+
+[[routes]]
+pattern = "dimzayan.com/exhibitions/*"
+zone_id = "8eeb7820ef96796038b1c4d7278aa1f8"

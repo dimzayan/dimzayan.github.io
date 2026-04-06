@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dim Zayan</title>
+  <link rel="icon" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100;200;300&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { background: #000; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 200; color: #111; background: #fff; }
+
+    /* ── Cover ── */
+    #cover {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+    }
+
+    #cover-header, #cover-footer {
+      z-index: 10;
+      transition: opacity 0.4s ease;
+    }
+    #cover.coll-in-carousel #cover-header,
+    #cover.coll-in-carousel #cover-footer {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #cover-header {
+      position: absolute;
+      top: 1em;
+      left: 1em;
+      display: flex;
+      flex-direction: column;
+      font-weight: 100;
+      font-size: 3em;
+      color: #111;
+    }
+
+    #cover-footer {
+      position: absolute;
+      bottom: 1em;
+      left: 1em;
+      display: flex;
+      flex-direction: column;
+      font-weight: 100;
+      font-size: 0.85rem;
+      color: #111;
+      gap: 0.15em;
+    }
+
+    /* ── Shared section layout ── */
+    .exhibit-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 5rem 3rem;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      margin-bottom: 2rem;
+    }
+
+    /* ── About ── */
+    #about .description {
+      font-size: 1rem;
+      font-weight: 200;
+      line-height: 1.8;
+      max-width: 600px;
+      color: #222;
+    }
+
+    /* ── Press ── */
+    #press .press-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    #press .press-list a {
+      font-size: 0.85rem;
+      font-weight: 200;
+      color: #111;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+      padding-bottom: 0.75rem;
+    }
+
+    #press .press-list a:hover { opacity: 0.55; }
+
+    /* ── About the artist ── */
+    .artist-body { display: flex; flex-direction: column; gap: 1.5rem; max-width: 600px; }
+    .artist-bio { font-size: 1rem; font-weight: 200; line-height: 1.8; color: #222; }
+    .artist-site {
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #111; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.2);
+      padding-bottom: 2px; opacity: 0.45; transition: opacity 0.2s; align-self: flex-start;
+    }
+    .artist-site:hover { opacity: 1; }
+
+    /* ── Inquire ── */
+    .inquire-body { display: flex; flex-direction: column; gap: 1.2rem; }
+    .inquire-email {
+      font-size: 1.1rem; font-weight: 200; letter-spacing: 0.02em;
+      color: #111; text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.15); padding-bottom: 2px;
+      align-self: flex-start; transition: opacity 0.2s;
+    }
+    .inquire-email:hover { opacity: 0.55; }
+    .inquire-meta {
+      display: flex; flex-direction: column; gap: 0.2rem;
+      font-size: 0.82rem; font-weight: 200; color: #444; opacity: 0.6;
+    }
+    .inquire-social a {
+      font-size: 0.72rem; font-weight: 200; letter-spacing: 0.08em;
+      color: #111; text-decoration: none; opacity: 0.5; transition: opacity 0.2s;
+    }
+    .inquire-social a:hover { opacity: 1; }
+
+    /* ── Footer ── */
+    #site-footer {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding: 2.5rem 3rem;
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.72rem;
+      font-weight: 200;
+      opacity: 0.4;
+    }
+
+    .not-found {
+      color: #555;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 4em;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="cover">
+    <div id="cover-header">
+      <span class="cover-artist">Dim Zayan</span>
+      <span class="cover-title" id="cover-title"></span>
+    </div>
+    <footer id="cover-footer">
+      <span>Do Right Hall, Marfa, TX</span>
+      <span>March 5–15 2026</span>
+    </footer>
+  </div>
+
+  <section id="about" class="exhibit-section">
+    <div class="section-label">About</div>
+    <div class="description" id="about-text"></div>
+  </section>
+
+  <section id="press" class="exhibit-section">
+    <div class="section-label">Press</div>
+    <div class="press-list" id="press-list"></div>
+  </section>
+
+  <section id="artist" class="exhibit-section">
+    <div class="section-label">About the artist</div>
+    <div class="artist-body">
+      <p class="artist-bio" id="artist-bio"></p>
+      <a class="artist-site" id="artist-site" target="_blank" rel="noopener"></a>
+    </div>
+  </section>
+
+  <section id="inquire" class="exhibit-section">
+    <div class="section-label">Inquire</div>
+    <div class="inquire-body">
+      <a class="inquire-email" id="inquire-email"></a>
+      <div class="inquire-meta" id="inquire-meta"></div>
+      <div class="inquire-social" id="inquire-social"></div>
+    </div>
+  </section>
+
+  <footer id="site-footer">
+    <span>Dim Zayan</span>
+    <span>dimzayan.com</span>
+  </footer>
+
+
+  <script type="module" src="js/collection.js"></script>
+  <script>
+    const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+
+    const id    = window.__EXHIBIT_ID__ || new URLSearchParams(window.location.search).get('id');
+    const cover = document.getElementById('cover');
+
+    if (!id) {
+      cover.innerHTML = '<div class="not-found">No exhibit specified.</div>';
+    } else {
+      (async function() {
+        function fetchExhibits() {
+          return fetch('https://dimzayan.com/api/exhibits').then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+        }
+
+        function fetchInventory() {
+          return fetch('https://dimzayan.com/api/inventory').then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+        }
+
+        try {
+          const results  = await Promise.all([
+            fetchExhibits(),
+            fetchInventory(),
+            fetch('https://dimzayan.com/api/data').then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+          ]);
+          const exhibit   = results[0][id];
+          const inventory = results[1];
+          const artist    = results[2].artist;
+
+          if (!exhibit) {
+            cover.innerHTML = '<div class="not-found">Exhibit not found.</div>';
+            return;
+          }
+
+          document.title = exhibit.title + ' — Dim Zayan';
+          document.getElementById('cover-title').textContent = exhibit.title;
+
+          // About
+          if (exhibit.description) {
+            document.getElementById('about-text').textContent = exhibit.description;
+          } else {
+            document.getElementById('about').style.display = 'none';
+          }
+
+          // Works — from hotspot IDs when rooms exist, otherwise tagged by exhibit field
+          let worksArr;
+          if (exhibit.rooms && exhibit.rooms.length) {
+            const hsIds = [];
+            const seen  = new Set();
+            exhibit.rooms.forEach(function(r) {
+              (r.hotspots || []).forEach(function(h) {
+                if (!seen.has(h.id) && inventory[h.id] && !inventory[h.id].excluded) {
+                  seen.add(h.id);
+                  hsIds.push(h.id);
+                }
+              });
+            });
+            worksArr = hsIds.map(function(wid) { return Object.assign({ id: wid }, inventory[wid]); });
+          } else {
+            worksArr = Object.entries(inventory)
+              .filter(function(entry) { return entry[1].exhibit === id && !entry[1].excluded; })
+              .map(function(entry) { return Object.assign({ id: entry[0] }, entry[1]); });
+          }
+
+          if (worksArr.length) {
+            Collection.init('#cover', worksArr, {
+              mode: exhibit.rooms && exhibit.rooms.length ? 'room' : 'carousel',
+              rooms: exhibit.rooms,
+              wall: true,
+              loop: true,
+              gap: 32,
+              peek: 200,
+              previewBase: 'preview.html'
+            });
+          }
+
+          // Press
+          const pressList = document.getElementById('press-list');
+          if (exhibit.press && exhibit.press.length) {
+            exhibit.press.forEach(function(url) {
+              const a = document.createElement('a');
+              a.href = url;
+              a.target = '_blank';
+              a.rel = 'noopener';
+              a.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+              pressList.appendChild(a);
+            });
+          } else {
+            document.getElementById('press').style.display = 'none';
+          }
+          // Artist
+          document.getElementById('artist-bio').textContent = artist.bio || '';
+          const siteEl = document.getElementById('artist-site');
+          siteEl.href = artist.website || '#';
+          siteEl.textContent = (artist.website || '').replace(/^https?:\/\//, '');
+
+          // Inquire
+          const emailEl = document.getElementById('inquire-email');
+          emailEl.href = 'mailto:' + (artist.email || '');
+          emailEl.textContent = artist.email || '';
+
+          const metaEl = document.getElementById('inquire-meta');
+          if (artist.address) artist.address.split(',').forEach(function(line) {
+            const s = document.createElement('span');
+            s.textContent = line.trim();
+            metaEl.appendChild(s);
+          });
+
+          const socialEl = document.getElementById('inquire-social');
+          if (artist.instagram) {
+            const a = document.createElement('a');
+            a.href = 'https://instagram.com/' + artist.instagram;
+            a.target = '_blank'; a.rel = 'noopener';
+            a.textContent = '@' + artist.instagram;
+            socialEl.appendChild(a);
+          }
+
+        } catch(e) {
+          cover.innerHTML = '<div class="not-found">Could not load exhibit.</div>';
+        }
+      })();
+    }
+  </script>
+</body>
+</html>
