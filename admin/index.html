@@ -79,6 +79,7 @@
       { name: 'exhibitions', route: 'admin-exhibitions'  },
       { name: 'invoices',    route: 'admin-invoices'     },
       { name: 'clients',     route: 'admin-clients'      },
+      { name: 'settings',    route: 'admin-settings'     },
     ];
 
     const dash = document.getElementById('dashboard');
@@ -101,14 +102,11 @@
       const status = document.getElementById('token-status');
       function updateUI() {
         const t = localStorage.getItem('dim_gh_token') || '';
-        if (t) { status.textContent = 'token set'; btn.textContent = 'Clear'; inp.style.display = 'none'; }
-        else { status.textContent = ''; btn.textContent = 'Set token'; }
+        document.getElementById('token-row').style.display = t ? 'none' : 'flex';
       }
       updateUI();
       btn.addEventListener('click', function() {
-        const t = localStorage.getItem('dim_gh_token') || '';
-        if (t) { localStorage.removeItem('dim_gh_token'); updateUI(); }
-        else if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
+        if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
         else { const v = inp.value.trim(); if (v) { localStorage.setItem('dim_gh_token', v); inp.value = ''; } updateUI(); }
       });
       inp.addEventListener('keydown', function(e) {

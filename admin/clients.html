@@ -12,36 +12,47 @@
     body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
 
     header {
-      padding: 2rem 2.5rem 1.5rem;
-      display: flex; align-items: baseline; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      transition: background 0.15s, box-shadow 0.15s;
     }
-    .header-left { display: flex; align-items: baseline; gap: 1.5rem; }
+    header.scrolled { background: rgba(223,223,224,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
+    .header-left { display: flex; align-items: center; gap: 1.5rem; }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; }
     .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; letter-spacing: 0.01em; }
     .back-link:hover { opacity: 1; }
     .header-title { font-size: 0.85rem; font-weight: 300; letter-spacing: 0.04em; }
+    #save-status { font-size: 0.75rem; opacity: 0.45; }
+    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; }
+    .save-btn:hover { background: #000; }
+    .save-btn:disabled { opacity: 0.4; cursor: default; }
 
-    .page { max-width: 860px; margin: 0 auto; padding: 1rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
+    /* Cards */
     .card { background: white; border-radius: 4px; overflow: hidden; }
     .card-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: space-between; }
     .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
-    .card-action { font-size: 0.75rem; font-weight: 300; color: #111; text-decoration: none; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; letter-spacing: 0.02em; }
+    .card-action { font-size: 0.75rem; font-weight: 300; color: #111; text-decoration: none; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
     .card-action:hover { opacity: 1; }
+    .card-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
+    .empty-state { padding: 2.5rem 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
 
-    .data-row { display: flex; align-items: center; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.84rem; gap: 1rem; }
+    /* List rows */
+    .data-row { display: flex; align-items: center; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.84rem; gap: 1rem; transition: background 0.1s; }
     .data-row:last-child { border-bottom: none; }
     .data-row-main { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; }
-    .data-row-title { font-size: 0.85rem; font-weight: 300; }
+    .data-row-title { font-size: 0.85rem; }
     .data-row-meta { font-size: 0.72rem; opacity: 0.38; }
     .data-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
-    .data-row-amount { font-size: 0.82rem; font-weight: 300; }
+    .data-row-amount { font-size: 0.82rem; }
     .status-badge { font-size: 0.62rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 2px; }
     .status-paid    { background: rgba(30,130,60,0.08);  color: rgba(30,130,60,0.85); }
     .status-pending { background: rgba(200,150,0,0.09); color: rgba(150,110,0,0.85); }
     .status-mixed   { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.4); }
 
-    .empty-state { padding: 2.5rem 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
-
+    /* Forms */
     .form-field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.28rem; }
     .form-field input, .form-field textarea { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.42rem 0.65rem; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 300; color: #111; background: white; }
     .form-field input:focus, .form-field textarea:focus { outline: none; border-color: rgba(0,0,0,0.4); }
@@ -50,179 +61,358 @@
     .form-actions { display: flex; gap: 0.6rem; justify-content: flex-end; align-items: center; }
     .form-actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
     .form-actions button:hover { background: rgba(0,0,0,0.04); }
-    #client-save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+    #new-client-save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+
+    #list-view, #detail-view { display: none; }
+    #detail-view { flex-direction: column; gap: 2.5rem; }
   </style>
 </head>
 <body>
-  <header>
+
+  <!-- List header -->
+  <header id="list-header" style="display:none;">
     <div class="header-left">
-      <a class="back-link" id="back-link" href="#">← Studio</a>
+      <a class="back-link" id="back-link-list" href="#">← Studio</a>
       <span class="header-title">Clients</span>
     </div>
   </header>
 
+  <!-- Detail header -->
+  <header id="detail-header" style="display:none;">
+    <div class="header-left">
+      <a class="back-link" id="back-link-detail" href="#">← Clients</a>
+      <span class="header-title" id="client-heading"></span>
+    </div>
+    <div class="header-right">
+      <span id="save-status"></span>
+      <button class="save-btn" id="save-btn">Save</button>
+    </div>
+  </header>
+
   <div class="page">
-    <div class="card">
-      <div class="card-header">
-        <span class="card-label">Clients</span>
-        <button class="card-action" id="new-client-btn">+ New client</button>
-      </div>
-      <div id="clients-list"><div class="empty-state">Loading…</div></div>
-      <div id="client-form" style="display:none;padding:1.25rem 1.5rem;border-top:1px solid rgba(0,0,0,0.07);background:rgba(0,0,0,0.015);flex-direction:column;gap:0.85rem;">
-        <div class="form-row">
-          <div class="form-field">
-            <label>Name</label>
-            <input id="cf-client-name" type="text" placeholder="Full name">
+
+    <!-- List view -->
+    <div id="list-view">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Clients</span>
+          <button class="card-action" id="new-client-btn">+ New client</button>
+        </div>
+        <div id="clients-list"><div class="empty-state">Loading…</div></div>
+        <div id="client-form" style="display:none;padding:1.25rem 1.5rem;border-top:1px solid rgba(0,0,0,0.07);background:rgba(0,0,0,0.015);flex-direction:column;gap:0.85rem;">
+          <div class="form-row">
+            <div class="form-field"><label>Name</label><input id="cf-name" type="text" placeholder="Full name"></div>
+            <div class="form-field"><label>Email</label><input id="cf-email" type="email" placeholder="email@example.com"></div>
           </div>
-          <div class="form-field">
-            <label>Notes</label>
-            <input id="cf-client-notes" type="text" placeholder="Optional">
+          <div class="form-row">
+            <div class="form-field"><label>Phone</label><input id="cf-phone" type="tel" placeholder="+1 000 000 0000"></div>
+            <div class="form-field"><label>Notes</label><input id="cf-notes" type="text" placeholder="Optional"></div>
+          </div>
+          <div class="form-field"><label>Address</label><textarea id="cf-address" rows="2" placeholder="Street&#10;City, State ZIP"></textarea></div>
+          <div class="form-actions">
+            <span id="new-client-status" style="font-size:0.75rem;opacity:0.5;"></span>
+            <button id="new-client-cancel-btn">Cancel</button>
+            <button id="new-client-save-btn">Add client</button>
           </div>
         </div>
-        <div class="form-field">
-          <label>Address</label>
-          <textarea id="cf-client-addr" rows="2" placeholder="Street&#10;City, State ZIP"></textarea>
-        </div>
-        <div class="form-actions">
-          <span id="client-form-status" style="font-size:0.75rem;opacity:0.5;"></span>
-          <button id="client-cancel-btn">Cancel</button>
-          <button id="client-save-btn">Add client</button>
+      </div>
+    </div>
+
+    <!-- Detail view -->
+    <div id="detail-view">
+
+      <!-- About -->
+      <div class="card">
+        <div class="card-header"><span class="card-label">About</span></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-field"><label>Name</label><input id="ab-name" type="text"></div>
+            <div class="form-field"><label>Email</label><input id="ab-email" type="email"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Phone</label><input id="ab-phone" type="tel"></div>
+            <div class="form-field"><label>Notes</label><input id="ab-notes" type="text"></div>
+          </div>
+          <div class="form-field"><label>Address</label><textarea id="ab-address" rows="3"></textarea></div>
         </div>
       </div>
+
+      <!-- Invoices -->
+      <div class="card">
+        <div class="card-header"><span class="card-label">Invoices</span></div>
+        <div id="invoices-list"><div class="empty-state">No invoices found.</div></div>
+      </div>
+
+      <!-- Purchased works -->
+      <div class="card">
+        <div class="card-header"><span class="card-label">Purchased Works</span></div>
+        <table id="works-table">
+          <thead>
+            <tr>
+              <th class="col-drag"></th>
+              <th class="col-thumb th-thumb"></th>
+              <th class="col-num"></th>
+              <th class="col-title" data-sort="title">Title <span class="sort-arrow"></span></th>
+              <th class="col-dims" data-sort="dimensions">Dimensions <span class="sort-arrow"></span></th>
+              <th class="col-material" data-sort="material">Material <span class="sort-arrow"></span></th>
+              <th class="col-price" data-sort="price">Price <span class="sort-arrow"></span></th>
+              <th class="col-year" data-sort="year">Year <span class="sort-arrow"></span></th>
+              <th class="col-notes">Notes</th>
+              <th class="col-inv"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="works-empty" class="empty-state" style="display:none;">No purchased works on record.</div>
+      </div>
+
     </div>
   </div>
 
   <script type="module">
     import { allInvoices, calcTotal, fmtMoney, openInvoice } from '../js/invoice-utils.js';
-    import { routeUrl as ru } from '../js/routes.js';
+    import { routeUrl, getPageId } from '../js/routes.js';
+    import { initArtworksTable } from '../js/artworks-table.js';
 
     const API_CLIENTS   = 'https://dimzayan.com/api/clients';
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
 
-    document.getElementById('back-link').href = ru('admin');
+    const clientId = getPageId('__CLIENT_ID__');
+
+    // Sticky header
+    window.addEventListener('scroll', function() {
+      document.querySelectorAll('header').forEach(function(h) {
+        h.classList.toggle('scrolled', window.scrollY > 10);
+      });
+    }, { passive: true });
 
     let clientsData = {};
-
     async function loadClients() {
-      try {
-        const r = await fetch(API_CLIENTS);
-        clientsData = r.ok ? await r.json() : {};
-      } catch(e) { clientsData = {}; }
+      try { const r = await fetch(API_CLIENTS); clientsData = r.ok ? await r.json() : {}; } catch(e) { clientsData = {}; }
     }
 
-    async function render() {
-      let inventory = {};
-      try { inventory = await fetch(API_INVENTORY).then(function(r) { return r.json(); }); } catch(e) {}
+    if (!clientId) {
+      // ── LIST MODE ──────────────────────────────────────────────────────────
+      document.getElementById('list-header').style.display = 'flex';
+      document.getElementById('list-view').style.display   = 'block';
+      document.getElementById('back-link-list').href = routeUrl('admin');
+      document.title = 'Clients — Dim Zayan';
 
-      const groups = {};
-      Object.keys(inventory).forEach(function(id) {
-        const work = inventory[id];
-        if (!work.invoiced) return;
-        const ref = work.invoiced;
-        const num = ref.num;
-        if (!groups[num]) groups[num] = { num, invoiceId: ref.invoiceId, paid: !!ref.paid, works: [] };
-        groups[num].works.push(Object.assign({ id }, work));
-        if (ref.paid) groups[num].paid = true;
-      });
+      async function renderList() {
+        let inventory = {};
+        try { inventory = await fetch(API_INVENTORY).then(function(r) { return r.json(); }); } catch(e) {}
 
-      const stored = allInvoices();
-      Object.values(groups).forEach(function(g) {
-        const doc = g.invoiceId ? stored[g.invoiceId] : null;
-        if (doc) { g.buyer = doc.buyer; g.date = doc.date; g.shipping = doc.shipping || 0; g.taxPct = doc.taxPct || 0; g.discount = doc.discount || false; g.items = doc.items; g.paid = doc.paid; }
-      });
+        const stored = allInvoices();
 
-      const invoiceClientMap = {};
-      Object.values(groups).forEach(function(g) {
-        const name = g.buyer && g.buyer.name ? g.buyer.name : null;
-        if (!name) return;
-        if (!invoiceClientMap[name]) invoiceClientMap[name] = { groups: [], total: 0 };
-        invoiceClientMap[name].groups.push(g);
-        const total = g.items ? calcTotal(g) : g.works.reduce(function(s, w) { return s + (parseFloat(w.price) || 0); }, 0);
-        invoiceClientMap[name].total += total;
-      });
+        // Group works by invoice num
+        const groups = {};
+        Object.keys(inventory).forEach(function(id) {
+          const work = inventory[id];
+          if (!work.invoiced) return;
+          const ref = work.invoiced;
+          if (!groups[ref.num]) groups[ref.num] = { num: ref.num, invoiceId: ref.invoiceId, paid: !!ref.paid, works: [] };
+          groups[ref.num].works.push(Object.assign({ id }, work));
+          if (ref.paid) groups[ref.num].paid = true;
+        });
+        Object.values(groups).forEach(function(g) {
+          const doc = g.invoiceId ? stored[g.invoiceId] : null;
+          if (doc) { g.buyer = doc.buyer; g.date = doc.date; g.items = doc.items; g.shipping = doc.shipping || 0; g.taxPct = doc.taxPct || 0; g.discount = doc.discount || false; g.paid = doc.paid; }
+        });
 
-      const allNames = new Set(Object.keys(invoiceClientMap));
-      Object.values(clientsData).forEach(function(c) { allNames.add(c.name); });
+        // Map by buyer name
+        const invoiceClientMap = {};
+        Object.values(groups).forEach(function(g) {
+          const name = g.buyer && g.buyer.name ? g.buyer.name : null;
+          if (!name) return;
+          if (!invoiceClientMap[name]) invoiceClientMap[name] = { groups: [], total: 0 };
+          invoiceClientMap[name].groups.push(g);
+          invoiceClientMap[name].total += g.items ? calcTotal(g) : g.works.reduce(function(s, w) { return s + (parseFloat(w.price) || 0); }, 0);
+        });
 
-      const list = document.getElementById('clients-list');
-      if (!allNames.size) {
-        list.innerHTML = '<div class="empty-state">No clients yet.</div>';
-        return;
+        const allNames = new Set([...Object.keys(invoiceClientMap), ...Object.values(clientsData).map(function(c) { return c.name; })]);
+        const list = document.getElementById('clients-list');
+        if (!allNames.size) { list.innerHTML = '<div class="empty-state">No clients yet.</div>'; return; }
+        list.innerHTML = '';
+
+        Array.from(allNames).sort().forEach(function(name) {
+          const kvClient  = Object.values(clientsData).find(function(c) { return c.name === name; });
+          const invClient = invoiceClientMap[name];
+          const gps       = invClient ? invClient.groups : [];
+          const total     = invClient ? invClient.total : 0;
+          const allPaid   = gps.length && gps.every(function(g) { return g.paid; });
+          const somePaid  = gps.some(function(g) { return g.paid; });
+          const statusClass = !gps.length ? '' : allPaid ? 'status-paid' : somePaid ? 'status-mixed' : 'status-pending';
+          const statusLabel = !gps.length ? '' : allPaid ? 'Paid' : somePaid ? 'Partial' : 'Pending';
+          const meta = [
+            gps.length ? gps.length + ' invoice' + (gps.length !== 1 ? 's' : '') : null,
+            kvClient && kvClient.address ? kvClient.address.split('\n')[0] : null,
+            kvClient && kvClient.notes   ? kvClient.notes : null,
+          ].filter(Boolean).join('  ·  ');
+
+          const row = document.createElement('div');
+          row.className = 'data-row';
+          row.innerHTML =
+            '<div class="data-row-main">' +
+              '<div class="data-row-title">' + name + '</div>' +
+              (meta ? '<div class="data-row-meta">' + meta + '</div>' : '') +
+            '</div>' +
+            '<div class="data-row-right">' +
+              (total ? '<span class="data-row-amount">' + fmtMoney(total) + '</span>' : '') +
+              (statusClass ? '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span>' : '') +
+              (kvClient ? '<span style="font-size:0.72rem;opacity:0.25;">→</span>' : '') +
+            '</div>';
+
+          if (kvClient) {
+            row.style.cursor = 'pointer';
+            row.addEventListener('click', function() { window.location.href = routeUrl('admin-client', { id: kvClient.id }); });
+          } else {
+            const firstWithDoc = gps.find(function(g) { return g.invoiceId && stored[g.invoiceId]; });
+            if (firstWithDoc) {
+              row.style.cursor = 'pointer';
+              row.addEventListener('click', function() { openInvoice(firstWithDoc.invoiceId); });
+            }
+          }
+          list.appendChild(row);
+        });
       }
-      list.innerHTML = '';
-      Array.from(allNames).sort().forEach(function(name) {
-        const kvClient  = Object.values(clientsData).find(function(c) { return c.name === name; });
-        const invClient = invoiceClientMap[name];
-        const gps = invClient ? invClient.groups : [];
-        const total = invClient ? invClient.total : 0;
-        const allPaid  = gps.length && gps.every(function(g) { return g.paid; });
-        const somePaid = gps.some(function(g) { return g.paid; });
-        const statusClass = !gps.length ? '' : allPaid ? 'status-paid' : somePaid ? 'status-mixed' : 'status-pending';
-        const statusLabel = !gps.length ? '' : allPaid ? 'Paid' : somePaid ? 'Partial' : 'Pending';
-        const meta = [
-          gps.length ? gps.length + ' invoice' + (gps.length !== 1 ? 's' : '') : null,
-          kvClient && kvClient.address ? kvClient.address.split('\n')[0] : null,
-          kvClient && kvClient.notes   ? kvClient.notes : null,
-        ].filter(Boolean).join('  ·  ');
 
-        const row = document.createElement('div');
-        row.className = 'data-row';
-        row.innerHTML =
-          '<div class="data-row-main">' +
-            '<div class="data-row-title">' + name + '</div>' +
-            (meta ? '<div class="data-row-meta">' + meta + '</div>' : '') +
-          '</div>' +
-          '<div class="data-row-right">' +
-            (total ? '<span class="data-row-amount">' + fmtMoney(total) + '</span>' : '') +
-            (statusClass ? '<span class="status-badge ' + statusClass + '">' + statusLabel + '</span>' : '') +
-          '</div>';
-        const firstWithDoc = gps.find(function(g) { return g.invoiceId && stored[g.invoiceId]; });
-        if (firstWithDoc) {
-          row.style.cursor = 'pointer';
-          row.addEventListener('click', function() { openInvoice(firstWithDoc.invoiceId); });
+      // New client form
+      document.getElementById('new-client-btn').addEventListener('click', function() {
+        const form = document.getElementById('client-form');
+        form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+        if (form.style.display === 'flex') {
+          ['cf-name','cf-email','cf-phone','cf-address','cf-notes'].forEach(function(id) { document.getElementById(id).value = ''; });
+          document.getElementById('new-client-status').textContent = '';
+          document.getElementById('cf-name').focus();
         }
-        list.appendChild(row);
       });
-    }
-
-    document.getElementById('new-client-btn').addEventListener('click', function() {
-      const form = document.getElementById('client-form');
-      form.style.display = form.style.display === 'none' ? 'flex' : 'none';
-      if (form.style.display === 'flex') {
-        ['cf-client-name','cf-client-addr','cf-client-notes'].forEach(function(id) { document.getElementById(id).value = ''; });
-        document.getElementById('client-form-status').textContent = '';
-        document.getElementById('cf-client-name').focus();
-      }
-    });
-
-    document.getElementById('client-cancel-btn').addEventListener('click', function() {
-      document.getElementById('client-form').style.display = 'none';
-    });
-
-    document.getElementById('client-save-btn').addEventListener('click', async function() {
-      const name = document.getElementById('cf-client-name').value.trim();
-      if (!name) { document.getElementById('cf-client-name').focus(); return; }
-      const token = localStorage.getItem('dim_gh_token') || '';
-      if (!token) { document.getElementById('client-form-status').textContent = 'No token'; return; }
-
-      const id = 'client_' + Date.now();
-      clientsData[id] = { id, name, address: document.getElementById('cf-client-addr').value.trim(), notes: document.getElementById('cf-client-notes').value.trim() };
-
-      const btn = document.getElementById('client-save-btn');
-      btn.disabled = true;
-      document.getElementById('client-form-status').textContent = 'Saving…';
-      try {
-        const r = await fetch(API_CLIENTS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(clientsData, null, 2) });
-        if (!r.ok) throw new Error(r.status + ': ' + await r.text());
+      document.getElementById('new-client-cancel-btn').addEventListener('click', function() {
         document.getElementById('client-form').style.display = 'none';
-        render();
-      } catch(e) {
-        delete clientsData[id];
-        document.getElementById('client-form-status').textContent = 'Error: ' + e.message;
-      } finally { btn.disabled = false; }
-    });
+      });
+      document.getElementById('new-client-save-btn').addEventListener('click', async function() {
+        const name = document.getElementById('cf-name').value.trim();
+        if (!name) { document.getElementById('cf-name').focus(); return; }
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { document.getElementById('new-client-status').textContent = 'No token'; return; }
+        const id = 'client_' + Date.now();
+        clientsData[id] = { id, name, email: document.getElementById('cf-email').value.trim(), phone: document.getElementById('cf-phone').value.trim(), address: document.getElementById('cf-address').value.trim(), notes: document.getElementById('cf-notes').value.trim() };
+        const btn = document.getElementById('new-client-save-btn');
+        btn.disabled = true; document.getElementById('new-client-status').textContent = 'Saving…';
+        try {
+          const r = await fetch(API_CLIENTS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(clientsData, null, 2) });
+          if (!r.ok) throw new Error(r.status + ': ' + await r.text());
+          document.getElementById('client-form').style.display = 'none';
+          renderList();
+        } catch(e) {
+          delete clientsData[id];
+          document.getElementById('new-client-status').textContent = 'Error: ' + e.message;
+        } finally { btn.disabled = false; }
+      });
 
-    loadClients().then(render);
+      loadClients().then(renderList);
+
+    } else {
+      // ── DETAIL MODE ────────────────────────────────────────────────────────
+      document.getElementById('detail-header').style.display = 'flex';
+      document.getElementById('detail-view').style.display   = 'flex';
+      document.getElementById('back-link-detail').href = routeUrl('admin-clients');
+
+      let inventoryData = {};
+      let client = null;
+
+      async function loadAll() {
+        await loadClients();
+        try { inventoryData = await fetch(API_INVENTORY).then(function(r) { return r.json(); }); } catch(e) {}
+
+        client = clientsData[clientId];
+        if (!client) {
+          document.getElementById('client-heading').textContent = 'Client not found';
+          return;
+        }
+
+        document.title = client.name + ' — Dim Zayan';
+        document.getElementById('client-heading').textContent = client.name;
+
+        // Populate About
+        document.getElementById('ab-name').value    = client.name    || '';
+        document.getElementById('ab-email').value   = client.email   || '';
+        document.getElementById('ab-phone').value   = client.phone   || '';
+        document.getElementById('ab-address').value = client.address || '';
+        document.getElementById('ab-notes').value   = client.notes   || '';
+
+        // Invoices from localStorage filtered by buyer.name
+        const stored = allInvoices();
+        const clientInvoices = Object.values(stored).filter(function(inv) {
+          return inv.buyer && inv.buyer.name === client.name;
+        }).sort(function(a, b) { return b.num - a.num; });
+
+        renderInvoices(clientInvoices);
+
+        // Purchased works — works whose invoiced.invoiceId belongs to this client
+        const clientInvoiceIds = new Set(clientInvoices.map(function(inv) { return inv.invoiceId; }));
+        const worksTbl = initArtworksTable({
+          tableEl: document.getElementById('works-table'),
+          exhibits: {},
+          filter: function(id, work) {
+            return !!(work.invoiced && work.invoiced.invoiceId && clientInvoiceIds.has(work.invoiced.invoiceId));
+          },
+        });
+        worksTbl.renderData(inventoryData);
+        const hasWorks = document.getElementById('works-table').querySelector('tbody tr[data-id]');
+        document.getElementById('works-empty').style.display = hasWorks ? 'none' : 'block';
+      }
+
+      function renderInvoices(invoices) {
+        const list = document.getElementById('invoices-list');
+        if (!invoices.length) { list.innerHTML = '<div class="empty-state">No invoices found.</div>'; return; }
+        list.innerHTML = '';
+        invoices.forEach(function(inv) {
+          const total = calcTotal(inv);
+          const numStr = 'Invoice.' + String(inv.num).padStart(4, '0');
+          const row = document.createElement('div');
+          row.className = 'data-row';
+          row.style.cursor = 'pointer';
+          row.innerHTML =
+            '<div class="data-row-main">' +
+              '<div class="data-row-title">' + numStr + '</div>' +
+              '<div class="data-row-meta">' + (inv.date || '') + (inv.items ? '  ·  ' + inv.items.length + ' work' + (inv.items.length !== 1 ? 's' : '') : '') + '</div>' +
+            '</div>' +
+            '<div class="data-row-right">' +
+              '<span class="data-row-amount">' + fmtMoney(total) + '</span>' +
+              '<span class="status-badge ' + (inv.paid ? 'status-paid' : 'status-pending') + '">' + (inv.paid ? 'Paid' : 'Pending') + '</span>' +
+            '</div>';
+          row.addEventListener('click', function() { openInvoice(inv.invoiceId); });
+          list.appendChild(row);
+        });
+      }
+
+      // Save About
+      document.getElementById('save-btn').addEventListener('click', async function() {
+        if (!client) return;
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { document.getElementById('save-status').textContent = 'No token'; return; }
+        const btn = document.getElementById('save-btn');
+        btn.disabled = true; document.getElementById('save-status').textContent = 'Saving…';
+        client.name    = document.getElementById('ab-name').value.trim()    || client.name;
+        client.email   = document.getElementById('ab-email').value.trim();
+        client.phone   = document.getElementById('ab-phone').value.trim();
+        client.address = document.getElementById('ab-address').value.trim();
+        client.notes   = document.getElementById('ab-notes').value.trim();
+        clientsData[clientId] = client;
+        document.getElementById('client-heading').textContent = client.name;
+        document.title = client.name + ' — Dim Zayan';
+        try {
+          const r = await fetch(API_CLIENTS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(clientsData, null, 2) });
+          if (!r.ok) throw new Error(r.status + ': ' + await r.text());
+          document.getElementById('save-status').textContent = 'Saved';
+          setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
+        } catch(e) {
+          document.getElementById('save-status').textContent = 'Error: ' + e.message;
+        } finally { btn.disabled = false; }
+      });
+
+      loadAll();
+    }
   </script>
 </body>
 </html>

@@ -9,36 +9,63 @@
 - **DBA**: "Dim Zayan" registered as assumed name in Presidio County TX (or in progress)
 
 ## Site Structure
+
+### Public pages (GitHub Pages)
 - `index.html` — homepage
-- `works.html` — public-facing grid; fetches `/api/inventory` (Cloudflare Worker), falls back to `localStorage` (`dim_inventory_order_v2` for order)
-- `inventory.html` — private inventory management tool; protected via Cloudflare Access (email OTP)
-- `inventory.json` / `exhibits.json` / `data.json` — seed files in repo; KV is the live source of truth
+- `artworks.html` — public grid (no ID) + detail view (with `__ARTWORK_ID__`); fetches `/api/inventory`
+- `exhibitions.html` — public list (no ID) + exhibition detail (with `__EXHIBIT_ID__`); fetches `/api/exhibits` + `/api/inventory`
+
+### Admin pages (GitHub Pages, protected by Cloudflare Access)
+- `admin/index.html` — hub with nav cards (Artworks, Exhibitions, Invoices, Clients)
+- `admin/artworks.html` — editable inventory table; uses `js/artworks-table.js` module; Save JSON PUTs to `/api/inventory`
+- `admin/exhibitions.html` — list mode (no ID) + detail/editor mode (with `__EXHIBIT_ID__`); rooms editor + works panel; Save PUTs to both `/api/exhibits` and `/api/inventory`
+- `admin/invoices.html` — invoice list + viewer
+- `admin/clients.html` — clients list + add form
+- `dashboard.html` — redirects to `admin/` (kept for backward compat)
+
+### Seed / legacy files (repo only, KV is live source of truth)
+- `inventory.json` / `exhibits.json` / `data.json` — seed files only
+
+## Routing (`js/routes.js`)
+- Single source of truth for all route definitions — imported by both the Worker and all pages
+- `routeUrl(name, params)` — generates correct URL: `?id=` locally, pretty path in production
+- `getPageId(varName)` — reads `window.__VAR__` (injected by Worker) or `?id=` query param
+- `IS_LOCAL` — true when hostname is not `dimzayan.com`
+- Routes: `artworks`, `artwork-view`, `exhibitions`, `exhibition-view`, `admin`, `admin-artworks`, `admin-artwork`, `admin-exhibitions`, `admin-exhibition`, `admin-invoices`, `admin-invoice`, `admin-clients`, `admin-client`
 
 ## API / Data Layer (Cloudflare Worker)
-- Worker: `worker/index.js` — handles `GET /api/inventory`, `GET /api/exhibits`, `GET /api/data` (public, no token) and `PUT` variants (Bearer token required)
-- KV namespace `DIM_KV` — live source of truth for all JSON data; immediately consistent, no CDN cache lag
-- Write token stored in `localStorage` key `dim_gh_token` (same key as before, now points to Worker not GitHub)
+- Worker: `worker/index.js` — handles `/api/*` (public reads, Bearer-token writes) and pretty-URL routing for all registered routes
+- KV namespace `DIM_KV` — live source of truth for all JSON data
+- Write token stored in `localStorage` key `dim_gh_token`
 - `wrangler.toml` in `worker/` — deploy with `wrangler deploy` from that directory
 - Seed KV on first deploy: `wrangler kv:key put --binding DIM_KV inventory "$(cat inventory.json)"` etc.
 - Secret: `wrangler secret put DIM_TOKEN`
+- Worker routes in `wrangler.toml`: `dimzayan.com/api/*`, `dimzayan.com/admin*`, `dimzayan.com/artworks*`, `dimzayan.com/exhibitions*`
+- Worker injects `<base href="/">` + optional `window.__VAR__="id"` into proxied HTML for pretty URLs
 
-## Inventory System
-- Data stored in `localStorage` key `dim_inventory_v2` (local cache / fallback only)
-- Manual order stored in `localStorage` key `dim_inventory_order_v2`
-- Fields per work: title, dimensions, material, price, year, notes, excluded (bool), invoiced (object|null)
-- `inventory.html` fetches `/api/inventory` (fresh, no token needed for reads); Save JSON PUTs to `/api/inventory` with Bearer token
-- Colleague also has Cloudflare Access — sees same inventory via `/api/inventory`
+## Inventory / Artworks
+- Fields per work: `title`, `dimensions`, `material`, `price`, `year`, `notes`, `photo`, `exhibition` (slug of assigned exhibition, or absent), `reserved` (bool), `invoiced` (object|null)
+- No `excluded` field — removed. Exhibition membership is the single source of truth via the `exhibition` field.
+- `admin/artworks.html` uses `js/artworks-table.js` (shared module) for all table UI
+- Invoice refs stored in `localStorage` key `dim_invoice_refs_v1` (cross-reference only; authoritative data in KV)
+- Fallback cache in `localStorage` key `dim_inventory_cache`
 
-## Invoice System (in inventory.html)
-- Right-click any row for context menu: Add to invoice / Open invoice / Clear invoice / Exclude / Delete
-- Cart button appears in header when items are queued; click to open modal
-- Modal fields: buyer name, address, shipping ($), sales tax (%), local discount (10% checkbox), Bitcoin checkbox
-- Invoice numbers: sequential, zero-padded 4 digits, starting at 0122 (counter in `localStorage` key `dim_invoice_ctr_v1`)
-- Invoice format: `Invoice.0122` — date + number on document
+## Shared Module: `js/artworks-table.js`
+- `initArtworksTable({ tableEl, exhibits, filter, onRightClick })` — sets up editable table with drag/drop, sort, thumbnails, lightbox, edit drawer
+- `filter: (id, work) => bool` — used by exhibitions detail page to show only works in that exhibition
+- Returns `{ renderData, gatherData, renumberRows, tbody, openEditDrawer, createRow }`
+- Injects all shared CSS via `_injectStyles()` (prefixed `at-`)
+- `gatherData()` returns only rows currently in the tbody (respects filter)
+- Edit drawer has Exhibition dropdown; reads `data.exhibition || data.exhibit` for migration compat; saves as `exhibition`
+
+## Invoice System (in `admin/artworks.html`)
+- Right-click context menu: Edit / Preview work sheet / Add to invoice / Clear invoice / Mark as reserved / Delete
+- Cart button in header when items queued; click opens modal
+- Modal fields: buyer name, address, shipping ($), sales tax (%), local discount (10%), Bitcoin checkbox
+- Invoice numbers: sequential, zero-padded 4 digits, starting at 0122 (`dim_invoice_ctr_v1` localStorage)
+- Invoice format: `Invoice.0122` — print-ready HTML in new tab
 - Invoices stored in `localStorage` key `dim_invoices_v1`
-- Invoice opens in new tab (print-ready HTML); "Mark as paid" calls back via `window.opener.dimZayanInvoicePaid()`
-- Payment methods: Venmo @gregory-mirzayantz, Apple Pay 646 678 1468, Bitcoin optional
-- Invoiced rows show `INV.XXXX` tag; click to reopen invoice
+- `js/invoicing.js` — non-module script; accesses `ctxRow`, `tbody`, `renumberRows` as globals set on `window` by the module script
 
 ## CDN
 - Hi-res: `https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/` (.webp)
@@ -46,18 +73,17 @@
 - Local copies: `media/works/hi/` and `media/works/low/`
 - **Rule**: all media references in HTML/JS must point to the CDN — never use local paths in production code
 
-## Exhibits
-- `exhibits.html` — public exhibit page, accessed via `?id=[slug]`; reads `/api/exhibits` and `/api/inventory` (no token)
-- `dashboard.html` — exhibit editor; reads/writes `/api/exhibits` via Worker (Bearer token for writes)
-- `exhibits.json` — seed only; live data is in KV (`exhibits` key)
-- Structure per exhibit: `{ id, title, year, location, press: [urls], description, media: [filenames], rooms: [...] }`
-- Media filenames resolve to CDN hi-res: `https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/[filename]`
+## Exhibitions
+- Structure per exhibition: `{ id, title, year, location, press: [urls], description, media: [filenames], rooms: [...] }`
+- Rooms: `{ photo, hotspots: [{ id, x, y, w, h } | { type:'room', target, x, y, w, h }] }`
+- Works are assigned to an exhibition via the `exhibition` field on the inventory item (not stored on the exhibit object)
+- `admin/exhibitions.html` detail mode: rooms editor (40/60 split — room list left, canvas editor right) + works panel below using `js/artworks-table.js` filtered to current exhibition; single Save button saves both exhibits and inventory in parallel
 
 ## GitHub / Hosting
 - Repo: `https://github.com/dimzayan/dimzayan.github.io`
 - Hosted on GitHub Pages (HTML/JS/assets only), domain dimzayan.com via Cloudflare
-- Cloudflare Workers serves `/api/*` — same zone, no cross-origin issues
-- Cloudflare Access protects `/inventory.html` and `/dashboard.html` — allowed emails: Dim + colleague
+- Cloudflare Workers serves `/api/*` and pretty URLs — same zone, no CORS issues
+- Cloudflare Access protects entire `/admin*` path with one rule — allowed emails: Dim + colleague
 - Secret scanning is active on the repo — never commit tokens or secrets
 
 ## Gallery Spreadsheet (art.gallery.xlsx — untracked)
@@ -65,11 +91,10 @@
 - Columns (all except NY): Gallery Name, City, Email, Website, Instagram, Phone, Note, Type
 - NY tab adds: Contact column
 - Note column = director/contact name and title
-- Texas: well-populated. SW, MW: sparse. Cali: LA has ~21 named contacts. EST: Miami populated. NY: 382 rows, well populated.
 
 ## Preferences
 - Keep code minimal — no over-engineering, no unnecessary abstractions
 - No emojis unless asked
-- Invoice and inventory data stays local (localStorage only) — never commit buyer info to git
-- Work sheet / per-piece PDF generator is a potential next feature for inventory.html
-- **Never use localStorage for cross-page data sharing** (exhibits, inventory, rooms, etc.) — localStorage is single-machine only and breaks multi-user / multi-device use. Cloudflare KV (via `/api/*`) is the source of truth; pages always read from the Worker
+- Invoice and buyer data stays local (localStorage only) — never commit to git
+- **Never use localStorage for cross-page data sharing** — localStorage is single-machine only. Cloudflare KV (via `/api/*`) is the source of truth; pages always read from the Worker
+- Admin pages use `../js/routes.js` — works locally (relative path) and in production (with `<base href="/">`)

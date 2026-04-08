@@ -101,6 +101,12 @@ export const ROUTES = [
     workerPage:   'admin/clients.html',
     injectVar:    '__CLIENT_ID__',
   },
+  {
+    name:         'admin-settings',
+    prettyPath:   '/admin/settings',
+    fallbackPage: 'admin/settings.html',
+    workerPage:   'admin/settings.html',
+  },
 ];
 
 const IS_LOCAL =

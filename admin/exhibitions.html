@@ -12,15 +12,25 @@
     body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
 
     header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       padding: 1.5rem 2.5rem;
       display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    header.scrolled {
+      background: rgba(223,223,224,0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.08);
     }
     .header-left { display: flex; align-items: center; gap: 1.5rem; }
     .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; letter-spacing: 0.01em; }
     .back-link:hover { opacity: 1; }
     .header-right { display: flex; align-items: center; gap: 0.75rem; }
 
-    .page { max-width: 860px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
     /* ── Shared card styles ── */
     .card { background: white; border-radius: 4px; overflow: hidden; }
@@ -28,6 +38,7 @@
     .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
     .card-action { font-size: 0.75rem; font-weight: 300; color: #111; text-decoration: none; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
     .card-action:hover { opacity: 1; }
+    .card-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
     .empty-state { padding: 2.5rem 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
 
     /* ── List mode ── */
@@ -89,8 +100,13 @@
     .empty-rooms { padding: 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
 
     /* Canvas editor */
-    #canvas-card { display: none; }
-    .re-canvas-wrap { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); background: #111; }
+    .rooms-layout { display: flex; align-items: stretch; min-height: 300px; }
+    .rooms-col { width: 40%; border-right: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; }
+    .rooms-col .add-room-row { margin-top: auto; }
+    .canvas-col { width: 60%; display: flex; flex-direction: column; }
+    .canvas-col-empty { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; opacity: 0.3; }
+    .canvas-col-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.45; padding: 1.1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .re-canvas-wrap { background: #111; }
     .re-canvas { position: relative; display: block; width: 100%; cursor: crosshair; user-select: none; line-height: 0; }
     .re-canvas img { display: block; width: 100%; pointer-events: none; }
     .re-hs { position: absolute; border: 1.5px solid rgba(255,255,255,0.55); background: rgba(255,255,255,0.08); cursor: pointer; display: flex; align-items: flex-start; padding: 3px; transition: background 0.15s; }
@@ -111,6 +127,7 @@
 
     /* Hidden sections */
     #list-view, #detail-view { display: none; }
+    #detail-view { display: none; flex-direction: column; gap: 2.5rem; }
   </style>
 </head>
 <body>
@@ -173,22 +190,79 @@
 
     <!-- Detail view -->
     <div id="detail-view">
-      <div class="card" id="rooms-card">
-        <div class="card-header"><span class="card-label">Rooms</span></div>
-        <div id="room-list"></div>
-        <div class="add-room-row">
-          <input id="new-photo" type="text" placeholder="filename.webp">
-          <button id="add-room-btn">Add room</button>
+
+      <!-- About -->
+      <div class="card" id="about-card">
+        <div class="card-header"><span class="card-label">About</span></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-field"><label>Title</label><input id="ab-title" type="text"></div>
+            <div class="form-field"><label>Location</label><input id="ab-location" type="text"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Start date</label><input id="ab-date-start" type="text" placeholder="e.g. March 14, 2026"></div>
+            <div class="form-field"><label>End date</label><input id="ab-date-end" type="text" placeholder="e.g. April 20, 2026"></div>
+          </div>
+          <div class="form-field"><label>Description</label><textarea id="ab-description" rows="4"></textarea></div>
         </div>
       </div>
-      <div class="card" id="canvas-card">
+
+      <div class="card" id="rooms-card">
+        <div class="card-header"><span class="card-label">Rooms</span></div>
+        <div class="rooms-layout">
+          <div class="rooms-col">
+            <div id="room-list"></div>
+            <div class="add-room-row">
+              <input id="new-photo" type="text" placeholder="filename.webp">
+              <button id="add-room-btn">Add room</button>
+            </div>
+          </div>
+          <div class="canvas-col" id="canvas-card">
+            <div class="canvas-col-empty" id="canvas-empty">Select a room to edit</div>
+            <div id="canvas-inner" style="display:none;">
+              <div class="canvas-col-label">Editing: <span id="edit-room-label"></span></div>
+              <div class="re-canvas-wrap">
+                <div class="re-canvas" id="re-canvas"><img id="re-photo" alt=""></div>
+              </div>
+              <div class="re-hs-list" id="re-hs-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Works in this exhibition -->
+      <div class="card" id="works-card" style="display:none;">
         <div class="card-header">
-          <span class="card-label">Editing: <span id="edit-room-label" style="font-weight:300;text-transform:none;letter-spacing:0;opacity:0.8;"></span></span>
+          <span class="card-label">Works in this exhibition</span>
         </div>
-        <div class="re-canvas-wrap">
-          <div class="re-canvas" id="re-canvas"><img id="re-photo" alt=""></div>
+        <div>
+          <table id="works-table" style="background:white;">
+            <thead>
+              <tr>
+                <th class="col-drag"></th>
+                <th class="col-thumb th-thumb sortable" title="Restore manual order"></th>
+                <th class="col-num"></th>
+                <th class="col-title sortable" data-sort="title">Title <span class="sort-arrow"></span></th>
+                <th class="col-dims sortable" data-sort="dimensions">Dimensions <span class="sort-arrow"></span></th>
+                <th class="col-material sortable" data-sort="material">Material <span class="sort-arrow"></span></th>
+                <th class="col-price sortable" data-sort="price">Price <span class="sort-arrow"></span></th>
+                <th class="col-year sortable" data-sort="year">Year <span class="sort-arrow"></span></th>
+                <th class="col-notes">Notes</th>
+                <th class="col-inv"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-        <div class="re-hs-list" id="re-hs-list"></div>
+        <div id="works-empty" class="empty-state" style="display:none;">No works assigned to this exhibition.</div>
+      </div>
+
+      <!-- Works context menu -->
+      <div id="works-ctx-menu" style="display:none;position:fixed;background:white;border:1px solid rgba(0,0,0,0.14);border-radius:5px;box-shadow:0 6px 20px rgba(0,0,0,0.13);z-index:200;min-width:170px;padding:0.3rem 0;font-size:0.82rem;">
+        <div style="padding:0.45rem 1rem;cursor:pointer;" id="wctx-edit">Edit</div>
+        <div style="padding:0.45rem 1rem;cursor:pointer;" id="wctx-preview">Preview work sheet</div>
+        <div style="height:1px;background:rgba(0,0,0,0.09);margin:0.3rem 0;"></div>
+        <div style="padding:0.45rem 1rem;cursor:pointer;color:rgba(180,40,40,0.85);" id="wctx-remove">Remove from exhibition</div>
       </div>
     </div>
 
@@ -196,12 +270,23 @@
 
   <script type="module">
     import { getPageId, routeUrl } from '../js/routes.js';
+    import { initArtworksTable } from '../js/artworks-table.js';
 
     const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
     const CDN_HI        = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
 
     const exhibitId = getPageId('__EXHIBIT_ID__');
+
+    // Sticky header background on scroll
+    (function() {
+      const header = document.querySelector('header:not([style*="display:none"])') || document.querySelector('header');
+      window.addEventListener('scroll', function() {
+        document.querySelectorAll('header').forEach(function(h) {
+          h.classList.toggle('scrolled', window.scrollY > 10);
+        });
+      }, { passive: true });
+    })();
 
     document.getElementById('back-link-list').href   = routeUrl('admin');
     document.getElementById('back-link-detail').href = routeUrl('admin-exhibitions');
@@ -289,7 +374,7 @@
     } else {
       // ── DETAIL / EDITOR MODE ─────────────────────────────────────────────
       document.getElementById('detail-header').style.display = 'flex';
-      document.getElementById('detail-view').style.display   = 'block';
+      document.getElementById('detail-view').style.display   = 'flex';
 
       let exhibitsData  = {};
       let inventoryData = {};
@@ -311,8 +396,13 @@
           if (!ex) { document.getElementById('ex-title').textContent = 'Exhibit not found'; return; }
           document.title = 'Edit: ' + ex.title + ' — Dim Zayan';
           document.getElementById('ex-title').textContent = ex.title || exhibitId;
-          const meta = [ex.location, ex.year].filter(Boolean).join(' · ');
+          const meta = [ex.location, ex.dateStart || ex.year].filter(Boolean).join(' · ');
           document.getElementById('ex-meta').textContent = meta;
+          document.getElementById('ab-title').value       = ex.title       || '';
+          document.getElementById('ab-location').value    = ex.location    || '';
+          document.getElementById('ab-date-start').value  = ex.dateStart   || ex.year || '';
+          document.getElementById('ab-date-end').value    = ex.dateEnd     || '';
+          document.getElementById('ab-description').value = ex.description || '';
           editRooms = JSON.parse(JSON.stringify(ex.rooms || []));
           renderRoomList();
           if (editRooms.length) selectRoom(0);
@@ -387,13 +477,19 @@
       function selectRoom(idx) {
         editRoomIdx = idx;
         renderRoomList();
-        document.getElementById('canvas-card').style.display = 'block';
+        document.getElementById('canvas-empty').style.display = 'none';
+        document.getElementById('canvas-inner').style.display = 'block';
         document.getElementById('edit-room-label').textContent = 'Room ' + (idx + 1) + ' — ' + editRooms[idx].photo;
         document.getElementById('re-photo').src = CDN_HI + editRooms[idx].photo;
         renderCanvas(); renderHotspotList();
       }
 
-      function hideCanvas() { editRoomIdx = -1; document.getElementById('canvas-card').style.display = 'none'; renderRoomList(); }
+      function hideCanvas() {
+        editRoomIdx = -1;
+        document.getElementById('canvas-empty').style.display = 'flex';
+        document.getElementById('canvas-inner').style.display = 'none';
+        renderRoomList();
+      }
 
       var canvas = document.getElementById('re-canvas');
 
@@ -474,7 +570,7 @@
         const canvasRect = canvas.getBoundingClientRect();
         const px = (clientX - canvasRect.left) / canvasRect.width * 100;
         const py = (clientY - canvasRect.top) / canvasRect.height * 100;
-        const works = Object.entries(inventoryData).filter(function(e) { return !e[1].excluded; }).map(function(e) { return { id: e[0], title: e[1].title || e[0] }; }).sort(function(a, b) { return a.title.localeCompare(b.title); });
+        const works = Object.entries(inventoryData).map(function(e) { return { id: e[0], title: e[1].title || e[0] }; }).sort(function(a, b) { return a.title.localeCompare(b.title); });
         const popup = document.createElement('div');
         popup.className = 're-assign-popup';
         popup.style.left = Math.min(px, 70) + '%'; popup.style.top = Math.min(py, 75) + '%';
@@ -518,12 +614,41 @@
         if (!exhibitId) return;
         const token = localStorage.getItem('dim_gh_token') || '';
         if (!token) { document.getElementById('save-status').textContent = 'No token'; return; }
-        exhibitsData[exhibitId].rooms = editRooms;
+        const ex = exhibitsData[exhibitId];
+        ex.title       = document.getElementById('ab-title').value.trim()       || ex.title;
+        ex.location    = document.getElementById('ab-location').value.trim();
+        ex.dateStart   = document.getElementById('ab-date-start').value.trim();
+        ex.dateEnd     = document.getElementById('ab-date-end').value.trim();
+        ex.description = document.getElementById('ab-description').value.trim();
+        ex.rooms       = editRooms;
+        // keep legacy year field in sync for public page compat
+        if (ex.dateStart) ex.year = ex.dateStart.match(/\d{4}/)?.[0] || ex.year;
+        // update header display
+        document.getElementById('ex-title').textContent = ex.title || exhibitId;
+        document.getElementById('ex-meta').textContent  = [ex.location, ex.dateStart].filter(Boolean).join(' · ');
         const btn = document.getElementById('save-btn');
         btn.disabled = true; document.getElementById('save-status').textContent = 'Saving…';
         try {
-          const r = await fetch(API_EXHIBITS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(exhibitsData, null, 2) });
-          if (!r.ok) throw new Error(r.status + ': ' + (await r.text()));
+          const saves = [
+            fetch(API_EXHIBITS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(exhibitsData, null, 2) }),
+          ];
+          if (worksTbl) {
+            const gathered = worksTbl.gatherData();
+            const merged = Object.assign({}, inventoryData);
+            Object.keys(merged).forEach(function(id) {
+              if ((merged[id].exhibition || merged[id].exhibit) === exhibitId && !gathered[id]) {
+                delete merged[id].exhibition; delete merged[id].exhibit;
+              }
+            });
+            Object.assign(merged, gathered);
+            saves.push(
+              fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(merged, null, 2) })
+                .then(function(r) { if (r.ok) inventoryData = merged; return r; })
+            );
+          }
+          const results = await Promise.all(saves);
+          const failed = results.find(function(r) { return !r.ok; });
+          if (failed) throw new Error(failed.status);
           document.getElementById('save-status').textContent = 'Saved';
           setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
         } catch(e) {
@@ -533,24 +658,79 @@
 
       // Token UI
       (function() {
-        const inp = document.getElementById('token-input'); const btn = document.getElementById('token-btn'); const status = document.getElementById('token-status');
+        const inp = document.getElementById('token-input'); const btn = document.getElementById('token-btn');
         function updateTokenUI() {
           const t = localStorage.getItem('dim_gh_token') || '';
-          if (t) { status.textContent = 'token set'; btn.textContent = 'Clear'; inp.style.display = 'none'; }
-          else { status.textContent = ''; btn.textContent = 'Set token'; }
+          document.getElementById('token-row').style.display = t ? 'none' : 'flex';
         }
         updateTokenUI();
         btn.addEventListener('click', function() {
-          const t = localStorage.getItem('dim_gh_token') || '';
-          if (t) { localStorage.removeItem('dim_gh_token'); updateTokenUI(); }
-          else if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
+          if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
           else { const val = inp.value.trim(); if (val) { localStorage.setItem('dim_gh_token', val); inp.value = ''; } updateTokenUI(); }
         });
         inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') btn.click(); if (e.key === 'Escape') { inp.style.display = 'none'; inp.value = ''; } });
       })();
 
       inventoryReady = loadInventory();
-      loadExhibit();
+      const exhibitReady = loadExhibit();
+
+      // ── Works panel ────────────────────────────────────────────────────────
+      let worksTbl = null;
+      let worksCtxRow = null;
+
+      async function initWorksPanel() {
+        await Promise.all([inventoryReady, exhibitReady]);
+
+        const worksTableEl = document.getElementById('works-table');
+        worksTbl = initArtworksTable({
+          tableEl: worksTableEl,
+          exhibits: exhibitsData,
+          filter: function(id, w) { return (w.exhibition || w.exhibit) === exhibitId; },
+          onRightClick: function(tr, e) { showWorksCtxMenu(e, tr); },
+        });
+        worksTbl.renderData(inventoryData);
+        const empty = document.getElementById('works-empty');
+        const hasRows = worksTableEl.querySelector('tbody tr[data-id]');
+        empty.style.display = hasRows ? 'none' : 'block';
+        document.getElementById('works-card').style.display = 'block';
+      }
+
+      function showWorksCtxMenu(e, tr) {
+        worksCtxRow = tr;
+        const menu = document.getElementById('works-ctx-menu');
+        menu.style.display = 'block';
+        const mw = 180, mh = 90;
+        let x = e.clientX, y = e.clientY;
+        if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 8;
+        if (y + mh > window.innerHeight) y = window.innerHeight - mh - 8;
+        menu.style.left = x + 'px'; menu.style.top = y + 'px';
+      }
+
+      document.addEventListener('click', function() { document.getElementById('works-ctx-menu').style.display = 'none'; });
+
+      document.getElementById('wctx-edit').addEventListener('click', function() {
+        if (!worksCtxRow || !worksTbl) return;
+        worksTbl.openEditDrawer(worksCtxRow);
+        worksCtxRow = null;
+      });
+
+      document.getElementById('wctx-preview').addEventListener('click', function() {
+        if (!worksCtxRow) return;
+        window.open('/preview.html?id=' + encodeURIComponent(worksCtxRow.dataset.id), '_blank');
+        worksCtxRow = null;
+      });
+
+      document.getElementById('wctx-remove').addEventListener('click', function() {
+        if (!worksCtxRow) return;
+        delete worksCtxRow.dataset.exhibition;
+        worksCtxRow.remove();
+        worksTbl.renumberRows();
+        const hasRows = document.getElementById('works-table').querySelector('tbody tr[data-id]');
+        document.getElementById('works-empty').style.display = hasRows ? 'none' : 'block';
+        worksCtxRow = null;
+      });
+
+      initWorksPanel();
     }
   </script>
 </body>

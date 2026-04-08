@@ -28,8 +28,12 @@ export default {
           safe    = decodeURIComponent(m[1]).replace(/["><]/g, '');
         }
       } else {
-        // Non-parameterized route: exact match (with or without trailing slash)
-        if (url.pathname === route.prettyPath || url.pathname === route.prettyPath + '/') {
+        // Non-parameterized route: exact match, trailing slash, or /index.html suffix
+        if (
+          url.pathname === route.prettyPath ||
+          url.pathname === route.prettyPath + '/' ||
+          url.pathname === route.prettyPath + '/index.html'
+        ) {
           matched = true;
         }
       }

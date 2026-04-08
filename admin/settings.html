@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Dim Zayan</title>
+  <link rel="icon" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
+
+    header { padding: 2rem 2.5rem 1.5rem; display: flex; align-items: baseline; gap: 2rem; }
+    header a { text-decoration: none; color: inherit; font-size: 0.85rem; letter-spacing: 0.04em; opacity: 0.5; }
+    header a:hover { opacity: 1; }
+
+    .page { max-width: 540px; margin: 0 auto; padding: 0 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .card { background: white; border-radius: 4px; overflow: hidden; }
+    .card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
+    .card-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .field input { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.45rem 0.65rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 300; color: #111; background: white; }
+    .field input:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+
+    .status { font-size: 0.78rem; opacity: 0.5; }
+    .status.set { color: rgba(30,130,60,0.8); opacity: 1; }
+
+    .actions { display: flex; gap: 0.6rem; }
+    .actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
+    .actions button:hover { background: rgba(0,0,0,0.04); }
+    #save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+    #clear-btn { color: rgba(180,40,40,0.8); border-color: rgba(180,40,40,0.2); }
+    #clear-btn:hover { background: rgba(180,40,40,0.04) !important; border-color: rgba(180,40,40,0.4); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="#" id="back-link">← Studio</a>
+    <span style="font-size:0.85rem;font-weight:300;letter-spacing:0.04em;">Settings</span>
+  </header>
+
+  <div class="page">
+    <div class="card">
+      <div class="card-header"><span class="card-label">API Token</span></div>
+      <div class="card-body">
+        <p id="token-status" class="status"></p>
+        <div class="field" id="token-field" style="display:none;">
+          <label>New token</label>
+          <input id="token-input" type="password" placeholder="Paste token…" autocomplete="off">
+        </div>
+        <div class="actions" id="token-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { routeUrl } from '../js/routes.js';
+
+    document.getElementById('back-link').href = routeUrl('admin');
+
+    const status  = document.getElementById('token-status');
+    const field   = document.getElementById('token-field');
+    const input   = document.getElementById('token-input');
+    const actions = document.getElementById('token-actions');
+
+    function render() {
+      const t = localStorage.getItem('dim_gh_token') || '';
+      actions.innerHTML = '';
+
+      if (t) {
+        status.textContent = 'Token is set.';
+        status.className = 'status set';
+        field.style.display = 'none';
+        input.value = '';
+
+        const clearBtn = document.createElement('button');
+        clearBtn.id = 'clear-btn';
+        clearBtn.textContent = 'Clear token';
+        clearBtn.addEventListener('click', function() {
+          if (!confirm('Clear the API token?')) return;
+          localStorage.removeItem('dim_gh_token');
+          render();
+        });
+        actions.appendChild(clearBtn);
+      } else {
+        status.textContent = 'No token set. Saves will not work.';
+        status.className = 'status';
+        field.style.display = 'block';
+
+        const saveBtn = document.createElement('button');
+        saveBtn.id = 'save-btn';
+        saveBtn.textContent = 'Save token';
+        saveBtn.addEventListener('click', function() {
+          const v = input.value.trim();
+          if (!v) { input.focus(); return; }
+          localStorage.setItem('dim_gh_token', v);
+          render();
+        });
+        actions.appendChild(saveBtn);
+
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') saveBtn.click();
+        });
+      }
+    }
+
+    render();
+  </script>
+
+</body>
+</html>
