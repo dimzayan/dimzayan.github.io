@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="icon" href="./favicon.png">
+  <title>Works — Dim Zayan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100;200;300&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: "DM Sans"; font-weight: 300; padding: 0; margin: 0; box-sizing: border-box; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body { background-color: rgb(223,223,224); min-height: 100vh; }
+
+    header { padding: 2rem 2.5rem 1.5rem; }
+    header a { text-decoration: none; color: inherit; font-size: 0.85rem; letter-spacing: 0.04em; opacity: 0.5; }
+    header a:hover { opacity: 1; }
+
+    /* ── Grid mode ── */
+    #grid-view { display: none; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 4px; padding: 0 4px 4px; }
+    .grid a { display: block; overflow: hidden; aspect-ratio: 1; background: rgb(200,200,201); cursor: pointer; }
+    .grid a img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.2s ease; }
+    .grid a:hover img { opacity: 0.85; }
+
+    /* Lightbox */
+    #lb { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; align-items: center; justify-content: center; }
+    #lb.open { display: flex; }
+    #lb img { max-width: calc(100vw - 120px); max-height: 100vh; object-fit: contain; display: block; user-select: none; }
+    #lb-close { position: fixed; top: 1.25rem; right: 1.5rem; color: white; font-size: 1.5rem; cursor: pointer; opacity: 0.5; line-height: 1; background: none; border: none; padding: 0.25rem 0.5rem; }
+    #lb-close:hover { opacity: 1; }
+    .lb-arrow { position: fixed; top: 50%; transform: translateY(-50%); color: white; font-size: 1.5rem; cursor: pointer; opacity: 0.4; background: none; border: none; padding: 1rem; line-height: 1; user-select: none; }
+    .lb-arrow:hover { opacity: 1; }
+    #lb-prev { left: 0.5rem; }
+    #lb-next { right: 0.5rem; }
+    #lb-info { position: fixed; bottom: 1.5rem; right: 1.5rem; text-align: right; color: white; line-height: 1.6; pointer-events: none; }
+    #lb-info-title { font-size: 0.85rem; font-weight: 300; opacity: 0.9; }
+    #lb-info-meta  { font-size: 0.75rem; font-weight: 300; opacity: 0.5; }
+
+    /* ── Detail mode ── */
+    #detail-view { display: none; }
+    .detail-wrap { max-width: 860px; margin: 0 auto; padding: 2rem 3rem 4rem; display: flex; gap: 3rem; align-items: flex-start; }
+    .detail-img { flex: 0 0 auto; width: 420px; max-width: 55vw; }
+    .detail-img img { width: 100%; display: block; background: #e8e8e8; }
+    .detail-info { flex: 1; display: flex; flex-direction: column; gap: 1.2rem; padding-top: 0.5rem; }
+    .detail-title { font-size: 1.3rem; font-weight: 200; line-height: 1.3; }
+    .detail-meta { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.82rem; font-weight: 200; opacity: 0.55; }
+    .detail-price { font-size: 1rem; font-weight: 200; margin-top: 0.5rem; }
+    .detail-inquire { display: inline-block; margin-top: 0.5rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: #111; text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.3); padding-bottom: 2px; opacity: 0.55; transition: opacity 0.15s; }
+    .detail-inquire:hover { opacity: 1; }
+    .not-found { text-align: center; padding: 4rem 2rem; opacity: 0.4; font-size: 0.9rem; }
+
+    @media (max-width: 680px) {
+      .detail-wrap { flex-direction: column; padding: 1.5rem 1.5rem 3rem; gap: 1.5rem; }
+      .detail-img { width: 100%; max-width: 100%; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 2px; padding: 0 2px 2px; }
+      #lb img { max-width: 100vw; }
+      header { padding: 1.5rem 1.25rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/">← Dim Zayan</a>
+  </header>
+
+  <div id="grid-view">
+    <main class="grid" id="grid"></main>
+    <div id="lb">
+      <button id="lb-close">✕</button>
+      <button class="lb-arrow" id="lb-prev">&#8592;</button>
+      <img id="lb-img" src="" alt="">
+      <button class="lb-arrow" id="lb-next">&#8594;</button>
+      <div id="lb-info"><div id="lb-info-title"></div><div id="lb-info-meta"></div></div>
+    </div>
+  </div>
+
+  <div id="detail-view">
+    <div id="detail-content"></div>
+  </div>
+
+  <script type="module">
+    import { getPageId } from './js/routes.js';
+
+    const CDN_LOW = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low/';
+    const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+
+    const artworkId = getPageId('__ARTWORK_ID__');
+
+    if (!artworkId) {
+      // ── GRID MODE ──────────────────────────────────────────────────────
+      document.getElementById('grid-view').style.display = 'block';
+      document.title = 'Works — Dim Zayan';
+
+      const grid    = document.getElementById('grid');
+      const lb      = document.getElementById('lb');
+      const lbImg   = document.getElementById('lb-img');
+      const lbTitle = document.getElementById('lb-info-title');
+      const lbMeta  = document.getElementById('lb-info-meta');
+
+      let ids = [], inventory = {}, current = 0;
+
+      function show(index) {
+        current = (index + ids.length) % ids.length;
+        const id = ids[current];
+        lbImg.src = CDN_HI + (inventory[id] && inventory[id].photo || id) + '.webp';
+        lb.classList.add('open');
+        const info = inventory[id] || {};
+        lbTitle.textContent = info.title || '';
+        const dims = info.dimensions ? info.dimensions.trim().replace(/in\.?$/i, '').trim() + ' in' : '';
+        lbMeta.textContent = [info.material, dims].filter(Boolean).join('  ·  ');
+      }
+
+      function close() { lb.classList.remove('open'); lbImg.src = ''; }
+
+      fetch('https://dimzayan.com/api/inventory')
+        .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+        .catch(function() {
+          try { return JSON.parse(localStorage.getItem('dim_inventory_v2')) || {}; } catch(e) { return {}; }
+        })
+        .then(function(data) {
+          inventory = data;
+          let allIds = Object.keys(data).filter(function(id) { return !data[id].excluded; });
+          try {
+            const savedOrder = JSON.parse(localStorage.getItem('dim_inventory_order_v2'));
+            if (Array.isArray(savedOrder)) {
+              const inData = new Set(allIds);
+              allIds = [...savedOrder.filter(function(id) { return inData.has(id); }), ...allIds.filter(function(id) { return !savedOrder.includes(id); })];
+            }
+          } catch(e) {}
+          ids = allIds;
+          ids.forEach(function(id, i) {
+            const a   = document.createElement('a');
+            const img = document.createElement('img');
+            img.src     = CDN_LOW + (data[id] && data[id].photo || id) + '.webp';
+            img.loading = 'lazy';
+            img.alt     = (data[id] && data[id].title) || '';
+            a.appendChild(img);
+            a.addEventListener('click', function(e) { e.preventDefault(); show(i); });
+            grid.appendChild(a);
+          });
+        });
+
+      document.getElementById('lb-prev').addEventListener('click',  function() { show(current - 1); });
+      document.getElementById('lb-next').addEventListener('click',  function() { show(current + 1); });
+      document.getElementById('lb-close').addEventListener('click', close);
+      lb.addEventListener('click', function(e) { if (e.target === lb) close(); });
+      document.addEventListener('keydown', function(e) {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'ArrowLeft')  show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
+        if (e.key === 'Escape')     close();
+      });
+
+    } else {
+      // ── DETAIL MODE ────────────────────────────────────────────────────
+      document.getElementById('detail-view').style.display = 'block';
+
+      fetch('https://dimzayan.com/api/inventory')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          const w = data[artworkId];
+          if (!w) { document.getElementById('detail-content').innerHTML = '<div class="not-found">Work not found.</div>'; return; }
+          document.title = (w.title || 'Work') + ' — Dim Zayan';
+          const photo = w.photo || artworkId;
+          const dims  = w.dimensions ? w.dimensions.trim().replace(/in\.?$/i, '').trim() + ' in' : '';
+          const meta  = [w.year, w.material, dims].filter(Boolean);
+          document.getElementById('detail-content').innerHTML =
+            '<div class="detail-wrap">' +
+              '<div class="detail-img"><img src="' + CDN_HI + photo + '.webp" alt="' + (w.title || '') + '"></div>' +
+              '<div class="detail-info">' +
+                '<div class="detail-title">' + (w.title || artworkId) + '</div>' +
+                (meta.length ? '<div class="detail-meta">' + meta.map(function(s) { return '<span>' + s + '</span>'; }).join('') + '</div>' : '') +
+                (w.price ? '<div class="detail-price">' + w.price + '</div>' : '') +
+                '<a class="detail-inquire" href="mailto:dim.studio.marfa@gmail.com?subject=Inquiry: ' + encodeURIComponent(w.title || artworkId) + '">Inquire</a>' +
+              '</div>' +
+            '</div>';
+        })
+        .catch(function() {
+          document.getElementById('detail-content').innerHTML = '<div class="not-found">Could not load work.</div>';
+        });
+    }
+  </script>
+</body>
+</html>

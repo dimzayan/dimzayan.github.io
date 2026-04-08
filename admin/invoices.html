@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoices — Dim Zayan</title>
+  <link rel="icon" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
+
+    /* ── List mode ── */
+    #list-view { display: none; }
+
+    header { padding: 2rem 2.5rem 1.5rem; display: flex; align-items: baseline; justify-content: space-between; }
+    .header-left { display: flex; align-items: baseline; gap: 1.5rem; }
+    .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; }
+    .back-link:hover { opacity: 1; }
+    .header-title { font-size: 0.85rem; font-weight: 300; letter-spacing: 0.04em; }
+
+    .page { max-width: 860px; margin: 0 auto; padding: 1rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .card { background: white; border-radius: 4px; overflow: hidden; }
+    .card-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: space-between; }
+    .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
+    .card-action { font-size: 0.75rem; font-weight: 300; color: #111; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+    .card-action:hover { opacity: 1; }
+    .empty-state { padding: 2.5rem 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
+
+    .data-row { display: flex; align-items: center; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: background 0.1s; font-size: 0.84rem; gap: 1rem; }
+    .data-row:last-child { border-bottom: none; }
+    .data-row:hover { background: rgba(0,0,0,0.02); }
+    .data-row-main { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; }
+    .data-row-title { font-size: 0.85rem; font-weight: 300; }
+    .data-row-meta  { font-size: 0.72rem; opacity: 0.38; }
+    .data-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+    .data-row-amount { font-size: 0.82rem; font-weight: 300; }
+    .status-badge { font-size: 0.62rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 2px; }
+    .status-paid    { background: rgba(30,130,60,0.08);  color: rgba(30,130,60,0.85); }
+    .status-pending { background: rgba(200,150,0,0.09); color: rgba(150,110,0,0.85); }
+
+    /* New invoice modal */
+    .inv-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.35); align-items: center; justify-content: center; }
+    .inv-modal.open { display: flex; }
+    .inv-modal-box { background: white; border-radius: 5px; width: 520px; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
+    .inv-modal-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 0.88rem; font-weight: 300; }
+    .inv-modal-body { padding: 1.1rem 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem; }
+    .inv-modal-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.07); display: flex; gap: 0.6rem; justify-content: flex-end; align-items: center; }
+    .inv-works-list { display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+    .inv-work-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .inv-work-row:last-child { border-bottom: none; }
+    .inv-work-row:hover { background: rgba(0,0,0,0.02); }
+    .inv-work-row input[type="checkbox"] { flex-shrink: 0; accent-color: #111; }
+    .inv-work-row-info { flex: 1; font-size: 0.82rem; }
+    .inv-work-price { font-size: 0.78rem; opacity: 0.45; flex-shrink: 0; }
+
+    .form-field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.28rem; }
+    .form-field input, .form-field textarea { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.42rem 0.65rem; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 300; color: #111; background: white; }
+    .form-field input:focus, .form-field textarea:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .form-field textarea { resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    #inv-status { font-size: 0.75rem; opacity: 0.5; }
+    .modal-btn { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
+    .modal-btn:hover { background: rgba(0,0,0,0.04); }
+    .modal-btn-primary { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+
+    /* ── Detail / viewer mode ── */
+    #detail-view { display: none; }
+    .inv-page { max-width: 660px; margin: 0 auto; background: white; padding: 2.5rem 2.8rem 3rem; min-height: 100vh; }
+    .inv-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; }
+    .artist-name { font-size: 0.95rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 0.3rem; }
+    .artist-meta { font-size: 0.78rem; opacity: 0.5; line-height: 1.65; }
+    .inv-meta { text-align: right; font-size: 0.78rem; opacity: 0.5; line-height: 1.65; }
+    .section { margin-bottom: 1.5rem; }
+    .section-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.38; margin-bottom: 0.35rem; }
+    .section-body { font-size: 0.82rem; line-height: 1.7; }
+    .inv-status-badge { display: inline-block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 2px; }
+    .inv-status-pending { background: rgba(200,150,0,0.1); color: rgba(150,110,0,0.9); }
+    .inv-status-paid    { background: rgba(30,130,60,0.1);  color: rgba(30,130,60,0.9); }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0 1rem; font-size: 0.8rem; }
+    td { padding: 0.8rem 0.65rem; vertical-align: top; border: 1px solid rgba(0,0,0,0.09); }
+    .cell-img { width: 85pt; padding: 0.5rem; }
+    .cell-img img { width: 75pt; height: 75pt; object-fit: contain; display: block; background: #f7f7f7; }
+    .it-title { font-weight: 400; margin-bottom: 0.2rem; }
+    .it-meta { opacity: 0.45; font-size: 0.74rem; line-height: 1.5; }
+    .cell-price { width: 80pt; text-align: right; vertical-align: middle; }
+    .total-row td { border-left: none; border-right: none; border-top: none; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .total-row .label-cell { text-align: right; opacity: 0.5; font-size: 0.78rem; }
+    .total-row.grand-total td { border-top: 1px solid rgba(0,0,0,0.14); padding-top: 0.7rem; }
+    .payment-block { font-size: 0.76rem; line-height: 1.8; opacity: 0.55; border-top: 1px solid rgba(0,0,0,0.09); padding-top: 1.4rem; margin-top: 1.8rem; }
+    .payment-title { font-weight: 500; margin-bottom: 0.4rem; opacity: 0.9; font-size: 0.78rem; }
+    .no-print { margin-top: 2rem; display: flex; gap: 0.75rem; }
+    .no-print button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.4rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 300; cursor: pointer; }
+    .btn-paid { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+    .not-found { text-align: center; padding: 4rem 2rem; opacity: 0.4; font-size: 0.9rem; }
+    @media print { body { background: white; } .inv-page { padding: 0; } .no-print { display: none; } #list-header, #detail-back { display: none; } }
+    @page { margin: 0.9in 1in; }
+  </style>
+</head>
+<body>
+
+  <!-- List mode -->
+  <div id="list-view">
+    <header>
+      <div class="header-left">
+        <a class="back-link" id="back-link" href="#">← Studio</a>
+        <span class="header-title">Invoices</span>
+      </div>
+    </header>
+    <div class="page">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Invoices</span>
+          <button class="card-action" id="new-invoice-btn">+ New invoice</button>
+        </div>
+        <div id="invoices-list"><div class="empty-state">Loading…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail mode -->
+  <div id="detail-view">
+    <div style="max-width:660px;margin:0 auto;padding:1.5rem 2.8rem 0;" id="detail-back" class="no-print">
+      <a class="back-link" id="back-link-detail" href="#" style="font-size:0.78rem;opacity:0.45;color:#111;text-decoration:none;">← Invoices</a>
+    </div>
+    <div class="inv-page" id="inv-page">
+      <div class="not-found" id="loading">Loading…</div>
+    </div>
+  </div>
+
+  <!-- New invoice modal -->
+  <div id="inv-modal" class="inv-modal">
+    <div class="inv-modal-box">
+      <div class="inv-modal-header">New Invoice</div>
+      <div class="inv-modal-body">
+        <div>
+          <div class="card-label" style="margin-bottom:0.5rem;">Works</div>
+          <div class="inv-works-list" id="inv-works-list"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Buyer name</label><input id="inv-buyer-name" type="text" placeholder="Full name"></div>
+          <div class="form-field"><label>Shipping ($)</label><input id="inv-shipping" type="number" min="0" step="0.01" placeholder="0"></div>
+        </div>
+        <div class="form-field"><label>Address</label><textarea id="inv-buyer-addr" rows="2" placeholder="Street&#10;City, State ZIP"></textarea></div>
+        <div class="form-row">
+          <div class="form-field"><label>Sales tax (%)</label><input id="inv-tax" type="number" min="0" step="0.1" placeholder="0"></div>
+          <div class="form-field" style="justify-content:flex-end;display:flex;flex-direction:column;gap:0.4rem;">
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;opacity:1;"><input id="inv-discount" type="checkbox"> Local discount (10%)</label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;opacity:1;"><input id="inv-bitcoin" type="checkbox"> Bitcoin</label>
+          </div>
+        </div>
+      </div>
+      <div class="inv-modal-footer">
+        <span id="inv-status"></span>
+        <button class="modal-btn" id="inv-cancel-btn">Cancel</button>
+        <button class="modal-btn modal-btn-primary" id="inv-generate-btn">Generate invoice</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getPageId, routeUrl } from '../js/routes.js';
+    import { allInvoices, calcTotal, fmtMoney, nextInvoiceNum, INVOICE_KEY, openInvoice } from '../js/invoice-utils.js';
+
+    const API_INVENTORY = 'https://dimzayan.com/api/inventory';
+
+    const invoiceId = getPageId('__INVOICE_ID__');
+
+    document.getElementById('back-link').href        = routeUrl('admin');
+    document.getElementById('back-link-detail').href = routeUrl('admin-invoices');
+
+    if (!invoiceId) {
+      // ── LIST MODE ──────────────────────────────────────────────────────────
+      document.getElementById('list-view').style.display = 'block';
+      document.title = 'Invoices — Dim Zayan';
+
+      let cachedInventory = null;
+
+      async function getInventory() {
+        if (cachedInventory) return cachedInventory;
+        cachedInventory = await fetch(API_INVENTORY).then(function(r) { return r.json(); });
+        return cachedInventory;
+      }
+
+      async function renderInvoices() {
+        let inventory = {};
+        try { inventory = await getInventory(); } catch(e) {}
+
+        const groups = {};
+        Object.keys(inventory).forEach(function(id) {
+          const work = inventory[id]; if (!work.invoiced) return;
+          const ref = work.invoiced; const num = ref.num;
+          if (!groups[num]) groups[num] = { num, invoiceId: ref.invoiceId, paid: !!ref.paid, works: [] };
+          groups[num].works.push(Object.assign({ id }, work));
+          if (ref.paid) groups[num].paid = true;
+        });
+
+        const stored = allInvoices();
+        Object.values(groups).forEach(function(g) {
+          const doc = g.invoiceId ? stored[g.invoiceId] : null;
+          if (doc) { g.buyer = doc.buyer; g.date = doc.date; g.shipping = doc.shipping || 0; g.taxPct = doc.taxPct || 0; g.discount = doc.discount || false; g.items = doc.items; g.paid = doc.paid; }
+        });
+
+        const sorted = Object.values(groups).sort(function(a, b) { return b.num - a.num; });
+        const list = document.getElementById('invoices-list');
+
+        if (!sorted.length) { list.innerHTML = '<div class="empty-state">No invoices yet.</div>'; return; }
+        list.innerHTML = '';
+        sorted.forEach(function(g) {
+          const total = g.items ? calcTotal(g) : g.works.reduce(function(s, w) { return s + (parseFloat(w.price) || 0); }, 0);
+          const workCount = (g.items || g.works).length;
+          const row = document.createElement('div');
+          row.className = 'data-row';
+          row.innerHTML =
+            '<div class="data-row-main">' +
+              '<div class="data-row-title">INV.' + String(g.num).padStart(4, '0') + (g.buyer && g.buyer.name ? ' — ' + g.buyer.name : '') + '</div>' +
+              '<div class="data-row-meta">' + (g.date ? g.date + '  ·  ' : '') + workCount + ' work' + (workCount !== 1 ? 's' : '') + '</div>' +
+            '</div>' +
+            '<div class="data-row-right">' +
+              (total ? '<span class="data-row-amount">' + fmtMoney(total) + '</span>' : '') +
+              '<span class="status-badge ' + (g.paid ? 'status-paid' : 'status-pending') + '">' + (g.paid ? 'Paid' : 'Pending') + '</span>' +
+            '</div>';
+          row.addEventListener('click', function() {
+            if (g.invoiceId) window.location.href = routeUrl('admin-invoice', { id: g.invoiceId });
+          });
+          list.appendChild(row);
+        });
+      }
+
+      // ── New invoice modal ──
+      document.getElementById('new-invoice-btn').addEventListener('click', async function() {
+        const inv = await getInventory();
+        const list = document.getElementById('inv-works-list');
+        list.innerHTML = '';
+        const available = Object.keys(inv).filter(function(id) { return !inv[id].excluded && !inv[id].invoiced; }).sort(function(a, b) { return (inv[a].title || '').localeCompare(inv[b].title || ''); });
+        if (!available.length) {
+          list.innerHTML = '<div style="padding:0.75rem 0.85rem;font-size:0.82rem;opacity:0.4;">All works are already invoiced.</div>';
+        } else {
+          available.forEach(function(id) {
+            const w = inv[id];
+            const row = document.createElement('label');
+            row.className = 'inv-work-row';
+            row.innerHTML = '<input type="checkbox" value="' + id + '"><span class="inv-work-row-info">' + (w.title || id) + (w.year ? ' · ' + w.year : '') + '</span><span class="inv-work-price">' + (w.price || '') + '</span>';
+            list.appendChild(row);
+          });
+        }
+        ['inv-buyer-name','inv-buyer-addr','inv-shipping','inv-tax'].forEach(function(id) { document.getElementById(id).value = ''; });
+        document.getElementById('inv-discount').checked = false;
+        document.getElementById('inv-bitcoin').checked  = false;
+        document.getElementById('inv-status').textContent = '';
+        document.getElementById('inv-modal').classList.add('open');
+        document.getElementById('inv-buyer-name').focus();
+      });
+
+      document.getElementById('inv-cancel-btn').addEventListener('click', function() { document.getElementById('inv-modal').classList.remove('open'); });
+      document.getElementById('inv-modal').addEventListener('click', function(e) { if (e.target === document.getElementById('inv-modal')) document.getElementById('inv-modal').classList.remove('open'); });
+
+      document.getElementById('inv-generate-btn').addEventListener('click', async function() {
+        const checked = Array.from(document.querySelectorAll('#inv-works-list input:checked'));
+        if (!checked.length) { document.getElementById('inv-status').textContent = 'Select at least one work.'; return; }
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { document.getElementById('inv-status').textContent = 'No API token set.'; return; }
+
+        const inv       = await getInventory();
+        const buyerName = document.getElementById('inv-buyer-name').value.trim();
+        const buyerAddr = document.getElementById('inv-buyer-addr').value.trim();
+        const shipping  = parseFloat(document.getElementById('inv-shipping').value) || 0;
+        const taxPct    = parseFloat(document.getElementById('inv-tax').value)      || 0;
+        const discount  = document.getElementById('inv-discount').checked;
+        const bitcoin   = document.getElementById('inv-bitcoin').checked;
+
+        const items = checked.map(function(cb) {
+          const id = cb.value; const w = inv[id];
+          return { id, title: w.title || '', year: w.year || '', material: w.material || '', dimensions: w.dimensions || '', price: parseFloat((w.price || '').toString().replace(/[^0-9.]/g, '')) || 0 };
+        });
+
+        const num       = nextInvoiceNum();
+        const newInvId  = 'inv_' + Date.now();
+        const dateStr   = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const doc       = { num, invoiceId: newInvId, date: dateStr, buyer: { name: buyerName, address: buyerAddr }, shipping, taxPct, discount, bitcoin, paid: false, items };
+
+        const all = allInvoices();
+        all[newInvId] = doc;
+        localStorage.setItem(INVOICE_KEY, JSON.stringify(all));
+
+        const ref = { invoiceId: newInvId, num, paid: false };
+        checked.forEach(function(cb) { inv[cb.value].invoiced = ref; });
+        cachedInventory = inv;
+
+        const btn = document.getElementById('inv-generate-btn');
+        btn.disabled = true; document.getElementById('inv-status').textContent = 'Saving…';
+        try {
+          const r = await fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(inv, null, 2) });
+          if (!r.ok) throw new Error(r.status + ': ' + await r.text());
+          document.getElementById('inv-modal').classList.remove('open');
+          renderInvoices();
+          openInvoice(newInvId);
+        } catch(e) {
+          document.getElementById('inv-status').textContent = 'Error: ' + e.message;
+          delete all[newInvId]; localStorage.setItem(INVOICE_KEY, JSON.stringify(all));
+        } finally { btn.disabled = false; }
+      });
+
+      // Called from invoice detail (same page or opened tab) when marked as paid
+      window.dimZayanInvoicePaid = function(invId) {
+        const all = allInvoices();
+        if (all[invId]) { all[invId].paid = true; localStorage.setItem(INVOICE_KEY, JSON.stringify(all)); }
+        if (cachedInventory) {
+          Object.values(cachedInventory).forEach(function(w) { if (w.invoiced && w.invoiced.invoiceId === invId) w.invoiced.paid = true; });
+        }
+        renderInvoices();
+      };
+
+      renderInvoices();
+
+    } else {
+      // ── DETAIL / VIEWER MODE ───────────────────────────────────────────────
+      document.getElementById('detail-view').style.display = 'block';
+
+      const CDN_LOW = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low';
+      const page    = document.getElementById('inv-page');
+
+      function fmtMoney2(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function fmtDims(raw) { if (!raw) return ''; return /in\.?$|inches?$/i.test(raw.trim()) ? raw.trim() : raw.trim() + ' inches'; }
+
+      let inv;
+      try { const all = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}'); inv = all[invoiceId]; } catch(e) {}
+
+      if (!inv) {
+        page.innerHTML = '<div class="not-found">Invoice not found. It may have been generated on another device.</div>';
+      } else {
+        const numStr      = 'Invoice.' + String(inv.num).padStart(4, '0');
+        const subtotal    = (inv.items || []).reduce(function(s, it) { return s + (it.price || 0); }, 0);
+        const discountAmt = inv.discount ? subtotal * 0.10 : 0;
+        const taxAmt      = (subtotal - discountAmt) * ((inv.taxPct || 0) / 100);
+        const total       = subtotal - discountAmt + (inv.shipping || 0) + taxAmt;
+
+        document.title = numStr + ' — Dim Zayan';
+
+        const itemRows = (inv.items || []).map(function(it) {
+          return '<tr><td class="cell-img"><img src="' + CDN_LOW + '/' + it.id + '.webp" alt="' + (it.title || '') + '"></td>' +
+            '<td><div class="it-title">' + (it.title || '—') + '</div>' +
+            (it.year ? '<div class="it-meta">' + it.year + '</div>' : '') +
+            (it.material ? '<div class="it-meta">' + it.material + '</div>' : '') +
+            (it.dimensions ? '<div class="it-meta">' + fmtDims(it.dimensions) + '</div>' : '') +
+            '</td><td class="cell-price">' + (it.price ? fmtMoney2(it.price) : '') + '</td></tr>';
+        }).join('');
+
+        const totalRows =
+          '<tr class="total-row"><td colspan="2" class="label-cell">Subtotal</td><td class="cell-price">' + fmtMoney2(subtotal) + '</td></tr>' +
+          (inv.discount ? '<tr class="total-row"><td colspan="2" class="label-cell">Local discount (10%)</td><td class="cell-price">−' + fmtMoney2(discountAmt) + '</td></tr>' : '') +
+          (inv.shipping ? '<tr class="total-row"><td colspan="2" class="label-cell">Shipping</td><td class="cell-price">' + fmtMoney2(inv.shipping) + '</td></tr>' : '') +
+          (inv.taxPct   ? '<tr class="total-row"><td colspan="2" class="label-cell">Sales Tax (' + inv.taxPct + '%)</td><td class="cell-price">' + fmtMoney2(taxAmt) + '</td></tr>' : '') +
+          '<tr class="total-row grand-total"><td colspan="2" class="label-cell"><strong>Total</strong></td><td class="cell-price"><strong>' + fmtMoney2(total) + '</strong></td></tr>';
+
+        const statusClass = inv.paid ? 'inv-status-paid' : 'inv-status-pending';
+        const statusLabel = inv.paid ? 'Paid' : 'Pending';
+
+        page.innerHTML =
+          '<div class="inv-header-row">' +
+            '<div><div class="artist-name">Dim Zayan</div><div class="artist-meta">208 W El Paso St / 1226<br>Marfa, TX 79843<br>646 678 1468</div></div>' +
+            '<div class="inv-meta">' + (inv.date || '') + '<br>' + numStr + '</div>' +
+          '</div>' +
+          '<div class="section"><div class="section-label">Bill to</div>' +
+            '<div class="section-body">' + (inv.buyer && inv.buyer.name ? '<strong>' + inv.buyer.name + '</strong><br>' : '') + ((inv.buyer && inv.buyer.address || '').replace(/\n/g, '<br>')) + '</div></div>' +
+          '<div class="section"><div class="section-label">Status</div>' +
+            '<span class="inv-status-badge ' + statusClass + '" id="status-badge">' + statusLabel + '</span></div>' +
+          '<table>' + itemRows + totalRows + '</table>' +
+          '<div class="payment-block"><div class="payment-title">Payment instructions</div>' +
+            'Invoice due upon receipt. Payments can be made via one of the following methods.<br>' +
+            'Kindly reference the invoice number when making payment, thank you!<br><br>' +
+            '— Venmo: @gregory-mirzayantz<br>— Apple Pay: 646 678 1468' +
+            (inv.bitcoin ? '<br>— Bitcoin: bc1qptxza9png045rya3zdk7uzfl8wafvk778hlc4f' : '') +
+          '</div>' +
+          '<div class="no-print">' +
+            '<button onclick="window.print()">Print / Save PDF</button>' +
+            (!inv.paid ? '<button class="btn-paid" id="mark-paid-btn">Mark as paid</button>' : '') +
+          '</div>';
+
+        const paidBtn = document.getElementById('mark-paid-btn');
+        if (paidBtn) {
+          paidBtn.addEventListener('click', function() {
+            try {
+              const stored = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}');
+              if (stored[invoiceId]) { stored[invoiceId].paid = true; localStorage.setItem(INVOICE_KEY, JSON.stringify(stored)); }
+            } catch(e) {}
+            if (window.opener && window.opener.dimZayanInvoicePaid) window.opener.dimZayanInvoicePaid(invoiceId);
+            const badge = document.getElementById('status-badge');
+            badge.textContent = 'Paid'; badge.className = 'inv-status-badge inv-status-paid';
+            paidBtn.remove();
+          });
+        }
+      }
+    }
+  </script>
+</body>
+</html>

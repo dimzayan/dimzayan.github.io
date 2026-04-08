@@ -1,3 +1,5 @@
+import { ROUTES } from '../js/routes.js';
+
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
@@ -12,27 +14,42 @@ export default {
       return new Response(null, { headers: CORS });
     }
 
-    // /exhibitions/:id  or  /exhibitions/:id/edit — proxy HTML with injected ID
-    const exMatch = url.pathname.match(/^\/exhibitions\/([^/]+)(\/edit)?$/);
-    if (exMatch) {
-      const id     = decodeURIComponent(exMatch[1]);
-      const isEdit = !!exMatch[2];
-      const page   = isEdit ? 'exhibition.html' : 'exhibitions.html';
-      const origin = 'https://dimzayan.com/' + page;
-      const html   = await fetch(origin).then(r => r.text());
-      const safe   = id.replace(/"/g, '').replace(/</g, '').replace(/>/g, '');
-      const out    = html.replace('<head>',
-        `<head><base href="/"><script>window.__EXHIBIT_ID__="${safe}";<\/script>`
-      );
-      return new Response(out, {
-        headers: { ...CORS, 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' },
-      });
+    // Pretty-URL routes — defined in js/routes.js
+    for (const route of ROUTES) {
+      let matched = false;
+      let safe    = null;
+
+      if (route.prettyPath.includes(':id')) {
+        // Parameterized route: match and capture the ID segment
+        const pattern = route.prettyPath.replace(':id', '([^/]+)');
+        const m = url.pathname.match(new RegExp('^' + pattern + '$'));
+        if (m) {
+          matched = true;
+          safe    = decodeURIComponent(m[1]).replace(/["><]/g, '');
+        }
+      } else {
+        // Non-parameterized route: exact match (with or without trailing slash)
+        if (url.pathname === route.prettyPath || url.pathname === route.prettyPath + '/') {
+          matched = true;
+        }
+      }
+
+      if (matched) {
+        const html = await fetch('https://dimzayan.com/' + route.workerPage).then(r => r.text());
+        const inject = safe
+          ? `<base href="/"><script>window.${route.injectVar}="${safe}";<\/script>`
+          : '<base href="/">';
+        const out = html.replace('<head>', '<head>' + inject);
+        return new Response(out, {
+          headers: { ...CORS, 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' },
+        });
+      }
     }
 
     // /api/* routes
     const key = url.pathname.replace(/^\/api\//, '');
 
-    if (!['inventory', 'exhibits', 'data'].includes(key)) {
+    if (!['inventory', 'exhibits', 'data', 'clients'].includes(key)) {
       return new Response('Not found', { status: 404, headers: CORS });
     }
 

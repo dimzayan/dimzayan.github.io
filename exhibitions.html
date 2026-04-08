@@ -195,14 +195,49 @@
 
 
   <script type="module" src="js/collection.js"></script>
-  <script>
+  <script type="module">
+    import { getPageId, routeUrl } from './js/routes.js';
+
     const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
 
-    const id    = window.__EXHIBIT_ID__ || new URLSearchParams(window.location.search).get('id');
+    const id    = getPageId('__EXHIBIT_ID__');
     const cover = document.getElementById('cover');
 
     if (!id) {
-      cover.innerHTML = '<div class="not-found">No exhibit specified.</div>';
+      // ── List mode: show all exhibitions ──
+      cover.style.display = 'none';
+      document.getElementById('about').style.display   = 'none';
+      document.getElementById('press').style.display   = 'none';
+      document.getElementById('artist').style.display  = 'none';
+      document.getElementById('inquire').style.display = 'none';
+      document.title = 'Exhibitions — Dim Zayan';
+
+      const listSection = document.createElement('section');
+      listSection.style.cssText = 'max-width:860px;margin:4rem auto;padding:0 3rem;';
+      listSection.innerHTML = '<div class="section-label" style="margin-bottom:1.5rem;">Exhibitions</div><div id="ex-list" style="display:flex;flex-direction:column;gap:0;"></div>';
+      document.querySelector('#site-footer').before(listSection);
+
+      fetch('https://dimzayan.com/api/exhibits')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          const list = document.getElementById('ex-list');
+          const keys = Object.keys(data);
+          if (!keys.length) { list.innerHTML = '<p style="opacity:0.35;font-size:0.85rem;">No exhibitions yet.</p>'; return; }
+          keys.forEach(function(key) {
+            const ex = data[key];
+            const a = document.createElement('a');
+            a.href = routeUrl('exhibition-view', { id: key });
+            a.style.cssText = 'display:flex;justify-content:space-between;align-items:baseline;padding:1rem 0;border-bottom:1px solid rgba(0,0,0,0.07);text-decoration:none;color:#111;transition:opacity 0.15s;';
+            a.onmouseover = function() { a.style.opacity = '0.55'; };
+            a.onmouseout  = function() { a.style.opacity = '1'; };
+            const meta = [ex.location, ex.year].filter(Boolean).join('  ·  ');
+            a.innerHTML = '<span style="font-size:0.95rem;font-weight:200;">' + (ex.title || key) + '</span>' + (meta ? '<span style="font-size:0.72rem;opacity:0.4;">' + meta + '</span>' : '');
+            list.appendChild(a);
+          });
+        })
+        .catch(function() {
+          document.getElementById('ex-list').innerHTML = '<p style="opacity:0.35;font-size:0.85rem;">Could not load exhibitions.</p>';
+        });
     } else {
       (async function() {
         function fetchExhibits() {

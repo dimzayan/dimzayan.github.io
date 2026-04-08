@@ -250,12 +250,11 @@ if (btn) btn.addEventListener('click', function() {
   }
 
   function openInvoice(invoiceId) {
-    const all = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}');
-    const inv = all[invoiceId];
-    if (!inv) { alert('Invoice not found.'); return; }
-    const win = window.open('', '_blank');
-    win.document.write(generateInvoiceHTML(inv));
-    win.document.close();
+    const isLocal = !location.hostname.endsWith('dimzayan.com');
+    const url = isLocal
+      ? '/admin/invoices.html?id=' + encodeURIComponent(invoiceId)
+      : '/admin/invoices/' + encodeURIComponent(invoiceId);
+    window.open(url, '_blank');
   }
 
   // Delegated listener for inv-tag clicks (createRow sets data-invoice-id)

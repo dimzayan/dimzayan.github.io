@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exhibitions — Dim Zayan</title>
+  <link rel="icon" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
+
+    header {
+      padding: 1.5rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .header-left { display: flex; align-items: center; gap: 1.5rem; }
+    .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; letter-spacing: 0.01em; }
+    .back-link:hover { opacity: 1; }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+    .page { max-width: 860px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* ── Shared card styles ── */
+    .card { background: white; border-radius: 4px; overflow: hidden; }
+    .card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: space-between; }
+    .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
+    .card-action { font-size: 0.75rem; font-weight: 300; color: #111; text-decoration: none; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+    .card-action:hover { opacity: 1; }
+    .empty-state { padding: 2.5rem 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
+
+    /* ── List mode ── */
+    .exhibit-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.12s; }
+    .exhibit-row:last-child { border-bottom: none; }
+    .exhibit-row:hover { background: rgba(0,0,0,0.02); }
+    .exhibit-row-info { display: flex; flex-direction: column; gap: 0.15rem; cursor: pointer; flex: 1; }
+    .exhibit-row-title { font-size: 0.88rem; font-weight: 300; }
+    .exhibit-row-meta { font-size: 0.72rem; opacity: 0.38; }
+    .exhibit-row-actions { display: flex; gap: 1rem; }
+    .exhibit-row-actions a { font-size: 0.72rem; opacity: 0.35; color: #111; text-decoration: none; }
+    .exhibit-row-actions a:hover { opacity: 1; }
+
+    #create-form { display: none; padding: 1.25rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.07); background: rgba(0,0,0,0.015); flex-direction: column; gap: 0.85rem; }
+    #create-form.open { display: flex; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .form-field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.28rem; }
+    .form-field input, .form-field textarea { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.42rem 0.65rem; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 300; color: #111; background: white; }
+    .form-field input:focus, .form-field textarea:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+    .form-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+    .form-actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
+    .form-actions button:hover { background: rgba(0,0,0,0.04); }
+    #create-save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+    #create-status { font-size: 0.75rem; opacity: 0.5; align-self: center; }
+
+    /* ── Detail / Editor mode ── */
+    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; }
+    .save-btn:hover { background: #000; }
+    .save-btn:disabled { opacity: 0.4; cursor: default; }
+    #save-status { font-size: 0.75rem; opacity: 0.45; }
+
+    .ex-heading { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.5rem 0 0.5rem; }
+    .ex-title { font-size: 1.15rem; font-weight: 300; }
+    .ex-meta { font-size: 0.78rem; opacity: 0.4; }
+
+    /* Room list */
+    .room-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: background 0.1s; user-select: none; }
+    .room-row:last-child { border-bottom: none; }
+    .room-row:hover { background: rgba(0,0,0,0.025); }
+    .room-row.selected { background: rgba(0,0,0,0.04); }
+    .room-row.dragging { opacity: 0.4; }
+    .room-row.drag-over-top { box-shadow: inset 0 2px 0 rgba(0,0,0,0.3); }
+    .room-row.drag-over-bottom { box-shadow: inset 0 -2px 0 rgba(0,0,0,0.3); }
+    .drag-handle { font-size: 1rem; opacity: 0.2; cursor: grab; flex-shrink: 0; padding: 0 0.1rem; }
+    .drag-handle:active { cursor: grabbing; }
+    .room-thumb { width: 72px; height: 44px; object-fit: cover; border-radius: 2px; flex-shrink: 0; background: #ddd; display: block; }
+    .room-row-info { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; }
+    .room-row-name { font-size: 0.85rem; }
+    .room-row-hs { font-size: 0.72rem; opacity: 0.35; }
+    .del-room-btn { background: none; border: none; font-size: 0.72rem; color: #c00; opacity: 0; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0.2rem 0.4rem; border-radius: 2px; flex-shrink: 0; }
+    .room-row:hover .del-room-btn { opacity: 0.55; }
+    .del-room-btn:hover { opacity: 1 !important; background: rgba(200,0,0,0.06); }
+    .add-room-row { display: flex; gap: 0.5rem; align-items: center; padding: 0.75rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.05); }
+    .add-room-row input { flex: 1; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.35rem 0.6rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: #111; background: white; }
+    .add-room-row input:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .add-room-row button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.35rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; cursor: pointer; color: #111; white-space: nowrap; }
+    .add-room-row button:hover { background: rgba(0,0,0,0.04); }
+    .empty-rooms { padding: 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
+
+    /* Canvas editor */
+    #canvas-card { display: none; }
+    .re-canvas-wrap { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); background: #111; }
+    .re-canvas { position: relative; display: block; width: 100%; cursor: crosshair; user-select: none; line-height: 0; }
+    .re-canvas img { display: block; width: 100%; pointer-events: none; }
+    .re-hs { position: absolute; border: 1.5px solid rgba(255,255,255,0.55); background: rgba(255,255,255,0.08); cursor: pointer; display: flex; align-items: flex-start; padding: 3px; transition: background 0.15s; }
+    .re-hs:hover { background: rgba(255,255,255,0.22); }
+    .re-hs-label { font-size: 10px; font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.9); padding: 1px 4px; border-radius: 2px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .re-hs-preview { position: absolute; border: 1.5px dashed rgba(255,255,255,0.65); background: rgba(255,255,255,0.1); pointer-events: none; }
+    .re-assign-popup { position: absolute; z-index: 30; background: white; border: 1px solid rgba(0,0,0,0.15); border-radius: 3px; padding: 0.55rem; display: flex; flex-direction: column; gap: 0.4rem; box-shadow: 0 4px 16px rgba(0,0,0,0.14); min-width: 200px; }
+    .re-assign-popup select { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 2px; padding: 0.25rem 0.4rem; color: #111; background: white; width: 100%; }
+    .re-assign-popup .re-popup-btns { display: flex; gap: 0.35rem; }
+    .re-assign-popup button { flex: 1; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 2px; padding: 0.22rem 0; cursor: pointer; background: none; color: #111; }
+    .re-assign-popup .re-popup-ok { background: rgba(0,0,0,0.85); color: white; border-color: transparent; }
+    .re-hs-list { padding: 0.65rem 1.5rem; display: flex; flex-direction: column; gap: 0.25rem; min-height: 2.5rem; }
+    .re-hs-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; font-weight: 300; padding: 0.15rem 0; }
+    .re-hs-item .re-hs-del { background: none; border: none; font-size: 0.72rem; cursor: pointer; opacity: 0.3; color: #111; padding: 0; font-family: 'DM Sans', sans-serif; }
+    .re-hs-item .re-hs-del:hover { opacity: 1; color: #c00; }
+
+    #token-row { display: flex; align-items: center; gap: 0.5rem; }
+
+    /* Hidden sections */
+    #list-view, #detail-view { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- List mode header -->
+  <header id="list-header" style="display:none;">
+    <div class="header-left">
+      <a class="back-link" id="back-link-list" href="#">← Studio</a>
+      <span style="font-size:0.85rem;font-weight:300;letter-spacing:0.04em;">Exhibitions</span>
+    </div>
+  </header>
+
+  <!-- Detail mode header -->
+  <header id="detail-header" style="display:none;">
+    <div class="header-left">
+      <a class="back-link" id="back-link-detail" href="#">← Exhibitions</a>
+      <div id="ex-heading" class="ex-heading" style="display:inline-flex;flex-direction:column;gap:0.1rem;">
+        <span class="ex-title" id="ex-title"></span>
+        <span class="ex-meta" id="ex-meta"></span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="save-status"></span>
+      <a id="view-link" class="back-link" target="_blank" rel="noopener" style="opacity:0.4;">View</a>
+      <button class="save-btn" id="save-btn">Save</button>
+      <div id="token-row">
+        <span id="token-status" style="font-size:0.72rem;opacity:0.4;"></span>
+        <input id="token-input" type="password" placeholder="API token"
+          style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.55rem;width:160px;display:none;">
+        <button id="token-btn" style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;background:none;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.7rem;cursor:pointer;color:#111;opacity:0.55;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.55">Set token</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- List view -->
+    <div id="list-view">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Exhibitions</span>
+          <button class="card-action" id="new-exhibit-btn">+ New exhibition</button>
+        </div>
+        <div id="exhibits-list"><div class="empty-state">Loading…</div></div>
+        <div id="create-form">
+          <div class="form-row">
+            <div class="form-field"><label>Title</label><input id="cf-title" type="text" placeholder="A three-quarter view of the future"></div>
+            <div class="form-field"><label>Year</label><input id="cf-year" type="text" placeholder="2026"></div>
+          </div>
+          <div class="form-field"><label>Location</label><input id="cf-location" type="text" placeholder="Marfa, TX"></div>
+          <div class="form-field"><label>Description</label><textarea id="cf-description" placeholder="Optional"></textarea></div>
+          <div class="form-actions">
+            <span id="create-status"></span>
+            <button id="create-cancel-btn">Cancel</button>
+            <button id="create-save-btn">Create exhibition</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail view -->
+    <div id="detail-view">
+      <div class="card" id="rooms-card">
+        <div class="card-header"><span class="card-label">Rooms</span></div>
+        <div id="room-list"></div>
+        <div class="add-room-row">
+          <input id="new-photo" type="text" placeholder="filename.webp">
+          <button id="add-room-btn">Add room</button>
+        </div>
+      </div>
+      <div class="card" id="canvas-card">
+        <div class="card-header">
+          <span class="card-label">Editing: <span id="edit-room-label" style="font-weight:300;text-transform:none;letter-spacing:0;opacity:0.8;"></span></span>
+        </div>
+        <div class="re-canvas-wrap">
+          <div class="re-canvas" id="re-canvas"><img id="re-photo" alt=""></div>
+        </div>
+        <div class="re-hs-list" id="re-hs-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { getPageId, routeUrl } from '../js/routes.js';
+
+    const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
+    const API_INVENTORY = 'https://dimzayan.com/api/inventory';
+    const CDN_HI        = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+
+    const exhibitId = getPageId('__EXHIBIT_ID__');
+
+    document.getElementById('back-link-list').href   = routeUrl('admin');
+    document.getElementById('back-link-detail').href = routeUrl('admin-exhibitions');
+
+    if (!exhibitId) {
+      // ── LIST MODE ────────────────────────────────────────────────────────
+      document.getElementById('list-header').style.display = 'flex';
+      document.getElementById('list-view').style.display   = 'block';
+      document.title = 'Exhibitions — Dim Zayan';
+
+      let exhibitsData = {};
+
+      async function loadExhibits() {
+        try {
+          exhibitsData = await fetch(API_EXHIBITS).then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+          renderExhibits();
+        } catch(e) {
+          document.getElementById('exhibits-list').innerHTML = '<div class="empty-state">Could not load exhibitions.</div>';
+        }
+      }
+
+      function renderExhibits() {
+        const list = document.getElementById('exhibits-list');
+        const keys = Object.keys(exhibitsData);
+        if (!keys.length) { list.innerHTML = '<div class="empty-state">No exhibitions yet.</div>'; return; }
+        list.innerHTML = '';
+        keys.forEach(function(key) {
+          const ex  = exhibitsData[key];
+          const row = document.createElement('div');
+          row.className = 'exhibit-row';
+          const meta = [ex.location, ex.year].filter(Boolean).join(' · ');
+          row.innerHTML =
+            '<div class="exhibit-row-info" data-view="' + key + '">' +
+              '<div class="exhibit-row-title">' + (ex.title || key) + '</div>' +
+              (meta ? '<div class="exhibit-row-meta">' + meta + '</div>' : '') +
+            '</div>' +
+            '<div class="exhibit-row-actions">' +
+              '<a href="' + routeUrl('admin-exhibition', { id: key }) + '">Edit</a>' +
+              '<a href="' + routeUrl('exhibition-view', { id: key }) + '" target="_blank">View</a>' +
+            '</div>';
+          list.appendChild(row);
+        });
+        list.querySelectorAll('[data-view]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            window.location.href = routeUrl('admin-exhibition', { id: el.dataset.view });
+          });
+        });
+      }
+
+      document.getElementById('new-exhibit-btn').addEventListener('click', function() {
+        document.getElementById('create-form').classList.add('open');
+        document.getElementById('cf-title').focus();
+      });
+      document.getElementById('create-cancel-btn').addEventListener('click', function() {
+        document.getElementById('create-form').classList.remove('open');
+        clearForm();
+      });
+      document.getElementById('create-save-btn').addEventListener('click', async function() {
+        const title = document.getElementById('cf-title').value.trim();
+        if (!title) { document.getElementById('cf-title').focus(); return; }
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { document.getElementById('create-status').textContent = 'No token'; return; }
+        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        if (exhibitsData[slug]) { document.getElementById('create-status').textContent = 'ID already exists'; return; }
+        exhibitsData[slug] = { id: slug, title, year: document.getElementById('cf-year').value.trim(), location: document.getElementById('cf-location').value.trim(), press: [], description: document.getElementById('cf-description').value.trim(), media: [] };
+        const btn = document.getElementById('create-save-btn');
+        btn.disabled = true;
+        document.getElementById('create-status').textContent = 'Saving…';
+        try {
+          const r = await fetch(API_EXHIBITS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(exhibitsData, null, 2) });
+          if (!r.ok) throw new Error(r.status + ': ' + (await r.text()));
+          renderExhibits();
+          document.getElementById('create-form').classList.remove('open');
+          clearForm();
+        } catch(e) {
+          document.getElementById('create-status').textContent = 'Error: ' + e.message;
+        } finally { btn.disabled = false; }
+      });
+      function clearForm() {
+        ['cf-title','cf-year','cf-location','cf-description'].forEach(function(id) { document.getElementById(id).value = ''; });
+        document.getElementById('create-status').textContent = '';
+      }
+      loadExhibits();
+
+    } else {
+      // ── DETAIL / EDITOR MODE ─────────────────────────────────────────────
+      document.getElementById('detail-header').style.display = 'flex';
+      document.getElementById('detail-view').style.display   = 'block';
+
+      let exhibitsData  = {};
+      let inventoryData = {};
+      let inventoryReady = null;
+      let editRooms     = [];
+      let editRoomIdx   = -1;
+      let pendingRect   = null;
+      let drawOrigin    = null;
+      let dragSrcIdx    = null;
+
+      async function loadInventory() {
+        try { inventoryData = await fetch(API_INVENTORY).then(function(r) { if (!r.ok) throw new Error(); return r.json(); }); } catch(e) {}
+      }
+
+      async function loadExhibit() {
+        try {
+          exhibitsData = await fetch(API_EXHIBITS).then(function(r) { if (!r.ok) throw new Error(); return r.json(); });
+          const ex = exhibitsData[exhibitId];
+          if (!ex) { document.getElementById('ex-title').textContent = 'Exhibit not found'; return; }
+          document.title = 'Edit: ' + ex.title + ' — Dim Zayan';
+          document.getElementById('ex-title').textContent = ex.title || exhibitId;
+          const meta = [ex.location, ex.year].filter(Boolean).join(' · ');
+          document.getElementById('ex-meta').textContent = meta;
+          editRooms = JSON.parse(JSON.stringify(ex.rooms || []));
+          renderRoomList();
+          if (editRooms.length) selectRoom(0);
+          document.getElementById('view-link').href = routeUrl('exhibition-view', { id: exhibitId });
+        } catch(e) {
+          document.getElementById('ex-title').textContent = 'Could not load exhibit';
+        }
+      }
+
+      function renderRoomList() {
+        const list = document.getElementById('room-list');
+        list.innerHTML = '';
+        if (!editRooms.length) { list.innerHTML = '<div class="empty-rooms">No rooms yet. Add one below.</div>'; return; }
+        editRooms.forEach(function(room, idx) {
+          const hsCount = (room.hotspots || []).length;
+          const row = document.createElement('div');
+          row.className = 'room-row' + (idx === editRoomIdx ? ' selected' : '');
+          row.draggable = true;
+          row.dataset.idx = idx;
+          const handle = document.createElement('span');
+          handle.className = 'drag-handle';
+          handle.textContent = '⠿';
+          handle.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+          const thumb = document.createElement('img');
+          thumb.className = 'room-thumb';
+          thumb.src = CDN_HI + room.photo;
+          thumb.alt = '';
+          const info = document.createElement('div');
+          info.className = 'room-row-info';
+          info.innerHTML = '<div class="room-row-name">Room ' + (idx + 1) + ' — ' + room.photo + '</div><div class="room-row-hs">' + hsCount + ' hotspot' + (hsCount !== 1 ? 's' : '') + '</div>';
+          const delBtn = document.createElement('button');
+          delBtn.className = 'del-room-btn';
+          delBtn.textContent = 'Delete';
+          delBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (!confirm('Delete Room ' + (idx + 1) + '?')) return;
+            editRooms.splice(idx, 1);
+            if (editRoomIdx >= editRooms.length) editRoomIdx = editRooms.length - 1;
+            renderRoomList();
+            if (editRoomIdx >= 0) selectRoom(editRoomIdx); else hideCanvas();
+          });
+          row.appendChild(handle); row.appendChild(thumb); row.appendChild(info); row.appendChild(delBtn);
+          row.addEventListener('click', function() { selectRoom(idx); });
+          row.addEventListener('dragstart', function(e) { dragSrcIdx = idx; row.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+          row.addEventListener('dragend', function() { row.classList.remove('dragging'); list.querySelectorAll('.room-row').forEach(function(r) { r.classList.remove('drag-over-top', 'drag-over-bottom'); }); });
+          row.addEventListener('dragover', function(e) {
+            e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+            list.querySelectorAll('.room-row').forEach(function(r) { r.classList.remove('drag-over-top', 'drag-over-bottom'); });
+            const rect = row.getBoundingClientRect();
+            row.classList.add(e.clientY < rect.top + rect.height / 2 ? 'drag-over-top' : 'drag-over-bottom');
+          });
+          row.addEventListener('dragleave', function() { row.classList.remove('drag-over-top', 'drag-over-bottom'); });
+          row.addEventListener('drop', function(e) {
+            e.preventDefault(); row.classList.remove('drag-over-top', 'drag-over-bottom');
+            if (dragSrcIdx === null || dragSrcIdx === idx) return;
+            const rect = row.getBoundingClientRect(); const mid = rect.top + rect.height / 2; const insertAfter = e.clientY >= mid;
+            const moved = editRooms.splice(dragSrcIdx, 1)[0];
+            let target = idx;
+            if (dragSrcIdx < idx) target = insertAfter ? idx : idx - 1;
+            else target = insertAfter ? idx + 1 : idx;
+            target = Math.max(0, Math.min(editRooms.length, target));
+            editRooms.splice(target, 0, moved);
+            if (editRoomIdx === dragSrcIdx) editRoomIdx = target;
+            else if (dragSrcIdx < editRoomIdx && target >= editRoomIdx) editRoomIdx--;
+            else if (dragSrcIdx > editRoomIdx && target <= editRoomIdx) editRoomIdx++;
+            dragSrcIdx = null; renderRoomList(); if (editRoomIdx >= 0) renderCanvas();
+          });
+          list.appendChild(row);
+        });
+      }
+
+      function selectRoom(idx) {
+        editRoomIdx = idx;
+        renderRoomList();
+        document.getElementById('canvas-card').style.display = 'block';
+        document.getElementById('edit-room-label').textContent = 'Room ' + (idx + 1) + ' — ' + editRooms[idx].photo;
+        document.getElementById('re-photo').src = CDN_HI + editRooms[idx].photo;
+        renderCanvas(); renderHotspotList();
+      }
+
+      function hideCanvas() { editRoomIdx = -1; document.getElementById('canvas-card').style.display = 'none'; renderRoomList(); }
+
+      var canvas = document.getElementById('re-canvas');
+
+      function renderCanvas() {
+        Array.from(canvas.children).forEach(function(el) { if (el.tagName !== 'IMG' && !el.classList.contains('re-hs-preview')) el.remove(); });
+        if (editRoomIdx < 0 || !editRooms.length) return;
+        const room = editRooms[editRoomIdx];
+        (room.hotspots || []).forEach(function(hs, hi) {
+          const el = document.createElement('div');
+          el.className = 're-hs';
+          el.style.left = hs.x + '%'; el.style.top = hs.y + '%'; el.style.width = hs.w + '%'; el.style.height = hs.h + '%';
+          const work = hs.type === 'room' ? null : inventoryData[hs.id];
+          const label = document.createElement('div');
+          label.className = 're-hs-label';
+          label.textContent = hs.type === 'room' ? '→ Room ' + (hs.target + 1) : (work && work.title) ? work.title : (hs.id || '');
+          el.appendChild(label);
+          el.title = 'Double-click to remove';
+          el.addEventListener('dblclick', function(e) { e.stopPropagation(); editRooms[editRoomIdx].hotspots.splice(hi, 1); renderCanvas(); renderHotspotList(); });
+          canvas.appendChild(el);
+        });
+      }
+
+      function renderHotspotList() {
+        const list = document.getElementById('re-hs-list');
+        list.innerHTML = '';
+        if (editRoomIdx < 0 || !editRooms.length) return;
+        const room = editRooms[editRoomIdx];
+        if (!room.hotspots || !room.hotspots.length) { list.innerHTML = '<div style="font-size:0.8rem;opacity:0.35;padding:0.1rem 0">Draw a rectangle on the photo to add a hotspot.</div>'; return; }
+        room.hotspots.forEach(function(hs, hi) {
+          const work = hs.type === 'room' ? null : inventoryData[hs.id];
+          const row  = document.createElement('div');
+          row.className = 're-hs-item';
+          const name = document.createElement('span');
+          name.textContent = hs.type === 'room' ? '→ Room ' + (hs.target + 1) + ' — ' + (editRooms[hs.target] ? editRooms[hs.target].photo : '') : (work && work.title) ? work.title + ' (' + hs.id + ')' : (hs.id || '');
+          const del = document.createElement('button');
+          del.className = 're-hs-del'; del.textContent = 'Remove';
+          del.addEventListener('click', function() { editRooms[editRoomIdx].hotspots.splice(hi, 1); renderCanvas(); renderHotspotList(); });
+          row.appendChild(name); row.appendChild(del); list.appendChild(row);
+        });
+      }
+
+      canvas.addEventListener('mousedown', function(e) {
+        if (editRoomIdx < 0) return;
+        if (e.target.classList.contains('re-hs')) return;
+        if (e.target.closest && e.target.closest('.re-assign-popup')) return;
+        const rect = canvas.getBoundingClientRect();
+        drawOrigin = { x: (e.clientX - rect.left) / rect.width * 100, y: (e.clientY - rect.top) / rect.height * 100 };
+        var preview = canvas.querySelector('.re-hs-preview');
+        if (!preview) { preview = document.createElement('div'); preview.className = 're-hs-preview'; canvas.appendChild(preview); }
+        preview.style.left = drawOrigin.x + '%'; preview.style.top = drawOrigin.y + '%'; preview.style.width = '0%'; preview.style.height = '0%';
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', function(e) {
+        if (!drawOrigin) return;
+        const rect = canvas.getBoundingClientRect();
+        const cx = (e.clientX - rect.left) / rect.width * 100; const cy = (e.clientY - rect.top) / rect.height * 100;
+        const x = Math.min(drawOrigin.x, cx); const y = Math.min(drawOrigin.y, cy);
+        const w = Math.abs(cx - drawOrigin.x); const h = Math.abs(cy - drawOrigin.y);
+        const preview = canvas.querySelector('.re-hs-preview');
+        if (preview) { preview.style.left = x + '%'; preview.style.top = y + '%'; preview.style.width = w + '%'; preview.style.height = h + '%'; }
+        pendingRect = { x: parseFloat(x.toFixed(2)), y: parseFloat(y.toFixed(2)), w: parseFloat(w.toFixed(2)), h: parseFloat(h.toFixed(2)) };
+      });
+
+      window.addEventListener('mouseup', function(e) {
+        if (!drawOrigin) return;
+        drawOrigin = null;
+        const preview = canvas.querySelector('.re-hs-preview');
+        if (preview) preview.remove();
+        if (!pendingRect || pendingRect.w < 1 || pendingRect.h < 1) { pendingRect = null; return; }
+        showAssignPopup(e.clientX, e.clientY, pendingRect); pendingRect = null;
+      });
+
+      async function showAssignPopup(clientX, clientY, rect) {
+        var old = document.querySelector('.re-assign-popup');
+        if (old) old.remove();
+        await inventoryReady;
+        const canvasRect = canvas.getBoundingClientRect();
+        const px = (clientX - canvasRect.left) / canvasRect.width * 100;
+        const py = (clientY - canvasRect.top) / canvasRect.height * 100;
+        const works = Object.entries(inventoryData).filter(function(e) { return !e[1].excluded; }).map(function(e) { return { id: e[0], title: e[1].title || e[0] }; }).sort(function(a, b) { return a.title.localeCompare(b.title); });
+        const popup = document.createElement('div');
+        popup.className = 're-assign-popup';
+        popup.style.left = Math.min(px, 70) + '%'; popup.style.top = Math.min(py, 75) + '%';
+        const sel = document.createElement('select');
+        sel.innerHTML = '<option value="">— select —</option>';
+        if (works.length) {
+          const grpWorks = document.createElement('optgroup'); grpWorks.label = 'Works';
+          works.forEach(function(w) { const opt = document.createElement('option'); opt.value = w.id; opt.textContent = w.title; grpWorks.appendChild(opt); });
+          sel.appendChild(grpWorks);
+        }
+        if (editRooms.length > 1) {
+          const grpRooms = document.createElement('optgroup'); grpRooms.label = 'Go to room';
+          editRooms.forEach(function(r, i) { if (i === editRoomIdx) return; const opt = document.createElement('option'); opt.value = 'room:' + i; opt.textContent = 'Room ' + (i + 1) + ' — ' + r.photo; grpRooms.appendChild(opt); });
+          sel.appendChild(grpRooms);
+        }
+        popup.appendChild(sel);
+        setTimeout(function() { sel.focus(); }, 0);
+        const btns = document.createElement('div'); btns.className = 're-popup-btns';
+        const ok = document.createElement('button'); ok.className = 're-popup-ok'; ok.textContent = 'Add hotspot';
+        const cancel = document.createElement('button'); cancel.textContent = 'Cancel';
+        ok.addEventListener('click', function() {
+          const val = sel.value; if (!val) return;
+          if (!editRooms[editRoomIdx].hotspots) editRooms[editRoomIdx].hotspots = [];
+          if (val.startsWith('room:')) { const target = parseInt(val.slice(5), 10); editRooms[editRoomIdx].hotspots.push({ type: 'room', target, x: rect.x, y: rect.y, w: rect.w, h: rect.h }); }
+          else { editRooms[editRoomIdx].hotspots.push({ id: val, x: rect.x, y: rect.y, w: rect.w, h: rect.h }); }
+          popup.remove(); renderCanvas(); renderHotspotList(); renderRoomList();
+        });
+        cancel.addEventListener('click', function() { popup.remove(); });
+        popup.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+        btns.appendChild(ok); btns.appendChild(cancel); popup.appendChild(btns); canvas.appendChild(popup);
+      }
+
+      document.getElementById('add-room-btn').addEventListener('click', function() {
+        const val = document.getElementById('new-photo').value.trim(); if (!val) return;
+        editRooms.push({ photo: val, hotspots: [] }); document.getElementById('new-photo').value = '';
+        renderRoomList(); selectRoom(editRooms.length - 1);
+      });
+      document.getElementById('new-photo').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('add-room-btn').click(); });
+
+      document.getElementById('save-btn').addEventListener('click', async function() {
+        if (!exhibitId) return;
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { document.getElementById('save-status').textContent = 'No token'; return; }
+        exhibitsData[exhibitId].rooms = editRooms;
+        const btn = document.getElementById('save-btn');
+        btn.disabled = true; document.getElementById('save-status').textContent = 'Saving…';
+        try {
+          const r = await fetch(API_EXHIBITS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(exhibitsData, null, 2) });
+          if (!r.ok) throw new Error(r.status + ': ' + (await r.text()));
+          document.getElementById('save-status').textContent = 'Saved';
+          setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
+        } catch(e) {
+          document.getElementById('save-status').textContent = 'Error: ' + e.message;
+        } finally { btn.disabled = false; }
+      });
+
+      // Token UI
+      (function() {
+        const inp = document.getElementById('token-input'); const btn = document.getElementById('token-btn'); const status = document.getElementById('token-status');
+        function updateTokenUI() {
+          const t = localStorage.getItem('dim_gh_token') || '';
+          if (t) { status.textContent = 'token set'; btn.textContent = 'Clear'; inp.style.display = 'none'; }
+          else { status.textContent = ''; btn.textContent = 'Set token'; }
+        }
+        updateTokenUI();
+        btn.addEventListener('click', function() {
+          const t = localStorage.getItem('dim_gh_token') || '';
+          if (t) { localStorage.removeItem('dim_gh_token'); updateTokenUI(); }
+          else if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
+          else { const val = inp.value.trim(); if (val) { localStorage.setItem('dim_gh_token', val); inp.value = ''; } updateTokenUI(); }
+        });
+        inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') btn.click(); if (e.key === 'Escape') { inp.style.display = 'none'; inp.value = ''; } });
+      })();
+
+      inventoryReady = loadInventory();
+      loadExhibit();
+    }
+  </script>
+</body>
+</html>

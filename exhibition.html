@@ -82,6 +82,10 @@
       padding: 0 0.1rem;
     }
     .drag-handle:active { cursor: grabbing; }
+    .room-thumb {
+      width: 72px; height: 44px; object-fit: cover; border-radius: 2px;
+      flex-shrink: 0; background: #ddd; display: block;
+    }
     .room-row-info { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; }
     .room-row-name { font-size: 0.85rem; }
     .room-row-hs { font-size: 0.72rem; opacity: 0.35; }
@@ -189,7 +193,7 @@
 <body>
   <header>
     <div class="header-left">
-      <a class="back-link" href="/dashboard.html">← Exhibitions</a>
+      <a class="back-link" id="back-link" href="#">← Exhibitions</a>
       <div id="ex-heading" class="ex-heading" style="display:inline-flex;flex-direction:column;gap:0.1rem;">
         <span class="ex-title" id="ex-title"></span>
         <span class="ex-meta" id="ex-meta"></span>
@@ -197,6 +201,7 @@
     </div>
     <div class="header-right">
       <span id="save-status"></span>
+      <a id="view-link" class="back-link" target="_blank" rel="noopener" style="opacity:0.4;">View</a>
       <button class="save-btn" id="save-btn">Save</button>
       <div id="token-row">
         <span id="token-status" style="font-size:0.72rem;opacity:0.4;"></span>
@@ -236,12 +241,14 @@
 
   </div>
 
-  <script>
+  <script type="module">
+    import { getPageId, routeUrl } from './js/routes.js';
+
     const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
     const CDN_HI        = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
 
-    const exhibitId = window.__EXHIBIT_ID__ || new URLSearchParams(window.location.search).get('id');
+    const exhibitId = getPageId('__EXHIBIT_ID__');
 
     let exhibitsData  = {};
     let inventoryData = {};
@@ -300,6 +307,11 @@
         handle.textContent = '⠿';
         handle.addEventListener('mousedown', function(e) { e.stopPropagation(); });
 
+        const thumb = document.createElement('img');
+        thumb.className = 'room-thumb';
+        thumb.src = CDN_HI + room.photo;
+        thumb.alt = '';
+
         const info = document.createElement('div');
         info.className = 'room-row-info';
         info.innerHTML =
@@ -320,6 +332,7 @@
         });
 
         row.appendChild(handle);
+        row.appendChild(thumb);
         row.appendChild(info);
         row.appendChild(delBtn);
 
@@ -677,6 +690,10 @@
     })();
 
     // ── Init ──────────────────────────────────────────────────────────
+    document.getElementById('back-link').href = routeUrl('admin-exhibitions');
+    if (exhibitId) {
+      document.getElementById('view-link').href = routeUrl('exhibition-view', { id: exhibitId });
+    }
     inventoryReady = loadInventory();
     loadExhibit();
   </script>
