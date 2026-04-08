@@ -6,6 +6,10 @@ const CORS = {
   'Access-Control-Allow-Headers': 'Authorization, Content-Type',
 };
 
+// Admin HTML is fetched from raw.githubusercontent.com to bypass CF Access (which only protects dimzayan.com)
+// GitHub may redirect dimzayan.github.io → dimzayan.com, which would re-enter CF Access
+const RAW_GITHUB = 'https://raw.githubusercontent.com/dimzayan/dimzayan.github.io/master';
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -20,7 +24,6 @@ export default {
       let safe    = null;
 
       if (route.prettyPath.includes(':id')) {
-        // Parameterized route: match and capture the ID segment
         const pattern = route.prettyPath.replace(':id', '([^/]+)');
         const m = url.pathname.match(new RegExp('^' + pattern + '$'));
         if (m) {
@@ -28,7 +31,6 @@ export default {
           safe    = decodeURIComponent(m[1]).replace(/["><]/g, '');
         }
       } else {
-        // Non-parameterized route: exact match, trailing slash, or /index.html suffix
         if (
           url.pathname === route.prettyPath ||
           url.pathname === route.prettyPath + '/' ||
@@ -39,7 +41,9 @@ export default {
       }
 
       if (matched) {
-        const html = await fetch('https://dimzayan.com/' + route.workerPage).then(r => r.text());
+        // Admin pages: fetch from raw.githubusercontent.com to bypass CF Access on dimzayan.com
+        const origin = route.name.startsWith('admin') ? RAW_GITHUB : 'https://dimzayan.com';
+        const html = await fetch(origin + '/' + route.workerPage).then(r => r.text());
         const inject = safe
           ? `<base href="/"><script>window.${route.injectVar}="${safe}";<\/script>`
           : '<base href="/">';

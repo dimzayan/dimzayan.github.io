@@ -265,12 +265,6 @@
           if (kvClient) {
             row.style.cursor = 'pointer';
             row.addEventListener('click', function() { window.location.href = routeUrl('admin-client', { id: kvClient.id }); });
-          } else {
-            const firstWithDoc = gps.find(function(g) { return g.invoiceId && stored[g.invoiceId]; });
-            if (firstWithDoc) {
-              row.style.cursor = 'pointer';
-              row.addEventListener('click', function() { openInvoice(firstWithDoc.invoiceId); });
-            }
           }
           list.appendChild(row);
         });

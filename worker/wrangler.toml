@@ -11,7 +11,7 @@ id = "f413e3b7359e490690039d30e94a78ce"
 pattern = "dimzayan.com/api/*"
 zone_id = "8eeb7820ef96796038b1c4d7278aa1f8"
 
-# Admin — all admin pages (Cloudflare Access protects this entire path)
+# Admin — Worker proxies from dimzayan.github.io (bypasses CF Access on dimzayan.com)
 [[routes]]
 pattern = "dimzayan.com/admin*"
 zone_id = "8eeb7820ef96796038b1c4d7278aa1f8"
