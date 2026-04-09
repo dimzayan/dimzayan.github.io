@@ -6,6 +6,23 @@
 
 export const INVOICE_KEY     = 'dim_invoices_v1';
 export const INVOICE_CTR_KEY = 'dim_invoice_ctr_v1';
+export const API_INVOICES    = 'https://dimzayan.com/api/invoices';
+
+/**
+ * Load invoices: KV is the cross-device source of truth; localStorage
+ * takes precedence for any keys present on this device (most recently written).
+ */
+export async function loadInvoices() {
+  const local = allInvoices();
+  try {
+    const r = await fetch(API_INVOICES);
+    if (r.ok) {
+      const kv = await r.json();
+      return Object.assign({}, kv, local);
+    }
+  } catch(e) {}
+  return local;
+}
 
 export function nextInvoiceNum() {
   const n = Math.max(parseInt(localStorage.getItem(INVOICE_CTR_KEY) || '0', 10), 121) + 1;
@@ -22,9 +39,14 @@ function fmtDims(raw) {
   return /in\.?$|inches?$/i.test(raw.trim()) ? raw.trim() : raw.trim() + ' inches';
 }
 
+export function discountPct(inv) {
+  // discountPct (number) takes precedence; fall back to legacy boolean discount = 10%
+  return inv.discountPct != null ? (inv.discountPct || 0) : (inv.discount ? 10 : 0);
+}
+
 export function calcTotal(inv) {
   const subtotal    = (inv.items || []).reduce(function(s, it) { return s + (it.price || 0); }, 0);
-  const discountAmt = inv.discount ? subtotal * 0.10 : 0;
+  const discountAmt = subtotal * discountPct(inv) / 100;
   const taxAmt      = (subtotal - discountAmt) * ((inv.taxPct || 0) / 100);
   return subtotal - discountAmt + (inv.shipping || 0) + taxAmt;
 }
@@ -43,7 +65,8 @@ export function openInvoice(invoiceId) {
 export function generateInvoiceHTML(inv) {
   const numStr      = 'Invoice.' + String(inv.num).padStart(4, '0');
   const subtotal    = (inv.items || []).reduce(function(s, it) { return s + (it.price || 0); }, 0);
-  const discountAmt = inv.discount ? subtotal * 0.10 : 0;
+  const dpct        = discountPct(inv);
+  const discountAmt = subtotal * dpct / 100;
   const taxAmt      = (subtotal - discountAmt) * ((inv.taxPct || 0) / 100);
   const total       = subtotal - discountAmt + (inv.shipping || 0) + taxAmt;
   const CDN_LOW     = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low';
@@ -62,7 +85,7 @@ export function generateInvoiceHTML(inv) {
 
   const totalRows = `
     <tr class="total-row"><td colspan="2" class="label-cell">Subtotal</td><td class="cell-price">${fmtMoney(subtotal)}</td></tr>
-    ${inv.discount ? `<tr class="total-row"><td colspan="2" class="label-cell">Local discount (10%)</td><td class="cell-price">−${fmtMoney(discountAmt)}</td></tr>` : ''}
+    ${dpct ? `<tr class="total-row"><td colspan="2" class="label-cell">Discount (${dpct}%)</td><td class="cell-price">−${fmtMoney(discountAmt)}</td></tr>` : ''}
     ${inv.shipping ? `<tr class="total-row"><td colspan="2" class="label-cell">Shipping</td><td class="cell-price">${fmtMoney(inv.shipping)}</td></tr>` : ''}
     ${inv.taxPct   ? `<tr class="total-row"><td colspan="2" class="label-cell">Sales Tax (${inv.taxPct}%)</td><td class="cell-price">${fmtMoney(taxAmt)}</td></tr>` : ''}
     <tr class="total-row grand-total"><td colspan="2" class="label-cell"><strong>Total</strong></td><td class="cell-price"><strong>${fmtMoney(total)}</strong></td></tr>`;

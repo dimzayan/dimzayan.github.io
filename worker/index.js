@@ -57,7 +57,7 @@ export default {
     // /api/* routes
     const key = url.pathname.replace(/^\/api\//, '');
 
-    if (!['inventory', 'exhibits', 'data', 'clients'].includes(key)) {
+    if (!['inventory', 'exhibits', 'data', 'clients', 'invoices', 'press'].includes(key)) {
       return new Response('Not found', { status: 404, headers: CORS });
     }
 

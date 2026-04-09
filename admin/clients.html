@@ -24,9 +24,10 @@
     .back-link:hover { opacity: 1; }
     .header-title { font-size: 0.85rem; font-weight: 300; letter-spacing: 0.04em; }
     #save-status { font-size: 0.75rem; opacity: 0.45; }
-    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; }
+    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .save-btn.dirty { opacity: 1; pointer-events: auto; }
     .save-btn:hover { background: #000; }
-    .save-btn:disabled { opacity: 0.4; cursor: default; }
+    .save-btn:disabled { opacity: 0.4 !important; cursor: default; }
 
     .page { max-width: 1100px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
@@ -65,6 +66,25 @@
 
     #list-view, #detail-view { display: none; }
     #detail-view { flex-direction: column; gap: 2.5rem; }
+
+    /* Invoice creation modal */
+    .inv-modal { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.35); align-items: center; justify-content: center; }
+    .inv-modal.open { display: flex; }
+    .inv-modal-box { background: white; border-radius: 5px; width: 520px; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
+    .inv-modal-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 0.88rem; font-weight: 300; }
+    .inv-modal-body { padding: 1.1rem 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem; }
+    .inv-modal-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.07); display: flex; gap: 0.6rem; justify-content: flex-end; align-items: center; }
+    .inv-works-list { display: flex; flex-direction: column; border: 1px solid rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden; }
+    .inv-work-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.82rem; }
+    .inv-work-row:last-child { border-bottom: none; }
+    .inv-work-row:hover { background: rgba(0,0,0,0.02); }
+    .inv-work-row input[type="checkbox"] { flex-shrink: 0; accent-color: #111; }
+    .inv-work-row-info { flex: 1; }
+    .inv-work-price { font-size: 0.78rem; opacity: 0.45; flex-shrink: 0; }
+    #inv-modal-status { font-size: 0.75rem; opacity: 0.5; }
+    .modal-btn { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
+    .modal-btn:hover { background: rgba(0,0,0,0.04); }
+    .modal-btn-primary { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
   </style>
 </head>
 <body>
@@ -139,7 +159,10 @@
 
       <!-- Invoices -->
       <div class="card">
-        <div class="card-header"><span class="card-label">Invoices</span></div>
+        <div class="card-header">
+          <span class="card-label">Invoices</span>
+          <button class="card-action" id="new-inv-btn">+ New invoice</button>
+        </div>
         <div id="invoices-list"><div class="empty-state">No invoices found.</div></div>
       </div>
 
@@ -169,8 +192,38 @@
     </div>
   </div>
 
+  <!-- New invoice modal (detail view only) -->
+  <div id="inv-modal" class="inv-modal">
+    <div class="inv-modal-box">
+      <div class="inv-modal-header">New Invoice</div>
+      <div class="inv-modal-body">
+        <div>
+          <div class="card-label" style="margin-bottom:0.5rem;">Works</div>
+          <div class="inv-works-list" id="inv-works-list"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Buyer name</label><input id="inv-buyer-name" type="text"></div>
+          <div class="form-field"><label>Shipping ($)</label><input id="inv-shipping" type="number" min="0" step="0.01" placeholder="0"></div>
+        </div>
+        <div class="form-field"><label>Address</label><textarea id="inv-buyer-addr" rows="2"></textarea></div>
+        <div class="form-row">
+          <div class="form-field"><label>Sales tax (%)</label><input id="inv-tax" type="number" min="0" step="0.1" placeholder="0"></div>
+          <div class="form-field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:0.4rem;">
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.82rem;opacity:0.7;text-transform:none;letter-spacing:0;"><input id="inv-discount" type="checkbox"> Local discount (10%)</label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.82rem;opacity:0.7;text-transform:none;letter-spacing:0;"><input id="inv-bitcoin" type="checkbox"> Bitcoin</label>
+          </div>
+        </div>
+      </div>
+      <div class="inv-modal-footer">
+        <span id="inv-modal-status"></span>
+        <button class="modal-btn" id="inv-cancel-btn">Cancel</button>
+        <button class="modal-btn modal-btn-primary" id="inv-generate-btn">Generate invoice</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
-    import { allInvoices, calcTotal, fmtMoney, openInvoice } from '../js/invoice-utils.js';
+    import { allInvoices, loadInvoices, calcTotal, fmtMoney, openInvoice, nextInvoiceNum, INVOICE_KEY, API_INVOICES } from '../js/invoice-utils.js';
     import { routeUrl, getPageId } from '../js/routes.js';
     import { initArtworksTable } from '../js/artworks-table.js';
 
@@ -202,7 +255,7 @@
         let inventory = {};
         try { inventory = await fetch(API_INVENTORY).then(function(r) { return r.json(); }); } catch(e) {}
 
-        const stored = allInvoices();
+        const stored = await loadInvoices();
 
         // Group works by invoice num
         const groups = {};
@@ -334,8 +387,8 @@
         document.getElementById('ab-address').value = client.address || '';
         document.getElementById('ab-notes').value   = client.notes   || '';
 
-        // Invoices from localStorage filtered by buyer.name
-        const stored = allInvoices();
+        // Invoices from KV (merged with localStorage) filtered by buyer.name
+        const stored = await loadInvoices();
         const clientInvoices = Object.values(stored).filter(function(inv) {
           return inv.buyer && inv.buyer.name === client.name;
         }).sort(function(a, b) { return b.num - a.num; });
@@ -380,6 +433,14 @@
         });
       }
 
+      // Dirty state
+      const saveBtn = document.getElementById('save-btn');
+      function markDirty() { saveBtn.classList.add('dirty'); }
+      function markClean() { saveBtn.classList.remove('dirty'); }
+      ['ab-name','ab-email','ab-phone','ab-address','ab-notes'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', markDirty);
+      });
+
       // Save About
       document.getElementById('save-btn').addEventListener('click', async function() {
         if (!client) return;
@@ -400,8 +461,94 @@
           if (!r.ok) throw new Error(r.status + ': ' + await r.text());
           document.getElementById('save-status').textContent = 'Saved';
           setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
+          markClean();
         } catch(e) {
           document.getElementById('save-status').textContent = 'Error: ' + e.message;
+        } finally { btn.disabled = false; }
+      });
+
+      // ── New invoice modal ────────────────────────────────────────────────────
+      document.getElementById('new-inv-btn').addEventListener('click', function() {
+        if (!client) return;
+        const available = Object.entries(inventoryData)
+          .filter(function(e) { return !e[1].invoiced; })
+          .sort(function(a, b) { return (a[1].title || '').localeCompare(b[1].title || ''); });
+        const list = document.getElementById('inv-works-list');
+        list.innerHTML = '';
+        if (!available.length) {
+          list.innerHTML = '<div style="padding:0.75rem 0.85rem;font-size:0.82rem;opacity:0.4;">All works are already invoiced.</div>';
+        } else {
+          available.forEach(function(e) {
+            const id = e[0], w = e[1];
+            const row = document.createElement('label');
+            row.className = 'inv-work-row';
+            row.innerHTML = '<input type="checkbox" value="' + id + '"><span class="inv-work-row-info">' + (w.title || id) + (w.year ? ' · ' + w.year : '') + '</span><span class="inv-work-price">' + (w.price || '') + '</span>';
+            list.appendChild(row);
+          });
+        }
+        document.getElementById('inv-buyer-name').value = client.name || '';
+        document.getElementById('inv-buyer-addr').value = client.address || '';
+        document.getElementById('inv-shipping').value = '';
+        document.getElementById('inv-tax').value = '';
+        document.getElementById('inv-discount').checked = false;
+        document.getElementById('inv-bitcoin').checked = false;
+        document.getElementById('inv-modal-status').textContent = '';
+        document.getElementById('inv-modal').classList.add('open');
+      });
+
+      document.getElementById('inv-cancel-btn').addEventListener('click', function() {
+        document.getElementById('inv-modal').classList.remove('open');
+      });
+      document.getElementById('inv-modal').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('inv-modal')) document.getElementById('inv-modal').classList.remove('open');
+      });
+
+      document.getElementById('inv-generate-btn').addEventListener('click', async function() {
+        const checked = Array.from(document.querySelectorAll('#inv-works-list input:checked'));
+        if (!checked.length) { document.getElementById('inv-modal-status').textContent = 'Select at least one work.'; return; }
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { document.getElementById('inv-modal-status').textContent = 'No API token set.'; return; }
+
+        const buyerName = document.getElementById('inv-buyer-name').value.trim();
+        const buyerAddr = document.getElementById('inv-buyer-addr').value.trim();
+        const shipping  = parseFloat(document.getElementById('inv-shipping').value) || 0;
+        const taxPct    = parseFloat(document.getElementById('inv-tax').value) || 0;
+        const discount  = document.getElementById('inv-discount').checked;
+        const bitcoin   = document.getElementById('inv-bitcoin').checked;
+
+        const items = checked.map(function(cb) {
+          const id = cb.value; const w = inventoryData[id];
+          return { id, title: w.title || '', year: w.year || '', material: w.material || '', dimensions: w.dimensions || '', price: parseFloat((w.price || '').toString().replace(/[^0-9.]/g, '')) || 0 };
+        });
+
+        const num      = nextInvoiceNum();
+        const newInvId = 'inv_' + Date.now();
+        const dateStr  = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const doc      = { num, invoiceId: newInvId, date: dateStr, buyer: { name: buyerName, address: buyerAddr }, shipping, taxPct, discount, bitcoin, paid: false, items };
+
+        const kvAll = await loadInvoices();
+        kvAll[newInvId] = doc;
+        localStorage.setItem(INVOICE_KEY, JSON.stringify(kvAll));
+
+        const ref = { invoiceId: newInvId, num, paid: false };
+        checked.forEach(function(cb) { inventoryData[cb.value].invoiced = ref; });
+
+        const btn = document.getElementById('inv-generate-btn');
+        btn.disabled = true; document.getElementById('inv-modal-status').textContent = 'Saving…';
+        try {
+          const [r1, r2] = await Promise.all([
+            fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(inventoryData, null, 2) }),
+            fetch(API_INVOICES,  { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(kvAll, null, 2) }),
+          ]);
+          if (!r1.ok) throw new Error('inventory: ' + r1.status);
+          if (!r2.ok) throw new Error('invoices: ' + r2.status);
+          document.getElementById('inv-modal').classList.remove('open');
+          openInvoice(newInvId);
+          loadAll();
+        } catch(e) {
+          document.getElementById('inv-modal-status').textContent = 'Error: ' + e.message;
+          delete kvAll[newInvId]; localStorage.setItem(INVOICE_KEY, JSON.stringify(kvAll));
+          checked.forEach(function(cb) { delete inventoryData[cb.value].invoiced; });
         } finally { btn.disabled = false; }
       });
 

@@ -102,6 +102,12 @@ export const ROUTES = [
     injectVar:    '__CLIENT_ID__',
   },
   {
+    name:         'admin-press',
+    prettyPath:   '/admin/press',
+    fallbackPage: 'admin/press.html',
+    workerPage:   'admin/press.html',
+  },
+  {
     name:         'admin-settings',
     prettyPath:   '/admin/settings',
     fallbackPage: 'admin/settings.html',

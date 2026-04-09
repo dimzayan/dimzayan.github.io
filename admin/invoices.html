@@ -14,11 +14,16 @@
     /* ── List mode ── */
     #list-view { display: none; }
 
-    header { padding: 2rem 2.5rem 1.5rem; display: flex; align-items: baseline; justify-content: space-between; }
-    .header-left { display: flex; align-items: baseline; gap: 1.5rem; }
+    header { position: sticky; top: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; align-items: center; justify-content: space-between; transition: background 0.15s, box-shadow 0.15s; }
+    header.scrolled { background: rgba(223,223,224,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
+    .header-left { display: flex; align-items: center; gap: 1.5rem; }
     .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; }
     .back-link:hover { opacity: 1; }
     .header-title { font-size: 0.85rem; font-weight: 300; letter-spacing: 0.04em; }
+    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .save-btn.dirty { opacity: 1; pointer-events: auto; }
+    .save-btn:hover { background: #000; }
+    .save-btn:disabled { opacity: 0.4 !important; cursor: default; }
 
     .page { max-width: 860px; margin: 0 auto; padding: 1rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
     .card { background: white; border-radius: 4px; overflow: hidden; }
@@ -65,37 +70,35 @@
     .modal-btn:hover { background: rgba(0,0,0,0.04); }
     .modal-btn-primary { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
 
-    /* ── Detail / viewer mode ── */
+    /* ── Detail mode ── */
     #detail-view { display: none; }
-    .inv-page { max-width: 660px; margin: 0 auto; background: white; padding: 2.5rem 2.8rem 3rem; min-height: 100vh; }
-    .inv-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; }
-    .artist-name { font-size: 0.95rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 0.3rem; }
-    .artist-meta { font-size: 0.78rem; opacity: 0.5; line-height: 1.65; }
-    .inv-meta { text-align: right; font-size: 0.78rem; opacity: 0.5; line-height: 1.65; }
-    .section { margin-bottom: 1.5rem; }
-    .section-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.38; margin-bottom: 0.35rem; }
-    .section-body { font-size: 0.82rem; line-height: 1.7; }
-    .inv-status-badge { display: inline-block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 2px; }
-    .inv-status-pending { background: rgba(200,150,0,0.1); color: rgba(150,110,0,0.9); }
-    .inv-status-paid    { background: rgba(30,130,60,0.1);  color: rgba(30,130,60,0.9); }
-    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0 1rem; font-size: 0.8rem; }
-    td { padding: 0.8rem 0.65rem; vertical-align: top; border: 1px solid rgba(0,0,0,0.09); }
-    .cell-img { width: 85pt; padding: 0.5rem; }
-    .cell-img img { width: 75pt; height: 75pt; object-fit: contain; display: block; background: #f7f7f7; }
-    .it-title { font-weight: 400; margin-bottom: 0.2rem; }
-    .it-meta { opacity: 0.45; font-size: 0.74rem; line-height: 1.5; }
-    .cell-price { width: 80pt; text-align: right; vertical-align: middle; }
-    .total-row td { border-left: none; border-right: none; border-top: none; border-bottom: 1px solid rgba(0,0,0,0.06); }
-    .total-row .label-cell { text-align: right; opacity: 0.5; font-size: 0.78rem; }
-    .total-row.grand-total td { border-top: 1px solid rgba(0,0,0,0.14); padding-top: 0.7rem; }
-    .payment-block { font-size: 0.76rem; line-height: 1.8; opacity: 0.55; border-top: 1px solid rgba(0,0,0,0.09); padding-top: 1.4rem; margin-top: 1.8rem; }
-    .payment-title { font-weight: 500; margin-bottom: 0.4rem; opacity: 0.9; font-size: 0.78rem; }
-    .no-print { margin-top: 2rem; display: flex; gap: 0.75rem; }
-    .no-print button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.4rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 300; cursor: pointer; }
-    .btn-paid { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
-    .not-found { text-align: center; padding: 4rem 2rem; opacity: 0.4; font-size: 0.9rem; }
-    @media print { body { background: white; } .inv-page { padding: 0; } .no-print { display: none; } #list-header, #detail-back { display: none; } }
-    @page { margin: 0.9in 1in; }
+    /* ── Detail editor ── */
+    .charge-row { display: flex; align-items: center; padding: 0.7rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.84rem; gap: 0.75rem; }
+    .charge-row:last-child { border-bottom: none; }
+    .charge-label { flex: 1; opacity: 0.55; font-size: 0.82rem; }
+    .charge-val { font-size: 0.82rem; min-width: 80px; text-align: right; }
+    .charge-input { width: 90px; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.3rem 0.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 300; color: #111; background: white; text-align: right; }
+    .charge-input:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .charge-row.grand { border-top: 1px solid rgba(0,0,0,0.12); padding-top: 0.85rem; }
+    .charge-row.grand .charge-label { opacity: 1; font-weight: 400; }
+    .charge-row.grand .charge-val { font-weight: 400; }
+    .works-check-row { display: flex; align-items: center; gap: 0.85rem; padding: 0.65rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; font-size: 0.84rem; }
+    .works-check-row:last-child { border-bottom: none; }
+    .works-check-row:hover { background: rgba(0,0,0,0.02); }
+    .works-check-row input[type="checkbox"] { flex-shrink: 0; accent-color: #111; width: 14px; height: 14px; }
+    .works-check-thumb { width: 36px; height: 36px; object-fit: contain; border-radius: 2px; background: #f5f5f5; flex-shrink: 0; }
+    .works-check-info { flex: 1; }
+    .works-check-title { font-size: 0.84rem; }
+    .works-check-meta { font-size: 0.72rem; opacity: 0.38; }
+    .works-check-price { font-size: 0.8rem; opacity: 0.55; flex-shrink: 0; }
+    /* Autocomplete */
+    .autocomplete-wrap { position: relative; }
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; z-index: 50; max-height: 180px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
+    .autocomplete-list.open { display: block; }
+    .autocomplete-item { padding: 0.55rem 0.75rem; font-size: 0.82rem; cursor: pointer; }
+    .autocomplete-item:hover { background: rgba(0,0,0,0.04); }
+    /* Paid status card */
+    .status-row { display: flex; align-items: center; padding: 1.2rem 1.5rem; gap: 1rem; }
   </style>
 </head>
 <body>
@@ -112,7 +115,10 @@
       <div class="card">
         <div class="card-header">
           <span class="card-label">Invoices</span>
-          <button class="card-action" id="new-invoice-btn">+ New invoice</button>
+          <div style="display:flex;gap:1rem;align-items:center;">
+            <button class="card-action" id="migrate-btn" title="Convert old inventory-only invoices to full invoice docs in KV">Migrate old invoices</button>
+            <button class="card-action" id="new-invoice-btn">+ New invoice</button>
+          </div>
         </div>
         <div id="invoices-list"><div class="empty-state">Loading…</div></div>
       </div>
@@ -121,11 +127,19 @@
 
   <!-- Detail mode -->
   <div id="detail-view">
-    <div style="max-width:660px;margin:0 auto;padding:1.5rem 2.8rem 0;" id="detail-back" class="no-print">
-      <a class="back-link" id="back-link-detail" href="#" style="font-size:0.78rem;opacity:0.45;color:#111;text-decoration:none;">← Invoices</a>
-    </div>
-    <div class="inv-page" id="inv-page">
-      <div class="not-found" id="loading">Loading…</div>
+    <header>
+      <div class="header-left">
+        <a class="back-link" id="back-link-detail" href="#">← Invoices</a>
+        <span class="header-title" id="inv-title">Invoice</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <span id="save-status" style="font-size:0.75rem;opacity:0.45;"></span>
+        <button class="card-action" id="print-btn">Print / PDF</button>
+        <button id="det-save-btn" class="save-btn">Save</button>
+      </div>
+    </header>
+    <div class="page" id="det-page">
+      <div class="empty-state" style="padding:3rem;text-align:center;opacity:0.3;">Loading…</div>
     </div>
   </div>
 
@@ -161,7 +175,7 @@
 
   <script type="module">
     import { getPageId, routeUrl } from '../js/routes.js';
-    import { allInvoices, calcTotal, fmtMoney, nextInvoiceNum, INVOICE_KEY, openInvoice } from '../js/invoice-utils.js';
+    import { allInvoices, loadInvoices, calcTotal, fmtMoney, nextInvoiceNum, INVOICE_KEY, API_INVOICES, generateInvoiceHTML } from '../js/invoice-utils.js';
 
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
 
@@ -169,6 +183,13 @@
 
     document.getElementById('back-link').href        = routeUrl('admin');
     document.getElementById('back-link-detail').href = routeUrl('admin-invoices');
+
+    // Sticky header on scroll
+    window.addEventListener('scroll', function() {
+      document.querySelectorAll('header').forEach(function(h) {
+        h.classList.toggle('scrolled', window.scrollY > 10);
+      });
+    });
 
     if (!invoiceId) {
       // ── LIST MODE ──────────────────────────────────────────────────────────
@@ -184,31 +205,45 @@
       }
 
       async function renderInvoices() {
+        const [stored] = await Promise.all([loadInvoices()]);
         let inventory = {};
         try { inventory = await getInventory(); } catch(e) {}
 
+        // Start from inventory refs (covers old invoices that predate KV invoice docs)
         const groups = {};
         Object.keys(inventory).forEach(function(id) {
           const work = inventory[id]; if (!work.invoiced) return;
-          const ref = work.invoiced; const num = ref.num;
-          if (!groups[num]) groups[num] = { num, invoiceId: ref.invoiceId, paid: !!ref.paid, works: [] };
-          groups[num].works.push(Object.assign({ id }, work));
-          if (ref.paid) groups[num].paid = true;
+          const ref = work.invoiced;
+          const key = ref.invoiceId || ('num_' + ref.num);
+          if (!groups[key]) groups[key] = { num: ref.num, invoiceId: ref.invoiceId, paid: !!ref.paid, works: [] };
+          groups[key].works.push(Object.assign({ id }, work));
+          if (ref.paid) groups[key].paid = true;
         });
 
-        const stored = allInvoices();
+        // Enrich with full doc data where available
         Object.values(groups).forEach(function(g) {
-          const doc = g.invoiceId ? stored[g.invoiceId] : null;
-          if (doc) { g.buyer = doc.buyer; g.date = doc.date; g.shipping = doc.shipping || 0; g.taxPct = doc.taxPct || 0; g.discount = doc.discount || false; g.items = doc.items; g.paid = doc.paid; }
+          const doc = g.invoiceId && stored[g.invoiceId];
+          if (doc) {
+            g.buyer = doc.buyer; g.date = doc.date; g.items = doc.items;
+            g.shipping = doc.shipping || 0; g.taxPct = doc.taxPct || 0;
+            g.discount = doc.discount || false; g.paid = doc.paid;
+          }
         });
 
-        const sorted = Object.values(groups).sort(function(a, b) { return b.num - a.num; });
+        // Also include any docs with no inventory group (e.g. if inventory save failed)
+        const knownIds = new Set(Object.values(groups).map(function(g) { return g.invoiceId; }));
+        Object.values(stored).forEach(function(doc) {
+          if (!doc.invoiceId || !doc.num || knownIds.has(doc.invoiceId)) return;
+          groups['_' + doc.invoiceId] = { num: doc.num, invoiceId: doc.invoiceId, paid: !!doc.paid, works: [], buyer: doc.buyer, date: doc.date, items: doc.items, shipping: doc.shipping || 0, taxPct: doc.taxPct || 0, discount: doc.discount || false };
+        });
+
+        const sorted = Object.values(groups).filter(function(g) { return g.num; }).sort(function(a, b) { return b.num - a.num; });
         const list = document.getElementById('invoices-list');
 
         if (!sorted.length) { list.innerHTML = '<div class="empty-state">No invoices yet.</div>'; return; }
         list.innerHTML = '';
         sorted.forEach(function(g) {
-          const total = g.items ? calcTotal(g) : g.works.reduce(function(s, w) { return s + (parseFloat(w.price) || 0); }, 0);
+          const total = g.items ? calcTotal(g) : g.works.reduce(function(s, w) { return s + (parseFloat((w.price||'').toString().replace(/[^0-9.]/g,'')) || 0); }, 0);
           const workCount = (g.items || g.works).length;
           const row = document.createElement('div');
           row.className = 'data-row';
@@ -227,6 +262,53 @@
           list.appendChild(row);
         });
       }
+
+      // ── Migrate old invoices ──
+      document.getElementById('migrate-btn').addEventListener('click', async function() {
+        const token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { alert('No API token set in localStorage (dim_gh_token).'); return; }
+
+        const btn = document.getElementById('migrate-btn');
+        btn.textContent = 'Migrating…'; btn.disabled = true;
+        try {
+          const [inv, existingDocs] = await Promise.all([getInventory(), loadInvoices()]);
+
+          // Group inventory works by invoiceId
+          const groups = {};
+          Object.keys(inv).forEach(function(id) {
+            const work = inv[id]; if (!work.invoiced || !work.invoiced.invoiceId) return;
+            const ref = work.invoiced;
+            if (!groups[ref.invoiceId]) groups[ref.invoiceId] = { num: ref.num, invoiceId: ref.invoiceId, paid: !!ref.paid, works: [] };
+            groups[ref.invoiceId].works.push(Object.assign({ id }, work));
+            if (ref.paid) groups[ref.invoiceId].paid = true;
+          });
+
+          // Only convert groups that have no full doc yet
+          const toMigrate = Object.values(groups).filter(function(g) { return !existingDocs[g.invoiceId]; });
+          if (!toMigrate.length) { alert('Nothing to migrate — all invoices already have docs in KV.'); return; }
+
+          const merged = Object.assign({}, existingDocs);
+          toMigrate.forEach(function(g) {
+            merged[g.invoiceId] = {
+              invoiceId: g.invoiceId,
+              num: g.num,
+              paid: g.paid,
+              items: g.works.map(function(w) {
+                return { id: w.id, title: w.title || '', year: w.year || '', material: w.material || '', dimensions: w.dimensions || '', price: parseFloat((w.price || '').toString().replace(/[^0-9.]/g, '')) || 0 };
+              }),
+              buyer: null, date: null, shipping: 0, taxPct: 0, discount: false, bitcoin: false,
+            };
+          });
+
+          const r = await fetch(API_INVOICES, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(merged, null, 2) });
+          if (!r.ok) throw new Error('PUT /api/invoices failed: ' + r.status);
+          localStorage.setItem(INVOICE_KEY, JSON.stringify(merged));
+          alert('Migrated ' + toMigrate.length + ' invoice(s). You can now edit buyer name and date from each invoice detail page.');
+          renderInvoices();
+        } catch(e) {
+          alert('Migration failed: ' + e.message);
+        } finally { btn.textContent = 'Migrate old invoices'; btn.disabled = false; }
+      });
 
       // ── New invoice modal ──
       document.getElementById('new-invoice-btn').addEventListener('click', async function() {
@@ -280,9 +362,10 @@
         const dateStr   = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const doc       = { num, invoiceId: newInvId, date: dateStr, buyer: { name: buyerName, address: buyerAddr }, shipping, taxPct, discount, bitcoin, paid: false, items };
 
-        const all = allInvoices();
-        all[newInvId] = doc;
-        localStorage.setItem(INVOICE_KEY, JSON.stringify(all));
+        // Merge new doc into KV invoices then save both
+        const kvAll = await loadInvoices();
+        kvAll[newInvId] = doc;
+        localStorage.setItem(INVOICE_KEY, JSON.stringify(kvAll));
 
         const ref = { invoiceId: newInvId, num, paid: false };
         checked.forEach(function(cb) { inv[cb.value].invoiced = ref; });
@@ -291,106 +374,327 @@
         const btn = document.getElementById('inv-generate-btn');
         btn.disabled = true; document.getElementById('inv-status').textContent = 'Saving…';
         try {
-          const r = await fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(inv, null, 2) });
-          if (!r.ok) throw new Error(r.status + ': ' + await r.text());
+          const [r1, r2] = await Promise.all([
+            fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(inv, null, 2) }),
+            fetch(API_INVOICES,  { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(kvAll, null, 2) }),
+          ]);
+          if (!r1.ok) throw new Error('inventory: ' + r1.status);
+          if (!r2.ok) throw new Error('invoices: ' + r2.status);
           document.getElementById('inv-modal').classList.remove('open');
           renderInvoices();
           openInvoice(newInvId);
         } catch(e) {
           document.getElementById('inv-status').textContent = 'Error: ' + e.message;
-          delete all[newInvId]; localStorage.setItem(INVOICE_KEY, JSON.stringify(all));
+          delete kvAll[newInvId]; localStorage.setItem(INVOICE_KEY, JSON.stringify(kvAll));
         } finally { btn.disabled = false; }
       });
 
-      // Called from invoice detail (same page or opened tab) when marked as paid
-      window.dimZayanInvoicePaid = function(invId) {
-        const all = allInvoices();
-        if (all[invId]) { all[invId].paid = true; localStorage.setItem(INVOICE_KEY, JSON.stringify(all)); }
-        if (cachedInventory) {
-          Object.values(cachedInventory).forEach(function(w) { if (w.invoiced && w.invoiced.invoiceId === invId) w.invoiced.paid = true; });
-        }
-        renderInvoices();
-      };
+      // Called from invoice detail tab when marked as paid
+      window.dimZayanInvoicePaid = function() { renderInvoices(); };
 
       renderInvoices();
 
     } else {
-      // ── DETAIL / VIEWER MODE ───────────────────────────────────────────────
+      // ── DETAIL / EDITOR MODE ──────────────────────────────────────────────
       document.getElementById('detail-view').style.display = 'block';
+      document.getElementById('back-link-detail').href = routeUrl('admin-invoices');
 
       const CDN_LOW = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low';
-      const page    = document.getElementById('inv-page');
+      const detPage = document.getElementById('det-page');
 
-      function fmtMoney2(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-      function fmtDims(raw) { if (!raw) return ''; return /in\.?$|inches?$/i.test(raw.trim()) ? raw.trim() : raw.trim() + ' inches'; }
+      // Load everything in parallel
+      const [allLoaded, inventoryData, clientsData] = await Promise.all([
+        loadInvoices(),
+        fetch(API_INVENTORY).then(function(r) { return r.json(); }).catch(function() { return {}; }),
+        fetch('https://dimzayan.com/api/clients').then(function(r) { return r.json(); }).catch(function() { return {}; }),
+      ]);
 
-      let inv;
-      try { const all = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}'); inv = all[invoiceId]; } catch(e) {}
+      let inv = allLoaded[invoiceId];
+
+      // Fallback: build synthetic doc from inventory refs (covers old invoices pre-KV)
+      if (!inv) {
+        const works = Object.keys(inventoryData).filter(function(id) {
+          return inventoryData[id].invoiced && inventoryData[id].invoiced.invoiceId === invoiceId;
+        });
+        if (works.length) {
+          const ref = inventoryData[works[0]].invoiced;
+          inv = {
+            invoiceId, num: ref.num, paid: !!ref.paid,
+            items: works.map(function(id) {
+              const w = inventoryData[id];
+              return { id, title: w.title || '', year: w.year || '', material: w.material || '', dimensions: w.dimensions || '', price: parseFloat((w.price || '').toString().replace(/[^0-9.]/g, '')) || 0 };
+            }),
+            buyer: null, date: null, shipping: 0, taxPct: 8, discountPct: 0, bitcoin: false,
+          };
+        }
+      }
 
       if (!inv) {
-        page.innerHTML = '<div class="not-found">Invoice not found. It may have been generated on another device.</div>';
+        detPage.innerHTML = '<div class="empty-state" style="padding:3rem;text-align:center;opacity:0.3;">Invoice not found.</div>';
       } else {
-        const numStr      = 'Invoice.' + String(inv.num).padStart(4, '0');
-        const subtotal    = (inv.items || []).reduce(function(s, it) { return s + (it.price || 0); }, 0);
-        const discountAmt = inv.discount ? subtotal * 0.10 : 0;
-        const taxAmt      = (subtotal - discountAmt) * ((inv.taxPct || 0) / 100);
-        const total       = subtotal - discountAmt + (inv.shipping || 0) + taxAmt;
-
+        const numStr = 'Invoice.' + String(inv.num).padStart(4, '0');
         document.title = numStr + ' — Dim Zayan';
+        document.getElementById('inv-title').textContent = numStr;
 
-        const itemRows = (inv.items || []).map(function(it) {
-          return '<tr><td class="cell-img"><img src="' + CDN_LOW + '/' + it.id + '.webp" alt="' + (it.title || '') + '"></td>' +
-            '<td><div class="it-title">' + (it.title || '—') + '</div>' +
-            (it.year ? '<div class="it-meta">' + it.year + '</div>' : '') +
-            (it.material ? '<div class="it-meta">' + it.material + '</div>' : '') +
-            (it.dimensions ? '<div class="it-meta">' + fmtDims(it.dimensions) + '</div>' : '') +
-            '</td><td class="cell-price">' + (it.price ? fmtMoney2(it.price) : '') + '</td></tr>';
-        }).join('');
+        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        // Normalise legacy boolean discount → discountPct
+        if (inv.discountPct == null) inv.discountPct = inv.discount ? 10 : 0;
 
-        const totalRows =
-          '<tr class="total-row"><td colspan="2" class="label-cell">Subtotal</td><td class="cell-price">' + fmtMoney2(subtotal) + '</td></tr>' +
-          (inv.discount ? '<tr class="total-row"><td colspan="2" class="label-cell">Local discount (10%)</td><td class="cell-price">−' + fmtMoney2(discountAmt) + '</td></tr>' : '') +
-          (inv.shipping ? '<tr class="total-row"><td colspan="2" class="label-cell">Shipping</td><td class="cell-price">' + fmtMoney2(inv.shipping) + '</td></tr>' : '') +
-          (inv.taxPct   ? '<tr class="total-row"><td colspan="2" class="label-cell">Sales Tax (' + inv.taxPct + '%)</td><td class="cell-price">' + fmtMoney2(taxAmt) + '</td></tr>' : '') +
-          '<tr class="total-row grand-total"><td colspan="2" class="label-cell"><strong>Total</strong></td><td class="cell-price"><strong>' + fmtMoney2(total) + '</strong></td></tr>';
+        // Current selected work ids
+        const selectedIds = new Set((inv.items || []).map(function(it) { return it.id; }));
 
-        const statusClass = inv.paid ? 'inv-status-paid' : 'inv-status-pending';
-        const statusLabel = inv.paid ? 'Paid' : 'Pending';
+        // ── Render editor ──
+        detPage.innerHTML = `
+          <!-- Invoice Info -->
+          <div class="card">
+            <div class="card-header"><span class="card-label">Invoice</span></div>
+            <div style="padding:1.2rem 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+              <div class="form-field"><label>Invoice #</label><input id="f-num" type="number" min="1" value="${inv.num || nextInvoiceNum()}"></div>
+              <div class="form-field"><label>Date</label><input id="f-date" type="text" placeholder="e.g. April 8, 2026" value="${inv.date || today}"></div>
+            </div>
+          </div>
 
-        page.innerHTML =
-          '<div class="inv-header-row">' +
-            '<div><div class="artist-name">Dim Zayan</div><div class="artist-meta">208 W El Paso St / 1226<br>Marfa, TX 79843<br>646 678 1468</div></div>' +
-            '<div class="inv-meta">' + (inv.date || '') + '<br>' + numStr + '</div>' +
-          '</div>' +
-          '<div class="section"><div class="section-label">Bill to</div>' +
-            '<div class="section-body">' + (inv.buyer && inv.buyer.name ? '<strong>' + inv.buyer.name + '</strong><br>' : '') + ((inv.buyer && inv.buyer.address || '').replace(/\n/g, '<br>')) + '</div></div>' +
-          '<div class="section"><div class="section-label">Status</div>' +
-            '<span class="inv-status-badge ' + statusClass + '" id="status-badge">' + statusLabel + '</span></div>' +
-          '<table>' + itemRows + totalRows + '</table>' +
-          '<div class="payment-block"><div class="payment-title">Payment instructions</div>' +
-            'Invoice due upon receipt. Payments can be made via one of the following methods.<br>' +
-            'Kindly reference the invoice number when making payment, thank you!<br><br>' +
-            '— Venmo: @gregory-mirzayantz<br>— Apple Pay: 646 678 1468' +
-            (inv.bitcoin ? '<br>— Bitcoin: bc1qptxza9png045rya3zdk7uzfl8wafvk778hlc4f' : '') +
-          '</div>' +
-          '<div class="no-print">' +
-            '<button onclick="window.print()">Print / Save PDF</button>' +
-            (!inv.paid ? '<button class="btn-paid" id="mark-paid-btn">Mark as paid</button>' : '') +
-          '</div>';
+          <!-- Bill To -->
+          <div class="card">
+            <div class="card-header"><span class="card-label">Bill To</span></div>
+            <div style="padding:1.2rem 1.5rem;display:flex;flex-direction:column;gap:0.85rem;">
+              <div class="form-field autocomplete-wrap">
+                <label>Name</label>
+                <input id="f-buyer-name" type="text" autocomplete="off" placeholder="Buyer name" value="${(inv.buyer && inv.buyer.name) || ''}">
+                <div id="client-suggestions" class="autocomplete-list"></div>
+              </div>
+              <div class="form-field"><label>Address</label><textarea id="f-buyer-addr" rows="3" placeholder="Street&#10;City, State ZIP">${(inv.buyer && inv.buyer.address) || ''}</textarea></div>
+            </div>
+          </div>
 
-        const paidBtn = document.getElementById('mark-paid-btn');
-        if (paidBtn) {
-          paidBtn.addEventListener('click', function() {
-            try {
-              const stored = JSON.parse(localStorage.getItem(INVOICE_KEY) || '{}');
-              if (stored[invoiceId]) { stored[invoiceId].paid = true; localStorage.setItem(INVOICE_KEY, JSON.stringify(stored)); }
-            } catch(e) {}
-            if (window.opener && window.opener.dimZayanInvoicePaid) window.opener.dimZayanInvoicePaid(invoiceId);
-            const badge = document.getElementById('status-badge');
-            badge.textContent = 'Paid'; badge.className = 'inv-status-badge inv-status-paid';
-            paidBtn.remove();
+          <!-- Works -->
+          <div class="card">
+            <div class="card-header"><span class="card-label">Works</span></div>
+            <div id="works-checklist"></div>
+          </div>
+
+          <!-- Charges -->
+          <div class="card">
+            <div class="card-header"><span class="card-label">Charges</span></div>
+            <div class="charge-row"><span class="charge-label">Works subtotal</span><span class="charge-val" id="c-subtotal">$0.00</span></div>
+            <div class="charge-row">
+              <span class="charge-label">Shipping</span>
+              <input class="charge-input" id="f-shipping" type="number" min="0" step="0.01" value="${inv.shipping || 0}">
+            </div>
+            <div class="charge-row">
+              <span class="charge-label">Discount</span>
+              <div style="display:flex;align-items:center;gap:0.35rem;">
+                <input class="charge-input" id="f-discount" type="number" min="0" max="100" step="1" value="${inv.discountPct || 0}" style="width:60px;">
+                <span style="font-size:0.82rem;opacity:0.55;">%</span>
+              </div>
+              <span class="charge-val" id="c-discount"></span>
+            </div>
+            <div class="charge-row">
+              <span class="charge-label">Tax</span>
+              <div style="display:flex;align-items:center;gap:0.35rem;">
+                <input class="charge-input" id="f-tax" type="number" min="0" step="0.1" value="${inv.taxPct != null ? inv.taxPct : 8}" style="width:60px;">
+                <span style="font-size:0.82rem;opacity:0.55;">%</span>
+              </div>
+              <span class="charge-val" id="c-tax"></span>
+            </div>
+            <div class="charge-row grand">
+              <span class="charge-label">Total</span>
+              <span class="charge-val" id="c-total">$0.00</span>
+            </div>
+            <div class="charge-row" style="border-top:1px solid rgba(0,0,0,0.05);padding-top:0.9rem;margin-top:0.1rem;">
+              <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.82rem;">
+                <input id="f-bitcoin" type="checkbox" ${inv.bitcoin ? 'checked' : ''}> Include Bitcoin payment option
+              </label>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="card">
+            <div class="card-header"><span class="card-label">Status</span></div>
+            <div class="status-row">
+              <span class="status-badge ${inv.paid ? 'status-paid' : 'status-pending'}" id="status-badge">${inv.paid ? 'Paid' : 'Pending'}</span>
+              ${!inv.paid ? '<button id="mark-paid-btn" class="card-action" style="margin-left:auto;">Mark as paid</button>' : ''}
+            </div>
+          </div>`;
+
+        // ── Populate works checklist ──
+        const checklist = document.getElementById('works-checklist');
+        const allWorks = Object.keys(inventoryData).sort(function(a, b) {
+          return (inventoryData[a].title || '').localeCompare(inventoryData[b].title || '');
+        });
+        if (!allWorks.length) {
+          checklist.innerHTML = '<div class="empty-state">No works in inventory.</div>';
+        } else {
+          allWorks.forEach(function(id) {
+            const w = inventoryData[id];
+            const checked = selectedIds.has(id);
+            const label = document.createElement('label');
+            label.className = 'works-check-row';
+            label.innerHTML =
+              '<input type="checkbox" value="' + id + '"' + (checked ? ' checked' : '') + '>' +
+              '<img class="works-check-thumb" src="' + CDN_LOW + '/' + id + '.webp" alt="">' +
+              '<span class="works-check-info"><span class="works-check-title">' + (w.title || id) + '</span>' +
+              (w.year ? '<br><span class="works-check-meta">' + w.year + (w.material ? ' · ' + w.material : '') + '</span>' : '') +
+              '</span>' +
+              '<span class="works-check-price">' + (w.price || '') + '</span>';
+            label.querySelector('input').addEventListener('change', recalc);
+            checklist.appendChild(label);
           });
         }
+
+        // ── Live total calculation ──
+        function recalc() {
+          const checkedIds = Array.from(checklist.querySelectorAll('input:checked')).map(function(cb) { return cb.value; });
+          const subtotal   = checkedIds.reduce(function(s, id) {
+            return s + (parseFloat((inventoryData[id] && inventoryData[id].price || '').toString().replace(/[^0-9.]/g, '')) || 0);
+          }, 0);
+          const dpct       = parseFloat(document.getElementById('f-discount').value) || 0;
+          const tpct       = parseFloat(document.getElementById('f-tax').value)      || 0;
+          const ship       = parseFloat(document.getElementById('f-shipping').value)  || 0;
+          const discAmt    = subtotal * dpct / 100;
+          const taxAmt     = (subtotal - discAmt) * tpct / 100;
+          const total      = subtotal - discAmt + ship + taxAmt;
+          document.getElementById('c-subtotal').textContent = fmtMoney(subtotal);
+          document.getElementById('c-discount').textContent = dpct ? '−' + fmtMoney(discAmt) : '';
+          document.getElementById('c-tax').textContent      = tpct ? fmtMoney(taxAmt) : '';
+          document.getElementById('c-total').textContent    = fmtMoney(total);
+        }
+
+        ['f-shipping', 'f-discount', 'f-tax'].forEach(function(id) {
+          document.getElementById(id).addEventListener('input', recalc);
+        });
+        recalc();
+
+        // Dirty state — show save button only when something changed
+        const saveBtn = document.getElementById('det-save-btn');
+        function markDirty() { saveBtn.classList.add('dirty'); }
+        function markClean() { saveBtn.classList.remove('dirty'); }
+        ['f-num','f-date','f-buyer-name','f-buyer-addr','f-shipping','f-discount','f-tax'].forEach(function(id) {
+          document.getElementById(id).addEventListener('input', markDirty);
+        });
+        document.getElementById('f-bitcoin').addEventListener('change', markDirty);
+        checklist.addEventListener('change', markDirty);
+
+        // ── Client autocomplete ──
+        const clients = Object.values(clientsData);
+        const nameInput = document.getElementById('f-buyer-name');
+        const suggestions = document.getElementById('client-suggestions');
+
+        nameInput.addEventListener('input', function() {
+          const q = nameInput.value.toLowerCase().trim();
+          suggestions.innerHTML = '';
+          if (!q) { suggestions.classList.remove('open'); return; }
+          const matches = clients.filter(function(c) { return (c.name || '').toLowerCase().includes(q); }).slice(0, 8);
+          if (!matches.length) { suggestions.classList.remove('open'); return; }
+          matches.forEach(function(c) {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            item.textContent = c.name + (c.city ? ' — ' + c.city : '');
+            item.addEventListener('mousedown', function(e) {
+              e.preventDefault();
+              nameInput.value = c.name;
+              const addrParts = [c.address, c.city && c.state ? c.city + ', ' + c.state + (c.zip ? ' ' + c.zip : '') : (c.city || '')].filter(Boolean);
+              document.getElementById('f-buyer-addr').value = addrParts.join('\n');
+              suggestions.classList.remove('open');
+            });
+            suggestions.appendChild(item);
+          });
+          suggestions.classList.add('open');
+        });
+        nameInput.addEventListener('blur', function() { setTimeout(function() { suggestions.classList.remove('open'); }, 150); });
+
+        // ── Mark as paid ──
+        const paidBtn = document.getElementById('mark-paid-btn');
+        if (paidBtn) {
+          paidBtn.addEventListener('click', async function() {
+            if (!confirm('Mark this invoice as paid?')) return;
+            inv.paid = true;
+            await saveInvoice(true);
+            document.getElementById('status-badge').textContent = 'Paid';
+            document.getElementById('status-badge').className = 'status-badge status-paid';
+            paidBtn.remove();
+            if (window.opener && window.opener.dimZayanInvoicePaid) window.opener.dimZayanInvoicePaid(invoiceId);
+          });
+        }
+
+        // ── Print ──
+        document.getElementById('print-btn').addEventListener('click', function() {
+          const current = gatherInv();
+          const win = window.open('', '_blank');
+          win.document.write(generateInvoiceHTML(current));
+          win.document.close();
+        });
+
+        // ── Gather current form state into inv object ──
+        function gatherInv() {
+          const checkedBoxes = Array.from(checklist.querySelectorAll('input:checked'));
+          const items = checkedBoxes.map(function(cb) {
+            const id = cb.value; const w = inventoryData[id] || {};
+            return { id, title: w.title || '', year: w.year || '', material: w.material || '', dimensions: w.dimensions || '', price: parseFloat((w.price || '').toString().replace(/[^0-9.]/g, '')) || 0 };
+          });
+          return Object.assign({}, inv, {
+            num:        parseInt(document.getElementById('f-num').value)          || inv.num,
+            date:       document.getElementById('f-date').value.trim()            || today,
+            buyer:      { name: document.getElementById('f-buyer-name').value.trim(), address: document.getElementById('f-buyer-addr').value.trim() },
+            items,
+            shipping:   parseFloat(document.getElementById('f-shipping').value)   || 0,
+            discountPct:parseFloat(document.getElementById('f-discount').value)   || 0,
+            taxPct:     parseFloat(document.getElementById('f-tax').value)         || 0,
+            bitcoin:    document.getElementById('f-bitcoin').checked,
+          });
+        }
+
+        // ── Save ──
+        async function saveInvoice(silent) {
+          const token = localStorage.getItem('dim_gh_token') || '';
+          if (!token) { showStatus('No API token'); return false; }
+          const btn = document.getElementById('det-save-btn');
+          if (btn) btn.disabled = true;
+          if (!silent) showStatus('Saving…');
+          try {
+            const updated = gatherInv();
+            const oldNum  = inv.num;
+            Object.assign(inv, updated);
+
+            const all = await loadInvoices();
+            all[invoiceId] = inv;
+            localStorage.setItem(INVOICE_KEY, JSON.stringify(all));
+
+            const saves = [
+              fetch(API_INVOICES, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(all, null, 2) }),
+            ];
+
+            // If num changed, update inventory refs too
+            if (oldNum !== inv.num) {
+              const freshInv = await fetch(API_INVENTORY).then(function(r) { return r.json(); }).catch(function() { return null; });
+              if (freshInv) {
+                Object.values(freshInv).forEach(function(w) { if (w.invoiced && w.invoiced.invoiceId === invoiceId) w.invoiced.num = inv.num; });
+                saves.push(fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(freshInv, null, 2) }));
+              }
+            }
+
+            const results = await Promise.all(saves);
+            if (results.some(function(r) { return !r.ok; })) throw new Error('save failed');
+
+            const numStr2 = 'Invoice.' + String(inv.num).padStart(4, '0');
+            document.title = numStr2 + ' — Dim Zayan';
+            document.getElementById('inv-title').textContent = numStr2;
+            if (!silent) showStatus('Saved', 2500);
+            markClean();
+            return true;
+          } catch(e) {
+            if (!silent) showStatus('Error: ' + e.message);
+            return false;
+          } finally { if (btn) btn.disabled = false; }
+        }
+
+        function showStatus(msg, clearAfter) {
+          const el = document.getElementById('save-status');
+          el.textContent = msg;
+          if (clearAfter) setTimeout(function() { el.textContent = ''; }, clearAfter);
+        }
+
+        document.getElementById('det-save-btn').addEventListener('click', function() { saveInvoice(false); });
       }
     }
   </script>

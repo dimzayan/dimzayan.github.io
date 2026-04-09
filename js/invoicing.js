@@ -93,6 +93,22 @@ function updateCartBtn() {
     all[invoiceId] = inv;
     localStorage.setItem(INVOICE_KEY, JSON.stringify(all));
 
+    // Mirror to KV (merge with existing KV invoices first so other devices' data is preserved)
+    (function() {
+      var token = localStorage.getItem('dim_gh_token') || '';
+      if (!token) return;
+      fetch('https://dimzayan.com/api/invoices')
+        .then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; })
+        .then(function(kvAll) {
+          kvAll[invoiceId] = inv;
+          return fetch('https://dimzayan.com/api/invoices', {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(kvAll)
+          });
+        });
+    })();
+
     // Mark rows as invoiced in DOM
     invoiceCart.forEach(id => {
       const tr = tbody.querySelector(`tr[data-id="${id}"]`);
@@ -271,6 +287,20 @@ if (btn) btn.addEventListener('click', function() {
     if (all[invoiceId]) {
       all[invoiceId].paid = true;
       localStorage.setItem(INVOICE_KEY, JSON.stringify(all));
+      // Mirror paid status to KV
+      var token = localStorage.getItem('dim_gh_token') || '';
+      if (token) {
+        fetch('https://dimzayan.com/api/invoices')
+          .then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; })
+          .then(function(kvAll) {
+            if (kvAll[invoiceId]) kvAll[invoiceId].paid = true;
+            return fetch('https://dimzayan.com/api/invoices', {
+              method: 'PUT',
+              headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+              body: JSON.stringify(kvAll)
+            });
+          });
+      }
     }
     tbody.querySelectorAll('tr[data-invoice-ref]').forEach(tr => {
       try {

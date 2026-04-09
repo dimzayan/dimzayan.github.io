@@ -66,9 +66,10 @@
     #create-status { font-size: 0.75rem; opacity: 0.5; align-self: center; }
 
     /* ── Detail / Editor mode ── */
-    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; }
+    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .save-btn.dirty { opacity: 1; pointer-events: auto; }
     .save-btn:hover { background: #000; }
-    .save-btn:disabled { opacity: 0.4; cursor: default; }
+    .save-btn:disabled { opacity: 0.4 !important; cursor: default; }
     #save-status { font-size: 0.75rem; opacity: 0.45; }
 
     .ex-heading { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.5rem 0 0.5rem; }
@@ -264,6 +265,39 @@
         <div style="height:1px;background:rgba(0,0,0,0.09);margin:0.3rem 0;"></div>
         <div style="padding:0.45rem 1rem;cursor:pointer;color:rgba(180,40,40,0.85);" id="wctx-remove">Remove from exhibition</div>
       </div>
+
+      <!-- Press coverage for this exhibition -->
+      <div class="card" id="press-card" style="display:none;">
+        <div class="card-header">
+          <span class="card-label">Press</span>
+          <div style="display:flex;gap:1rem;">
+            <button class="card-action" id="press-link-btn">Link existing</button>
+            <button class="card-action" id="press-add-btn">+ Add article</button>
+          </div>
+        </div>
+        <div>
+          <table id="press-table" style="background:white;"></table>
+        </div>
+        <div id="press-empty" class="empty-state" style="display:none;">No press articles linked to this exhibition.</div>
+      </div>
+
+      <!-- Press context menu -->
+      <div id="press-ctx-menu" style="display:none;position:fixed;background:white;border:1px solid rgba(0,0,0,0.14);border-radius:5px;box-shadow:0 6px 20px rgba(0,0,0,0.13);z-index:200;min-width:180px;padding:0.3rem 0;font-size:0.82rem;">
+        <div style="padding:0.45rem 1rem;cursor:pointer;" id="pctx-unlink">Unlink from exhibition</div>
+        <div style="height:1px;background:rgba(0,0,0,0.09);margin:0.3rem 0;"></div>
+        <div style="padding:0.45rem 1rem;cursor:pointer;color:rgba(180,40,40,0.85);" id="pctx-delete">Delete article</div>
+      </div>
+
+      <!-- Link existing article modal -->
+      <div id="press-link-modal" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;">
+        <div style="background:white;border-radius:5px;width:480px;max-width:95vw;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;">
+          <div style="padding:1.2rem 1.5rem;border-bottom:1px solid rgba(0,0,0,0.07);font-size:0.88rem;font-weight:300;">Link press article to this exhibition</div>
+          <div id="press-link-list" style="overflow-y:auto;flex:1;"></div>
+          <div style="padding:1rem 1.5rem;border-top:1px solid rgba(0,0,0,0.07);display:flex;justify-content:flex-end;">
+            <button id="press-link-cancel" style="background:none;border:1px solid rgba(0,0,0,0.18);border-radius:3px;padding:0.38rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:300;cursor:pointer;color:#111;">Cancel</button>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -271,9 +305,11 @@
   <script type="module">
     import { getPageId, routeUrl } from '../js/routes.js';
     import { initArtworksTable } from '../js/artworks-table.js';
+    import { initPressTable } from '../js/press-table.js';
 
     const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
+    const API_PRESS     = 'https://dimzayan.com/api/press';
     const CDN_HI        = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
 
     const exhibitId = getPageId('__EXHIBIT_ID__');
@@ -379,6 +415,8 @@
       let exhibitsData  = {};
       let inventoryData = {};
       let inventoryReady = null;
+      let pressData     = {};
+      let pressReady    = null;
       let editRooms     = [];
       let editRoomIdx   = -1;
       let pendingRect   = null;
@@ -441,7 +479,7 @@
             if (!confirm('Delete Room ' + (idx + 1) + '?')) return;
             editRooms.splice(idx, 1);
             if (editRoomIdx >= editRooms.length) editRoomIdx = editRooms.length - 1;
-            renderRoomList();
+            markDirty(); renderRoomList();
             if (editRoomIdx >= 0) selectRoom(editRoomIdx); else hideCanvas();
           });
           row.appendChild(handle); row.appendChild(thumb); row.appendChild(info); row.appendChild(delBtn);
@@ -468,7 +506,7 @@
             if (editRoomIdx === dragSrcIdx) editRoomIdx = target;
             else if (dragSrcIdx < editRoomIdx && target >= editRoomIdx) editRoomIdx--;
             else if (dragSrcIdx > editRoomIdx && target <= editRoomIdx) editRoomIdx++;
-            dragSrcIdx = null; renderRoomList(); if (editRoomIdx >= 0) renderCanvas();
+            dragSrcIdx = null; markDirty(); renderRoomList(); if (editRoomIdx >= 0) renderCanvas();
           });
           list.appendChild(row);
         });
@@ -507,7 +545,7 @@
           label.textContent = hs.type === 'room' ? '→ Room ' + (hs.target + 1) : (work && work.title) ? work.title : (hs.id || '');
           el.appendChild(label);
           el.title = 'Double-click to remove';
-          el.addEventListener('dblclick', function(e) { e.stopPropagation(); editRooms[editRoomIdx].hotspots.splice(hi, 1); renderCanvas(); renderHotspotList(); });
+          el.addEventListener('dblclick', function(e) { e.stopPropagation(); editRooms[editRoomIdx].hotspots.splice(hi, 1); markDirty(); renderCanvas(); renderHotspotList(); });
           canvas.appendChild(el);
         });
       }
@@ -526,7 +564,7 @@
           name.textContent = hs.type === 'room' ? '→ Room ' + (hs.target + 1) + ' — ' + (editRooms[hs.target] ? editRooms[hs.target].photo : '') : (work && work.title) ? work.title + ' (' + hs.id + ')' : (hs.id || '');
           const del = document.createElement('button');
           del.className = 're-hs-del'; del.textContent = 'Remove';
-          del.addEventListener('click', function() { editRooms[editRoomIdx].hotspots.splice(hi, 1); renderCanvas(); renderHotspotList(); });
+          del.addEventListener('click', function() { editRooms[editRoomIdx].hotspots.splice(hi, 1); markDirty(); renderCanvas(); renderHotspotList(); });
           row.appendChild(name); row.appendChild(del); list.appendChild(row);
         });
       }
@@ -596,6 +634,7 @@
           if (!editRooms[editRoomIdx].hotspots) editRooms[editRoomIdx].hotspots = [];
           if (val.startsWith('room:')) { const target = parseInt(val.slice(5), 10); editRooms[editRoomIdx].hotspots.push({ type: 'room', target, x: rect.x, y: rect.y, w: rect.w, h: rect.h }); }
           else { editRooms[editRoomIdx].hotspots.push({ id: val, x: rect.x, y: rect.y, w: rect.w, h: rect.h }); }
+          markDirty();
           popup.remove(); renderCanvas(); renderHotspotList(); renderRoomList();
         });
         cancel.addEventListener('click', function() { popup.remove(); });
@@ -606,7 +645,7 @@
       document.getElementById('add-room-btn').addEventListener('click', function() {
         const val = document.getElementById('new-photo').value.trim(); if (!val) return;
         editRooms.push({ photo: val, hotspots: [] }); document.getElementById('new-photo').value = '';
-        renderRoomList(); selectRoom(editRooms.length - 1);
+        markDirty(); renderRoomList(); selectRoom(editRooms.length - 1);
       });
       document.getElementById('new-photo').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('add-room-btn').click(); });
 
@@ -621,6 +660,7 @@
         ex.dateEnd     = document.getElementById('ab-date-end').value.trim();
         ex.description = document.getElementById('ab-description').value.trim();
         ex.rooms       = editRooms;
+        if (worksTbl) ex.workOrder = worksTbl.getOrder();
         // keep legacy year field in sync for public page compat
         if (ex.dateStart) ex.year = ex.dateStart.match(/\d{4}/)?.[0] || ex.year;
         // update header display
@@ -646,11 +686,31 @@
                 .then(function(r) { if (r.ok) inventoryData = merged; return r; })
             );
           }
+          if (pressTbl) {
+            const gathered = pressTbl.gatherData();
+            const merged = Object.assign({}, pressData);
+            // Articles originally in this exhibition but removed from table: unlink them
+            Object.keys(merged).forEach(function(id) {
+              if (merged[id].exhibition === exhibitId && !gathered[id] && !pressDeletedIds.has(id)) {
+                merged[id] = Object.assign({}, merged[id]);
+                delete merged[id].exhibition;
+              }
+            });
+            // Remove deleted articles
+            pressDeletedIds.forEach(function(id) { delete merged[id]; });
+            // Add/update gathered articles
+            Object.assign(merged, gathered);
+            saves.push(
+              fetch(API_PRESS, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(merged, null, 2) })
+                .then(function(r) { if (r.ok) { pressData = merged; pressDeletedIds.clear(); } return r; })
+            );
+          }
           const results = await Promise.all(saves);
           const failed = results.find(function(r) { return !r.ok; });
           if (failed) throw new Error(failed.status);
           document.getElementById('save-status').textContent = 'Saved';
           setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
+          markClean();
         } catch(e) {
           document.getElementById('save-status').textContent = 'Error: ' + e.message;
         } finally { btn.disabled = false; }
@@ -671,8 +731,26 @@
         inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') btn.click(); if (e.key === 'Escape') { inp.style.display = 'none'; inp.value = ''; } });
       })();
 
+      // Dirty state for save button
+      const saveBtn = document.getElementById('save-btn');
+      function markDirty() { saveBtn.classList.add('dirty'); }
+      function markClean() { saveBtn.classList.remove('dirty'); }
+
+      async function loadPress() {
+        try { pressData = await fetch(API_PRESS).then(function(r) { return r.ok ? r.json() : {}; }); } catch(e) { pressData = {}; }
+      }
+
       inventoryReady = loadInventory();
-      const exhibitReady = loadExhibit();
+      pressReady     = loadPress();
+      const exhibitReady = loadExhibit().then(function() {
+        // Wire dirty listeners after fields are populated
+        ['ab-title','ab-location','ab-date-start','ab-date-end','ab-description'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', markDirty);
+        });
+        const pressList = document.getElementById('press-list');
+        if (pressList) pressList.addEventListener('input', markDirty);
+      });
 
       // ── Works panel ────────────────────────────────────────────────────────
       let worksTbl = null;
@@ -688,7 +766,8 @@
           filter: function(id, w) { return (w.exhibition || w.exhibit) === exhibitId; },
           onRightClick: function(tr, e) { showWorksCtxMenu(e, tr); },
         });
-        worksTbl.renderData(inventoryData);
+        const ex = exhibitsData[exhibitId];
+        worksTbl.renderData(inventoryData, ex && ex.workOrder);
         const empty = document.getElementById('works-empty');
         const hasRows = worksTableEl.querySelector('tbody tr[data-id]');
         empty.style.display = hasRows ? 'none' : 'block';
@@ -730,7 +809,105 @@
         worksCtxRow = null;
       });
 
+      // ── Press panel ────────────────────────────────────────────────────────
+      let pressTbl = null;
+      let pressCtxRow = null;
+      const pressDeletedIds = new Set();
+
+      async function initPressPanel() {
+        await pressReady;
+        pressTbl = initPressTable({
+          tableEl: document.getElementById('press-table'),
+          showExhibitionCol: false,
+          onRightClick: function(tr, e) { showPressCtxMenu(e, tr); },
+          onChange: markDirty,
+        });
+        pressTbl.renderData(pressData, function(id, a) { return a.exhibition === exhibitId; });
+        const hasRows = document.getElementById('press-table').querySelector('tbody tr[data-id]');
+        document.getElementById('press-empty').style.display = hasRows ? 'none' : 'block';
+        document.getElementById('press-card').style.display = 'block';
+      }
+
+      function showPressCtxMenu(e, tr) {
+        pressCtxRow = tr;
+        const menu = document.getElementById('press-ctx-menu');
+        menu.style.display = 'block';
+        const mw = 200, mh = 80;
+        let x = e.clientX, y = e.clientY;
+        if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 8;
+        if (y + mh > window.innerHeight) y = window.innerHeight - mh - 8;
+        menu.style.left = x + 'px'; menu.style.top = y + 'px';
+      }
+
+      document.addEventListener('click', function() { document.getElementById('press-ctx-menu').style.display = 'none'; });
+
+      document.getElementById('press-add-btn').addEventListener('click', function() {
+        if (!pressTbl) return;
+        pressTbl.addRow({ exhibition: exhibitId });
+        document.getElementById('press-empty').style.display = 'none';
+        markDirty();
+      });
+
+      document.getElementById('press-link-btn').addEventListener('click', function() {
+        const list = document.getElementById('press-link-list');
+        list.innerHTML = '';
+        const others = Object.entries(pressData).filter(function(entry) {
+          return entry[1].exhibition !== exhibitId;
+        });
+        if (!others.length) {
+          list.innerHTML = '<div style="padding:1.5rem;font-size:0.82rem;opacity:0.35;text-align:center;">No other articles available.</div>';
+        } else {
+          others.sort(function(a, b) { return (b[1].date || '').localeCompare(a[1].date || ''); });
+          others.forEach(function(entry) {
+            const id = entry[0]; const article = entry[1];
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;padding:0.75rem 1.5rem;border-bottom:1px solid rgba(0,0,0,0.05);cursor:pointer;gap:0.75rem;transition:background 0.1s;';
+            row.innerHTML = '<div style="flex:1;">' +
+              '<div style="font-size:0.84rem;">' + (article.source || '—') + '</div>' +
+              '<div style="font-size:0.72rem;opacity:0.38;">' + (article.date || '') + '</div>' +
+              '</div>' +
+              '<div style="font-size:0.72rem;opacity:0.3;">' + (article.exhibition || 'unlinked') + '</div>';
+            row.addEventListener('mouseover', function() { row.style.background = 'rgba(0,0,0,0.02)'; });
+            row.addEventListener('mouseout', function() { row.style.background = ''; });
+            row.addEventListener('click', function() {
+              pressTbl.addRow(Object.assign({}, article, { exhibition: exhibitId }), id);
+              document.getElementById('press-empty').style.display = 'none';
+              document.getElementById('press-link-modal').style.display = 'none';
+              markDirty();
+            });
+            list.appendChild(row);
+          });
+        }
+        document.getElementById('press-link-modal').style.display = 'flex';
+      });
+
+      document.getElementById('press-link-cancel').addEventListener('click', function() {
+        document.getElementById('press-link-modal').style.display = 'none';
+      });
+
+      document.getElementById('pctx-unlink').addEventListener('click', function() {
+        if (!pressCtxRow) return;
+        pressCtxRow.remove();
+        pressTbl.renumber();
+        const hasRows = document.getElementById('press-table').querySelector('tbody tr[data-id]');
+        document.getElementById('press-empty').style.display = hasRows ? 'none' : 'block';
+        pressCtxRow = null;
+        markDirty();
+      });
+
+      document.getElementById('pctx-delete').addEventListener('click', function() {
+        if (!pressCtxRow) return;
+        pressDeletedIds.add(pressCtxRow.dataset.id);
+        pressCtxRow.remove();
+        pressTbl.renumber();
+        const hasRows = document.getElementById('press-table').querySelector('tbody tr[data-id]');
+        document.getElementById('press-empty').style.display = hasRows ? 'none' : 'block';
+        pressCtxRow = null;
+        markDirty();
+      });
+
       initWorksPanel();
+      initPressPanel();
     }
   </script>
 </body>

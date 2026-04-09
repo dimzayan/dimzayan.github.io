@@ -24,7 +24,7 @@ const PHOTOS_KEY  = 'dim_work_photos_v1';
  * @param {Function}   [options.onRightClick] (tr, event) => void
  * @returns {{ renderData, gatherData, renumberRows, tbody, openEditDrawer, createRow }}
  */
-export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick }) {
+export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick, disableDrag = false }) {
   _injectStyles();
 
   const tbody = tableEl.querySelector('tbody');
@@ -305,10 +305,12 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick
     if (exhibition) tr.dataset.exhibition = exhibition;
     if (data.reserved) tr.classList.add('reserved');
     if (data.invoiced) { tr.classList.add('invoiced'); tr.dataset.invoiceRef = JSON.stringify(data.invoiced); }
+    if (data.displayScale && data.displayScale !== 1) tr.dataset.displayScale = data.displayScale;
 
     // Drag handle
     const tdDrag = document.createElement('td'); tdDrag.className = 'col-drag';
     const handle = document.createElement('span'); handle.className = 'at-drag-handle'; handle.textContent = '⠿'; handle.title = 'Drag to reorder';
+    if (disableDrag) { handle.style.visibility = 'hidden'; handle.style.pointerEvents = 'none'; }
     tdDrag.appendChild(handle); tr.appendChild(tdDrag);
 
     // Thumbnail
@@ -357,7 +359,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick
     tr.appendChild(tdInv);
 
     if (onRightClick) tr.addEventListener('contextmenu', e => { e.preventDefault(); onRightClick(tr, e); });
-    addDragHandlers(tr, handle);
+    if (!disableDrag) addDragHandlers(tr, handle);
     return tr;
   }
 
@@ -369,15 +371,24 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick
     });
   }
 
-  function renderData(inventory) {
+  function renderData(inventory, order) {
     _inventory = inventory || {};
     const fn = filter || (() => true);
     tbody.innerHTML = '';
-    Object.keys(_inventory).forEach(id => {
-      if (!fn(id, _inventory[id])) return;
-      tbody.appendChild(createRow(id, _inventory[id]));
-    });
+    let ids = Object.keys(_inventory).filter(id => fn(id, _inventory[id]));
+    if (order && order.length) {
+      const inOrder = new Set(order);
+      ids = [
+        ...order.filter(id => ids.includes(id)), // ordered IDs that pass the filter
+        ...ids.filter(id => !inOrder.has(id)),    // new works not yet in the saved order
+      ];
+    }
+    ids.forEach(id => tbody.appendChild(createRow(id, _inventory[id])));
     renumberRows(); applySortUI();
+  }
+
+  function getOrder() {
+    return Array.from(tbody.querySelectorAll('tr[data-id]')).map(tr => tr.dataset.id);
   }
 
   function gatherData() {
@@ -387,6 +398,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick
       obj[id] = { photo: tr.dataset.photo || id };
       if (tr.dataset.exhibition) obj[id].exhibition = tr.dataset.exhibition;
       if (tr.dataset.invoiceRef) { try { obj[id].invoiced = JSON.parse(tr.dataset.invoiceRef); } catch(e) {} }
+      if (tr.dataset.displayScale) { const ds = parseFloat(tr.dataset.displayScale); if (ds && ds !== 1) obj[id].displayScale = ds; }
       if (tr.classList.contains('reserved')) obj[id].reserved = true;
       FIELDS.forEach(f => { const td = tr.querySelector(`[data-field="${f}"]`); obj[id][f] = td ? td.textContent.trim() : ''; });
     });
@@ -394,7 +406,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick
   }
 
   applySortUI();
-  return { renderData, gatherData, renumberRows, tbody, openEditDrawer, createRow };
+  return { renderData, gatherData, getOrder, renumberRows, tbody, openEditDrawer, createRow };
 }
 
 // ── Private helpers ────────────────────────────────────────────────────────

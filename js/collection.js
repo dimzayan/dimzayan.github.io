@@ -107,7 +107,7 @@ const CSS = `
 .coll-img-area {
   flex: 1 1 auto; min-height: 0;
   display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+  overflow: visible;
 }
 .coll-img-area img {
   max-width: 92%; max-height: 92%;
@@ -408,6 +408,9 @@ async function initCarousel(root, works, opts) {
       const img = document.createElement('img');
       img.src = CDN + '__' + (w.photo || w.id) + '.webp';
       img.alt = w.title || ''; img.loading = 'lazy';
+      if (w.displayScale && w.displayScale !== 1) {
+        img.style.transform = `scale(${w.displayScale})`;
+      }
       imgArea.appendChild(img);
       img.addEventListener('click', () => openZoom(w));
       const spacer = document.createElement('div');

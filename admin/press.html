@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Press — Dim Zayan</title>
+  <link rel="icon" href="../favicon.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
+
+    header {
+      position: sticky; top: 0; z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    header.scrolled { background: rgba(223,223,224,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
+    .header-left { display: flex; align-items: center; gap: 1.5rem; }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; }
+    .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; letter-spacing: 0.01em; }
+    .back-link:hover { opacity: 1; }
+    .header-title { font-size: 0.85rem; font-weight: 300; letter-spacing: 0.04em; }
+    #save-status { font-size: 0.75rem; opacity: 0.45; }
+    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .save-btn.dirty { opacity: 1; pointer-events: auto; }
+    .save-btn:hover { background: #000; }
+    .save-btn:disabled { opacity: 0.4 !important; cursor: default; }
+
+    .page { max-width: 1100px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
+
+    .card { background: white; border-radius: 4px; overflow: hidden; }
+    .card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: space-between; }
+    .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
+    .card-action { font-size: 0.75rem; font-weight: 300; color: #111; text-decoration: none; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+    .card-action:hover { opacity: 1; }
+    .empty-state { padding: 2.5rem 1.5rem; font-size: 0.82rem; opacity: 0.3; text-align: center; }
+
+    #token-row { display: flex; align-items: center; gap: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <header id="main-header">
+    <div class="header-left">
+      <a class="back-link" id="back-link" href="#">← Studio</a>
+      <span class="header-title">Press</span>
+    </div>
+    <div class="header-right">
+      <span id="save-status"></span>
+      <button class="save-btn" id="save-btn">Save</button>
+      <div id="token-row">
+        <span id="token-status" style="font-size:0.72rem;opacity:0.4;"></span>
+        <input id="token-input" type="password" placeholder="API token"
+          style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.55rem;width:160px;display:none;">
+        <button id="token-btn" style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;background:none;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.7rem;cursor:pointer;color:#111;opacity:0.55;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.55">Set token</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="card" id="press-card">
+      <div class="card-header">
+        <span class="card-label">Press articles</span>
+        <button class="card-action" id="add-btn">+ Add article</button>
+      </div>
+      <div>
+        <table id="press-table" style="background:white;"></table>
+      </div>
+      <div id="press-empty" class="empty-state">No press articles yet.</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { routeUrl } from '../js/routes.js';
+    import { initPressTable } from '../js/press-table.js';
+
+    const API_PRESS    = 'https://dimzayan.com/api/press';
+    const API_EXHIBITS = 'https://dimzayan.com/api/exhibits';
+
+    document.getElementById('back-link').href = routeUrl('admin');
+
+    // Sticky header
+    window.addEventListener('scroll', function() {
+      document.getElementById('main-header').classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    // Dirty state
+    const saveBtn = document.getElementById('save-btn');
+    function markDirty() { saveBtn.classList.add('dirty'); }
+    function markClean() { saveBtn.classList.remove('dirty'); }
+
+    // Token UI
+    (function() {
+      const inp = document.getElementById('token-input');
+      const btn = document.getElementById('token-btn');
+      function updateUI() {
+        const t = localStorage.getItem('dim_gh_token') || '';
+        document.getElementById('token-row').style.display = t ? 'none' : 'flex';
+      }
+      updateUI();
+      btn.addEventListener('click', function() {
+        if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
+        else { const v = inp.value.trim(); if (v) { localStorage.setItem('dim_gh_token', v); inp.value = ''; } updateUI(); }
+      });
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') btn.click();
+        if (e.key === 'Escape') { inp.style.display = 'none'; inp.value = ''; }
+      });
+    })();
+
+    let pressData = {};
+    let exhibitsData = {};
+    let tbl = null;
+
+    async function load() {
+      const [press, exhibits] = await Promise.all([
+        fetch(API_PRESS).then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
+        fetch(API_EXHIBITS).then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
+      ]);
+      pressData  = press   || {};
+      exhibitsData = exhibits || {};
+
+      tbl = initPressTable({
+        tableEl: document.getElementById('press-table'),
+        exhibits: exhibitsData,
+        showExhibitionCol: true,
+        onChange: markDirty,
+      });
+
+      tbl.renderData(pressData);
+
+      const hasRows = document.getElementById('press-table').querySelector('tbody tr[data-id]');
+      document.getElementById('press-empty').style.display = hasRows ? 'none' : 'block';
+    }
+
+    load();
+
+    document.getElementById('add-btn').addEventListener('click', function() {
+      if (!tbl) return;
+      tbl.addRow();
+      document.getElementById('press-empty').style.display = 'none';
+      markDirty();
+    });
+
+    document.getElementById('save-btn').addEventListener('click', async function() {
+      const token = localStorage.getItem('dim_gh_token') || '';
+      if (!token) { document.getElementById('save-status').textContent = 'No token'; return; }
+      if (!tbl) return;
+
+      const gathered = tbl.gatherData();
+
+      saveBtn.disabled = true;
+      document.getElementById('save-status').textContent = 'Saving…';
+      try {
+        const r = await fetch(API_PRESS, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(gathered, null, 2),
+        });
+        if (!r.ok) throw new Error(r.status);
+        pressData = gathered;
+        document.getElementById('save-status').textContent = 'Saved';
+        setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
+        markClean();
+      } catch(e) {
+        document.getElementById('save-status').textContent = 'Error: ' + e.message;
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
