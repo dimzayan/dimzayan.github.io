@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings — Dim Zayan</title>
+  <title>Basics — Dim Zayan</title>
   <link rel="icon" href="../favicon.png">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -11,105 +11,248 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: rgb(223,223,224); min-height: 100vh; color: #111; }
 
-    header { padding: 2rem 2.5rem 1.5rem; display: flex; align-items: baseline; gap: 2rem; }
-    header a { text-decoration: none; color: inherit; font-size: 0.85rem; letter-spacing: 0.04em; opacity: 0.5; }
-    header a:hover { opacity: 1; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    header.scrolled { background: rgba(223,223,224,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
+    .header-left { display: flex; align-items: center; gap: 1.5rem; }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; }
+    .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; letter-spacing: 0.01em; }
+    .back-link:hover { opacity: 1; }
+    .header-title { font-size: 0.85rem; font-weight: 300; letter-spacing: 0.04em; }
+    #save-status { font-size: 0.75rem; opacity: 0.45; }
+    .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .save-btn.dirty { opacity: 1; pointer-events: auto; }
+    .save-btn:hover { background: #000; }
+    .save-btn:disabled { opacity: 0.4 !important; cursor: default; }
 
-    .page { max-width: 540px; margin: 0 auto; padding: 0 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .page { max-width: 700px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
     .card { background: white; border-radius: 4px; overflow: hidden; }
-    .card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: space-between; }
     .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
-    .card-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .card-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
 
-    .field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.3rem; }
-    .field input { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.45rem 0.65rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 300; color: #111; background: white; }
-    .field input:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .form-field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.28rem; }
+    .form-field input, .form-field textarea { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.42rem 0.65rem; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 300; color: #111; background: white; }
+    .form-field input:focus, .form-field textarea:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .form-field textarea { resize: vertical; }
+    .form-field .hint { font-size: 0.68rem; opacity: 0.38; margin-top: 0.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
-    .status { font-size: 0.78rem; opacity: 0.5; }
-    .status.set { color: rgba(30,130,60,0.8); opacity: 1; }
+    /* Token section */
+    .token-status { font-size: 0.82rem; opacity: 0.5; }
+    .token-status.set { color: rgba(30,130,60,0.85); opacity: 1; }
+    .token-actions { display: flex; gap: 0.6rem; margin-top: 0.5rem; }
+    .token-actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
+    .token-actions button:hover { background: rgba(0,0,0,0.04); }
+    #token-save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+    #token-clear-btn { color: rgba(180,40,40,0.8); border-color: rgba(180,40,40,0.2); }
+    #token-clear-btn:hover { background: rgba(180,40,40,0.04) !important; }
 
-    .actions { display: flex; gap: 0.6rem; }
-    .actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
-    .actions button:hover { background: rgba(0,0,0,0.04); }
-    #save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
-    #clear-btn { color: rgba(180,40,40,0.8); border-color: rgba(180,40,40,0.2); }
-    #clear-btn:hover { background: rgba(180,40,40,0.04) !important; border-color: rgba(180,40,40,0.4); }
+    #token-row { display: flex; align-items: center; gap: 0.5rem; }
   </style>
 </head>
 <body>
 
-  <header>
-    <a href="#" id="back-link">← Studio</a>
-    <span style="font-size:0.85rem;font-weight:300;letter-spacing:0.04em;">Settings</span>
+  <header id="main-header">
+    <div class="header-left">
+      <a class="back-link" id="back-link" href="#">← Studio</a>
+      <span class="header-title">Basics</span>
+    </div>
+    <div class="header-right">
+      <span id="save-status"></span>
+      <button class="save-btn" id="save-btn">Save</button>
+      <div id="token-row">
+        <span id="token-status-header" style="font-size:0.72rem;opacity:0.4;"></span>
+        <input id="token-input-header" type="password" placeholder="API token"
+          style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.55rem;width:160px;display:none;">
+        <button id="token-btn-header" style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;background:none;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.7rem;cursor:pointer;color:#111;opacity:0.55;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.55">Set token</button>
+      </div>
+    </div>
   </header>
 
   <div class="page">
+
+    <!-- Contact info -->
+    <div class="card">
+      <div class="card-header"><span class="card-label">Contact</span></div>
+      <div class="card-body">
+        <div class="form-field"><label>Name</label><input id="f-name" type="text" placeholder="Dim Zayan"></div>
+        <div class="form-field">
+          <label>Address</label>
+          <textarea id="f-address" rows="3" placeholder="208 W El Paso Street #2&#10;Marfa, Texas 79843&#10;USA"></textarea>
+          <div class="hint">One line per paragraph</div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Email</label><input id="f-email" type="email" placeholder="dim.studio@gmail.com"></div>
+          <div class="form-field"><label>Phone</label><input id="f-phone" type="text" placeholder="+1 000 000 0000"></div>
+        </div>
+        <div class="form-field">
+          <label>Instagram handle</label>
+          <input id="f-instagram" type="text" placeholder="dimzayan">
+          <div class="hint">Without @ — used to generate the link and label</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="card">
+      <div class="card-header"><span class="card-label">Bio</span></div>
+      <div class="card-body">
+        <div class="form-field">
+          <textarea id="f-bio" rows="6" placeholder="Artist bio…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Token -->
     <div class="card">
       <div class="card-header"><span class="card-label">API Token</span></div>
       <div class="card-body">
-        <p id="token-status" class="status"></p>
-        <div class="field" id="token-field" style="display:none;">
-          <label>New token</label>
+        <p id="token-status" class="token-status"></p>
+        <div class="form-field" id="token-field" style="display:none;">
+          <label>Token</label>
           <input id="token-input" type="password" placeholder="Paste token…" autocomplete="off">
         </div>
-        <div class="actions" id="token-actions"></div>
+        <div class="token-actions" id="token-actions"></div>
       </div>
     </div>
+
   </div>
 
   <script type="module">
     import { routeUrl } from '../js/routes.js';
 
+    const API_BASICS = 'https://dimzayan.com/api/basics';
+
     document.getElementById('back-link').href = routeUrl('admin');
 
-    const status  = document.getElementById('token-status');
-    const field   = document.getElementById('token-field');
-    const input   = document.getElementById('token-input');
-    const actions = document.getElementById('token-actions');
+    // Sticky header
+    window.addEventListener('scroll', function() {
+      document.getElementById('main-header').classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
 
-    function render() {
+    // Dirty state
+    const saveBtn = document.getElementById('save-btn');
+    function markDirty() { saveBtn.classList.add('dirty'); }
+    function markClean() { saveBtn.classList.remove('dirty'); }
+
+    ['f-name', 'f-address', 'f-email', 'f-phone', 'f-instagram', 'f-bio'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', markDirty);
+    });
+
+    // Header token UI
+    (function() {
+      const inp = document.getElementById('token-input-header');
+      const btn = document.getElementById('token-btn-header');
+      function updateUI() {
+        document.getElementById('token-row').style.display = localStorage.getItem('dim_gh_token') ? 'none' : 'flex';
+      }
+      updateUI();
+      btn.addEventListener('click', function() {
+        if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
+        else { const v = inp.value.trim(); if (v) { localStorage.setItem('dim_gh_token', v); inp.value = ''; } updateUI(); renderToken(); }
+      });
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') btn.click();
+        if (e.key === 'Escape') { inp.style.display = 'none'; inp.value = ''; }
+      });
+    })();
+
+    // Token card UI
+    function renderToken() {
       const t = localStorage.getItem('dim_gh_token') || '';
+      const status  = document.getElementById('token-status');
+      const field   = document.getElementById('token-field');
+      const input   = document.getElementById('token-input');
+      const actions = document.getElementById('token-actions');
       actions.innerHTML = '';
-
       if (t) {
         status.textContent = 'Token is set.';
-        status.className = 'status set';
+        status.className = 'token-status set';
         field.style.display = 'none';
         input.value = '';
-
         const clearBtn = document.createElement('button');
-        clearBtn.id = 'clear-btn';
+        clearBtn.id = 'token-clear-btn';
         clearBtn.textContent = 'Clear token';
         clearBtn.addEventListener('click', function() {
           if (!confirm('Clear the API token?')) return;
           localStorage.removeItem('dim_gh_token');
-          render();
+          renderToken();
+          document.getElementById('token-row').style.display = 'flex';
         });
         actions.appendChild(clearBtn);
       } else {
         status.textContent = 'No token set. Saves will not work.';
-        status.className = 'status';
+        status.className = 'token-status';
         field.style.display = 'block';
-
-        const saveBtn = document.createElement('button');
-        saveBtn.id = 'save-btn';
-        saveBtn.textContent = 'Save token';
-        saveBtn.addEventListener('click', function() {
+        const saveBtn2 = document.createElement('button');
+        saveBtn2.id = 'token-save-btn';
+        saveBtn2.textContent = 'Save token';
+        saveBtn2.addEventListener('click', function() {
           const v = input.value.trim();
           if (!v) { input.focus(); return; }
           localStorage.setItem('dim_gh_token', v);
-          render();
+          renderToken();
+          document.getElementById('token-row').style.display = 'none';
         });
-        actions.appendChild(saveBtn);
-
-        input.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') saveBtn.click();
-        });
+        actions.appendChild(saveBtn2);
+        input.addEventListener('keydown', function(e) { if (e.key === 'Enter') saveBtn2.click(); });
       }
     }
+    renderToken();
 
-    render();
+    // Load basics
+    async function load() {
+      try {
+        const data = await fetch(API_BASICS).then(function(r) { return r.ok ? r.json() : {}; });
+        if (!data) return;
+        document.getElementById('f-name').value      = data.name      || '';
+        document.getElementById('f-address').value   = data.address   || '';
+        document.getElementById('f-email').value     = data.email     || '';
+        document.getElementById('f-phone').value     = data.phone     || '';
+        document.getElementById('f-instagram').value = data.instagram || '';
+        document.getElementById('f-bio').value       = data.bio       || '';
+      } catch(e) {}
+    }
+    load();
+
+    // Save
+    saveBtn.addEventListener('click', async function() {
+      const token = localStorage.getItem('dim_gh_token') || '';
+      if (!token) { document.getElementById('save-status').textContent = 'No token'; return; }
+
+      const data = {
+        name:      document.getElementById('f-name').value.trim(),
+        address:   document.getElementById('f-address').value.trim(),
+        email:     document.getElementById('f-email').value.trim(),
+        phone:     document.getElementById('f-phone').value.trim(),
+        instagram: document.getElementById('f-instagram').value.trim().replace(/^@/, ''),
+        bio:       document.getElementById('f-bio').value.trim(),
+      };
+
+      saveBtn.disabled = true;
+      document.getElementById('save-status').textContent = 'Saving\u2026';
+      try {
+        const r = await fetch(API_BASICS, {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(data, null, 2),
+        });
+        if (!r.ok) throw new Error(r.status);
+        document.getElementById('save-status').textContent = 'Saved';
+        setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
+        markClean();
+      } catch(e) {
+        document.getElementById('save-status').textContent = 'Error: ' + e.message;
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
   </script>
 
 </body>

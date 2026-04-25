@@ -196,7 +196,7 @@ const engine = {
         if(entity.video) {
             const entityVideo = document.createElement('iframe');
             entityVideo.classList.add('media');
-            entityVideo.src = entity.video;
+            entityVideo.dataset.src = entity.video; // deferred — set on activate to prevent autoplay
             entityVideo.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
             entityVideo.title = entity.title || '';
             entityVideo.allowFullscreen = true;
@@ -307,15 +307,18 @@ const engine = {
 
         if(entity.active) {
             entityContainer.dataset.active = entity.active;
+            // Load deferred video src now that entity is visible
+            const deferredIframe = entityContainer.querySelector('iframe.media[data-src]');
+            if (deferredIframe) { deferredIframe.src = deferredIframe.dataset.src; deferredIframe.removeAttribute('data-src'); }
             // if(entity.menuItem) {
             //     animation.height = 'auto'
-               
+
             // }
-            
-            
-            
         } else {
-            entityContainer.dataset.active = false
+            entityContainer.dataset.active = false;
+            // Stop video playback when entity is hidden
+            const activeIframe = entityContainer.querySelector('iframe.media[src]');
+            if (activeIframe) { activeIframe.dataset.src = activeIframe.src; activeIframe.removeAttribute('src'); }
             // if(entity.menuItem) {
             //     animation.height = '40px';
             // }

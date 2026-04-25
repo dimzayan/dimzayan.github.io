@@ -487,18 +487,8 @@ Marfa, Texas.</p>`,
         clickable: true,
         showTitle: true,
         title: 'Exhibitions',
-        text: `<dl>  
-        <dd>A three-quarter view of the future, 2026, Do Right Hall, Marfa (upcoming)</dd> 
-        <dd>MarfaMust Group show, 2025, Marfa</dd>
-        <dd>Lannan Park, 2024, Marfa</dd>
-        <dd>Pepefest, 2023, Avant Galerie, Paris</dd>
-        <dd>DYOR, 2022, Kunsthalle Zürich, Zürich</dd>
-        <dd>NFT NYC 2022, New York City</dd>
-        <dd>Fake Miami 2022, Miami</dd>
-        <dd>Bitcoin Conf 2021, Miami</dd>
-        <dd>Art in Dumbo 2017, Brooklyn</dd>
-        </dl>`,
-     
+        text: `<dl id="exhibitions-dl"></dl>`,
+
         transformable: true,
         _displayable: true,
         parent: 'menu',
@@ -510,16 +500,7 @@ Marfa, Texas.</p>`,
         clickable: true,
         showTitle: true,
         title: 'Press',
-        text: `<dl>
-        <dd><a target="_blank" href="https://bigbendsentinel.com/2024/05/08/marfamust-highlights-local-artists-with-directory-special-showings-this-week/">MarfaMust article on Big Bend Sentinel, 2024</a></dd>
-        <dd><a target="_blank" href="https://21ism.com/portfolio-item/dim-zayan/">Interview with Daniel Prince on 21ism, 2021</a></dd>
-			<dd><a target="_blank" href="https://21ism.com/portfolio-item/bitcoin-voice-paper/">The Voicepaper on 21ism, 2021</a></dd>
-			<dd><a target="_blank" href="https://www.bit-buy-bit.com/podcast-1/episode/3646dca8/ep73-the-evolutionary-path-with-dim-zayan/">Interview with BitBuyBit, 2021</a></dd>
-			
-			<dd><a target="_blank" href="https://www.btctimes.com/news/the-community-effort-that-gives-a-voice-to-the-bitcoin-white-paper">BTC TIMES: The Community Effort That Gives a Voice to the Bitcoin White Paper, 2021</a></dd>
-			<dd><a target="_blank" href="https://bitcoin-takeover.com/why-the-voicepaper-project-is-bitcoins-immune-system/">BTCTKVR: Why The Voicepaper Project Is Bitcoin’s Immune System, 2021</a></dd>
-			<dd><a target="_blank" href="https://www.youtube.com/watch?v=yMTphrVaE6I&amp;t=11s/">Interview with Nico/ BitVolt, 2020</a></dd>
-        </dl>`,
+        text: `<dl id="press-dl"></dl>`,
         command: 'onActivate',
         commandValue: 'press',
         transformable: true,
@@ -529,18 +510,7 @@ Marfa, Texas.</p>`,
     contact: {
         showTitle: true,
         title: 'Contact',
-        text: `<p>Dim Zayan</p>
-        <p>208 W El Paso Street #2, 
-        <p>Marfa, Texas 79843
-        <p>USA</p>
-
-        <p>dim.marfa.studio@gmail.com</p>
-        +1 6.4.6.6.7.8.1.4.6.8
-
-        <br/>
-        Instagram: <a href="https://www.instagram.com/dimzayan/">@dimzayan</a>
-        
-        `,
+        text: `<div id="contact-content"></div>`,
      
         works: ['spacetime'],
         command: 'onActivate',

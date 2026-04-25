@@ -557,5 +557,84 @@
 	<script src="carousel.js"></script>
 	<script src="engine.js"></script>
 	<script src="index.js"></script>
-	
+
+	<script type="module">
+		// Press articles
+		async function loadPress() {
+			try {
+				const data = await fetch('https://dimzayan.com/api/press').then(function(r) { return r.ok ? r.json() : {}; });
+				const articles = Object.values(data || {})
+					.filter(function(a) { return a.source || a.title; })
+					.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
+
+				function render() {
+					const dl = document.getElementById('press-dl');
+					if (!dl) { requestAnimationFrame(render); return; }
+					dl.innerHTML = articles.map(function(a) {
+						const year = a.date ? a.date.slice(0, 4) : '';
+						const label = [a.title, a.source].filter(Boolean).join(' on ') + (year ? ', ' + year : '');
+						return a.link
+							? '<dd><a target="_blank" href="' + a.link + '">' + label + '</a></dd>'
+							: '<dd>' + label + '</dd>';
+					}).join('');
+				}
+				render();
+			} catch(e) {}
+		}
+
+		// Contact basics
+		async function loadBasics() {
+			try {
+				const d = await fetch('https://dimzayan.com/api/basics').then(function(r) { return r.ok ? r.json() : null; });
+				if (!d) return;
+
+				var html = '';
+				if (d.name) html += '<p>' + d.name + '</p>\n';
+				if (d.address) {
+					var lines = d.address.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
+					if (lines.length) html += '<p>' + lines.join('<br>') + '</p>\n';
+				}
+				if (d.email) html += '<p>' + d.email + '</p>\n';
+				if (d.phone) html += d.phone + '\n';
+				if (d.instagram) {
+					html += '<br/>\nInstagram: <a href="https://www.instagram.com/' + d.instagram + '/">@' + d.instagram + '</a>\n';
+				}
+
+				function render() {
+					var el = document.getElementById('contact-content');
+					if (!el) { requestAnimationFrame(render); return; }
+					el.innerHTML = html;
+				}
+				render();
+			} catch(e) {}
+		}
+
+		// Exhibitions
+		async function loadExhibitions() {
+			try {
+				const data = await fetch('https://dimzayan.com/api/exhibits').then(function(r) { return r.ok ? r.json() : {}; });
+				const items = Object.values(data || {})
+					.filter(function(e) { return e.title; })
+					.sort(function(a, b) { return (b.year || 0) - (a.year || 0); });
+
+				function render() {
+					const dl = document.getElementById('exhibitions-dl');
+					if (!dl) { requestAnimationFrame(render); return; }
+					dl.innerHTML = items.map(function(e) {
+						const parts = [e.title, e.year, e.location].filter(Boolean);
+						const label = parts.join(', ');
+						return e.link
+							? '<dd><a target="_blank" href="' + e.link + '">' + label + '</a></dd>'
+							: '<dd>' + label + '</dd>';
+					}).join('');
+				}
+				render();
+			} catch(e) {}
+		}
+
+		loadPress();
+		loadBasics();
+		loadExhibitions();
+	</script>
+
 </html>

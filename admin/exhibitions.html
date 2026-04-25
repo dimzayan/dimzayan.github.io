@@ -200,6 +200,7 @@
             <div class="form-field"><label>Title</label><input id="ab-title" type="text"></div>
             <div class="form-field"><label>Location</label><input id="ab-location" type="text"></div>
           </div>
+          <div class="form-field"><label>Venue</label><input id="ab-venue" type="text" placeholder="e.g. Do Right Hall"></div>
           <div class="form-row">
             <div class="form-field"><label>Start date</label><input id="ab-date-start" type="text" placeholder="e.g. March 14, 2026"></div>
             <div class="form-field"><label>End date</label><input id="ab-date-end" type="text" placeholder="e.g. April 20, 2026"></div>
@@ -353,7 +354,7 @@
           const ex  = exhibitsData[key];
           const row = document.createElement('div');
           row.className = 'exhibit-row';
-          const meta = [ex.location, ex.year].filter(Boolean).join(' · ');
+          const meta = [ex.venue, ex.location, ex.year].filter(Boolean).join(' · ');
           row.innerHTML =
             '<div class="exhibit-row-info" data-view="' + key + '">' +
               '<div class="exhibit-row-title">' + (ex.title || key) + '</div>' +
@@ -434,10 +435,11 @@
           if (!ex) { document.getElementById('ex-title').textContent = 'Exhibit not found'; return; }
           document.title = 'Edit: ' + ex.title + ' — Dim Zayan';
           document.getElementById('ex-title').textContent = ex.title || exhibitId;
-          const meta = [ex.location, ex.dateStart || ex.year].filter(Boolean).join(' · ');
+          const meta = [ex.venue, ex.location, ex.dateStart || ex.year].filter(Boolean).join(' · ');
           document.getElementById('ex-meta').textContent = meta;
           document.getElementById('ab-title').value       = ex.title       || '';
           document.getElementById('ab-location').value    = ex.location    || '';
+          document.getElementById('ab-venue').value      = ex.venue       || '';
           document.getElementById('ab-date-start').value  = ex.dateStart   || ex.year || '';
           document.getElementById('ab-date-end').value    = ex.dateEnd     || '';
           document.getElementById('ab-description').value = ex.description || '';
@@ -656,6 +658,7 @@
         const ex = exhibitsData[exhibitId];
         ex.title       = document.getElementById('ab-title').value.trim()       || ex.title;
         ex.location    = document.getElementById('ab-location').value.trim();
+        ex.venue       = document.getElementById('ab-venue').value.trim() || undefined;
         ex.dateStart   = document.getElementById('ab-date-start').value.trim();
         ex.dateEnd     = document.getElementById('ab-date-end').value.trim();
         ex.description = document.getElementById('ab-description').value.trim();
@@ -665,7 +668,7 @@
         if (ex.dateStart) ex.year = ex.dateStart.match(/\d{4}/)?.[0] || ex.year;
         // update header display
         document.getElementById('ex-title').textContent = ex.title || exhibitId;
-        document.getElementById('ex-meta').textContent  = [ex.location, ex.dateStart].filter(Boolean).join(' · ');
+        document.getElementById('ex-meta').textContent  = [ex.venue, ex.location, ex.dateStart].filter(Boolean).join(' · ');
         const btn = document.getElementById('save-btn');
         btn.disabled = true; document.getElementById('save-status').textContent = 'Saving…';
         try {
@@ -744,7 +747,7 @@
       pressReady     = loadPress();
       const exhibitReady = loadExhibit().then(function() {
         // Wire dirty listeners after fields are populated
-        ['ab-title','ab-location','ab-date-start','ab-date-end','ab-description'].forEach(function(id) {
+        ['ab-title','ab-location','ab-venue','ab-date-start','ab-date-end','ab-description'].forEach(function(id) {
           const el = document.getElementById(id);
           if (el) el.addEventListener('input', markDirty);
         });

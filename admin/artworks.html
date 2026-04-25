@@ -11,12 +11,18 @@
     * { font-family: "DM Sans"; font-weight: 300; padding: 0; margin: 0; box-sizing: border-box; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     body { background-color: rgb(223,223,224); min-height: 100vh; }
 
-    header { position: sticky; top: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; align-items: center; gap: 1.5rem; transition: background 0.15s, box-shadow 0.15s; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex; align-items: center; gap: 1.5rem;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
     header.scrolled { background: rgba(223,223,224,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
-    header a { text-decoration: none; color: inherit; font-size: 0.78rem; letter-spacing: 0.04em; opacity: 0.45; }
-    header a:hover { opacity: 1; }
+    .back-link { font-size: 0.78rem; opacity: 0.45; color: #111; text-decoration: none; letter-spacing: 0.01em; }
+    .back-link:hover { opacity: 1; }
     header h1 { font-size: 0.85rem; font-weight: 300; letter-spacing: 0.04em; }
     .header-right { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
+    #save-status { font-size: 0.75rem; opacity: 0.45; }
     .save-btn { background: rgba(0,0,0,0.85); color: white; border: none; border-radius: 3px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .save-btn.dirty { opacity: 1; pointer-events: auto; }
     .save-btn:hover { background: #000; }
@@ -24,11 +30,20 @@
 
     main { max-width: 1200px; margin: 0 auto; padding: 0.5rem 2.5rem 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
 
+    /* Cards */
     .card { background: white; border-radius: 4px; overflow: hidden; }
     .card-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: space-between; }
     .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
     .card-action { font-size: 0.75rem; font-weight: 300; color: #111; text-decoration: none; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
     .card-action:hover { opacity: 1; }
+    .card-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
+
+    /* Form fields */
+    .form-field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.28rem; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.42rem 0.65rem; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 300; color: #111; background: white; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+    .form-field textarea { resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
     /* In-cart highlight */
     tr.in-cart { background: rgba(50,80,200,0.05) !important; }
@@ -56,49 +71,44 @@
     #inv-generate-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
 
     /* Invoice cart button */
-    #invoice-cart-btn { display: none; align-items: center; gap: 0.5rem; margin-left: auto; background: rgba(0,0,0,0.82); color: white; border: none; border-radius: 3px; padding: 0.35rem 0.85rem; font-family: "DM Sans"; font-size: 0.78rem; font-weight: 300; letter-spacing: 0.03em; cursor: pointer; }
+    #invoice-cart-btn { display: none; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.82); color: white; border: none; border-radius: 3px; padding: 0.35rem 0.85rem; font-family: "DM Sans"; font-size: 0.78rem; font-weight: 300; letter-spacing: 0.03em; cursor: pointer; }
     #invoice-cart-btn:hover { background: black; }
     .inv-cart-count { background: rgba(255,255,255,0.22); border-radius: 20px; padding: 0.05em 0.45em; font-size: 0.85em; }
 
-    .actions { display: flex; gap: 0.75rem; padding: 1rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.07); }
-    .actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 0.85rem; font-family: "DM Sans"; font-weight: 300; font-size: 0.8rem; cursor: pointer; letter-spacing: 0.03em; color: inherit; }
-    .actions button:hover { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.32); }
+    .list-actions { display: flex; gap: 0.75rem; padding: 1rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.07); }
+    .list-actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 0.85rem; font-family: "DM Sans"; font-weight: 300; font-size: 0.8rem; cursor: pointer; letter-spacing: 0.03em; color: inherit; }
+    .list-actions button:hover { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.32); }
 
     @media (max-width: 768px) { main { padding: 0 1.25rem 3rem; } header { padding: 1.25rem 1.25rem; } }
 
-    /* ── Artwork detail / scale editor ── */
-    #artwork-detail { display: none; flex-direction: column; height: 100vh; background: #ece9e4; }
-    #artwork-detail header { background: transparent; }
-    #artwork-img-area {
-      flex: 1 1 auto; min-height: 0;
+    /* Detail mode — preview card */
+    #preview-img-area {
+      height: 52vh; min-height: 280px;
       display: flex; align-items: center; justify-content: center;
-      overflow: visible;
+      overflow: visible; background: #ece9e4;
     }
-    #artwork-img-area img {
-      max-width: 92%; max-height: 92%;
-      object-fit: contain; display: block;
+    #preview-img-area img {
+      max-width: 92%; max-height: 92%; object-fit: contain;
       filter: drop-shadow(0 12px 40px rgba(0,0,0,0.09));
       transition: transform 0.15s ease;
     }
-    #artwork-panel {
-      flex-shrink: 0; height: 110px;
-      display: flex; align-items: center; justify-content: center; gap: 1.5rem;
-      padding: 0 2rem;
-      font-family: 'DM Sans', sans-serif; font-weight: 300;
+    #scale-panel {
+      display: flex; align-items: center; gap: 1.25rem;
+      padding: 0.85rem 1.5rem; border-top: 1px solid rgba(0,0,0,0.07);
     }
-    #scale-label { font-size: 0.82rem; opacity: 0.5; min-width: 40px; }
-    #scale-slider { width: 220px; accent-color: #111; cursor: pointer; }
-    #scale-number { width: 60px; border: 1px solid rgba(0,0,0,0.2); border-radius: 3px; padding: 0.3rem 0.4rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 300; text-align: center; background: rgba(255,255,255,0.7); }
-    #scale-number:focus { outline: none; border-color: rgba(0,0,0,0.45); background: white; }
-    #artwork-save-btn { background: rgba(0,0,0,0.82); color: white; border: none; border-radius: 3px; padding: 0.35rem 1.1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; }
-    #artwork-save-btn:hover { background: #000; }
-    #artwork-save-status { font-size: 0.75rem; opacity: 0.45; }
+    #scale-label { font-size: 0.82rem; opacity: 0.5; min-width: 38px; }
+    #scale-slider { flex: 1; max-width: 260px; accent-color: #111; cursor: pointer; }
+    #scale-number { width: 64px; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.3rem 0.45rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 300; text-align: center; }
+    #scale-number:focus { outline: none; border-color: rgba(0,0,0,0.4); }
+
+    #token-row { display: flex; align-items: center; gap: 0.5rem; }
   </style>
 </head>
 <body>
 
-  <header>
-    <a href="#" id="back-link">← Studio</a>
+  <!-- ── List mode ── -->
+  <header id="list-header">
+    <a class="back-link" href="#" id="back-link">← Studio</a>
     <h1>Artworks</h1>
     <div class="header-right">
       <button id="invoice-cart-btn">Generate invoice <span class="inv-cart-count" id="inv-count">0</span></button>
@@ -106,7 +116,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="list-main">
     <div class="card">
       <div class="card-header">
         <span class="card-label">Artworks</span>
@@ -129,14 +139,70 @@
         </thead>
         <tbody></tbody>
       </table>
-      <div class="actions">
+      <div class="list-actions">
         <button id="print-btn">Print listing</button>
         <button id="export-btn">Export CSV</button>
       </div>
     </div>
   </main>
 
-  <!-- Context menu -->
+  <!-- ── Detail mode ── -->
+  <header id="detail-header" style="display:none;">
+    <a class="back-link" href="#" id="detail-back-link">← Artworks</a>
+    <h1 id="detail-title" style="font-weight:300;"></h1>
+    <div class="header-right">
+      <span id="save-status"></span>
+      <button class="save-btn" id="detail-save-btn">Save</button>
+      <div id="token-row">
+        <input id="token-input" type="password" placeholder="API token"
+          style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.55rem;width:160px;display:none;">
+        <button id="token-btn" style="font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:300;background:none;border:1px solid rgba(0,0,0,0.15);border-radius:3px;padding:0.28rem 0.7rem;cursor:pointer;color:#111;opacity:0.55;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.55">Set token</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="detail-main" style="display:none; max-width:1000px;">
+
+    <!-- Preview & scale -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-label">Preview</span>
+        <span id="scale-label" style="font-size:0.82rem;opacity:0.4;">×1.00</span>
+      </div>
+      <div id="preview-img-area">
+        <img id="detail-img" alt="">
+      </div>
+      <div id="scale-panel">
+        <input id="scale-slider" type="range" min="0.5" max="3" step="0.05" value="1">
+        <input id="scale-number" type="number" min="0.5" max="3" step="0.05" value="1">
+        <span style="font-size:0.72rem;opacity:0.35;">Display scale (wall view only)</span>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="card">
+      <div class="card-header"><span class="card-label">Info</span></div>
+      <div class="card-body">
+        <div class="form-field"><label>Title</label><input id="dv-title" type="text"></div>
+        <div class="form-row">
+          <div class="form-field"><label>Dimensions</label><input id="dv-dimensions" type="text" placeholder="e.g. 48 × 36 in"></div>
+          <div class="form-field"><label>Year</label><input id="dv-year" type="text" placeholder="e.g. 2025"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Material</label><input id="dv-material" type="text" placeholder="e.g. Oil on gypsum panel"></div>
+          <div class="form-field"><label>Price ($)</label><input id="dv-price" type="number" min="0" step="1" placeholder="0"></div>
+        </div>
+        <div class="form-field"><label>Notes</label><textarea id="dv-notes" rows="3"></textarea></div>
+        <div class="form-row">
+          <div class="form-field"><label>Exhibition</label><select id="dv-exhibition"><option value="">— none —</option></select></div>
+          <div class="form-field"><label>Photo filename</label><input id="dv-photo" type="text" placeholder="IMG_0315"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Context menu (list mode) -->
   <div id="ctx-menu">
     <div class="ctx-item" id="ctx-full-edit-item">Edit</div>
     <div class="ctx-item" id="ctx-edit-item">Quick edit</div>
@@ -148,7 +214,7 @@
     <div class="ctx-item danger" id="ctx-delete-item">Delete</div>
   </div>
 
-  <!-- Invoice modal -->
+  <!-- Invoice modal (list mode) -->
   <div id="inv-modal">
     <div id="inv-modal-box">
       <h3>New Invoice</h3>
@@ -180,28 +246,8 @@
       </div>
       <div id="inv-modal-actions">
         <button id="inv-cancel-btn">Cancel</button>
-        <button id="inv-generate-btn">Generate →</button>
+        <button id="inv-generate-btn">Generate &rarr;</button>
       </div>
-    </div>
-  </div>
-
-  <!-- Artwork detail / scale editor -->
-  <div id="artwork-detail">
-    <header>
-      <a href="#" id="detail-back-link">← Artworks</a>
-      <h1 id="detail-title" style="margin-left:1rem;"></h1>
-      <div class="header-right">
-        <span id="artwork-save-status"></span>
-        <button id="artwork-save-btn">Save</button>
-      </div>
-    </header>
-    <div id="artwork-img-area">
-      <img id="detail-img" alt="">
-    </div>
-    <div id="artwork-panel">
-      <span id="scale-label">×1.00</span>
-      <input id="scale-slider" type="range" min="0.5" max="3" step="0.05" value="1">
-      <input id="scale-number" type="number" min="0.5" max="3" step="0.05" value="1">
     </div>
   </div>
 
@@ -214,121 +260,231 @@
 
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
     const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
-    const CDN_HI = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-      ? '../media/works/hi/__'
-      : 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/__';
+    const CDN_HI        = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
 
-    document.getElementById('back-link').href = routeUrl('admin');
-
-    window.addEventListener('scroll', function() {
-      document.querySelector('header:not(#artwork-detail header)').classList.toggle('scrolled', window.scrollY > 10);
-    }, { passive: true });
-
-    // ── Artwork detail mode ────────────────────────────────────────────────────
     const artworkId = getPageId('__ARTWORK_ID__');
+
+    // ── DETAIL MODE ────────────────────────────────────────────────────────────
     if (artworkId) {
-      document.getElementById('artwork-detail').style.display = 'flex';
+
+      document.getElementById('list-header').style.display = 'none';
+      document.getElementById('list-main').style.display   = 'none';
+      document.getElementById('detail-header').style.display = 'flex';
+      document.getElementById('detail-main').style.display   = 'flex';
+
       document.getElementById('detail-back-link').href = routeUrl('admin-artworks');
       document.title = 'Edit work — Dim Zayan';
 
-      const img    = document.getElementById('detail-img');
-      const slider = document.getElementById('scale-slider');
-      const numInp = document.getElementById('scale-number');
-      const label  = document.getElementById('scale-label');
+      // Sticky header
+      window.addEventListener('scroll', function() {
+        document.getElementById('detail-header').classList.toggle('scrolled', window.scrollY > 10);
+      }, { passive: true });
 
-      // Load current displayScale from inventory
-      let currentScale = 1;
-      fetch(API_INVENTORY).then(r => r.json()).then(inv => {
-        const work = inv[artworkId] || {};
-        currentScale = work.displayScale || 1;
-        const photo = work.photo || artworkId;
-        img.src = CDN_HI + photo + '.webp';
-        document.getElementById('detail-title').textContent = work.title || artworkId;
-        slider.value = currentScale;
-        numInp.value = currentScale;
-        label.textContent = '×' + parseFloat(currentScale).toFixed(2);
-        img.style.transform = currentScale === 1 ? '' : `scale(${currentScale})`;
-      }).catch(() => {
-        img.src = CDN_HI + artworkId + '.webp';
-      });
+      // Token UI
+      (function() {
+        const inp = document.getElementById('token-input');
+        const btn = document.getElementById('token-btn');
+        function updateUI() {
+          document.getElementById('token-row').style.display = localStorage.getItem('dim_gh_token') ? 'none' : 'flex';
+        }
+        updateUI();
+        btn.addEventListener('click', function() {
+          if (inp.style.display === 'none') { inp.style.display = ''; inp.focus(); }
+          else { var v = inp.value.trim(); if (v) { localStorage.setItem('dim_gh_token', v); inp.value = ''; } updateUI(); }
+        });
+        inp.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') btn.click();
+          if (e.key === 'Escape') { inp.style.display = 'none'; inp.value = ''; }
+        });
+      })();
+
+      // Dirty state
+      var detailSaveBtn = document.getElementById('detail-save-btn');
+      function markDirty() { detailSaveBtn.classList.add('dirty'); }
+      function markClean() { detailSaveBtn.classList.remove('dirty'); }
+
+      // Scale controls
+      var img        = document.getElementById('detail-img');
+      var slider     = document.getElementById('scale-slider');
+      var numInp     = document.getElementById('scale-number');
+      var scaleLabel = document.getElementById('scale-label');
+      var currentScale = 1;
 
       function applyScale(val) {
         val = Math.min(3, Math.max(0.5, parseFloat(val) || 1));
         currentScale = val;
         slider.value = val;
         numInp.value = val;
-        label.textContent = '×' + val.toFixed(2);
-        img.style.transform = val === 1 ? '' : `scale(${val})`;
+        scaleLabel.textContent = '\u00d7' + val.toFixed(2);
+        img.style.transform = val === 1 ? '' : 'scale(' + val + ')';
       }
 
-      slider.addEventListener('input', () => applyScale(slider.value));
-      numInp.addEventListener('input', () => applyScale(numInp.value));
-      numInp.addEventListener('change', () => applyScale(numInp.value));
+      slider.addEventListener('input', function() { applyScale(slider.value); markDirty(); });
+      numInp.addEventListener('input', function() { applyScale(numInp.value); markDirty(); });
+      numInp.addEventListener('change', function() { applyScale(numInp.value); });
 
-      document.getElementById('artwork-save-btn').addEventListener('click', async () => {
-        const token = localStorage.getItem('dim_gh_token') || '';
-        const btn   = document.getElementById('artwork-save-btn');
-        const status = document.getElementById('artwork-save-status');
-        if (!token) { status.textContent = 'No token'; return; }
-        btn.disabled = true; status.textContent = 'Saving…';
+      // Wire dirty on photo rename to update preview
+      document.getElementById('dv-photo').addEventListener('input', function() {
+        var val = this.value.trim();
+        if (val) img.src = CDN_HI + val + '.webp';
+        markDirty();
+      });
+
+      // Load data
+      var inventoryData = null;
+
+      async function load() {
         try {
-          const inv = await fetch(API_INVENTORY).then(r => r.json());
-          if (!inv[artworkId]) inv[artworkId] = {};
-          if (currentScale === 1) delete inv[artworkId].displayScale;
-          else inv[artworkId].displayScale = parseFloat(currentScale.toFixed(3));
-          const r = await fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(inv, null, 2) });
-          if (!r.ok) throw new Error(r.status);
-          status.textContent = 'Saved';
-          setTimeout(() => { status.textContent = ''; }, 2500);
+          var [inv, exhibits] = await Promise.all([
+            fetch(API_INVENTORY).then(function(r) { return r.json(); }),
+            fetch(API_EXHIBITS).then(function(r) { return r.ok ? r.json() : {}; }),
+          ]);
+          inventoryData = inv;
+
+          var work = inv[artworkId] || {};
+
+          // Header title
+          document.getElementById('detail-title').textContent = work.title || artworkId;
+
+          // Image
+          var photo = work.photo || artworkId;
+          img.src = CDN_HI + photo + '.webp';
+
+          // Form fields
+          document.getElementById('dv-title').value       = work.title       || '';
+          document.getElementById('dv-dimensions').value  = work.dimensions  || '';
+          document.getElementById('dv-material').value    = work.material    || '';
+          document.getElementById('dv-price').value       = work.price       != null ? work.price : '';
+          document.getElementById('dv-year').value        = work.year        || '';
+          document.getElementById('dv-notes').value       = work.notes       || '';
+          document.getElementById('dv-photo').value       = work.photo       || '';
+
+          // Exhibition dropdown
+          var exSel = document.getElementById('dv-exhibition');
+          Object.entries(exhibits).forEach(function(entry) {
+            var opt = document.createElement('option');
+            opt.value = entry[0];
+            opt.textContent = entry[1].title || entry[0];
+            exSel.appendChild(opt);
+          });
+          exSel.value = work.exhibition || '';
+
+          // Scale
+          currentScale = work.displayScale || 1;
+          applyScale(currentScale);
+
+          // Wire dirty listeners after data loaded (so populate doesn't trigger)
+          ['dv-title', 'dv-dimensions', 'dv-material', 'dv-price', 'dv-year', 'dv-notes'].forEach(function(id) {
+            document.getElementById(id).addEventListener('input', markDirty);
+          });
+          document.getElementById('dv-exhibition').addEventListener('change', markDirty);
+
         } catch(e) {
-          status.textContent = 'Error: ' + e.message;
-        } finally { btn.disabled = false; }
+          document.getElementById('save-status').textContent = 'Could not load';
+        }
+      }
+
+      load();
+
+      // Save
+      detailSaveBtn.addEventListener('click', async function() {
+        var token = localStorage.getItem('dim_gh_token') || '';
+        if (!token) { document.getElementById('save-status').textContent = 'No token'; return; }
+
+        detailSaveBtn.disabled = true;
+        document.getElementById('save-status').textContent = 'Saving\u2026';
+        try {
+          var inv = inventoryData || await fetch(API_INVENTORY).then(function(r) { return r.json(); });
+          if (!inv[artworkId]) inv[artworkId] = {};
+          var work = inv[artworkId];
+
+          var titleVal = document.getElementById('dv-title').value.trim();
+          if (titleVal) work.title = titleVal;
+          work.dimensions = document.getElementById('dv-dimensions').value.trim() || undefined;
+          work.material   = document.getElementById('dv-material').value.trim()   || undefined;
+          var priceVal = parseFloat(document.getElementById('dv-price').value);
+          work.price = isNaN(priceVal) ? undefined : priceVal;
+          var yearVal = parseInt(document.getElementById('dv-year').value, 10);
+          work.year = isNaN(yearVal) ? undefined : yearVal;
+          work.notes = document.getElementById('dv-notes').value.trim() || undefined;
+          var photoVal = document.getElementById('dv-photo').value.trim();
+          work.photo = photoVal || undefined;
+          var exVal = document.getElementById('dv-exhibition').value;
+          work.exhibition = exVal || undefined;
+
+          if (currentScale === 1) delete work.displayScale;
+          else work.displayScale = parseFloat(currentScale.toFixed(3));
+
+          // Clean up undefined keys
+          Object.keys(work).forEach(function(k) { if (work[k] === undefined) delete work[k]; });
+
+          var r = await fetch(API_INVENTORY, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(inv, null, 2),
+          });
+          if (!r.ok) throw new Error(r.status);
+          inventoryData = inv;
+          document.getElementById('detail-title').textContent = work.title || artworkId;
+          document.getElementById('save-status').textContent = 'Saved';
+          setTimeout(function() { document.getElementById('save-status').textContent = ''; }, 2500);
+          markClean();
+        } catch(e) {
+          document.getElementById('save-status').textContent = 'Error: ' + e.message;
+        } finally {
+          detailSaveBtn.disabled = false;
+        }
       });
 
     } else {
 
-    const tableEl = document.getElementById('inventory-table');
-    const saveBtn = document.getElementById('json-btn');
-    let tbl;
-    let fullInventory = {};
+    // ── LIST MODE ──────────────────────────────────────────────────────────────
+
+    document.getElementById('back-link').href = routeUrl('admin');
+
+    window.addEventListener('scroll', function() {
+      document.getElementById('list-header').classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    var tableEl = document.getElementById('inventory-table');
+    var saveBtn = document.getElementById('json-btn');
+    var tbl;
+    var fullInventory = {};
 
     function markDirty() { saveBtn.classList.add('dirty'); }
     function markClean() { saveBtn.classList.remove('dirty'); }
 
-    // ── Init: load exhibits first so dropdown is populated, then load inventory ──
-    let exhibitsData = {};
+    var exhibitsData = {};
     (async function init() {
-      try { exhibitsData = await fetch(API_EXHIBITS).then(r => r.ok ? r.json() : {}); } catch(e) {}
+      try { exhibitsData = await fetch(API_EXHIBITS).then(function(r) { return r.ok ? r.json() : {}; }); } catch(e) {}
 
       tbl = initArtworksTable({
-        tableEl,
+        tableEl: tableEl,
         exhibits: exhibitsData,
         disableDrag: true,
-        onRightClick(tr, e) { showCtxMenu(e, tr); },
+        onRightClick: function(tr, e) { showCtxMenu(e, tr); },
       });
 
-      // Expose globals for invoicing.js (non-module script — accesses via window/bare name)
       window.tbody        = tbl.tbody;
       window.renumberRows = tbl.renumberRows;
 
       try {
-        const data = await fetch(API_INVENTORY).then(r => r.ok ? r.json() : Promise.reject());
+        var data = await fetch(API_INVENTORY).then(function(r) { return r.ok ? r.json() : Promise.reject(); });
         localStorage.setItem('dim_inventory_cache', JSON.stringify(data));
         applyInvoiceRefs(data);
         fullInventory = data;
         tbl.renderData(data);
       } catch(e) {
-        const cached = localStorage.getItem('dim_inventory_cache');
+        var cached = localStorage.getItem('dim_inventory_cache');
         if (cached) {
-          const data = JSON.parse(cached);
+          var data = JSON.parse(cached);
           applyInvoiceRefs(data);
           fullInventory = data;
           tbl.renderData(data);
         }
       }
 
-      // Start watching for changes after initial render settles
-      requestAnimationFrame(() => {
+      requestAnimationFrame(function() {
         new MutationObserver(markDirty).observe(tbl.tbody, {
           childList: true, subtree: true, characterData: true,
           attributes: true, attributeFilter: ['data-photo', 'data-exhibition', 'data-invoice-ref', 'class'],
@@ -337,39 +493,38 @@
     })();
 
     function applyInvoiceRefs(data) {
-      const refs = JSON.parse(localStorage.getItem('dim_invoice_refs_v1') || '{}');
-      const old  = JSON.parse(localStorage.getItem('dim_inventory_v2')   || '{}');
-      Object.keys(data).forEach(id => {
+      var refs = JSON.parse(localStorage.getItem('dim_invoice_refs_v1') || '{}');
+      var old  = JSON.parse(localStorage.getItem('dim_inventory_v2')   || '{}');
+      Object.keys(data).forEach(function(id) {
         if (data[id].invoiced) return;
         if (refs[id]) data[id].invoiced = refs[id];
         else if (old[id] && old[id].invoiced) data[id].invoiced = old[id].invoiced;
       });
     }
 
-    // ── Add row ───────────────────────────────────────────────────────────────
-    document.getElementById('add-btn').addEventListener('click', () => {
+    document.getElementById('add-btn').addEventListener('click', function() {
       if (!tbl) return;
-      const tempId = '_new_' + Date.now();
-      const tr = tbl.createRow(tempId, {});
+      var tempId = '_new_' + Date.now();
+      var tr = tbl.createRow(tempId, {});
       tbl.tbody.appendChild(tr);
       tbl.renumberRows();
-      tr.querySelector('.at-thumb-input')?.focus();
+      var inp = tr.querySelector('.at-thumb-input');
+      if (inp) inp.focus();
     });
 
-    // ── Save JSON ──────────────────────────────────────────────────────────────
-    document.getElementById('json-btn').addEventListener('click', async () => {
+    document.getElementById('json-btn').addEventListener('click', async function() {
       if (!tbl) return;
-      const gathered = tbl.gatherData();
-      const data = Object.assign({}, fullInventory, gathered);
-      const refs = {};
-      Object.keys(data).forEach(id => { if (data[id].invoiced) refs[id] = data[id].invoiced; });
+      var gathered = tbl.gatherData();
+      var data = Object.assign({}, fullInventory, gathered);
+      var refs = {};
+      Object.keys(data).forEach(function(id) { if (data[id].invoiced) refs[id] = data[id].invoiced; });
       localStorage.setItem('dim_invoice_refs_v1', JSON.stringify(refs));
-      const btn = document.getElementById('json-btn');
-      btn.textContent = 'Saving…'; btn.disabled = true;
+      var btn = document.getElementById('json-btn');
+      btn.textContent = 'Saving\u2026'; btn.disabled = true;
       try {
-        const token = localStorage.getItem('dim_gh_token') || '';
+        var token = localStorage.getItem('dim_gh_token') || '';
         if (!token) throw new Error('no token');
-        const r = await fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data, null, 2) });
+        var r = await fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data, null, 2) });
         if (!r.ok) throw new Error(r.status + ': ' + (await r.text()));
         fullInventory = data;
         localStorage.setItem('dim_inventory_cache', JSON.stringify(data));
@@ -378,38 +533,36 @@
       } catch(e) {
         btn.textContent = e.message === 'no token' ? 'No token' : 'Error';
       } finally {
-        setTimeout(() => { btn.textContent = 'Save'; btn.disabled = false; }, 2000);
+        setTimeout(function() { btn.textContent = 'Save'; btn.disabled = false; }, 2000);
       }
     });
 
-    // ── Export CSV ─────────────────────────────────────────────────────────────
-    document.getElementById('export-btn').addEventListener('click', () => {
+    document.getElementById('export-btn').addEventListener('click', function() {
       if (!tbl) return;
-      const fields = ['title', 'dimensions', 'material', 'price', 'year', 'notes'];
-      const rows = Array.from(tbl.tbody.querySelectorAll('tr[data-id]')).map((tr, i) => {
-        const vals = fields.map(f => {
-          const td = tr.querySelector('[data-field="' + f + '"]');
+      var fields = ['title', 'dimensions', 'material', 'price', 'year', 'notes'];
+      var rows = Array.from(tbl.tbody.querySelectorAll('tr[data-id]')).map(function(tr, i) {
+        var vals = fields.map(function(f) {
+          var td = tr.querySelector('[data-field="' + f + '"]');
           return '"' + (td ? td.textContent.trim() : '').replace(/"/g, '""') + '"';
         });
-        return [i + 1, '"' + tr.dataset.id + '"', ...vals].join(',');
+        return [i + 1, '"' + tr.dataset.id + '"'].concat(vals).join(',');
       });
-      const header = ['#', 'File', 'Title', 'Dimensions', 'Material', 'Price', 'Year', 'Notes'].join(',');
-      const csv = [header, ...rows].join('\n');
-      const a = document.createElement('a');
+      var header = ['#', 'File', 'Title', 'Dimensions', 'Material', 'Price', 'Year', 'Notes'].join(',');
+      var csv = [header].concat(rows).join('\n');
+      var a = document.createElement('a');
       a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
       a.download = 'dim-zayan-inventory.csv';
       a.click();
     });
 
-    // ── Context menu ───────────────────────────────────────────────────────────
+    // Context menu
     function showCtxMenu(e, tr) {
       window.ctxRow = tr;
-      const id = tr.dataset.id;
-      const isInvoiced = tr.classList.contains('invoiced');
-      const inCart = window.invoiceCart && window.invoiceCart.has(id);
-      const invItem     = document.getElementById('ctx-invoice-item');
-      const clearItem   = document.getElementById('ctx-clear-invoice-item');
-      const reserveItem = document.getElementById('ctx-reserve-item');
+      var id = tr.dataset.id;
+      var isInvoiced = tr.classList.contains('invoiced');
+      var inCart = window.invoiceCart && window.invoiceCart.has(id);
+      var invItem   = document.getElementById('ctx-invoice-item');
+      var clearItem = document.getElementById('ctx-clear-invoice-item');
       if (isInvoiced) {
         invItem.textContent = 'Open invoice';
         clearItem.style.display = 'block';
@@ -417,53 +570,54 @@
         invItem.textContent = inCart ? 'Remove from invoice' : 'Add to invoice';
         clearItem.style.display = 'none';
       }
+      var reserveItem = document.getElementById('ctx-reserve-item');
       reserveItem.textContent = tr.classList.contains('reserved') ? 'Clear reservation' : 'Mark as reserved';
-      const menu = document.getElementById('ctx-menu');
+      var menu = document.getElementById('ctx-menu');
       menu.style.display = 'block';
-      const mw = 180, mh = 100;
-      let x = e.clientX, y = e.clientY;
+      var mw = 180, mh = 100;
+      var x = e.clientX, y = e.clientY;
       if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 8;
       if (y + mh > window.innerHeight) y = window.innerHeight - mh - 8;
       menu.style.left = x + 'px';
       menu.style.top  = y + 'px';
     }
 
-    document.addEventListener('click', () => { document.getElementById('ctx-menu').style.display = 'none'; });
+    document.addEventListener('click', function() { document.getElementById('ctx-menu').style.display = 'none'; });
 
-    document.getElementById('ctx-full-edit-item').addEventListener('click', () => {
+    document.getElementById('ctx-full-edit-item').addEventListener('click', function() {
       if (!window.ctxRow) return;
       window.location.href = routeUrl('admin-artwork', { id: window.ctxRow.dataset.id });
     });
 
-    document.getElementById('ctx-edit-item').addEventListener('click', () => {
+    document.getElementById('ctx-edit-item').addEventListener('click', function() {
       if (!window.ctxRow || !tbl) return;
       tbl.openEditDrawer(window.ctxRow);
       window.ctxRow = null;
     });
 
-    document.getElementById('ctx-preview-item').addEventListener('click', () => {
+    document.getElementById('ctx-preview-item').addEventListener('click', function() {
       if (!window.ctxRow) return;
       window.open('/preview.html?id=' + encodeURIComponent(window.ctxRow.dataset.id), '_blank');
       window.ctxRow = null;
     });
 
-    document.getElementById('ctx-reserve-item').addEventListener('click', () => {
+    document.getElementById('ctx-reserve-item').addEventListener('click', function() {
       if (!window.ctxRow) return;
-      const isNowReserved = window.ctxRow.classList.toggle('reserved');
-      const tdInv = window.ctxRow.querySelector('.col-inv');
+      var isNowReserved = window.ctxRow.classList.toggle('reserved');
+      var tdInv = window.ctxRow.querySelector('.col-inv');
       if (tdInv) {
-        const existing = tdInv.querySelector('.res-tag');
+        var existing = tdInv.querySelector('.res-tag');
         if (isNowReserved && !existing) {
-          const tag = document.createElement('span'); tag.className = 'res-tag'; tag.textContent = 'RES';
+          var tag = document.createElement('span'); tag.className = 'res-tag'; tag.textContent = 'RES';
           tdInv.insertBefore(tag, tdInv.firstChild);
         } else if (!isNowReserved && existing) { existing.remove(); }
       }
       window.ctxRow = null;
     });
 
-    document.getElementById('ctx-delete-item').addEventListener('click', () => {
+    document.getElementById('ctx-delete-item').addEventListener('click', function() {
       if (!window.ctxRow || !tbl) return;
-      const id = window.ctxRow.dataset.id;
+      var id = window.ctxRow.dataset.id;
       if (window.invoiceCart) window.invoiceCart.delete(id);
       window.ctxRow.remove();
       tbl.renumberRows();
@@ -471,7 +625,7 @@
       window.ctxRow = null;
     });
 
-    } // end else (list mode)
+    } // end list mode
   </script>
 
 </body>
