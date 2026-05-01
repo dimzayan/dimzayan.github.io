@@ -48,12 +48,6 @@
     /* In-cart highlight */
     tr.in-cart { background: rgba(50,80,200,0.05) !important; }
 
-    /* Context menu */
-    #ctx-menu { display: none; position: fixed; background: white; border: 1px solid rgba(0,0,0,0.14); border-radius: 5px; box-shadow: 0 6px 20px rgba(0,0,0,0.13); z-index: 200; min-width: 170px; padding: 0.3rem 0; font-size: 0.82rem; }
-    .ctx-item { padding: 0.45rem 1rem; cursor: pointer; }
-    .ctx-item:hover { background: rgba(0,0,0,0.05); }
-    .ctx-item.danger { color: rgba(180,40,40,0.85); }
-    .ctx-sep { height: 1px; background: rgba(0,0,0,0.09); margin: 0.3rem 0; }
 
     /* Invoice modal */
     #inv-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 300; align-items: center; justify-content: center; }
@@ -202,17 +196,6 @@
 
   </main>
 
-  <!-- Context menu (list mode) -->
-  <div id="ctx-menu">
-    <div class="ctx-item" id="ctx-full-edit-item">Edit</div>
-    <div class="ctx-item" id="ctx-edit-item">Quick edit</div>
-    <div class="ctx-item" id="ctx-preview-item">Preview work sheet</div>
-    <div class="ctx-item" id="ctx-invoice-item">Add to invoice</div>
-    <div class="ctx-item" id="ctx-clear-invoice-item" style="display:none">Clear invoice</div>
-    <div class="ctx-sep"></div>
-    <div class="ctx-item" id="ctx-reserve-item">Mark as reserved</div>
-    <div class="ctx-item danger" id="ctx-delete-item">Delete</div>
-  </div>
 
   <!-- Invoice modal (list mode) -->
   <div id="inv-modal">
@@ -462,7 +445,23 @@
         tableEl: tableEl,
         exhibits: exhibitsData,
         disableDrag: true,
-        onRightClick: function(tr, e) { showCtxMenu(e, tr); },
+        onFullEdit: function(tr) { window.location.href = routeUrl('admin-artwork', { id: tr.dataset.id }); },
+        onMenuExtend: function(menu, tr) {
+          var sep = document.createElement('div'); sep.className = 'at-ctx-sep'; menu.appendChild(sep);
+          var id = tr.dataset.id;
+          var isInvoiced = tr.classList.contains('invoiced');
+          var inCart = window.invoiceCart && window.invoiceCart.has(id);
+          var invItem = document.createElement('div'); invItem.className = 'at-ctx-item';
+          invItem.textContent = isInvoiced ? 'Open invoice' : (inCart ? 'Remove from invoice' : 'Add to invoice');
+          invItem.addEventListener('click', function() { if (window.handleInvoiceItem) window.handleInvoiceItem(tr); });
+          menu.appendChild(invItem);
+          if (isInvoiced) {
+            var clearItem = document.createElement('div'); clearItem.className = 'at-ctx-item';
+            clearItem.textContent = 'Clear invoice';
+            clearItem.addEventListener('click', function() { if (window.handleClearInvoice) window.handleClearInvoice(tr); });
+            menu.appendChild(clearItem);
+          }
+        },
       });
 
       window.tbody        = tbl.tbody;
@@ -553,76 +552,6 @@
       a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
       a.download = 'dim-zayan-inventory.csv';
       a.click();
-    });
-
-    // Context menu
-    function showCtxMenu(e, tr) {
-      window.ctxRow = tr;
-      var id = tr.dataset.id;
-      var isInvoiced = tr.classList.contains('invoiced');
-      var inCart = window.invoiceCart && window.invoiceCart.has(id);
-      var invItem   = document.getElementById('ctx-invoice-item');
-      var clearItem = document.getElementById('ctx-clear-invoice-item');
-      if (isInvoiced) {
-        invItem.textContent = 'Open invoice';
-        clearItem.style.display = 'block';
-      } else {
-        invItem.textContent = inCart ? 'Remove from invoice' : 'Add to invoice';
-        clearItem.style.display = 'none';
-      }
-      var reserveItem = document.getElementById('ctx-reserve-item');
-      reserveItem.textContent = tr.classList.contains('reserved') ? 'Clear reservation' : 'Mark as reserved';
-      var menu = document.getElementById('ctx-menu');
-      menu.style.display = 'block';
-      var mw = 180, mh = 100;
-      var x = e.clientX, y = e.clientY;
-      if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 8;
-      if (y + mh > window.innerHeight) y = window.innerHeight - mh - 8;
-      menu.style.left = x + 'px';
-      menu.style.top  = y + 'px';
-    }
-
-    document.addEventListener('click', function() { document.getElementById('ctx-menu').style.display = 'none'; });
-
-    document.getElementById('ctx-full-edit-item').addEventListener('click', function() {
-      if (!window.ctxRow) return;
-      window.location.href = routeUrl('admin-artwork', { id: window.ctxRow.dataset.id });
-    });
-
-    document.getElementById('ctx-edit-item').addEventListener('click', function() {
-      if (!window.ctxRow || !tbl) return;
-      tbl.openEditDrawer(window.ctxRow);
-      window.ctxRow = null;
-    });
-
-    document.getElementById('ctx-preview-item').addEventListener('click', function() {
-      if (!window.ctxRow) return;
-      window.open('/preview.html?id=' + encodeURIComponent(window.ctxRow.dataset.id), '_blank');
-      window.ctxRow = null;
-    });
-
-    document.getElementById('ctx-reserve-item').addEventListener('click', function() {
-      if (!window.ctxRow) return;
-      var isNowReserved = window.ctxRow.classList.toggle('reserved');
-      var tdInv = window.ctxRow.querySelector('.col-inv');
-      if (tdInv) {
-        var existing = tdInv.querySelector('.res-tag');
-        if (isNowReserved && !existing) {
-          var tag = document.createElement('span'); tag.className = 'res-tag'; tag.textContent = 'RES';
-          tdInv.insertBefore(tag, tdInv.firstChild);
-        } else if (!isNowReserved && existing) { existing.remove(); }
-      }
-      window.ctxRow = null;
-    });
-
-    document.getElementById('ctx-delete-item').addEventListener('click', function() {
-      if (!window.ctxRow || !tbl) return;
-      var id = window.ctxRow.dataset.id;
-      if (window.invoiceCart) window.invoiceCart.delete(id);
-      window.ctxRow.remove();
-      tbl.renumberRows();
-      if (window.updateCartBtn) window.updateCartBtn();
-      window.ctxRow = null;
     });
 
     } // end list mode

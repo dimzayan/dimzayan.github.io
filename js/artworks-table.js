@@ -21,10 +21,11 @@ const PHOTOS_KEY  = 'dim_work_photos_v1';
  * @param {HTMLElement} options.tableEl      <table> element with a <tbody>
  * @param {Object}      options.exhibits     { id: exhibit } for the exhibition dropdown
  * @param {Function}   [options.filter]      (id, work) => bool — show only matching rows
- * @param {Function}   [options.onRightClick] (tr, event) => void
+ * @param {Function}   [options.onFullEdit]    (tr) => void — if provided, adds "Edit" as first menu item
+ * @param {Function}   [options.onMenuExtend]  (menuEl, tr) => void — append extra items to the menu
  * @returns {{ renderData, gatherData, renumberRows, tbody, openEditDrawer, createRow }}
  */
-export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick, disableDrag = false }) {
+export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, onMenuExtend, disableDrag = false }) {
   _injectStyles();
 
   const tbody = tableEl.querySelector('tbody');
@@ -81,6 +82,78 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick
     if (idx === -1) return;
     openLightbox(ids[(idx + dir + ids.length) % ids.length]);
   }
+
+  // ── Context menu ─────────────────────────────────────────────────────────
+  document.getElementById('at-ctx')?.remove();
+  const ctxMenu = document.createElement('div');
+  ctxMenu.id = 'at-ctx';
+  ctxMenu.className = 'at-ctx-menu';
+  document.body.appendChild(ctxMenu);
+
+  function _ctxItem(label, danger) {
+    const d = document.createElement('div');
+    d.className = 'at-ctx-item' + (danger ? ' at-ctx-danger' : '');
+    d.textContent = label;
+    return d;
+  }
+  function _ctxSep() { const d = document.createElement('div'); d.className = 'at-ctx-sep'; return d; }
+
+  function showCtxMenu(tr, e) {
+    window.ctxRow = tr;
+    ctxMenu.innerHTML = '';
+
+    if (onFullEdit) {
+      const item = _ctxItem('Edit');
+      item.addEventListener('click', () => { hideCtxMenu(); onFullEdit(tr); });
+      ctxMenu.appendChild(item);
+    }
+
+    const qEdit = _ctxItem('Quick edit');
+    qEdit.addEventListener('click', () => { hideCtxMenu(); openEditDrawer(tr); });
+    ctxMenu.appendChild(qEdit);
+
+    const prev = _ctxItem('Preview work sheet');
+    prev.addEventListener('click', () => { hideCtxMenu(); window.open('/preview.html?id=' + encodeURIComponent(tr.dataset.id), '_blank'); });
+    ctxMenu.appendChild(prev);
+
+    if (onMenuExtend) onMenuExtend(ctxMenu, tr);
+
+    ctxMenu.appendChild(_ctxSep());
+
+    const res = _ctxItem(tr.classList.contains('reserved') ? 'Clear reservation' : 'Mark as reserved');
+    res.addEventListener('click', () => {
+      hideCtxMenu();
+      const now = tr.classList.toggle('reserved');
+      const tdInv = tr.querySelector('.col-inv');
+      if (tdInv) {
+        const tag = tdInv.querySelector('.res-tag');
+        if (now && !tag) { const t = document.createElement('span'); t.className = 'res-tag'; t.textContent = 'RES'; tdInv.insertBefore(t, tdInv.firstChild); }
+        else if (!now && tag) tag.remove();
+      }
+    });
+    ctxMenu.appendChild(res);
+
+    const del = _ctxItem('Delete', true);
+    del.addEventListener('click', () => {
+      hideCtxMenu();
+      if (window.invoiceCart) window.invoiceCart.delete(tr.dataset.id);
+      tr.remove();
+      renumberRows();
+      if (window.updateCartBtn) window.updateCartBtn();
+    });
+    ctxMenu.appendChild(del);
+
+    ctxMenu.style.display = 'block';
+    const mw = 180, mh = ctxMenu.offsetHeight || 200;
+    let x = e.clientX, y = e.clientY;
+    if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 8;
+    if (y + mh > window.innerHeight) y = window.innerHeight - mh - 8;
+    ctxMenu.style.left = x + 'px';
+    ctxMenu.style.top  = y + 'px';
+  }
+
+  function hideCtxMenu() { ctxMenu.style.display = 'none'; window.ctxRow = null; }
+  document.addEventListener('click', hideCtxMenu);
 
   // ── Edit drawer ───────────────────────────────────────────────────────────
   document.getElementById('at-drawer')?.remove();
@@ -358,7 +431,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onRightClick
     }
     tr.appendChild(tdInv);
 
-    if (onRightClick) tr.addEventListener('contextmenu', e => { e.preventDefault(); onRightClick(tr, e); });
+    tr.addEventListener('contextmenu', e => { e.preventDefault(); showCtxMenu(tr, e); });
     if (!disableDrag) addDragHandlers(tr, handle);
     return tr;
   }
@@ -531,6 +604,12 @@ tr.reserved td[contenteditable] { color:rgba(30,120,60,0.75); }
 .at-drawer-footer button:hover { background:rgba(0,0,0,0.04); }
 #at-save-btn { background:rgba(0,0,0,0.85)!important; color:white!important; border-color:transparent!important; }
 @media (max-width:540px) { .col-dims { display:none; } }
+/* ── Context menu ── */
+.at-ctx-menu { display:none; position:fixed; background:white; border:1px solid rgba(0,0,0,0.14); border-radius:5px; box-shadow:0 6px 20px rgba(0,0,0,0.13); z-index:9999; min-width:175px; padding:0.3rem 0; font-size:0.82rem; font-family:"DM Sans",sans-serif; }
+.at-ctx-item { padding:0.45rem 1rem; cursor:pointer; color:#111; font-weight:300; }
+.at-ctx-item:hover { background:rgba(0,0,0,0.05); }
+.at-ctx-danger { color:rgba(180,40,40,0.85); }
+.at-ctx-sep { height:1px; background:rgba(0,0,0,0.09); margin:0.3rem 0; }
 `;
   document.head.appendChild(s);
 }

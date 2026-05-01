@@ -35,6 +35,10 @@ const STYLES_ID = 'coll-styles';
 const GSAP_CDN  = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';
 const PANEL_H   = 110; /* px */
 
+function isMobilePortrait() {
+  return window.matchMedia('(max-width: 768px) and (orientation: portrait)').matches;
+}
+
 /* ── Styles ───────────────────────────────────────────────────────── */
 const CSS = `
 .coll-root { position: relative; }
@@ -176,6 +180,34 @@ const CSS = `
 .coll-arrow.coll-next::before { transform: rotate(45deg) translate(-2px, 2px); }
 .coll-arrow:hover { opacity: 1; }
 .coll-arrow[disabled] { opacity: 0.07; pointer-events: none; }
+
+/* Mobile portrait — hero + works grid */
+.coll-mp-hero {
+  position: relative; width: 100%;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
+}
+.coll-mp-hero img {
+  width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;
+}
+.coll-mp-hint {
+  position: absolute; bottom: 1.2rem; right: 1.2rem;
+  font-family: "DM Sans", sans-serif; font-size: 0.65rem; font-weight: 200;
+  letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.45);
+  pointer-events: none;
+}
+.coll-mp-grid {
+  display: flex; flex-direction: column;
+  background: #fff;
+}
+.coll-mp-item {
+  display: block; text-decoration: none;
+  padding: 36px 28px;
+  border-top: 1px solid rgba(0,0,0,0.07);
+}
+.coll-mp-item img {
+  height: auto; display: block; margin: 0 auto;
+}
 `;
 
 function injectStyles() {
@@ -233,31 +265,74 @@ function loadGsap() {
   });
 }
 
+/* ── Mobile portrait — hero photo + works grid ────────────────────── */
+function initMobilePortrait(root, works, opts) {
+  const rooms    = opts.rooms || [];
+  const heroRoom = opts.heroRoom
+    ? (rooms.find(r => r.photo === opts.heroRoom) || rooms[0])
+    : rooms[0];
+
+  root.style.height = 'auto';
+
+  const hero = document.createElement('div');
+  hero.className = 'coll-mp-hero';
+  if (heroRoom) {
+    const img = document.createElement('img');
+    img.src = CDN + heroRoom.photo;
+    img.alt = '';
+    hero.appendChild(img);
+  }
+  const hint = document.createElement('div');
+  hint.className = 'coll-mp-hint';
+  hint.textContent = 'Rotate for room view';
+  hero.appendChild(hint);
+  root.appendChild(hero);
+
+  const grid = document.createElement('div');
+  grid.className = 'coll-mp-grid';
+  works.forEach(w => {
+    const a = document.createElement('a');
+    a.className = 'coll-mp-item';
+    a.href = (opts.previewBase || 'preview.html') + '?id=' + encodeURIComponent(w.id);
+    const img = document.createElement('img');
+    img.src = CDN + '__' + (w.photo || w.id) + '.webp';
+    img.alt = w.title || '';
+    img.loading = 'lazy';
+    img.style.width = Math.min(1, w.displayScale || 1) * 100 + '%';
+    a.appendChild(img);
+    grid.appendChild(a);
+  });
+  root.appendChild(grid);
+
+  // Reload into room view if user rotates to landscape
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { if (!isMobilePortrait()) location.reload(); }, 150);
+  });
+}
+
 /* ── Room mode ────────────────────────────────────────────────────── */
 async function initRoom(root, works, opts) {
   const rooms = opts.rooms || [];
   if (!rooms.length) return initCarousel(root, works, opts);
+
+  if (isMobilePortrait()) return initMobilePortrait(root, works, opts);
+
+  const initialWorkId = location.hash.slice(1);
 
   const gsap = await loadGsap();
 
   const workMap = {};
   works.forEach(w => { workMap[w.id] = w; });
 
-  const orderedWorks = [];
+  const orderedWorks = works; // carousel follows inventory order
   const workToRoom   = {};
   rooms.forEach((room, ri) => {
     (room.hotspots || []).forEach(hs => {
-      if (workMap[hs.id] && workToRoom[hs.id] === undefined) {
-        orderedWorks.push(workMap[hs.id]);
-        workToRoom[hs.id] = ri;
-      }
+      if (workToRoom[hs.id] === undefined) workToRoom[hs.id] = ri;
     });
   });
   works.forEach(w => {
-    if (workToRoom[w.id] === undefined) {
-      orderedWorks.push(w);
-      workToRoom[w.id] = 0;
-    }
+    if (workToRoom[w.id] === undefined) workToRoom[w.id] = 0;
   });
 
   /* DOM */
@@ -298,10 +373,37 @@ async function initRoom(root, works, opts) {
   root.appendChild(roomLayer);
   root.appendChild(carouselLayer);
 
-  let currentRoom        = 0;
-  let carouselGoTo       = null;
-  let getCarouselIdx     = () => 0;
+  let currentRoom         = 0;
+  let carouselGoTo        = null;
+  let getCarouselIdx      = () => 0;
   let carouselApplyLayout = () => {};
+  let closeCarouselZoom   = () => {};
+
+  // Reposition hotspots to account for object-fit:cover crop on the room photo.
+  // Admin records coords as % of the image's natural bounds; the public view renders
+  // the image cropped into a 100vh container, so we must map to the actual image rect.
+  function positionHotspots() {
+    const cW = roomLayer.clientWidth;
+    const cH = roomLayer.clientHeight;
+    const nW = activeImg.naturalWidth;
+    const nH = activeImg.naturalHeight;
+    if (!nW || !nH || !cW || !cH) return;
+    const scale = Math.max(cW / nW, cH / nH);
+    const rW    = nW * scale;
+    const rH    = nH * scale;
+    const offX  = (cW - rW) / 2;
+    const offY  = (cH - rH) / 2;
+    roomLayer.querySelectorAll('.coll-hotspot').forEach(el => {
+      const hs = el._hs;
+      if (!hs) return;
+      el.style.left   = ((offX + hs.x / 100 * rW) / cW * 100) + '%';
+      el.style.top    = ((offY + hs.y / 100 * rH) / cH * 100) + '%';
+      el.style.width  = (hs.w / 100 * rW / cW * 100) + '%';
+      el.style.height = (hs.h / 100 * rH / cH * 100) + '%';
+    });
+  }
+
+  window.addEventListener('resize', positionHotspots);
 
   function showRoom(idx) {
     currentRoom = ((idx % rooms.length) + rooms.length) % rooms.length;
@@ -315,20 +417,23 @@ async function initRoom(root, works, opts) {
       const el = document.createElement('div');
       el.className = 'coll-hotspot';
       el.dataset.id = hs.id;
-      el.style.left   = hs.x + '%';
-      el.style.top    = hs.y + '%';
-      el.style.width  = hs.w + '%';
-      el.style.height = hs.h + '%';
+      el._hs = hs;
       if (hs.type === 'room') el.addEventListener('click', () => showRoom(hs.target));
       else if (w) el.addEventListener('click', () => clickHotspot(hs, w));
       roomLayer.appendChild(el);
     });
+    if (activeImg.complete && activeImg.naturalWidth) {
+      positionHotspots();
+    } else {
+      activeImg.addEventListener('load', positionHotspots, { once: true });
+    }
     roomPrev.disabled = rooms.length <= 1;
     roomNext.disabled = rooms.length <= 1;
   }
 
   function clickHotspot(hs, w) {
     const workIdx = orderedWorks.findIndex(ow => ow.id === w.id);
+    history.pushState(null, '', '#' + w.id);
     root.classList.add('coll-in-carousel');
     carouselLayer.style.opacity = '0';
     carouselLayer.style.display = '';
@@ -343,14 +448,16 @@ async function initRoom(root, works, opts) {
   }
 
   backBtn.addEventListener('click', () => {
+    closeCarouselZoom();
+    history.pushState(null, '', location.pathname + location.search);
     root.classList.remove('coll-in-carousel');
     gsap.to(carouselLayer, { opacity: 0, duration: 0.3, onComplete: () => {
       const wi = getCarouselIdx();
       const w  = orderedWorks[wi];
       const ri = w ? (workToRoom[w.id] ?? 0) : currentRoom;
       carouselLayer.style.display = 'none';
-      showRoom(ri);
       roomLayer.style.display = '';
+      showRoom(ri);
       gsap.fromTo(roomLayer, { opacity: 0 }, { opacity: 1, duration: 0.4 });
     }});
   });
@@ -358,15 +465,48 @@ async function initRoom(root, works, opts) {
   roomPrev.addEventListener('click', () => showRoom(currentRoom - 1));
   roomNext.addEventListener('click', () => showRoom(currentRoom + 1));
 
-  showRoom(0);
+  const initialIdx = initialWorkId && workMap[initialWorkId]
+    ? orderedWorks.findIndex(w => w.id === initialWorkId)
+    : -1;
+
+  if (initialIdx >= 0) {
+    roomLayer.style.display = 'none';
+    carouselLayer.style.display = '';
+    carouselLayer.style.opacity = '1';
+    root.classList.add('coll-in-carousel');
+  } else {
+    showRoom(0);
+  }
+
+  window.addEventListener('popstate', () => {
+    const id = location.hash.slice(1);
+    if (id && workMap[id] && carouselGoTo) {
+      const idx = orderedWorks.findIndex(w => w.id === id);
+      if (idx >= 0) {
+        root.classList.add('coll-in-carousel');
+        carouselLayer.style.display = '';
+        carouselLayer.style.opacity = '1';
+        roomLayer.style.display = 'none';
+        carouselGoTo(idx, false);
+        return;
+      }
+    }
+    closeCarouselZoom();
+    root.classList.remove('coll-in-carousel');
+    carouselLayer.style.display = 'none';
+    roomLayer.style.display = '';
+    showRoom(currentRoom);
+  });
 
   await initCarousel(carouselContainer, orderedWorks, {
     ...opts,
     mode: 'carousel',
+    initialIdx: initialIdx >= 0 ? initialIdx : 0,
     onReady: (api) => {
       carouselGoTo        = api.goTo;
       getCarouselIdx      = api.getCurrentIdx;
       carouselApplyLayout = api.applyLayout;
+      closeCarouselZoom   = api.closeZoom || (() => {});
     }
   });
 }
@@ -470,10 +610,14 @@ async function initCarousel(root, works, opts) {
   clip.appendChild(zoomLayer);
 
   function openZoom(w) {
-    zoomImg.src = CDN + (w.photo || w.id) + '.webp';
+    const src = CDN + (w.photo || w.id) + '.webp';
     zoomImg.style.transformOrigin = '50% 50%';
     zoomImg.style.transform = 'scale(1.8)';
-    zoomLayer.classList.add('active');
+    zoomImg.src = src;
+    zoomImg._pendingSrc = src;
+    const activate = () => { if (zoomImg._pendingSrc === src) zoomLayer.classList.add('active'); };
+    if (zoomImg.complete && zoomImg.naturalWidth) activate();
+    else zoomImg.addEventListener('load', activate, { once: true });
   }
 
   zoomLayer.addEventListener('mousemove', e => {
@@ -484,6 +628,7 @@ async function initCarousel(root, works, opts) {
   });
 
   zoomLayer.addEventListener('click', () => {
+    zoomImg._pendingSrc = null;
     zoomLayer.classList.remove('active');
   });
 
@@ -601,7 +746,7 @@ async function initCarousel(root, works, opts) {
     }
   }
 
-  setTimeout(() => { applyLayout(); goTo(0, false); }, 0);
+  setTimeout(() => { applyLayout(); goTo(opts.initialIdx ?? 0, false); }, 0);
 
   let resizeTimer;
   window.addEventListener('resize', () => {
@@ -659,7 +804,12 @@ async function initCarousel(root, works, opts) {
 
   clip.addEventListener('click', e => { if (dragging) { e.preventDefault(); e.stopPropagation(); } }, true);
 
-  if (opts.onReady) opts.onReady({ goTo, getCurrentIdx: () => current, applyLayout });
+  function closeZoom() {
+    zoomImg._pendingSrc = null;
+    zoomLayer.classList.remove('active');
+  }
+
+  if (opts.onReady) opts.onReady({ goTo, getCurrentIdx: () => current, applyLayout, closeZoom });
 }
 
 /* ── Public API ───────────────────────────────────────────────────── */

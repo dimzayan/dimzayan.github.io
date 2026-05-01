@@ -87,7 +87,8 @@
       const dims  = fmtDims(work.dimensions || '');
       const meta  = [work.material, dims].filter(Boolean).join('\u00a0\u00a0\u00b7\u00a0\u00a0');
       const sold  = !!work.invoiced;
-      const price = work.price ? '$' + Number(work.price).toLocaleString('en-US') : '';
+      const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      const price = (isLocal && work.price) ? '$' + Number(work.price).toLocaleString('en-US') : '';
       const notes = work.notes
         ? work.notes.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
         : '';

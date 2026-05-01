@@ -53,6 +53,12 @@
       gap: 0.15em;
     }
 
+    @media (max-width: 768px) and (orientation: portrait) {
+      #cover { height: auto; }
+      #cover-header { font-size: 1.6em; }
+      #cover-footer { display: none; }
+    }
+
     /* ── Shared section layout ── */
     .exhibit-section {
       max-width: 860px;
@@ -276,17 +282,24 @@
           // Works — from hotspot IDs when rooms exist, otherwise tagged by exhibit field
           let worksArr;
           if (exhibit.rooms && exhibit.rooms.length) {
-            const hsIds = [];
-            const seen  = new Set();
-            exhibit.rooms.forEach(function(r) {
-              (r.hotspots || []).forEach(function(h) {
-                if (!seen.has(h.id) && inventory[h.id] && !inventory[h.id].excluded) {
-                  seen.add(h.id);
-                  hsIds.push(h.id);
-                }
-              });
-            });
-            worksArr = hsIds.map(function(wid) { return Object.assign({ id: wid }, inventory[wid]); });
+            // Membership via exhibition field only — hotspots are room mapping, not carousel membership
+            var allInOrder = Object.entries(inventory)
+              .filter(function(entry) {
+                var w = entry[1];
+                return (w.exhibition === id || w.exhibit === id) && !w.excluded;
+              })
+              .map(function(entry) { return Object.assign({ id: entry[0] }, entry[1]); });
+            if (exhibit.workOrder && exhibit.workOrder.length) {
+              var orderedSet = new Set(exhibit.workOrder);
+              worksArr = [
+                ...exhibit.workOrder
+                  .filter(function(wid) { return !!inventory[wid]; })
+                  .map(function(wid) { return Object.assign({ id: wid }, inventory[wid]); }),
+                ...allInOrder.filter(function(w) { return !orderedSet.has(w.id); }),
+              ];
+            } else {
+              worksArr = allInOrder;
+            }
           } else {
             worksArr = Object.entries(inventory)
               .filter(function(entry) { return entry[1].exhibit === id && !entry[1].excluded; })
@@ -297,6 +310,7 @@
             Collection.init('#cover', worksArr, {
               mode: exhibit.rooms && exhibit.rooms.length ? 'room' : 'carousel',
               rooms: exhibit.rooms,
+              heroRoom: exhibit.heroRoom,
               wall: true,
               loop: true,
               gap: 32,

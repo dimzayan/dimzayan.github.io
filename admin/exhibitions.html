@@ -206,6 +206,10 @@
             <div class="form-field"><label>End date</label><input id="ab-date-end" type="text" placeholder="e.g. April 20, 2026"></div>
           </div>
           <div class="form-field"><label>Description</label><textarea id="ab-description" rows="4"></textarea></div>
+          <div class="form-field">
+            <label>Mobile hero photo</label>
+            <input id="ab-hero-room" type="text" placeholder="e.g. _DSC0955 — photo filename shown as hero on portrait mobile">
+          </div>
         </div>
       </div>
 
@@ -260,12 +264,6 @@
       </div>
 
       <!-- Works context menu -->
-      <div id="works-ctx-menu" style="display:none;position:fixed;background:white;border:1px solid rgba(0,0,0,0.14);border-radius:5px;box-shadow:0 6px 20px rgba(0,0,0,0.13);z-index:200;min-width:170px;padding:0.3rem 0;font-size:0.82rem;">
-        <div style="padding:0.45rem 1rem;cursor:pointer;" id="wctx-edit">Edit</div>
-        <div style="padding:0.45rem 1rem;cursor:pointer;" id="wctx-preview">Preview work sheet</div>
-        <div style="height:1px;background:rgba(0,0,0,0.09);margin:0.3rem 0;"></div>
-        <div style="padding:0.45rem 1rem;cursor:pointer;color:rgba(180,40,40,0.85);" id="wctx-remove">Remove from exhibition</div>
-      </div>
 
       <!-- Press coverage for this exhibition -->
       <div class="card" id="press-card" style="display:none;">
@@ -443,6 +441,7 @@
           document.getElementById('ab-date-start').value  = ex.dateStart   || ex.year || '';
           document.getElementById('ab-date-end').value    = ex.dateEnd     || '';
           document.getElementById('ab-description').value = ex.description || '';
+          document.getElementById('ab-hero-room').value   = ex.heroRoom    || '';
           editRooms = JSON.parse(JSON.stringify(ex.rooms || []));
           renderRoomList();
           if (editRooms.length) selectRoom(0);
@@ -662,6 +661,7 @@
         ex.dateStart   = document.getElementById('ab-date-start').value.trim();
         ex.dateEnd     = document.getElementById('ab-date-end').value.trim();
         ex.description = document.getElementById('ab-description').value.trim();
+        ex.heroRoom    = document.getElementById('ab-hero-room').value.trim() || undefined;
         ex.rooms       = editRooms;
         if (worksTbl) ex.workOrder = worksTbl.getOrder();
         // keep legacy year field in sync for public page compat
@@ -747,7 +747,7 @@
       pressReady     = loadPress();
       const exhibitReady = loadExhibit().then(function() {
         // Wire dirty listeners after fields are populated
-        ['ab-title','ab-location','ab-venue','ab-date-start','ab-date-end','ab-description'].forEach(function(id) {
+        ['ab-title','ab-location','ab-venue','ab-date-start','ab-date-end','ab-description','ab-hero-room'].forEach(function(id) {
           const el = document.getElementById(id);
           if (el) el.addEventListener('input', markDirty);
         });
@@ -757,7 +757,7 @@
 
       // ── Works panel ────────────────────────────────────────────────────────
       let worksTbl = null;
-      let worksCtxRow = null;
+
 
       async function initWorksPanel() {
         await Promise.all([inventoryReady, exhibitReady]);
@@ -767,7 +767,20 @@
           tableEl: worksTableEl,
           exhibits: exhibitsData,
           filter: function(id, w) { return (w.exhibition || w.exhibit) === exhibitId; },
-          onRightClick: function(tr, e) { showWorksCtxMenu(e, tr); },
+          onFullEdit: function(tr) { window.location.href = routeUrl('admin-artwork', { id: tr.dataset.id }); },
+          onMenuExtend: function(menu, tr) {
+            var sep = document.createElement('div'); sep.className = 'at-ctx-sep'; menu.appendChild(sep);
+            var rem = document.createElement('div'); rem.className = 'at-ctx-item at-ctx-danger';
+            rem.textContent = 'Remove from exhibition';
+            rem.addEventListener('click', function() {
+              delete tr.dataset.exhibition;
+              tr.remove();
+              worksTbl.renumberRows();
+              var hasRows = document.getElementById('works-table').querySelector('tbody tr[data-id]');
+              document.getElementById('works-empty').style.display = hasRows ? 'none' : 'block';
+            });
+            menu.appendChild(rem);
+          },
         });
         const ex = exhibitsData[exhibitId];
         worksTbl.renderData(inventoryData, ex && ex.workOrder);
@@ -777,40 +790,6 @@
         document.getElementById('works-card').style.display = 'block';
       }
 
-      function showWorksCtxMenu(e, tr) {
-        worksCtxRow = tr;
-        const menu = document.getElementById('works-ctx-menu');
-        menu.style.display = 'block';
-        const mw = 180, mh = 90;
-        let x = e.clientX, y = e.clientY;
-        if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 8;
-        if (y + mh > window.innerHeight) y = window.innerHeight - mh - 8;
-        menu.style.left = x + 'px'; menu.style.top = y + 'px';
-      }
-
-      document.addEventListener('click', function() { document.getElementById('works-ctx-menu').style.display = 'none'; });
-
-      document.getElementById('wctx-edit').addEventListener('click', function() {
-        if (!worksCtxRow || !worksTbl) return;
-        worksTbl.openEditDrawer(worksCtxRow);
-        worksCtxRow = null;
-      });
-
-      document.getElementById('wctx-preview').addEventListener('click', function() {
-        if (!worksCtxRow) return;
-        window.open('/preview.html?id=' + encodeURIComponent(worksCtxRow.dataset.id), '_blank');
-        worksCtxRow = null;
-      });
-
-      document.getElementById('wctx-remove').addEventListener('click', function() {
-        if (!worksCtxRow) return;
-        delete worksCtxRow.dataset.exhibition;
-        worksCtxRow.remove();
-        worksTbl.renumberRows();
-        const hasRows = document.getElementById('works-table').querySelector('tbody tr[data-id]');
-        document.getElementById('works-empty').style.display = hasRows ? 'none' : 'block';
-        worksCtxRow = null;
-      });
 
       // ── Press panel ────────────────────────────────────────────────────────
       let pressTbl = null;
