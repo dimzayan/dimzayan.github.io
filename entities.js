@@ -394,6 +394,14 @@ const entities = {
 
 
     
+    room_dsc0887: {
+        image: "https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/_DSC0887.webp",
+        work: true,
+        featured: true,
+        transformable: true,
+        _displayable: true,
+    },
+
     bio: {
         title: "About",
         text: `<p>Dim Zayan (b. 1977, France) is a multidisciplinary artist working across painting, digital
@@ -410,7 +418,7 @@ Marfa, Texas.</p>`,
         active: true,
         opacity: 1,
         onSelect: {command: 'selectWorks', filter: 'featured', value: true}
-      
+
     },
 
 

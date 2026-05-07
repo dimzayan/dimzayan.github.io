@@ -193,6 +193,9 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
     </div>
     <div class="at-drawer-footer">
       <button id="at-cancel-btn">Cancel</button>
+      <span id="at-upload-status" style="font-size:0.72rem;opacity:0.5;flex:1;text-align:left;"></span>
+      <input type="file" id="at-upload-file" accept="image/*" style="display:none">
+      <button id="at-upload-btn">Upload photo</button>
       <button id="at-save-btn">Save</button>
     </div>
   </div>`);
@@ -210,6 +213,50 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
 
   drawer.querySelector('#at-photo-input').addEventListener('change', function() {
     Array.from(this.files).forEach(f => _compress(f, url => { editPhotos.push(url); _renderPhotos(); }));
+    this.value = '';
+  });
+
+  drawer.querySelector('#at-upload-btn').addEventListener('click', () =>
+    drawer.querySelector('#at-upload-file').click());
+
+  drawer.querySelector('#at-upload-file').addEventListener('change', async function() {
+    const file = this.files[0]; if (!file) return;
+    const token = localStorage.getItem('dim_gh_token') || '';
+    const status = drawer.querySelector('#at-upload-status');
+    if (!token) { status.textContent = 'No token'; return; }
+    const filename = (drawer.querySelector('#at-edit-photo').value.trim()) || (editRow && editRow.dataset.id) || '';
+    if (!filename) { status.textContent = 'Set filename first'; return; }
+
+    function toWebP(f, maxDim, q) {
+      return new Promise(resolve => {
+        const img = new Image(), url = URL.createObjectURL(f);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          const scale = maxDim ? Math.min(1, maxDim / Math.max(img.width, img.height)) : 1;
+          const c = document.createElement('canvas');
+          c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          c.toBlob(resolve, 'image/webp', q);
+        };
+        img.src = url;
+      });
+    }
+
+    status.textContent = 'Processing…';
+    try {
+      const [rawB, hiB, lowB] = await Promise.all([toWebP(file, null, 0.92), toWebP(file, null, 0.85), toWebP(file, 1000, 0.90)]);
+      status.textContent = 'Uploading…';
+      await Promise.all(['raw', 'hi', 'low'].map((folder, i) =>
+        fetch('/api/upload/' + folder + '/' + filename + '.webp', {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'image/webp' },
+          body: [rawB, hiB, lowB][i],
+        }).then(r => { if (!r.ok) throw new Error(folder + ': ' + r.status); })
+      ));
+      drawer.querySelector('#at-photo-preview').src = CDN_LOW + filename + '.webp?t=' + Date.now();
+      status.textContent = 'Uploaded';
+      setTimeout(() => { status.textContent = ''; }, 3000);
+    } catch(e) { status.textContent = 'Error: ' + e.message; }
     this.value = '';
   });
 

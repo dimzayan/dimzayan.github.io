@@ -78,6 +78,8 @@
 - Rooms: `{ photo, hotspots: [{ id, x, y, w, h } | { type:'room', target, x, y, w, h }] }`
 - Works are assigned to an exhibition via the `exhibition` field on the inventory item (not stored on the exhibit object)
 - `admin/exhibitions.html` detail mode: rooms editor (40/60 split — room list left, canvas editor right) + works panel below using `js/artworks-table.js` filtered to current exhibition; single Save button saves both exhibits and inventory in parallel
+- **Homepage exhibitions list** (`index.html`): loaded dynamically via `loadExhibitions()` in the inline module script; fetches `/api/exhibits`; renders into `<dl id="exhibitions-dl">` placeholder in the `exhibitions` entity in `entities.js`; static list was removed from `entities.js`
+- **Pending KV rename**: intent is to rename the KV key from `exhibits` → `exhibitions` and update the fetch URL in `index.html`. Worker allowlist already includes `'exhibitions'`. Migration command: `curl -s https://dimzayan.com/api/exhibits | curl -X PUT https://dimzayan.com/api/exhibitions -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" -d @-`
 
 ## GitHub / Hosting
 - Repo: `https://github.com/dimzayan/dimzayan.github.io`

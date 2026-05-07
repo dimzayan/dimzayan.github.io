@@ -27,9 +27,10 @@
  * GSAP loaded automatically from CDN. Requires HTTP (not file://).
  */
 
-const CDN = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-  ? 'media/works/hi/'
-  : 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+const _IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const CDN     = _IS_LOCAL ? 'media/works/hi/'  : 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+const CDN_LOW = _IS_LOCAL ? 'media/works/low/' : 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low/';
+const CDN_RAW = _IS_LOCAL ? 'media/works/raw/' : 'https://dimzayan.nyc3.digitaloceanspaces.com/works/raw/';
 
 const STYLES_ID = 'coll-styles';
 const GSAP_CDN  = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';
@@ -295,7 +296,7 @@ function initMobilePortrait(root, works, opts) {
     a.className = 'coll-mp-item';
     a.href = (opts.previewBase || 'preview.html') + '?id=' + encodeURIComponent(w.id);
     const img = document.createElement('img');
-    img.src = CDN + '__' + (w.photo || w.id) + '.webp';
+    img.src = CDN_LOW + (w.photo || w.id) + '.webp';
     img.alt = w.title || '';
     img.loading = 'lazy';
     img.style.width = Math.min(1, w.displayScale || 1) * 100 + '%';
@@ -546,7 +547,7 @@ async function initCarousel(root, works, opts) {
       const imgArea = document.createElement('div');
       imgArea.className = 'coll-img-area';
       const img = document.createElement('img');
-      img.src = CDN + '__' + (w.photo || w.id) + '.webp';
+      img.src = CDN + (w.photo || w.id) + '.webp';
       img.alt = w.title || ''; img.loading = 'lazy';
       if (w.displayScale && w.displayScale !== 1) {
         img.style.transform = `scale(${w.displayScale})`;
@@ -610,14 +611,25 @@ async function initCarousel(root, works, opts) {
   clip.appendChild(zoomLayer);
 
   function openZoom(w) {
-    const src = CDN + (w.photo || w.id) + '.webp';
+    const filename = (w.photo || w.id) + '.webp';
+    const rawSrc = CDN_RAW + filename;
+    const hiSrc  = CDN     + filename;
     zoomImg.style.transformOrigin = '50% 50%';
     zoomImg.style.transform = 'scale(1.8)';
-    zoomImg.src = src;
-    zoomImg._pendingSrc = src;
-    const activate = () => { if (zoomImg._pendingSrc === src) zoomLayer.classList.add('active'); };
-    if (zoomImg.complete && zoomImg.naturalWidth) activate();
-    else zoomImg.addEventListener('load', activate, { once: true });
+
+    function load(src) {
+      zoomImg._pendingSrc = src;
+      zoomImg.src = src;
+      const activate = () => { if (zoomImg._pendingSrc === src) zoomLayer.classList.add('active'); };
+      if (zoomImg.complete && zoomImg.naturalWidth) activate();
+      else zoomImg.addEventListener('load', activate, { once: true });
+    }
+
+    zoomImg.onerror = function() {
+      zoomImg.onerror = null;
+      if (zoomImg._pendingSrc === rawSrc) load(hiSrc);
+    };
+    load(rawSrc);
   }
 
   zoomLayer.addEventListener('mousemove', e => {
@@ -629,6 +641,7 @@ async function initCarousel(root, works, opts) {
 
   zoomLayer.addEventListener('click', () => {
     zoomImg._pendingSrc = null;
+    zoomImg.onerror = null;
     zoomLayer.classList.remove('active');
   });
 
