@@ -99,9 +99,9 @@
     .autocomplete-item:hover { background: rgba(0,0,0,0.04); }
     /* Paid status card */
     .status-row { display: flex; align-items: center; padding: 1.2rem 1.5rem; gap: 1rem; }
-  </style>
-</head>
+  </style></head>
 <body>
+
 
   <!-- List mode -->
   <div id="list-view">
@@ -652,8 +652,10 @@
           if (btn) btn.disabled = true;
           if (!silent) showStatus('Saving…');
           try {
-            const updated = gatherInv();
-            const oldNum  = inv.num;
+            const updated  = gatherInv();
+            const oldNum   = inv.num;
+            const oldIds   = new Set((inv.items || []).map(function(it) { return it.id; }));
+            const newIds   = new Set(updated.items.map(function(it) { return it.id; }));
             Object.assign(inv, updated);
 
             const all = await loadInvoices();
@@ -664,11 +666,24 @@
               fetch(API_INVOICES, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(all, null, 2) }),
             ];
 
-            // If num changed, update inventory refs too
-            if (oldNum !== inv.num) {
+            // Update inventory if items list or num changed
+            const itemsChanged = oldIds.size !== newIds.size || [...oldIds].some(function(id) { return !newIds.has(id); });
+            if (oldNum !== inv.num || itemsChanged) {
               const freshInv = await fetch(API_INVENTORY).then(function(r) { return r.json(); }).catch(function() { return null; });
               if (freshInv) {
-                Object.values(freshInv).forEach(function(w) { if (w.invoiced && w.invoiced.invoiceId === invoiceId) w.invoiced.num = inv.num; });
+                const ref = { invoiceId, num: inv.num, paid: !!inv.paid };
+                // Mark newly added works as invoiced
+                newIds.forEach(function(id) {
+                  if (!oldIds.has(id) && freshInv[id]) freshInv[id].invoiced = ref;
+                });
+                // Clear invoiced from removed works (only if they point to this invoice)
+                oldIds.forEach(function(id) {
+                  if (!newIds.has(id) && freshInv[id] && freshInv[id].invoiced && freshInv[id].invoiced.invoiceId === invoiceId) delete freshInv[id].invoiced;
+                });
+                // Update num on all works still in this invoice
+                if (oldNum !== inv.num) {
+                  Object.values(freshInv).forEach(function(w) { if (w.invoiced && w.invoiced.invoiceId === invoiceId) w.invoiced.num = inv.num; });
+                }
                 saves.push(fetch(API_INVENTORY, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(freshInv, null, 2) }));
               }
             }
@@ -698,5 +713,6 @@
       }
     }
   </script>
+<script src="../js/admin-nav.js"></script>
 </body>
 </html>

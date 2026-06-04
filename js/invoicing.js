@@ -22,33 +22,29 @@ function updateCartBtn() {
     return n;
   }
 
-  // ── Context menu invoice handlers ───────────────────────────────────────
+  // ── Context menu invoice handlers (called by onMenuExtend in artworks.html) ─
 
-  document.getElementById('ctx-invoice-item').addEventListener('click', () => {
-    if (!ctxRow) return;
-    const id = ctxRow.dataset.id;
-    if (ctxRow.classList.contains('invoiced')) {
-      const ref = JSON.parse(ctxRow.dataset.invoiceRef || 'null');
+  window.handleInvoiceItem = function(tr) {
+    const id = tr.dataset.id;
+    if (tr.classList.contains('invoiced')) {
+      const ref = JSON.parse(tr.dataset.invoiceRef || 'null');
       if (ref) openInvoice(ref.invoiceId);
     } else if (invoiceCart.has(id)) {
       invoiceCart.delete(id);
-      ctxRow.classList.remove('in-cart');
+      tr.classList.remove('in-cart');
     } else {
       invoiceCart.add(id);
-      ctxRow.classList.add('in-cart');
+      tr.classList.add('in-cart');
     }
     updateCartBtn();
-    ctxRow = null;
-  });
+  };
 
-  document.getElementById('ctx-clear-invoice-item').addEventListener('click', () => {
-    if (!ctxRow) return;
-    ctxRow.classList.remove('invoiced');
-    delete ctxRow.dataset.invoiceRef;
-    const tdInv = ctxRow.querySelector('.col-inv');
+  window.handleClearInvoice = function(tr) {
+    tr.classList.remove('invoiced');
+    delete tr.dataset.invoiceRef;
+    const tdInv = tr.querySelector('.col-inv');
     if (tdInv) tdInv.innerHTML = '';
-    ctxRow = null;
-  });
+  };
 
   // ── Invoice modal ───────────────────────────────────────────────────────
 

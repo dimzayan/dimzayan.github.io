@@ -25,7 +25,7 @@
     /* Lightbox */
     #lb { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; align-items: center; justify-content: center; }
     #lb.open { display: flex; }
-    #lb img { max-width: calc(100vw - 120px); max-height: 100vh; object-fit: contain; display: block; user-select: none; }
+    #lb img { width: calc(100vw - 120px); height: 100vh; object-fit: contain; display: block; user-select: none; }
     #lb-close { position: fixed; top: 1.25rem; right: 1.5rem; color: white; font-size: 1.5rem; cursor: pointer; opacity: 0.5; line-height: 1; background: none; border: none; padding: 0.25rem 0.5rem; }
     #lb-close:hover { opacity: 1; }
     .lb-arrow { position: fixed; top: 50%; transform: translateY(-50%); color: white; font-size: 1.5rem; cursor: pointer; opacity: 0.4; background: none; border: none; padding: 1rem; line-height: 1; user-select: none; }
@@ -83,6 +83,7 @@
 
     const CDN_LOW = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low/';
     const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+    const TS = Date.now();
 
     const artworkId = getPageId('__ARTWORK_ID__');
 
@@ -102,7 +103,19 @@
       function show(index) {
         current = (index + ids.length) % ids.length;
         const id = ids[current];
-        lbImg.src = CDN_HI + (inventory[id] && inventory[id].photo || id) + '.webp';
+        const photo = (inventory[id] && inventory[id].photo || id) + '.webp';
+
+        // Show low-res immediately (already cached from grid thumbnails)
+        lbImg.src = CDN_LOW + photo + '?t=' + TS;
+        lbImg.dataset.target = photo;
+
+        // Load hi-res in background; swap only if still on same photo
+        const hi = new Image();
+        hi.onload = function() {
+          if (lbImg.dataset.target === photo) lbImg.src = CDN_HI + photo + '?t=' + TS;
+        };
+        hi.src = CDN_HI + photo + '?t=' + TS;
+
         lb.classList.add('open');
         const info = inventory[id] || {};
         lbTitle.textContent = info.title || '';
@@ -131,7 +144,7 @@
           ids.forEach(function(id, i) {
             const a   = document.createElement('a');
             const img = document.createElement('img');
-            img.src     = CDN_LOW + (data[id] && data[id].photo || id) + '.webp';
+            img.src     = CDN_LOW + (data[id] && data[id].photo || id) + '.webp?t=' + TS;
             img.loading = 'lazy';
             img.alt     = (data[id] && data[id].title) || '';
             a.appendChild(img);
@@ -166,7 +179,7 @@
           const meta  = [w.year, w.material, dims].filter(Boolean);
           document.getElementById('detail-content').innerHTML =
             '<div class="detail-wrap">' +
-              '<div class="detail-img"><img src="' + CDN_HI + photo + '.webp" alt="' + (w.title || '') + '"></div>' +
+              '<div class="detail-img"><img src="' + CDN_HI + photo + '.webp?t=' + TS + '" alt="' + (w.title || '') + '"></div>' +
               '<div class="detail-info">' +
                 '<div class="detail-title">' + (w.title || artworkId) + '</div>' +
                 (meta.length ? '<div class="detail-meta">' + meta.map(function(s) { return '<span>' + s + '</span>'; }).join('') + '</div>' : '') +

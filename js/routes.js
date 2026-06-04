@@ -113,6 +113,18 @@ export const ROUTES = [
     fallbackPage: 'admin/settings.html',
     workerPage:   'admin/settings.html',
   },
+  {
+    name:         'admin-worksheet',
+    prettyPath:   '/admin/worksheet',
+    fallbackPage: 'admin/worksheet.html',
+    workerPage:   'admin/worksheet.html',
+  },
+  {
+    name:         'admin-pricelist',
+    prettyPath:   '/admin/pricelist',
+    fallbackPage: 'admin/pricelist.html',
+    workerPage:   'admin/pricelist.html',
+  },
 ];
 
 const IS_LOCAL =

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Price List — Dim Zayan</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "DM Sans", sans-serif; font-weight: 300; background: #fff; color: #111; }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 3rem 3.5rem; }
+
+    @page { size: letter portrait; margin: 0.85in 1in; }
+
+    .pl-header { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .pl-artist { font-size: 1.4rem; font-weight: 300; letter-spacing: -0.01em; margin-bottom: 0.3rem; }
+    .pl-title { font-size: 0.72rem; opacity: 0.4; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .pl-date { font-size: 0.72rem; opacity: 0.3; letter-spacing: 0.03em; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      font-size: 0.62rem; font-weight: 400; letter-spacing: 0.09em; text-transform: uppercase;
+      opacity: 0.35; padding: 0 1rem 0.65rem 0; text-align: left;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    thead th:last-child { padding-right: 0; text-align: right; }
+    tbody tr { border-bottom: 1px solid rgba(0,0,0,0.05); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 0.65rem 1rem 0.65rem 0; font-size: 0.84rem; vertical-align: middle; }
+    tbody td:last-child { padding-right: 0; text-align: right; }
+
+    .col-num { width: 1.75rem; font-size: 0.7rem; opacity: 0.3; }
+    .col-photo { width: 90px; padding-right: 1.25rem !important; }
+    .col-photo img { width: 90px; height: 72px; object-fit: cover; display: block; background: #f0f0f0; }
+    .col-title { font-weight: 400; }
+    .col-title .pl-year { display: block; font-size: 0.72rem; font-weight: 300; opacity: 0.4; margin-top: 0.15rem; }
+    .col-medium { font-size: 0.78rem; opacity: 0.55; max-width: 200px; }
+    .col-medium .pl-dims { display: block; opacity: 0.75; margin-top: 0.15rem; }
+    .col-price { font-weight: 400; white-space: nowrap; width: 7rem; }
+
+    .pl-toolbar { position: fixed; top: 1.25rem; right: 1.5rem; display: flex; gap: 0.5rem; z-index: 100; }
+    .pl-toolbar button {
+      background: none; border: 1px solid rgba(0,0,0,0.22); border-radius: 3px;
+      padding: 0.32rem 0.85rem; font-family: inherit; font-size: 0.72rem;
+      letter-spacing: 0.03em; cursor: pointer; opacity: 0.55; color: #111;
+    }
+    .pl-toolbar button:hover { opacity: 1; }
+
+    #pl-loading { padding: 4rem 0; font-size: 0.8rem; opacity: 0.38; }
+
+    @media print {
+      .pl-toolbar { display: none; }
+      .wrap { padding: 0; max-width: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="pl-toolbar">
+  <button id="copy-btn">Copy link</button>
+  <button onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<div class="wrap">
+  <div id="pl-loading">Loading…</div>
+  <div id="pl-content"></div>
+</div>
+
+<script>
+(function () {
+  var IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  var API = IS_LOCAL ? 'https://dimzayan.com' : '';
+  var CDN_HI = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+
+  var params = new URLSearchParams(location.search);
+  var ids = (params.get('ids') || '').split(',').filter(Boolean);
+
+  var loadingEl = document.getElementById('pl-loading');
+  var contentEl = document.getElementById('pl-content');
+
+  if (!ids.length) { loadingEl.textContent = 'No works specified.'; return; }
+
+  function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function fmtDims(d) { if (!d) return ''; return /in\.?$|inches?$/i.test(d.trim()) ? d.trim() : d.trim() + ' in'; }
+
+  fetch(API + '/api/inventory')
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .catch(function () { return {}; })
+    .then(render);
+
+  function render(inventory) {
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    var rows = ids.map(function (id, i) {
+      var w = inventory[id] || {};
+      var price = w.price ? '$' + Number(w.price).toLocaleString('en-US') : '—';
+      var dims = fmtDims(w.dimensions);
+      var photo = (w.photo || id).replace(/\.webp$/i, '') + '.webp';
+      return '<tr>' +
+        '<td class="col-num">' + (i + 1) + '</td>' +
+        '<td class="col-photo"><img src="' + CDN_HI + photo + '" onerror="this.style.visibility=\'hidden\'"></td>' +
+        '<td class="col-title">' + esc(w.title || id) +
+          (w.year ? '<span class="pl-year">' + esc(w.year) + '</span>' : '') +
+        '</td>' +
+        '<td class="col-medium">' + esc(w.material || '') +
+          (dims ? '<span class="pl-dims">' + esc(dims) + '</span>' : '') +
+        '</td>' +
+        '<td class="col-price">' + price + '</td>' +
+        '</tr>';
+    }).join('');
+
+    contentEl.innerHTML =
+      '<div class="pl-header">' +
+        '<div class="pl-artist">Dim Zayan</div>' +
+        '<div class="pl-title">Price List</div>' +
+        '<div class="pl-date">' + esc(dateStr) + '</div>' +
+      '</div>' +
+      '<table>' +
+        '<thead><tr>' +
+          '<th></th>' +
+          '<th></th>' +
+          '<th>Title</th>' +
+          '<th>Medium &amp; dimensions</th>' +
+          '<th>Price</th>' +
+        '</tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>';
+
+    loadingEl.style.display = 'none';
+  }
+
+  document.getElementById('copy-btn').addEventListener('click', function () {
+    navigator.clipboard.writeText(location.href).then(function () {
+      var btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function () { btn.textContent = 'Copy link'; }, 2000);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

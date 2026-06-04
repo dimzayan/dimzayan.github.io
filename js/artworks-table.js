@@ -10,6 +10,21 @@
 
 export const CDN_LOW = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low/';
 export const CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+const TS = Date.now();
+
+// Lazy-load heic2any only when a HEIF/HEIC file is encountered
+let _heic2any = null;
+async function loadHeic2any() {
+  if (_heic2any) return _heic2any;
+  if (window.heic2any) { _heic2any = window.heic2any; return _heic2any; }
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
+    s.onload = () => { _heic2any = window.heic2any; resolve(_heic2any); };
+    s.onerror = () => reject(new Error('Failed to load HEIC converter'));
+    document.head.appendChild(s);
+  });
+}
 
 const FIELDS      = ['title', 'dimensions', 'material', 'price', 'year', 'notes'];
 const PLACEHOLDER = { title: 'Title', dimensions: 'e.g. 24×36 in', material: 'Material', price: '$', year: 'Year', notes: 'Notes' };
@@ -64,7 +79,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
     lbCurrent = id;
     const tr  = tbody.querySelector(`tr[data-id="${id}"]`);
     const photo = tr ? (tr.dataset.photo || id) : id;
-    lbImg.src = CDN_HI + photo + '.webp';
+    lbImg.src = CDN_HI + photo + '.webp?t=' + TS;
     lb.classList.add('open');
     const w = _inventory[id] || {};
     lbTit.textContent = w.title || '';
@@ -208,7 +223,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
 
   drawer.querySelector('#at-edit-photo').addEventListener('input', function() {
     const v = this.value.trim();
-    if (v) drawer.querySelector('#at-photo-preview').src = CDN_LOW + v + '.webp';
+    if (v) drawer.querySelector('#at-photo-preview').src = CDN_LOW + v + '.webp?t=' + TS;
   });
 
   drawer.querySelector('#at-photo-input').addEventListener('change', function() {
@@ -227,33 +242,63 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
     const filename = (drawer.querySelector('#at-edit-photo').value.trim()) || (editRow && editRow.dataset.id) || '';
     if (!filename) { status.textContent = 'Set filename first'; return; }
 
-    function toWebP(f, maxDim, q) {
-      return new Promise(resolve => {
-        const img = new Image(), url = URL.createObjectURL(f);
-        img.onload = () => {
-          URL.revokeObjectURL(url);
-          const scale = maxDim ? Math.min(1, maxDim / Math.max(img.width, img.height)) : 1;
-          const c = document.createElement('canvas');
-          c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
-          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-          c.toBlob(resolve, 'image/webp', q);
-        };
-        img.src = url;
-      });
+    // createImageBitmap with a 20s timeout — hangs silently for some formats/browsers
+    async function decodeBitmap(source) {
+      return Promise.race([
+        createImageBitmap(source),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Image decode timed out — try a JPEG or PNG')), 20000)),
+      ]);
     }
 
-    status.textContent = 'Processing…';
+    async function toWebP(source, maxDim, q) {
+      const bitmap = await decodeBitmap(source);
+      const scale = maxDim ? Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height)) : 1;
+      const c = document.createElement('canvas');
+      c.width  = Math.round(bitmap.width  * scale);
+      c.height = Math.round(bitmap.height * scale);
+      c.getContext('2d').drawImage(bitmap, 0, 0, c.width, c.height);
+      bitmap.close();
+      return new Promise((resolve, reject) => c.toBlob(b => b ? resolve(b) : reject(new Error('Canvas encode returned null')), 'image/webp', q));
+    }
+
+    // Detect HEIF via magic bytes before any browser decode attempt
+    status.textContent = 'Reading…';
+    let source = file;
     try {
-      const [rawB, hiB, lowB] = await Promise.all([toWebP(file, null, 0.92), toWebP(file, null, 0.85), toWebP(file, 1000, 0.90)]);
+      const buf = await file.slice(0, 12).arrayBuffer();
+      const b = new Uint8Array(buf);
+      const isHeif = /heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name) ||
+                     (b[4] === 0x66 && b[5] === 0x74 && b[6] === 0x79 && b[7] === 0x70);
+      console.log('[upload] type=' + file.type + ' name=' + file.name + ' size=' + file.size + ' isHeif=' + isHeif);
+      if (isHeif) {
+        status.textContent = 'Converting HEIF…';
+        const h2a = await loadHeic2any();
+        const conv = await h2a({ blob: file, toType: 'image/jpeg', quality: 0.95 });
+        source = Array.isArray(conv) ? conv[0] : conv;
+        console.log('[upload] HEIF→JPEG done, size=' + source.size);
+      }
+    } catch(e) { status.textContent = 'Error (read): ' + e.message; return; }
+
+    try {
+      status.textContent = 'Decoding…';
+      const rawB = await toWebP(source, null, 0.92);
+      console.log('[upload] raw encoded, size=' + rawB.size);
+      status.textContent = 'Encoding…';
+      const [hiB, lowB] = await Promise.all([toWebP(source, null, 0.92), toWebP(source, 1000, 0.90)]);
+      console.log('[upload] hi+low encoded');
       status.textContent = 'Uploading…';
+      const _apiBase = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'https://dimzayan.com' : '';
       await Promise.all(['raw', 'hi', 'low'].map((folder, i) =>
-        fetch('/api/upload/' + folder + '/' + filename + '.webp', {
+        fetch(_apiBase + '/api/upload/' + folder + '/' + filename + '.webp', {
           method: 'PUT',
           headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'image/webp' },
           body: [rawB, hiB, lowB][i],
         }).then(r => { if (!r.ok) throw new Error(folder + ': ' + r.status); })
       ));
-      drawer.querySelector('#at-photo-preview').src = CDN_LOW + filename + '.webp?t=' + Date.now();
+      const ts = Date.now();
+      drawer.querySelector('#at-photo-preview').src = CDN_LOW + filename + '.webp?t=' + ts;
+      const rowThumb = editRow && editRow.querySelector('.at-thumb');
+      if (rowThumb) rowThumb.src = CDN_LOW + filename + '.webp?t=' + ts;
       status.textContent = 'Uploaded';
       setTimeout(() => { status.textContent = ''; }, 3000);
     } catch(e) { status.textContent = 'Error: ' + e.message; }
@@ -273,7 +318,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
     if (newExhibition) editRow.dataset.exhibition = newExhibition;
     else delete editRow.dataset.exhibition;
     const thumb = editRow.querySelector('.at-thumb');
-    if (thumb) thumb.src = CDN_LOW + newPhoto + '.webp';
+    if (thumb) thumb.src = CDN_LOW + newPhoto + '.webp?t=' + Date.now();
     closeDrawer();
   });
 
@@ -305,7 +350,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
     const photo = tr.dataset.photo || id;
     drawer.querySelector('#at-edit-photo').value = photo;
     drawer.querySelector('#at-edit-exhibition').value = tr.dataset.exhibition || '';
-    drawer.querySelector('#at-photo-preview').src = CDN_LOW + photo + '.webp';
+    drawer.querySelector('#at-photo-preview').src = CDN_LOW + photo + '.webp?t=' + TS;
     editPhotos = _getPhotos(id).slice();
     _renderPhotos();
     drawer.classList.add('open');
@@ -395,7 +440,7 @@ export function initArtworksTable({ tableEl, exhibits = {}, filter, onFullEdit, 
   function _thumbImg(id, tr, td) {
     const photo = tr.dataset.photo || id;
     const img = document.createElement('img');
-    img.className = 'at-thumb'; img.src = CDN_LOW + photo + '.webp'; img.loading = 'lazy'; img.alt = '';
+    img.className = 'at-thumb'; img.src = CDN_LOW + photo + '.webp?t=' + TS; img.loading = 'lazy'; img.alt = '';
     img.addEventListener('click', () => openLightbox(tr.dataset.id));
     img.addEventListener('error', () => { img.remove(); td.appendChild(_thumbInput(tr.dataset.id, tr, td)); });
     return img;

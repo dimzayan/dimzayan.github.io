@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dim Zayan</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --nav-w: 148px;
+      --bg: #f8f7f5;
+      --ink: #111;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      font-weight: 300;
+    }
+
+    body {
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Nav ──────────────────────────────────── */
+
+    #nav {
+      width: var(--nav-w);
+      flex-shrink: 0;
+      padding: 2.75rem 1.75rem 2rem;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      z-index: 100;
+    }
+
+    #nav-name {
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.38;
+      line-height: 1.7;
+      margin-bottom: 3.5rem;
+    }
+
+    .nav-link {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.22;
+      padding: 0.42rem 0;
+      cursor: pointer;
+      transition: opacity 0.1s;
+      background: none;
+      border: none;
+      font-family: inherit;
+      text-align: left;
+    }
+    .nav-link:hover { opacity: 0.55; }
+    .nav-link.active { opacity: 1; }
+
+    /* ── Content ──────────────────────────────── */
+
+    #content {
+      margin-left: var(--nav-w);
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── Works grid ───────────────────────────── */
+
+    #works-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .work-cell {
+      position: relative;
+      aspect-ratio: 1;
+      overflow: hidden;
+      cursor: pointer;
+      background: #e8e6e2;
+    }
+
+    .work-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .work-cell-caption {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0.75rem 0.85rem;
+      background: linear-gradient(to top, rgba(248,247,245,0.88) 0%, rgba(248,247,245,0) 55%);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .work-cell:hover .work-cell-caption { opacity: 1; }
+
+    .wc-title { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.01em; }
+    .wc-meta  { font-size: 0.62rem; opacity: 0.45; margin-top: 0.1rem; }
+
+    /* ── Text sections ────────────────────────── */
+
+    .section-inner {
+      padding: 3.5rem 4rem;
+      max-width: 600px;
+    }
+
+    .section-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.28;
+      margin-bottom: 2.75rem;
+    }
+
+    /* Exhibitions */
+    .exh-item {
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 0 1.5rem;
+      padding: 1.1rem 0;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      align-items: baseline;
+    }
+    .exh-item:last-child { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .exh-year  { font-size: 0.68rem; opacity: 0.28; letter-spacing: 0.03em; }
+    .exh-title { font-size: 0.88rem; line-height: 1.4; }
+    .exh-loc   { font-size: 0.7rem; opacity: 0.38; margin-top: 0.2rem; }
+    .exh-item a { color: inherit; text-decoration: none; }
+
+    /* About */
+    #bio-text p { font-size: 0.88rem; line-height: 1.9; opacity: 0.7; }
+    #bio-text p + p { margin-top: 1rem; }
+
+    /* Press */
+    .press-item {
+      display: grid;
+      grid-template-columns: 3rem 1fr;
+      gap: 0 1.5rem;
+      padding: 1rem 0;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      align-items: baseline;
+    }
+    .press-item:last-child { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .press-year { font-size: 0.68rem; opacity: 0.28; }
+    .press-pub  { font-size: 0.88rem; }
+    .press-sub  { font-size: 0.7rem; opacity: 0.4; margin-top: 0.15rem; }
+    .press-item a { color: inherit; text-decoration: none; }
+
+    /* Contact */
+    #contact-info { font-size: 0.86rem; line-height: 2; opacity: 0.6; }
+    #contact-info a { color: inherit; text-decoration: none; }
+    #contact-info a:hover { opacity: 1; }
+
+    /* ── Lightbox ─────────────────────────────── */
+
+    #lb {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 500;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #lb.open { display: flex; }
+
+    #lb-img {
+      max-width: calc(100vw - var(--nav-w) - 6rem);
+      max-height: calc(100vh - 7rem);
+      object-fit: contain;
+      margin-left: calc(var(--nav-w) / 2);
+      transition: opacity 0.12s;
+    }
+    #lb-img.loading { opacity: 0; }
+
+    #lb-caption {
+      margin-top: 1.4rem;
+      margin-left: calc(var(--nav-w) / 2);
+      text-align: center;
+    }
+    #lb-title { font-size: 0.8rem; font-weight: 400; letter-spacing: 0.01em; }
+    #lb-meta  { font-size: 0.68rem; opacity: 0.35; margin-top: 0.2rem; letter-spacing: 0.02em; }
+
+    #lb-close {
+      position: fixed; top: 1.5rem; right: 2rem;
+      font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+      opacity: 0.28; cursor: pointer;
+      background: none; border: none; font-family: inherit; color: var(--ink);
+    }
+    #lb-close:hover { opacity: 0.7; }
+
+    #lb-prev, #lb-next {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      font-size: 0.7rem; opacity: 0.2; cursor: pointer;
+      background: none; border: none; font-family: inherit; color: var(--ink);
+      padding: 1.5rem 1.25rem;
+      letter-spacing: 0.04em;
+    }
+    #lb-prev:hover, #lb-next:hover { opacity: 0.6; }
+    #lb-prev { left: calc(var(--nav-w) + 0.5rem); }
+    #lb-next { right: 0.5rem; }
+
+    #lb-count {
+      position: fixed; bottom: 1.5rem; right: 2rem;
+      font-size: 0.62rem; opacity: 0.22; letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <div id="nav-name">Dim Zayan<br>Studio</div>
+  <button class="nav-link active" data-section="works">Works</button>
+  <button class="nav-link" data-section="exhibitions">Exhibitions</button>
+  <button class="nav-link" data-section="about">About</button>
+  <button class="nav-link" data-section="press">Press</button>
+  <button class="nav-link" data-section="contact">Contact</button>
+</nav>
+
+<div id="content">
+
+  <div id="works" class="section active">
+    <div id="works-grid"></div>
+  </div>
+
+  <div id="exhibitions" class="section">
+    <div class="section-inner">
+      <div class="section-label">Exhibitions</div>
+      <div id="exhibitions-list"></div>
+    </div>
+  </div>
+
+  <div id="about" class="section">
+    <div class="section-inner">
+      <div class="section-label">About</div>
+      <div id="bio-text"></div>
+    </div>
+  </div>
+
+  <div id="press" class="section">
+    <div class="section-inner">
+      <div class="section-label">Press</div>
+      <div id="press-list"></div>
+    </div>
+  </div>
+
+  <div id="contact" class="section">
+    <div class="section-inner">
+      <div class="section-label">Contact</div>
+      <div id="contact-info"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lb">
+  <button id="lb-close">Close</button>
+  <button id="lb-prev">←</button>
+  <button id="lb-next">→</button>
+  <img id="lb-img" src="" alt="">
+  <div id="lb-caption">
+    <div id="lb-title"></div>
+    <div id="lb-meta"></div>
+  </div>
+  <div id="lb-count"></div>
+</div>
+
+<script>
+(function () {
+  var CDN_HI  = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+  var CDN_LOW = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/low/';
+  var API     = 'https://dimzayan.com';
+
+  function esc(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function fmtDims(d) {
+    if (!d) return '';
+    return /in\.?$|inches?$/i.test(d.trim()) ? d.trim() : d.trim() + ' in';
+  }
+
+  // ── Nav ────────────────────────────────────────
+  var navLinks = Array.from(document.querySelectorAll('.nav-link'));
+  navLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      navLinks.forEach(function (l) { l.classList.remove('active'); });
+      document.querySelectorAll('.section').forEach(function (s) { s.classList.remove('active'); });
+      link.classList.add('active');
+      document.getElementById(link.dataset.section).classList.add('active');
+      document.getElementById('content').scrollTop = 0;
+    });
+  });
+
+  // ── Works ──────────────────────────────────────
+  var workIndex = [];
+
+  fetch(API + '/api/inventory')
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .catch(function () { return {}; })
+    .then(function (inv) {
+      var ids = Object.keys(inv);
+      workIndex = ids.map(function (id) { return { id: id, w: inv[id] }; });
+
+      var grid = document.getElementById('works-grid');
+      grid.innerHTML = workIndex.map(function (item, i) {
+        var w = item.w;
+        var photo = (w.photo || item.id).replace(/\.webp$/i, '') + '.webp';
+        var meta  = [w.year, w.material].filter(Boolean).join('  ·  ');
+        return (
+          '<div class="work-cell" data-idx="' + i + '">' +
+            '<img src="' + CDN_LOW + photo + '" alt="' + esc(w.title || '') + '" loading="lazy">' +
+            '<div class="work-cell-caption">' +
+              '<div class="wc-title">' + esc(w.title || item.id) + '</div>' +
+              (meta ? '<div class="wc-meta">' + esc(meta) + '</div>' : '') +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      grid.querySelectorAll('.work-cell').forEach(function (cell) {
+        cell.addEventListener('click', function () { openLb(parseInt(cell.dataset.idx)); });
+      });
+    });
+
+  // ── Lightbox ───────────────────────────────────
+  var lb       = document.getElementById('lb');
+  var lbImg    = document.getElementById('lb-img');
+  var lbTitle  = document.getElementById('lb-title');
+  var lbMeta   = document.getElementById('lb-meta');
+  var lbCount  = document.getElementById('lb-count');
+  var lbTimer;
+  var lbIdx    = 0;
+
+  function openLb(idx) {
+    lbIdx = idx;
+    var item = workIndex[idx];
+    if (!item) return;
+    var w = item.w;
+    var photo = (w.photo || item.id).replace(/\.webp$/i, '') + '.webp';
+
+    lbImg.classList.add('loading');
+    clearTimeout(lbTimer);
+    lbTimer = setTimeout(function () {
+      lbImg.src = CDN_HI + photo;
+      lbImg.onload = function () { lbImg.classList.remove('loading'); };
+    }, 60);
+
+    lbTitle.textContent = w.title || item.id;
+    lbMeta.textContent  = [w.material, fmtDims(w.dimensions), w.year].filter(Boolean).join('  ·  ');
+    lbCount.textContent = (idx + 1) + ' / ' + workIndex.length;
+    lb.classList.add('open');
+  }
+
+  document.getElementById('lb-close').addEventListener('click', function () { lb.classList.remove('open'); });
+  document.getElementById('lb-prev').addEventListener('click', function () { openLb((lbIdx - 1 + workIndex.length) % workIndex.length); });
+  document.getElementById('lb-next').addEventListener('click', function () { openLb((lbIdx + 1) % workIndex.length); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) lb.classList.remove('open'); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape')      lb.classList.remove('open');
+    if (e.key === 'ArrowLeft')   openLb((lbIdx - 1 + workIndex.length) % workIndex.length);
+    if (e.key === 'ArrowRight')  openLb((lbIdx + 1) % workIndex.length);
+  });
+
+  // ── Exhibitions ────────────────────────────────
+  fetch(API + '/api/exhibits')
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .catch(function () { return {}; })
+    .then(function (data) {
+      var items = Object.values(data || {})
+        .filter(function (e) { return e.title; })
+        .sort(function (a, b) { return (b.year || 0) - (a.year || 0); });
+
+      if (!items.length) {
+        items = [
+          { year: 2026, title: 'A three-quarter view of the future', location: 'Do Right Hall, Marfa TX' },
+          { year: 2023, title: 'Far West Texas', location: 'Marfa, TX' },
+        ];
+      }
+
+      document.getElementById('exhibitions-list').innerHTML = items.map(function (e) {
+        var body =
+          '<div class="exh-year">' + esc(String(e.year || '')) + '</div>' +
+          '<div>' +
+            '<div class="exh-title">' + esc(e.title) + '</div>' +
+            (e.location ? '<div class="exh-loc">' + esc(e.location) + '</div>' : '') +
+          '</div>';
+        return e.link
+          ? '<a class="exh-item" href="' + esc(e.link) + '" target="_blank">' + body + '</a>'
+          : '<div class="exh-item">' + body + '</div>';
+      }).join('');
+    });
+
+  // ── Basics (about + contact) ───────────────────
+  fetch(API + '/api/basics')
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .catch(function () { return {}; })
+    .then(function (d) {
+      var bioEl = document.getElementById('bio-text');
+      if (d.bio) {
+        bioEl.innerHTML = d.bio.split('\n\n').map(function (p) {
+          return '<p>' + esc(p.replace(/\n/g, ' ')) + '</p>';
+        }).join('');
+      } else {
+        bioEl.innerHTML = '<p>Dim Zayan (b. 1977, France) works in oil and epoxy on raw gypsum panels.</p><p>Based in Marfa, Texas.</p>';
+      }
+
+      var lines = [];
+      if (d.address)   lines.push(esc(d.address.replace(/\n/g, ', ')));
+      if (d.email)     lines.push('<a href="mailto:' + esc(d.email) + '">' + esc(d.email) + '</a>');
+      if (d.phone)     lines.push(esc(d.phone));
+      if (d.instagram) lines.push('<a href="https://www.instagram.com/' + esc(d.instagram) + '/" target="_blank">@' + esc(d.instagram) + '</a>');
+      document.getElementById('contact-info').innerHTML = lines.join('<br>') ||
+        '208 W El Paso St, Studio 2, Marfa TX 79843<br><a href="mailto:dim.studio.marfa@gmail.com">dim.studio.marfa@gmail.com</a>';
+    });
+
+  // ── Press ──────────────────────────────────────
+  fetch(API + '/api/press')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .catch(function () { return null; })
+    .then(function (items) {
+      if (!Array.isArray(items) || !items.length) {
+        items = [
+          { year: 2026, publication: 'The Marfa Sentinel', title: '"A three-quarter view of the future"' },
+          { year: 2026, publication: 'Artillery Magazine',  title: 'Dim Zayan at Do Right Hall' },
+        ];
+      }
+      document.getElementById('press-list').innerHTML = items.map(function (p) {
+        return (
+          '<div class="press-item">' +
+            '<div class="press-year">' + esc(String(p.year || '')) + '</div>' +
+            '<div>' +
+              '<div class="press-pub">' +
+                (p.url ? '<a href="' + esc(p.url) + '" target="_blank">' + esc(p.publication) + '</a>' : esc(p.publication)) +
+              '</div>' +
+              (p.title ? '<div class="press-sub">' + esc(p.title) + '</div>' : '') +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+    });
+
+})();
+</script>
+</body>
+</html>

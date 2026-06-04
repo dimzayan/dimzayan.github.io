@@ -36,6 +36,8 @@
     .card-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
     .card-action { font-size: 0.75rem; font-weight: 300; color: #111; text-decoration: none; opacity: 0.5; cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
     .card-action:hover { opacity: 1; }
+    #inventory-table.hide-invoiced tr.invoiced { display: none; }
+    #filter-sold-btn.active { opacity: 1; font-weight: 400; }
     .card-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; }
 
     /* Form fields */
@@ -96,9 +98,9 @@
     #scale-number:focus { outline: none; border-color: rgba(0,0,0,0.4); }
 
     #token-row { display: flex; align-items: center; gap: 0.5rem; }
-  </style>
-</head>
+  </style></head>
 <body>
+
 
   <!-- ── List mode ── -->
   <header id="list-header">
@@ -106,6 +108,8 @@
     <h1>Artworks</h1>
     <div class="header-right">
       <button id="invoice-cart-btn">Generate invoice <span class="inv-cart-count" id="inv-count">0</span></button>
+      <button class="save-btn" id="pl-open-btn" style="opacity:1;pointer-events:auto;background:rgba(0,0,0,0.12);color:#111;">Price list</button>
+      <button class="save-btn" id="ws-open-btn" style="opacity:1;pointer-events:auto;background:rgba(0,0,0,0.12);color:#111;">Worksheet</button>
       <button class="save-btn" id="json-btn">Save</button>
     </div>
   </header>
@@ -114,7 +118,10 @@
     <div class="card">
       <div class="card-header">
         <span class="card-label">Artworks</span>
-        <button class="card-action" id="add-btn">+ Add</button>
+        <div style="display:flex;gap:1rem;align-items:center;">
+          <button class="card-action" id="filter-sold-btn">Hide sold</button>
+          <button class="card-action" id="add-btn">+ Add</button>
+        </div>
       </div>
       <table id="inventory-table">
         <thead>
@@ -252,6 +259,7 @@
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
     const API_EXHIBITS  = 'https://dimzayan.com/api/exhibits';
     const CDN_HI        = 'https://dimzayan.nyc3.digitaloceanspaces.com/works/hi/';
+    const TS = Date.now();
 
     const artworkId = getPageId('__ARTWORK_ID__');
 
@@ -317,7 +325,7 @@
       // Wire dirty on photo rename to update preview
       document.getElementById('dv-photo').addEventListener('input', function() {
         var val = this.value.trim();
-        if (val) img.src = CDN_HI + val + '.webp';
+        if (val) img.src = CDN_HI + val + '.webp?t=' + TS;
         markDirty();
       });
 
@@ -339,7 +347,7 @@
 
           // Image
           var photo = work.photo || artworkId;
-          img.src = CDN_HI + photo + '.webp';
+          img.src = CDN_HI + photo + '.webp?t=' + TS;
 
           // Form fields
           document.getElementById('dv-title').value       = work.title       || '';
@@ -417,14 +425,15 @@
           var folders = ['raw', 'hi', 'low'];
           status.textContent = 'Uploading…';
           await Promise.all(folders.map(function(folder, i) {
-            return fetch('/api/upload/' + folder + '/' + filename + '.webp', {
+            var _apiBase = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'https://dimzayan.com' : '';
+            return fetch(_apiBase + '/api/upload/' + folder + '/' + filename + '.webp', {
               method: 'PUT',
               headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'image/webp' },
               body: blobs[i],
             }).then(async function(r) { if (!r.ok) throw new Error(folder + ': ' + r.status + ' — ' + await r.text()); });
           }));
           document.getElementById('dv-photo').value = filename;
-          img.src = CDN_HI + filename + '.webp';
+          img.src = CDN_HI + filename + '.webp?t=' + Date.now();
           status.textContent = 'Uploaded';
           markDirty();
           setTimeout(function() { status.textContent = ''; }, 3000);
@@ -506,7 +515,7 @@
     (async function init() {
       try { exhibitsData = await fetch(API_EXHIBITS).then(function(r) { return r.ok ? r.json() : {}; }); } catch(e) {}
 
-      tbl = initArtworksTable({
+      window.tbl = tbl = initArtworksTable({
         tableEl: tableEl,
         exhibits: exhibitsData,
         disableDrag: true,
@@ -619,8 +628,138 @@
       a.click();
     });
 
+    // Hide sold toggle
+    (function() {
+      var btn = document.getElementById('filter-sold-btn');
+      var table = document.getElementById('inventory-table');
+      var hidden = false;
+      btn.addEventListener('click', function() {
+        hidden = !hidden;
+        table.classList.toggle('hide-invoiced', hidden);
+        btn.textContent = hidden ? 'Show sold' : 'Hide sold';
+        btn.classList.toggle('active', hidden);
+      });
+    })();
+
     } // end list mode
   </script>
 
+  <!-- Worksheet -->
+  <style>
+    .col-ws-check { width:28px; padding:0 !important; }
+    .ws-row-check { text-align:center; padding:0 !important; }
+    .ws-row-check input { cursor:pointer; }
+    #ws-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:400; align-items:center; justify-content:center; }
+    #ws-modal.open { display:flex; }
+    #ws-box { background:#fff; border-radius:5px; padding:1.75rem 2rem; width:320px; max-width:calc(100vw - 2rem); display:flex; flex-direction:column; gap:1.25rem; }
+    #ws-box h3 { font-size:0.75rem; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; opacity:0.45; }
+    #ws-box-sel { font-size:0.78rem; opacity:0.4; margin-top:-0.5rem; }
+    .ws-opts { display:flex; flex-direction:column; gap:0.6rem; }
+    .ws-opts label { display:flex; align-items:center; gap:0.5rem; font-size:0.84rem; cursor:pointer; }
+    .ws-opts input { cursor:pointer; }
+    .ws-actions { display:flex; gap:0.6rem; justify-content:flex-end; padding-top:0.25rem; }
+    .ws-actions button { background:none; border:1px solid rgba(0,0,0,0.18); border-radius:3px; padding:0.38rem 1rem; font-family:"DM Sans"; font-size:0.8rem; font-weight:300; cursor:pointer; color:#111; }
+    .ws-actions button:hover { background:rgba(0,0,0,0.04); }
+    #ws-generate-btn { background:rgba(0,0,0,0.85)!important; color:#fff!important; border-color:transparent!important; }
+    #ws-generate-btn:hover { background:#000!important; }
+  </style>
+
+  <div id="ws-modal">
+    <div id="ws-box">
+      <h3>Worksheet</h3>
+      <div id="ws-box-sel"></div>
+      <div class="ws-opts">
+        <label><input type="checkbox" id="ws-prices"> Show prices</label>
+        <label><input type="checkbox" id="ws-contact" checked> Include contact</label>
+      </div>
+      <div class="ws-actions">
+        <button id="ws-cancel-btn">Cancel</button>
+        <button id="ws-generate-btn">Generate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    var modal = document.getElementById('ws-modal');
+
+    function selectedIds() {
+      return Array.from(document.querySelectorAll('.ws-row-check input:checked')).map(function(cb) { return cb.value; });
+    }
+
+    function worksheetUrl(ids, prices, contact) {
+      var base = IS_LOCAL ? '/admin/worksheet.html' : '/admin/worksheet';
+      return base + '?ids=' + ids.join(',') + '&prices=' + (prices ? '1' : '0') + '&contact=' + (contact ? '1' : '0');
+    }
+
+    function pricelistUrl(ids) {
+      var base = IS_LOCAL ? '/admin/pricelist.html' : '/admin/pricelist';
+      return base + '?ids=' + ids.join(',');
+    }
+
+    document.getElementById('pl-open-btn').addEventListener('click', function() {
+      var ids = selectedIds();
+      if (!ids.length) { alert('Select at least one work.'); return; }
+      window.open(pricelistUrl(ids), '_blank');
+    });
+
+    // Inject checkbox into a row
+    function injectCheckbox(tr) {
+      if (!tr.dataset || !tr.dataset.id || tr.querySelector('.ws-row-check')) return;
+      var td = document.createElement('td');
+      td.className = 'ws-row-check';
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = tr.dataset.id;
+      td.appendChild(cb);
+      tr.insertBefore(td, tr.firstChild);
+    }
+
+    // Wait for tbl, then wire up checkboxes and observe new rows
+    function setup() {
+      if (!window.tbl) { requestAnimationFrame(setup); return; }
+      // Static checkbox header cell
+      var thead = document.querySelector('#inventory-table thead tr');
+      if (!thead.querySelector('.col-ws-check')) {
+        var th = document.createElement('th');
+        th.className = 'col-ws-check';
+        thead.insertBefore(th, thead.firstChild);
+      }
+      // Inject into existing rows
+      Array.from(window.tbl.tbody.querySelectorAll('tr[data-id]')).forEach(injectCheckbox);
+      // Observe future rows (added via Add button or re-render)
+      new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          m.addedNodes.forEach(function(n) {
+            if (n.nodeType === 1 && n.tagName === 'TR') injectCheckbox(n);
+          });
+        });
+      }).observe(window.tbl.tbody, { childList: true });
+    }
+    requestAnimationFrame(setup);
+
+    // Modal
+    document.getElementById('ws-open-btn').addEventListener('click', function() {
+      var ids = selectedIds();
+      var selEl = document.getElementById('ws-box-sel');
+      selEl.textContent = ids.length ? ids.length + ' work' + (ids.length > 1 ? 's' : '') + ' selected' : 'No works selected';
+      modal.classList.add('open');
+    });
+
+    document.getElementById('ws-cancel-btn').addEventListener('click', function() { modal.classList.remove('open'); });
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
+
+    document.getElementById('ws-generate-btn').addEventListener('click', function() {
+      var ids = selectedIds();
+      if (!ids.length) { alert('Select at least one work.'); return; }
+      window.open(worksheetUrl(ids, document.getElementById('ws-prices').checked, document.getElementById('ws-contact').checked), '_blank');
+      modal.classList.remove('open');
+    });
+
+  })();
+  </script>
+
+<script src="../js/admin-nav.js"></script>
 </body>
 </html>

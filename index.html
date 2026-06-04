@@ -606,6 +606,18 @@
 					el.innerHTML = html;
 				}
 				render();
+
+				if (d.bio) {
+					var bioHtml = d.bio.split('\n\n').map(function(p) {
+						return '<p>' + p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,' ') + '</p>';
+					}).join('');
+					function renderBio() {
+						var el = document.querySelector('#bio .text');
+						if (!el) { requestAnimationFrame(renderBio); return; }
+						el.innerHTML = bioHtml;
+					}
+					renderBio();
+				}
 			} catch(e) {}
 		}
 

@@ -43,7 +43,7 @@
     /* List rows */
     .data-row { display: flex; align-items: center; padding: 0.85rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.84rem; gap: 1rem; transition: background 0.1s; }
     .data-row:last-child { border-bottom: none; }
-    .data-row-main { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; }
+    .data-row-main { flex: 1; display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
     .data-row-title { font-size: 0.85rem; }
     .data-row-meta { font-size: 0.72rem; opacity: 0.38; }
     .data-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
@@ -52,6 +52,13 @@
     .status-paid    { background: rgba(30,130,60,0.08);  color: rgba(30,130,60,0.85); }
     .status-pending { background: rgba(200,150,0,0.09); color: rgba(150,110,0,0.85); }
     .status-mixed   { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.4); }
+
+    /* Inline tags & links in list rows */
+    .row-tags { display: inline-flex; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.1rem; }
+    .row-tag { font-size: 0.62rem; letter-spacing: 0.03em; background: rgba(0,0,0,0.08); border-radius: 2px; padding: 0.1rem 0.38rem; white-space: nowrap; opacity: 0.75; }
+    .row-links { display: inline-flex; gap: 0.6rem; align-items: center; margin-top: 0.1rem; }
+    .row-link { font-size: 0.71rem; color: #111; opacity: 0.38; text-decoration: none; }
+    .row-link:hover { opacity: 0.8; }
 
     /* Forms */
     .form-field label { display: block; font-size: 0.68rem; opacity: 0.4; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.28rem; }
@@ -63,6 +70,19 @@
     .form-actions button { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
     .form-actions button:hover { background: rgba(0,0,0,0.04); }
     #new-client-save-btn { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
+
+    /* Tag input widget */
+    .tag-input-wrap { position: relative; display: flex; flex-wrap: wrap; gap: 0.3rem; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; padding: 0.3rem 0.5rem; min-height: 2.35rem; align-items: center; cursor: text; }
+    .tag-input-wrap:focus-within { border-color: rgba(0,0,0,0.4); }
+    .tag-chip { display: inline-flex; align-items: center; background: rgba(0,0,0,0.08); border-radius: 2px; padding: 0.15rem 0.45rem; font-size: 0.74rem; white-space: nowrap; gap: 0.25rem; }
+    .tag-chip-del { background: none; border: none; cursor: pointer; opacity: 0.35; padding: 0; line-height: 1; font-size: 0.9rem; font-family: inherit; color: inherit; }
+    .tag-chip-del:hover { opacity: 0.85; }
+    .tag-inp { border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 300; color: #111; background: transparent; min-width: 70px; flex: 1; padding: 0.1rem 0.15rem; }
+    .tag-inp::placeholder { opacity: 0.3; color: #111; }
+    .tag-sugg { position: absolute; top: calc(100% + 3px); left: 0; right: 0; background: white; border: 1px solid rgba(0,0,0,0.14); border-radius: 3px; z-index: 60; max-height: 160px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
+    .tag-sugg.open { display: block; }
+    .tag-sugg-item { padding: 0.42rem 0.75rem; font-size: 0.82rem; cursor: pointer; }
+    .tag-sugg-item:hover { background: rgba(0,0,0,0.04); }
 
     #list-view, #detail-view { display: none; }
     #detail-view { flex-direction: column; gap: 2.5rem; }
@@ -85,8 +105,7 @@
     .modal-btn { background: none; border: 1px solid rgba(0,0,0,0.18); border-radius: 3px; padding: 0.38rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300; cursor: pointer; color: #111; }
     .modal-btn:hover { background: rgba(0,0,0,0.04); }
     .modal-btn-primary { background: rgba(0,0,0,0.85) !important; color: white !important; border-color: transparent !important; }
-  </style>
-</head>
+  </style></head>
 <body>
 
   <!-- List header -->
@@ -128,7 +147,18 @@
             <div class="form-field"><label>Phone</label><input id="cf-phone" type="tel" placeholder="+1 000 000 0000"></div>
             <div class="form-field"><label>Notes</label><input id="cf-notes" type="text" placeholder="Optional"></div>
           </div>
+          <div class="form-row">
+            <div class="form-field"><label>Instagram</label><input id="cf-instagram" type="text" placeholder="@handle"></div>
+            <div class="form-field"><label>Website</label><input id="cf-website" type="text" placeholder="https://"></div>
+          </div>
           <div class="form-field"><label>Address</label><textarea id="cf-address" rows="2" placeholder="Street&#10;City, State ZIP"></textarea></div>
+          <div class="form-field">
+            <label>Tags</label>
+            <div class="tag-input-wrap" id="cf-tags-wrap">
+              <input class="tag-inp" id="cf-tags-input" placeholder="Add tag…">
+              <div class="tag-sugg" id="cf-tags-sugg"></div>
+            </div>
+          </div>
           <div class="form-actions">
             <span id="new-client-status" style="font-size:0.75rem;opacity:0.5;"></span>
             <button id="new-client-cancel-btn">Cancel</button>
@@ -153,7 +183,18 @@
             <div class="form-field"><label>Phone</label><input id="ab-phone" type="tel"></div>
             <div class="form-field"><label>Notes</label><input id="ab-notes" type="text"></div>
           </div>
+          <div class="form-row">
+            <div class="form-field"><label>Instagram</label><input id="ab-instagram" type="text" placeholder="@handle"></div>
+            <div class="form-field"><label>Website</label><input id="ab-website" type="text" placeholder="https://"></div>
+          </div>
           <div class="form-field"><label>Address</label><textarea id="ab-address" rows="3"></textarea></div>
+          <div class="form-field">
+            <label>Tags</label>
+            <div class="tag-input-wrap" id="ab-tags-wrap">
+              <input class="tag-inp" id="ab-tags-input" placeholder="Add tag…">
+              <div class="tag-sugg" id="ab-tags-sugg"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -230,6 +271,90 @@
     const API_CLIENTS   = 'https://dimzayan.com/api/clients';
     const API_INVENTORY = 'https://dimzayan.com/api/inventory';
 
+    const TAG_SUGGESTIONS = ['collector', 'journalist', 'potential buyer', 'gallery', 'curator', 'advisor', 'press', 'friend', 'artist'];
+
+    // ── Tag input widget ───────────────────────────────────────────────────────
+    function initTagInput(wrapEl, inputEl, suggEl, initialTags, onChange) {
+      let tags = initialTags ? initialTags.slice() : [];
+
+      function renderChips() {
+        wrapEl.querySelectorAll('.tag-chip').forEach(function(c) { c.remove(); });
+        tags.forEach(function(tag, i) {
+          const chip = document.createElement('span');
+          chip.className = 'tag-chip';
+          const label = document.createTextNode(tag);
+          const del = document.createElement('button');
+          del.type = 'button';
+          del.className = 'tag-chip-del';
+          del.textContent = '×';
+          del.addEventListener('click', function(e) {
+            e.stopPropagation();
+            tags.splice(i, 1);
+            renderChips();
+            if (onChange) onChange();
+          });
+          chip.appendChild(label);
+          chip.appendChild(del);
+          wrapEl.insertBefore(chip, inputEl);
+        });
+        inputEl.placeholder = tags.length ? '' : 'Add tag…';
+      }
+
+      function addTag(val) {
+        val = val.trim().toLowerCase();
+        if (!val || tags.includes(val)) { inputEl.value = ''; return; }
+        tags.push(val);
+        inputEl.value = '';
+        renderChips();
+        if (onChange) onChange();
+      }
+
+      function showSugg(q) {
+        q = (q || '').toLowerCase().trim();
+        const matches = TAG_SUGGESTIONS.filter(function(s) { return s.includes(q) && !tags.includes(s); });
+        suggEl.innerHTML = '';
+        if (!matches.length) { suggEl.classList.remove('open'); return; }
+        matches.forEach(function(s) {
+          const item = document.createElement('div');
+          item.className = 'tag-sugg-item';
+          item.textContent = s;
+          item.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            addTag(s);
+            suggEl.classList.remove('open');
+          });
+          suggEl.appendChild(item);
+        });
+        suggEl.classList.add('open');
+      }
+
+      inputEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+          e.preventDefault();
+          addTag(inputEl.value);
+          suggEl.classList.remove('open');
+        } else if (e.key === 'Backspace' && !inputEl.value && tags.length) {
+          tags.pop();
+          renderChips();
+          if (onChange) onChange();
+        }
+      });
+      inputEl.addEventListener('input', function() { showSugg(inputEl.value); });
+      inputEl.addEventListener('focus', function() { showSugg(inputEl.value); });
+      inputEl.addEventListener('blur', function() {
+        setTimeout(function() { suggEl.classList.remove('open'); }, 150);
+        if (inputEl.value.trim()) addTag(inputEl.value);
+      });
+      wrapEl.addEventListener('click', function() { inputEl.focus(); });
+
+      renderChips();
+      return {
+        getTags: function() { return tags.slice(); },
+        setTags: function(t) { tags = t ? t.slice() : []; renderChips(); },
+        reset:   function() { tags = []; inputEl.value = ''; renderChips(); },
+      };
+    }
+
     const clientId = getPageId('__CLIENT_ID__');
 
     // Sticky header
@@ -244,12 +369,34 @@
       try { const r = await fetch(API_CLIENTS); clientsData = r.ok ? await r.json() : {}; } catch(e) { clientsData = {}; }
     }
 
+    // Normalise instagram handle — strip leading @ and URL prefix
+    function normaliseIg(val) {
+      val = (val || '').trim().replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/^@/, '').replace(/\/$/, '');
+      return val;
+    }
+    function fmtIg(val) { return val ? '@' + val : ''; }
+    function igUrl(val) { return val ? 'https://instagram.com/' + val : ''; }
+
+    function normaliseUrl(val) {
+      val = (val || '').trim();
+      if (val && !/^https?:\/\//i.test(val)) val = 'https://' + val;
+      return val;
+    }
+
     if (!clientId) {
       // ── LIST MODE ──────────────────────────────────────────────────────────
       document.getElementById('list-header').style.display = 'flex';
       document.getElementById('list-view').style.display   = 'block';
       document.getElementById('back-link-list').href = routeUrl('admin');
       document.title = 'Clients — Dim Zayan';
+
+      // Tag input for new client form
+      const cfTagCtrl = initTagInput(
+        document.getElementById('cf-tags-wrap'),
+        document.getElementById('cf-tags-input'),
+        document.getElementById('cf-tags-sugg'),
+        []
+      );
 
       async function renderList() {
         let inventory = {};
@@ -296,18 +443,35 @@
           const somePaid  = gps.some(function(g) { return g.paid; });
           const statusClass = !gps.length ? '' : allPaid ? 'status-paid' : somePaid ? 'status-mixed' : 'status-pending';
           const statusLabel = !gps.length ? '' : allPaid ? 'Paid' : somePaid ? 'Partial' : 'Pending';
-          const meta = [
+
+          const metaParts = [
             gps.length ? gps.length + ' invoice' + (gps.length !== 1 ? 's' : '') : null,
             kvClient && kvClient.address ? kvClient.address.split('\n')[0] : null,
             kvClient && kvClient.notes   ? kvClient.notes : null,
           ].filter(Boolean).join('  ·  ');
+
+          const tags = (kvClient && kvClient.tags) || [];
+          const ig   = kvClient && kvClient.instagram ? normaliseIg(kvClient.instagram) : '';
+          const site = kvClient && kvClient.website   ? normaliseUrl(kvClient.website)  : '';
+
+          // Build tag chips HTML
+          const tagsHtml = tags.length
+            ? '<div class="row-tags">' + tags.map(function(t) { return '<span class="row-tag">' + t + '</span>'; }).join('') + '</div>'
+            : '';
+
+          // Build links HTML
+          const linkParts = [];
+          if (ig)   linkParts.push('<a class="row-link" href="' + igUrl(ig) + '" target="_blank" rel="noopener">' + fmtIg(ig) + '</a>');
+          if (site) linkParts.push('<a class="row-link" href="' + site + '" target="_blank" rel="noopener">' + site.replace(/^https?:\/\//,'') + '</a>');
+          const linksHtml = linkParts.length ? '<div class="row-links">' + linkParts.join('') + '</div>' : '';
 
           const row = document.createElement('div');
           row.className = 'data-row';
           row.innerHTML =
             '<div class="data-row-main">' +
               '<div class="data-row-title">' + name + '</div>' +
-              (meta ? '<div class="data-row-meta">' + meta + '</div>' : '') +
+              (metaParts ? '<div class="data-row-meta">' + metaParts + '</div>' : '') +
+              (tagsHtml || linksHtml ? '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">' + tagsHtml + linksHtml + '</div>' : '') +
             '</div>' +
             '<div class="data-row-right">' +
               (total ? '<span class="data-row-amount">' + fmtMoney(total) + '</span>' : '') +
@@ -317,7 +481,10 @@
 
           if (kvClient) {
             row.style.cursor = 'pointer';
-            row.addEventListener('click', function() { window.location.href = routeUrl('admin-client', { id: kvClient.id }); });
+            row.addEventListener('click', function(e) {
+              if (e.target.closest('.row-link')) return;
+              window.location.href = routeUrl('admin-client', { id: kvClient.id });
+            });
           }
           list.appendChild(row);
         });
@@ -328,7 +495,8 @@
         const form = document.getElementById('client-form');
         form.style.display = form.style.display === 'none' ? 'flex' : 'none';
         if (form.style.display === 'flex') {
-          ['cf-name','cf-email','cf-phone','cf-address','cf-notes'].forEach(function(id) { document.getElementById(id).value = ''; });
+          ['cf-name','cf-email','cf-phone','cf-address','cf-notes','cf-instagram','cf-website'].forEach(function(id) { document.getElementById(id).value = ''; });
+          cfTagCtrl.reset();
           document.getElementById('new-client-status').textContent = '';
           document.getElementById('cf-name').focus();
         }
@@ -342,7 +510,17 @@
         const token = localStorage.getItem('dim_gh_token') || '';
         if (!token) { document.getElementById('new-client-status').textContent = 'No token'; return; }
         const id = 'client_' + Date.now();
-        clientsData[id] = { id, name, email: document.getElementById('cf-email').value.trim(), phone: document.getElementById('cf-phone').value.trim(), address: document.getElementById('cf-address').value.trim(), notes: document.getElementById('cf-notes').value.trim() };
+        clientsData[id] = {
+          id,
+          name,
+          email:     document.getElementById('cf-email').value.trim(),
+          phone:     document.getElementById('cf-phone').value.trim(),
+          address:   document.getElementById('cf-address').value.trim(),
+          notes:     document.getElementById('cf-notes').value.trim(),
+          instagram: normaliseIg(document.getElementById('cf-instagram').value),
+          website:   normaliseUrl(document.getElementById('cf-website').value),
+          tags:      cfTagCtrl.getTags(),
+        };
         const btn = document.getElementById('new-client-save-btn');
         btn.disabled = true; document.getElementById('new-client-status').textContent = 'Saving…';
         try {
@@ -367,6 +545,15 @@
       let inventoryData = {};
       let client = null;
 
+      // Tag input for detail view (initialised once DOM is ready)
+      const abTagCtrl = initTagInput(
+        document.getElementById('ab-tags-wrap'),
+        document.getElementById('ab-tags-input'),
+        document.getElementById('ab-tags-sugg'),
+        [],
+        markDirty
+      );
+
       async function loadAll() {
         await loadClients();
         try { inventoryData = await fetch(API_INVENTORY).then(function(r) { return r.json(); }); } catch(e) {}
@@ -381,13 +568,16 @@
         document.getElementById('client-heading').textContent = client.name;
 
         // Populate About
-        document.getElementById('ab-name').value    = client.name    || '';
-        document.getElementById('ab-email').value   = client.email   || '';
-        document.getElementById('ab-phone').value   = client.phone   || '';
-        document.getElementById('ab-address').value = client.address || '';
-        document.getElementById('ab-notes').value   = client.notes   || '';
+        document.getElementById('ab-name').value      = client.name      || '';
+        document.getElementById('ab-email').value     = client.email     || '';
+        document.getElementById('ab-phone').value     = client.phone     || '';
+        document.getElementById('ab-address').value   = client.address   || '';
+        document.getElementById('ab-notes').value     = client.notes     || '';
+        document.getElementById('ab-instagram').value = client.instagram ? fmtIg(normaliseIg(client.instagram)) : '';
+        document.getElementById('ab-website').value   = client.website   || '';
+        abTagCtrl.setTags(client.tags || []);
 
-        // Invoices from KV (merged with localStorage) filtered by buyer.name
+        // Invoices from KV filtered by buyer.name
         const stored = await loadInvoices();
         const clientInvoices = Object.values(stored).filter(function(inv) {
           return inv.buyer && inv.buyer.name === client.name;
@@ -395,7 +585,7 @@
 
         renderInvoices(clientInvoices);
 
-        // Purchased works — works whose invoiced.invoiceId belongs to this client
+        // Purchased works
         const clientInvoiceIds = new Set(clientInvoices.map(function(inv) { return inv.invoiceId; }));
         const worksTbl = initArtworksTable({
           tableEl: document.getElementById('works-table'),
@@ -437,7 +627,7 @@
       const saveBtn = document.getElementById('save-btn');
       function markDirty() { saveBtn.classList.add('dirty'); }
       function markClean() { saveBtn.classList.remove('dirty'); }
-      ['ab-name','ab-email','ab-phone','ab-address','ab-notes'].forEach(function(id) {
+      ['ab-name','ab-email','ab-phone','ab-address','ab-notes','ab-instagram','ab-website'].forEach(function(id) {
         document.getElementById(id).addEventListener('input', markDirty);
       });
 
@@ -448,11 +638,14 @@
         if (!token) { document.getElementById('save-status').textContent = 'No token'; return; }
         const btn = document.getElementById('save-btn');
         btn.disabled = true; document.getElementById('save-status').textContent = 'Saving…';
-        client.name    = document.getElementById('ab-name').value.trim()    || client.name;
-        client.email   = document.getElementById('ab-email').value.trim();
-        client.phone   = document.getElementById('ab-phone').value.trim();
-        client.address = document.getElementById('ab-address').value.trim();
-        client.notes   = document.getElementById('ab-notes').value.trim();
+        client.name      = document.getElementById('ab-name').value.trim()      || client.name;
+        client.email     = document.getElementById('ab-email').value.trim();
+        client.phone     = document.getElementById('ab-phone').value.trim();
+        client.address   = document.getElementById('ab-address').value.trim();
+        client.notes     = document.getElementById('ab-notes').value.trim();
+        client.instagram = normaliseIg(document.getElementById('ab-instagram').value);
+        client.website   = normaliseUrl(document.getElementById('ab-website').value);
+        client.tags      = abTagCtrl.getTags();
         clientsData[clientId] = client;
         document.getElementById('client-heading').textContent = client.name;
         document.title = client.name + ' — Dim Zayan';
@@ -555,5 +748,6 @@
       loadAll();
     }
   </script>
+<script src="../js/admin-nav.js"></script>
 </body>
 </html>
